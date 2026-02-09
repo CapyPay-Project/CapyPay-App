@@ -6,6 +6,8 @@ import tailwindcss from '@tailwindcss/vite';
 // https://astro.build/config
 export default defineConfig({
   vite: {
-    plugins: [tailwindcss()]
+    // Forzamos tipo `any` aquí para evitar incompatibilidades de tipos entre
+    // diferentes versiones de `vite` en dependencias (evita TS2322).
+    plugins: /** @type {any} */ ([tailwindcss()])
   }
 });

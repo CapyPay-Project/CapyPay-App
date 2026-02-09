@@ -1,8 +1,29 @@
 ---
-const { puntosActuales = 1500 } = Astro.props;
+import NivelBadge from './NivelBadge.astro';
+const { puntosActuales = 1500 }: { puntosActuales?: number } = Astro.props;
+
+// Determinar nivel inicial en render server-side para consistencia con el badge
+const nivelesServer = [
+  { id: 'novato', nombre: 'Novato (Cachorro)', puntosMin: 0, puntosMax: 500, icono: '🌱' },
+  { id: 'bachiller', nombre: 'Bachiller (Explorador)', puntosMin: 501, puntosMax: 2000, icono: '🎓' },
+  { id: 'licenciado', nombre: 'Licenciado (Conocedor)', puntosMin: 2001, puntosMax: 5000, icono: '📚' },
+  { id: 'master', nombre: 'Magíster (Lider de Manada)', puntosMin: 5001, puntosMax: 10000, icono: '🎖️' },
+  { id: 'doctorado', nombre: 'Doctorado (Sigma Capy)', puntosMin: 10001, puntosMax: Infinity, icono: '👑' }
+];
+
+function calcularNivelServer(puntos: number) {
+  for (let i = nivelesServer.length - 1; i >= 0; i--) {
+    if (puntos >= nivelesServer[i].puntosMin) return nivelesServer[i];
+  }
+  return nivelesServer[0];
+}
+
+const nivelInicial = calcularNivelServer(puntosActuales);
 ---
 
 <div class="modulo-niveles-container w-full">
+  <!-- DEBUG: overlay para capturar errores de consola en el cliente (solo dev) -->
+  <div id="client-error-overlay" class="hidden fixed bottom-4 right-4 max-w-md w-full z-50 pointer-events-auto bg-red-900/95 text-white p-3 rounded-lg shadow-lg overflow-auto" style="max-height:40vh; font-family:monospace; font-size:12px;"></div>
   <!-- Tarjeta de Perfil -->
   <div id="perfil-card" class="perfil-card bg-brand-black/80 backdrop-blur-xl border-2 border-[#60A5FA] rounded-3xl p-6 mb-6 relative overflow-hidden transition-all duration-500" style="box-shadow: 0 0 20px rgba(96, 165, 250, 0.15);">
     <!-- Glow decorativo del nivel -->
@@ -16,16 +37,17 @@ const { puntosActuales = 1500 } = Astro.props;
           <h2 class="text-white text-xl font-bold">Hola, <span id="user-greeting">Estudiante</span></h2>
           <p class="text-slate-400 text-sm">Tu progreso académico</p>
         </div>
-        <div id="nivel-badge" class="bg-[#60A5FA]/10 border-2 border-[#60A5FA] px-6 py-3 rounded-xl text-[#60A5FA] font-bold text-lg shadow-[0_0_25px_rgba(96,165,250,0.3)] transition-all duration-300 hover:scale-105">
-          <span class="nivel-text">Bachiller</span>
-        </div>
+        <NivelBadge id="nivel-badge" nombre={nivelInicial.nombre} xp={puntosActuales} icono={nivelInicial.icono} extraClass="bg-[#60A5FA]/10 border-2 border-[#60A5FA] px-6 py-3 rounded-xl text-[#60A5FA] font-bold text-lg shadow-[0_0_25px_rgba(96,165,250,0.3)] transition-all duration-300 hover:scale-105" />
       </div>
 
       <!-- Barra de Progreso -->
       <div class="mb-4">
         <div class="flex justify-between text-xs text-slate-400 mb-2">
-          <span id="xp-actual">1,500 XP</span>
-          <span id="xp-siguiente">2,000 XP</span>
+            <span id="xp-actual">1,500 XP</span>
+            <div class="flex items-center gap-2">
+              <span id="xp-siguiente">2,000 XP</span>
+              <span id="xp-porcentaje" class="text-white/80 font-bold">75%</span>
+            </div>
         </div>
         <div class="h-3 bg-slate-800 rounded-full overflow-hidden relative">
           <div id="progreso-bar" class="h-full rounded-full transition-all duration-500 ease-out relative" style="width: 75%; background: linear-gradient(90deg, #60A5FA, #3B82F6);">
@@ -179,10 +201,70 @@ const { puntosActuales = 1500 } = Astro.props;
       transform: translateX(100%);
     }
   }
+
+  /* Respect user preference for reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .animate-shimmer { animation: none !important; }
+    .shine-effect::before { animation: none !important; }
+    .nivel-activo::before { transition: none !important; filter: none !important; }
+    * { transition-duration: 0s !important; }
+  }
 </style>
 
 <script define:vars={{ puntosActuales }}>
   let currentPuntos = puntosActuales;
+
+  // Captura errores/console en el cliente y los muestra en un overlay (útil en dev)
+  (function installClientErrorOverlay(){
+    try {
+      if (typeof window === 'undefined') return;
+      const overlay = document.getElementById('client-error-overlay');
+      if (!overlay) return;
+
+      function showMessage(level, msg) {
+        overlay.classList.remove('hidden');
+        const time = new Date().toLocaleTimeString();
+        const entry = document.createElement('div');
+        entry.style.marginBottom = '6px';
+        entry.innerHTML = `<strong>[${level}] ${time}</strong> <div>${String(msg).replace(/\n/g, '<br>')}</div>`;
+        overlay.prepend(entry);
+      }
+
+      const origError = console.error.bind(console);
+      console.error = function(...args){
+        try { showMessage('ERROR', args.map(a=>typeof a==='object'?JSON.stringify(a):a).join(' ')); } catch(e){}
+        origError(...args);
+      };
+
+      const origWarn = console.warn.bind(console);
+      console.warn = function(...args){
+        try { showMessage('WARN', args.map(a=>typeof a==='object'?JSON.stringify(a):a).join(' ')); } catch(e){}
+        origWarn(...args);
+      };
+
+      window.addEventListener('error', (ev) => {
+        try { showMessage('ERROR', ev.message + ' — ' + (ev.filename || '') + ':' + (ev.lineno||'') ); } catch(e){}
+      });
+
+      window.addEventListener('unhandledrejection', (ev) => {
+        try { showMessage('UNHANDLED REJECTION', ev.reason && (ev.reason.message || String(ev.reason)) ); } catch(e){}
+      });
+    } catch (e) {
+      console.warn('No se pudo instalar overlay de errores:', e);
+    }
+  })();
+
+  function getContrastColor(hex) {
+    try {
+      const r = parseInt(hex.slice(1, 3), 16);
+      const g = parseInt(hex.slice(3, 5), 16);
+      const b = parseInt(hex.slice(5, 7), 16);
+      const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+      return luminance > 0.6 ? '#000000' : '#ffffff';
+    } catch (e) {
+      return '#ffffff';
+    }
+  }
 
   const nivelesConfig = [
     {
@@ -306,6 +388,8 @@ const { puntosActuales = 1500 } = Astro.props;
       const esBloqueado = currentPuntos < nivel.puntosMin;
       const esCompletado = currentPuntos >= nivel.puntosMax;
 
+      const progresoNivel = esActual ? calcularProgreso(currentPuntos, nivelActual) : 0;
+
       let estadoClass = '';
       let estadoIcono = '';
       let estadoTexto = '';
@@ -337,7 +421,7 @@ const { puntosActuales = 1500 } = Astro.props;
               </div>
             </div>
             <div class="flex items-center gap-2">
-              <span class="text-xs font-medium px-2 py-1 rounded-full" style="background: ${nivel.color}20; color: ${nivel.color};">
+              <span class="text-xs font-medium px-2 py-1 rounded-full" style="background: ${nivel.color}20; color: ${getContrastColor(nivel.color)};">
                 ${estadoTexto}
               </span>
               ${esBloqueado ? '<svg class="w-4 h-4 text-slate-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/></svg>' : ''}
@@ -345,8 +429,13 @@ const { puntosActuales = 1500 } = Astro.props;
           </div>
           ${esActual ? `
             <div class="mt-3">
-              <div class="h-2 bg-slate-700 rounded-full overflow-hidden">
-                <div class="h-full rounded-full transition-all duration-500" style="width: ${calcularProgreso(currentPuntos, nivelActual)}%; background: ${nivel.color};"></div>
+              <div class="flex items-center gap-3">
+                <div class="flex-1">
+                  <div class="h-2 bg-slate-700 rounded-full overflow-hidden" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(progresoNivel)}" aria-label="Progreso del nivel ${nivel.nombre}">
+                    <div class="h-full rounded-full transition-all duration-500" style="width: ${progresoNivel}%; background: ${nivel.color};"></div>
+                  </div>
+                </div>
+                <div class="w-12 text-right text-xs font-bold text-white">${Math.round(progresoNivel)}%</div>
               </div>
             </div>
           ` : ''}
@@ -453,6 +542,11 @@ const { puntosActuales = 1500 } = Astro.props;
     if (progresoBar) {
       progresoBar.style.width = `${progreso}%`;
       progresoBar.style.background = `linear-gradient(90deg, ${nivelActual.color}, ${nivelActual.colorGlow})`;
+      progresoBar.setAttribute('role', 'progressbar');
+      progresoBar.setAttribute('aria-valuemin', '0');
+      progresoBar.setAttribute('aria-valuemax', '100');
+      progresoBar.setAttribute('aria-valuenow', Math.round(progreso).toString());
+      progresoBar.setAttribute('aria-label', `Progreso ${Math.round(progreso)} por ciento`);
     }
 
     if (perfilCard) {
@@ -487,6 +581,20 @@ const { puntosActuales = 1500 } = Astro.props;
     if (tareasSection) {
       tareasSection.style.borderColor = nivelActual.color;
       tareasSection.style.boxShadow = `0 0 20px ${hexToRgba(nivelActual.color, 0.1)}`;
+    }
+
+    // Ajustar color de texto en badges y metadatos para asegurar contraste mínimo
+    if (nivelBadge) {
+      const textColor = getContrastColor(nivelActual.color);
+      nivelBadge.style.borderColor = nivelActual.color;
+      nivelBadge.style.color = textColor;
+      nivelBadge.style.backgroundColor = `${nivelActual.color}20`;
+    }
+
+    // Actualizar porcentaje textual junto a la barra principal
+    const xpPorcentajeEl = document.getElementById('xp-porcentaje');
+    if (xpPorcentajeEl) {
+      xpPorcentajeEl.textContent = `${Math.round(progreso)}%`;
     }
 
     renderTimeline();

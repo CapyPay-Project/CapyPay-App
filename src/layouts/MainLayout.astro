@@ -14,11 +14,10 @@ const { title = "CapyPay", showSidebar = false } = Astro.props;
       name="viewport"
       content="width=device-width, initial-scale=1.0, viewport-fit=cover"
     />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta
-      name="apple-mobile-web-app-status-bar-style"
-      content="black-translucent"
-    />
+    <!-- Use 'mobile-web-app-capable' (standard) instead of deprecated apple-only tag -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <!-- Mantener configuración de la barra de estado para iOS si se desea -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{title}</title>
     <!-- Auth Guard Anti-Flash (Improved) -->
