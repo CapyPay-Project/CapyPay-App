@@ -1,5 +1,6 @@
 ---
 import MainLayout from "../layouts/MainLayout.astro";
+import { Button, Input, Select, Card } from "../components/ui";
 ---
 
 <MainLayout title="Historial | CapyPay" showSidebar={true}>
@@ -141,13 +142,15 @@ import MainLayout from "../layouts/MainLayout.astro";
       class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 lg:gap-4 shrink-0"
     >
       <div class="flex items-center gap-3 lg:gap-4 w-full md:w-auto">
-        <a
+        <Button
           href="/dashboard"
-          class="w-9 h-9 lg:w-10 lg:h-10 rounded-full border border-white/10 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/5 transition-colors shrink-0"
+          variant="secondary"
+          size="icon"
+          class="border-white/10 text-slate-400 hover:text-white shrink-0"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            class="h-4 w-4 lg:h-5 lg:w-5"
+            class="h-5 w-5"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -158,7 +161,7 @@ import MainLayout from "../layouts/MainLayout.astro";
               stroke-width="2"
               d="M15 19l-7-7 7-7"></path>
           </svg>
-        </a>
+        </Button>
         <div class="min-w-0 flex-1">
           <h1
             class="text-xl sm:text-2xl lg:text-3xl font-bold text-white truncate"
@@ -172,9 +175,10 @@ import MainLayout from "../layouts/MainLayout.astro";
       </div>
 
       <!-- PDF Button -->
-      <button
+      <Button
+        variant="primary"
         onclick="window.exportToPDF()"
-        class="bg-brand-lime text-black font-bold px-4 py-2 rounded-xl hover:bg-[#ccf044] transition-colors flex items-center gap-2 shadow-[0_0_15px_rgba(215,253,73,0.3)]"
+        class="flex items-center gap-2"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -191,7 +195,7 @@ import MainLayout from "../layouts/MainLayout.astro";
           ></path>
         </svg>
         <span class="hidden sm:inline">Exportar PDF</span>
-      </button>
+      </Button>
     </header>
 
     <!-- Filters Area -->
@@ -201,78 +205,69 @@ import MainLayout from "../layouts/MainLayout.astro";
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <!-- Search -->
         <div class="col-span-1 sm:col-span-2 lg:col-span-1">
-          <label
-            class="block text-slate-500 text-[10px] uppercase font-bold mb-1 ml-1"
-            >Búsqueda</label
+          <Input
+            type="text"
+            id="search-input"
+            label="BÚSQUEDA"
+            autocomplete="off"
+            placeholder="Concepto, monto..."
           >
-          <div class="relative">
-            <input
-              type="text"
-              id="search-input"
-              autocomplete="off"
-              placeholder="Concepto, monto..."
-              class="w-full bg-black/30 border border-white/10 rounded-xl sm:rounded-2xl py-2 sm:py-3 pl-10 pr-4 text-sm sm:text-base text-white focus:outline-none focus:border-brand-lime/50 transition-all placeholder:text-slate-700"
-            />
-            <div
-              class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+            <svg
+              slot="icon"
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-4 w-4 text-slate-500"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-              </svg>
-            </div>
-          </div>
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+          </Input>
         </div>
 
-        <!-- Type Filter -->
-        <div>
+        <!-- Type Filter (Refactored to Buttons) -->
+        <div class="flex flex-col">
           <label
-            class="block text-slate-500 text-[10px] uppercase font-bold mb-1 ml-1"
-            >Tipo</label
+            class="block text-slate-500 text-[10px] uppercase font-bold mb-1.5 ml-1"
+            >TIPO</label
           >
-          <select
-            id="filter-type"
-            class="w-full bg-black/30 border border-white/10 rounded-xl sm:rounded-2xl py-2 sm:py-3 px-4 text-sm sm:text-base text-white focus:outline-none focus:border-brand-lime/50 transition-all appearance-none cursor-pointer"
+          <div
+            class="flex bg-black/30 border border-white/10 rounded-xl p-1 h-12.5 items-center"
           >
-            <option value="all">Todos</option>
-            <option value="income">Ingresos (+)</option>
-            <option value="expense">Gastos (-)</option>
-          </select>
+            <input type="hidden" id="filter-type" value="all" />
+            <button
+              type="button"
+              data-val="all"
+              class="filter-btn flex-1 rounded-lg text-xs font-bold transition-all text-black bg-brand-lime shadow-lg"
+              >TODOS</button
+            >
+            <button
+              type="button"
+              data-val="income"
+              class="filter-btn flex-1 rounded-lg text-xs font-bold transition-all text-slate-400 hover:text-white"
+              >INGRESOS</button
+            >
+            <button
+              type="button"
+              data-val="expense"
+              class="filter-btn flex-1 rounded-lg text-xs font-bold transition-all text-slate-400 hover:text-white"
+              >GASTOS</button
+            >
+          </div>
         </div>
 
         <!-- Date From -->
         <div>
-          <label
-            class="block text-slate-500 text-[10px] uppercase font-bold mb-1 ml-1"
-            >Desde</label
-          >
-          <input
-            type="date"
-            id="date-from"
-            class="w-full bg-black/30 border border-white/10 rounded-xl sm:rounded-2xl py-2 sm:py-3 px-4 text-sm sm:text-base text-white focus:outline-none focus:border-brand-lime/50 transition-all scheme-dark"
-          />
+          <Input type="date" id="date-from" label="DESDE" class="scheme-dark" />
         </div>
 
         <!-- Date To -->
         <div>
-          <label
-            class="block text-slate-500 text-[10px] uppercase font-bold mb-1 ml-1"
-            >Hasta</label
-          >
-          <input
-            type="date"
-            id="date-to"
-            class="w-full bg-black/30 border border-white/10 rounded-xl sm:rounded-2xl py-2 sm:py-3 px-4 text-sm sm:text-base text-white focus:outline-none focus:border-brand-lime/50 transition-all scheme-dark"
-          />
+          <Input type="date" id="date-to" label="HASTA" class="scheme-dark" />
         </div>
       </div>
     </div>
@@ -281,24 +276,10 @@ import MainLayout from "../layouts/MainLayout.astro";
     <div
       class="bg-brand-black border border-white/10 rounded-3xl overflow-hidden shadow-xl flex-1 flex flex-col min-h-0"
     >
-      <!-- Table Header (Hidden on Mobile) -->
-      <div
-        class="hidden md:grid grid-cols-12 gap-4 p-4 border-b border-white/10 bg-white/5 text-xs font-bold text-slate-400 uppercase tracking-wider"
-      >
-        <div class="col-span-2">Fecha</div>
-        <!-- Date -->
-        <div class="col-span-6">Operación</div>
-        <!-- Description -->
-        <div class="col-span-2">Categoría</div>
-        <!-- Category -->
-        <div class="col-span-2 text-center">Estado</div>
-        <!-- Status -->
-      </div>
-
       <!-- Table Body -->
       <div
         id="history-rows-container"
-        class="flex-1 overflow-y-auto custom-scrollbar p-2 md:p-0"
+        class="flex-1 overflow-y-auto custom-scrollbar p-4 space-y-3"
       >
         <!-- Dynamic Rows go here -->
         <p class="text-center text-slate-500 mt-20 animate-pulse">
@@ -317,9 +298,11 @@ import MainLayout from "../layouts/MainLayout.astro";
         </p>
 
         <div class="flex gap-2">
-          <button
+          <Button
             id="prev-page"
-            class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-white disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/10 transition-colors"
+            variant="secondary"
+            size="icon"
+            class="disabled:opacity-30 disabled:cursor-not-allowed"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -334,16 +317,18 @@ import MainLayout from "../layouts/MainLayout.astro";
                 stroke-width="2"
                 d="M15 19l-7-7 7-7"></path>
             </svg>
-          </button>
+          </Button>
           <div
-            class="flex items-center justify-center px-4 bg-white/5 rounded-lg text-sm text-white font-medium"
+            class="flex items-center justify-center px-4 bg-white/5 rounded-lg text-sm text-white font-medium min-w-8 h-9"
             id="page-indicator"
           >
             1 / 1
           </div>
-          <button
+          <Button
             id="next-page"
-            class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-white disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/10 transition-colors"
+            variant="secondary"
+            size="icon"
+            class="disabled:opacity-30 disabled:cursor-not-allowed"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -358,7 +343,7 @@ import MainLayout from "../layouts/MainLayout.astro";
                 stroke-width="2"
                 d="M9 5l7 7-7 7"></path>
             </svg>
-          </button>
+          </Button>
         </div>
       </div>
     </div>
@@ -477,7 +462,29 @@ import MainLayout from "../layouts/MainLayout.astro";
     if (searchInp) searchInp.addEventListener("input", applyFilters);
 
     const filterType = document.getElementById("filter-type");
-    if (filterType) filterType.addEventListener("change", applyFilters);
+    // Trigger filter update when hidden input changes programmatically? Not natively supported.
+    // Instead we handle button clicks directly.
+
+    // --- FILTER BUTTONS LOGIC ---
+    document.querySelectorAll(".filter-btn").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        const val = e.target.dataset.val;
+
+        // Update hidden input
+        if (filterType) {
+          filterType.value = val;
+          applyFilters();
+        }
+
+        // Update UI
+        document.querySelectorAll(".filter-btn").forEach((b) => {
+          b.className =
+            "filter-btn flex-1 rounded-lg text-xs font-bold transition-all p-2 text-slate-400 hover:text-white";
+        });
+        e.target.className =
+          "filter-btn flex-1 rounded-lg text-xs font-bold transition-all p-2 text-black bg-brand-lime shadow-lg";
+      });
+    });
 
     const dateFromEl = document.getElementById("date-from");
     if (dateFromEl) dateFromEl.addEventListener("change", applyFilters);
@@ -516,45 +523,28 @@ import MainLayout from "../layouts/MainLayout.astro";
         const desc = mov.descripcion || mov.concept || "Transferencia";
         const category = mov.tipo || "General";
 
-        // Desktop Row
+        // Render using HistoryCard structure (replicated for Client Side Rendering)
         html += `
-            <div onclick="window.openModal('${mov.uniqueId}')" class="group cursor-pointer border-b border-white/5 hover:bg-white/5 transition-colors grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-4 py-2 md:py-3 px-3 md:px-4 items-center active:bg-white/10">
-                <!-- Mobile Only Header -->
-                <div class="md:hidden flex items-center justify-between w-full">
-                     <span class="text-xs text-slate-500">${dateStr}</span>
+            <div onclick="window.openModal('${mov.uniqueId}')" class="group flex items-center justify-between !p-4 !rounded-xl transition-all duration-300 cursor-pointer w-full mx-auto hover:bg-neutral-800 hover:border-[#d7fd48]/30 hover:scale-[1.01] overflow-hidden bg-black/40 border border-white/10 rounded-3xl backdrop-blur-sm shadow-xl mb-3">
+              <div class="flex items-center gap-4 min-w-0 flex-1">
+                <div class="w-12 h-12 rounded-full ${iconBg} flex items-center justify-center ${iconColor} transition-transform shrink-0 group-hover:scale-110 group-hover:rotate-12">
+                  ${
+                    isNegative
+                      ? `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" /></svg>`
+                      : `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" /></svg>`
+                  }
                 </div>
-
-                <!-- Desktop Cols -->
-                <div class="col-span-2 hidden md:block text-slate-300 text-sm">${dateStr}</div>
-                
-                <div class="col-span-12 md:col-span-6 flex items-center justify-between gap-2 md:gap-3">
-                    <div class="flex items-center gap-2 md:gap-4 flex-1 min-w-0">
-                        <div class="w-8 h-8 rounded-full ${iconBg} flex items-center justify-center ${iconColor} shrink-0">
-                             ${
-                               isNegative
-                                 ? `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 md:h-5 md:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
-                                </svg>`
-                                 : `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 md:h-5 md:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
-                                </svg>`
-                             }
-                        </div>
-                        <div class="truncate text-white font-medium text-sm">${desc}</div>
-                        <span class="font-mono font-bold text-lg md:text-xl ${amountColor} shrink-0">${sign}${mov.monto}$</span>
-                    </div>
-                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 md:h-5 md:w-5 text-slate-400 group-hover:text-white transition-colors shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                     </svg>
+                <div class="flex flex-col min-w-0">
+                  <span class="text-white font-bold group-hover:text-brand-lime transition-colors truncate text-sm sm:text-base">${desc}</span>
+                  <span class="text-xs text-slate-500 font-mono">${dateStr}</span>
                 </div>
-                
-                <div class="col-span-2 hidden md:block text-slate-400 text-xs uppercase tracking-wide bg-white/5 w-fit px-2 py-1 rounded-md">
-                    ${category}
-                </div>
-                
-                <div class="col-span-2 hidden md:block text-center">
-                    <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_5px_theme(colors.emerald.500)]"></span>
-                </div>
+              </div>
+              <div class="text-right shrink-0">
+                <p class="font-bold text-lg sm:text-xl font-mono ${amountColor} group-hover:scale-110 transition-transform origin-right">
+                  ${sign}${mov.monto}
+                </p>
+                <p class="text-[10px] text-slate-500 uppercase tracking-wider">${category}</p>
+              </div>
             </div>`;
       });
 

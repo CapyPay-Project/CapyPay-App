@@ -1,5 +1,5 @@
 ---
-// NavBar.astro
+import Button from "../ui/Button.astro";
 ---
 
 <nav class="sticky top-0 z-50 transition-all duration-300 isolate">
@@ -22,39 +22,15 @@
         </div>
 
         <!-- Links -->
-        <div class="hidden md:flex space-x-8">
-          <a
-            href="/"
-            class="text-slate-300 hover:text-white font-medium transition-colors relative group"
-          >
-            Inicio
-            <span
-              class="absolute bottom-0 left-0 w-0 h-0.5 bg-indigo-500 transition-all group-hover:w-full"
-            ></span>
-          </a>
-          <a
-            href="/about"
-            class="text-slate-300 hover:text-white font-medium transition-colors relative group"
-          >
-            Servicios
-            <span
-              class="absolute bottom-0 left-0 w-0 h-0.5 bg-indigo-500 transition-all group-hover:w-full"
-            ></span>
-          </a>
-          <a
-            href="/contact"
-            class="text-slate-300 hover:text-white font-medium transition-colors relative group"
-          >
-            Soporte
-            <span
-              class="absolute bottom-0 left-0 w-0 h-0.5 bg-indigo-500 transition-all group-hover:w-full"
-            ></span>
-          </a>
+        <div class="hidden md:flex space-x-2">
+          <Button href="/" variant="ghost">Inicio</Button>
+          <Button href="/services" variant="ghost">Servicios</Button>
+          <Button href="/support" variant="ghost">Soporte</Button>
         </div>
 
         <!-- User Profile -->
         <div class="flex items-center gap-3">
-          <button class="p-2 text-slate-400 hover:text-white transition-colors">
+          <Button variant="icon" aria-label="Notificaciones">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               class="h-6 w-6"
@@ -69,7 +45,7 @@
                 d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
               ></path>
             </svg>
-          </button>
+          </Button>
           <div
             class="h-8 w-8 rounded-full bg-linear-to-br from-indigo-500 to-purple-600 ring-2 ring-white cursor-pointer"
           >

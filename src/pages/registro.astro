@@ -1,209 +1,216 @@
 ---
-import "../styles/landing.css";
+import LandingLayout from "../layouts/LandingLayout.astro";
 // Layouts
 ---
 
-<!doctype html>
-<html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <title>Súmate al Plan | CapyPay</title>
-  </head>
-  <body>
-     <header class="main-header">
-       <div class="header-container">
-         <div class="logo">
-           <a href="/">
-             <img
-               src="/assets/landing/vectors/logocapinamedbottom.svg"
-               alt="CapyPay Logo"
-               style="width: 76px; height: 91.48px;"
-             />
-           </a>
-         </div>
-       </div>
-     </header>
+<LandingLayout title="Súmate al Plan | CapyPay">
+  <header class="main-header">
+    <div class="header-container">
+      <div class="logo">
+        <a href="/">
+          <img
+            src="/assets/landing/vectors/logocapinamedbottom.svg"
+            alt="CapyPay Logo"
+            style="width: 76px; height: 91.48px;"
+          />
+        </a>
+      </div>
+    </div>
+  </header>
 
-     <a href="/" class="btn-regresar">
-       <span>&lt;</span>
-       <span>Regresar</span>
-     </a>
+  <a href="/" class="btn-regresar">
+    <span>&lt;</span>
+    <span>Regresar</span>
+  </a>
 
-    <main>
-      <div class="contenedor-registro">
-        <div class="texto-hero">
-          <h1 class="titulo-hackea">
-            HACKEA EL <br />
-            SEMESTRE. <br />
-            PAGA EN SEGUNDOS!
-          </h1>
-          <p class="subtitulo-cero">CERO ESTRES</p>
-        </div>
-
-        <div class="card-registro registro-page">
-          <h2>CREAR CUENTA</h2>
-
-          <form class="form-neubrutalist" id="register-form">
-            <div class="input-group">
-              <label>Nombre</label>
-              <input type="text" id="nombre" placeholder="Escribe tu nombre" />
-            </div>
-
-            <div class="input-group">
-              <label>Correo Electrónico</label>
-              <input
-                type="email"
-                id="email"
-                placeholder="Introduce tu correo electronico"
-              />
-            </div>
-
-            <div class="input-group">
-              <label>Cédula (ej. V-12345678)</label>
-              <input type="text" id="cedula" placeholder="Introduce tu cédula" />
-            </div>
-
-            <div class="input-group">
-              <label>Contraseña</label>
-              <input type="password" id="password" placeholder="Introduce tu contraseña" />
-            </div>
-
-            <div class="input-group">
-              <label>Tipo de Cuenta</label>
-              <select id="tipo">
-                <option value="cliente">Cliente</option>
-                <option value="chofer">Chofer</option>
-              </select>
-            </div>
-
-            <div
-              id="success-msg"
-              style="color: green; text-align: center; font-family: 'Baloo Bhaijaan 2'; margin-bottom: 10px; display: none;"
-            >
-              ¡Registro exitoso! Redirigiendo al login...
-            </div>
-
-            <div
-              id="error-msg"
-              style="color: red; text-align: center; font-family: 'Baloo Bhaijaan 2'; margin-bottom: 10px; display: none;"
-            >
-            </div>
-
-            <p class="login-link">
-              ¿Ya tienes una cuenta? <a
-                href="/login"
-                style="text-decoration: none; font-weight: bold;"
-                >Inicia Sesión</a
-              >
-            </p>
-
-            <button type="button" id="register-btn" class="btn-sumate"
-              >¡Súmate al Plan!</button
-            >
-          </form>
-        </div>
+  <main>
+    <div class="contenedor-registro">
+      <div class="texto-hero">
+        <h1 class="titulo-hackea">
+          HACKEA EL <br />
+          SEMESTRE. <br />
+          PAGA EN SEGUNDOS!
+        </h1>
+        <p class="subtitulo-cero">CERO ESTRES</p>
       </div>
 
-      <!-- Usando rutas relativas a public/assets/landing/vectors suponiendo que el usuario las pondra ahi o ya estan -->
-      <img
-        src="/assets/landing/vectors/manodosdedos.svg"
-        class="ilustracion-libre"
-        alt="Mano"
-      />
-      <img
-        src="/assets/landing/vectors/vectormoneda.svg"
-        class="ilustracion-fondo"
-        alt="Monedas Fondo"
-      />
-      <img
-        src="/assets/landing/vectors/vectormoneda.svg"
-        class="ilustracion-libre espejo"
-        alt="Mano Espejo"
-      />
+      <div class="card-registro registro-page">
+        <h2>CREAR CUENTA</h2>
 
-      <script>
-        import { authService } from "../services/api.js";
+        <form class="form-neubrutalist" id="register-form">
+          <div class="input-group">
+            <label>Nombre</label>
+            <input type="text" id="nombre" placeholder="Escribe tu nombre" />
+          </div>
 
-        const btn = document.getElementById("register-btn");
-        const nombreInput = document.getElementById("nombre");
-        const emailInput = document.getElementById("email");
-        const cedulaInput = document.getElementById("cedula");
-        const passInput = document.getElementById("password");
-        const tipoSelect = document.getElementById("tipo");
-        const successMsg = document.getElementById("success-msg");
-        const errorMsg = document.getElementById("error-msg");
-        const form = document.getElementById("register-form");
+          <div class="input-group">
+            <label>Correo Electrónico</label>
+            <input
+              type="email"
+              id="email"
+              placeholder="Introduce tu correo electronico"
+            />
+          </div>
 
-        const handleRegistro = async () => {
-          const originalText = btn.innerText;
-          btn.disabled = true;
-          btn.innerText = "Registrando...";
-          btn.style.opacity = "0.7";
+          <div class="input-group">
+            <label>Cédula (ej. V-12345678)</label>
+            <input type="text" id="cedula" placeholder="Introduce tu cédula" />
+          </div>
 
-          if (successMsg) successMsg.style.display = "none";
+          <div class="input-group">
+            <label>Contraseña</label>
+            <input
+              type="password"
+              id="password"
+              placeholder="Introduce tu contraseña"
+            />
+          </div>
+
+          <div class="input-group">
+            <label>Tipo de Cuenta</label>
+            <select id="tipo">
+              <option value="cliente">Cliente</option>
+              <option value="chofer">Chofer</option>
+            </select>
+          </div>
+
+          <div
+            id="success-msg"
+            style="color: green; text-align: center; font-family: 'Baloo Bhaijaan 2'; margin-bottom: 10px; display: none;"
+          >
+            ¡Registro exitoso! Redirigiendo al login...
+          </div>
+
+          <div
+            id="error-msg"
+            style="color: red; text-align: center; font-family: 'Baloo Bhaijaan 2'; margin-bottom: 10px; display: none;"
+          >
+          </div>
+
+          <p class="login-link">
+            ¿Ya tienes una cuenta? <a
+              href="/login"
+              style="text-decoration: none; font-weight: bold;">Inicia Sesión</a
+            >
+          </p>
+
+          <button type="button" id="register-btn" class="btn-sumate"
+            >¡Súmate al Plan!</button
+          >
+        </form>
+      </div>
+    </div>
+
+    <!-- Usando rutas relativas a public/assets/landing/vectors suponiendo que el usuario las pondra ahi o ya estan -->
+    <img
+      src="/assets/landing/vectors/manodosdedos.svg"
+      class="ilustracion-libre"
+      alt="Mano"
+    />
+    <img
+      src="/assets/landing/vectors/vectormoneda.svg"
+      class="ilustracion-fondo"
+      alt="Monedas Fondo"
+    />
+    <img
+      src="/assets/landing/vectors/vectormoneda.svg"
+      class="ilustracion-libre espejo"
+      alt="Mano Espejo"
+    />
+
+    <script>
+      import { authService } from "../services/api.js";
+
+      const successMsg = document.getElementById("success-msg");
+      const errorMsg = document.getElementById("error-msg");
+      const form = document.getElementById("register-form");
+      const btn = document.getElementById(
+        "register-btn",
+      ) as HTMLButtonElement | null;
+      const nombreInput = document.getElementById(
+        "nombre",
+      ) as HTMLInputElement | null;
+      const emailInput = document.getElementById(
+        "email",
+      ) as HTMLInputElement | null;
+      const cedulaInput = document.getElementById(
+        "cedula",
+      ) as HTMLInputElement | null;
+      const passInput = document.getElementById(
+        "password",
+      ) as HTMLInputElement | null;
+      const tipoSelect = document.getElementById(
+        "tipo",
+      ) as HTMLSelectElement | null;
+
+      const handleRegistro = async () => {
+        if (!btn) return;
+        const originalText = btn.innerText;
+        btn.disabled = true;
+        btn.innerText = "Registrando...";
+        btn.style.opacity = "0.7";
+
+        if (successMsg) successMsg.style.display = "none";
+        if (errorMsg) {
+          errorMsg.style.display = "none";
+          errorMsg.innerText = "";
+        }
+
+        const nombre = nombreInput?.value;
+        const email = emailInput?.value;
+        const cedula = cedulaInput?.value;
+        const password = passInput?.value;
+        const tipo = tipoSelect?.value || "cliente";
+
+        if (!nombre || !email || !cedula || !password) {
           if (errorMsg) {
-            errorMsg.style.display = "none";
-            errorMsg.innerText = "";
+            errorMsg.innerText = "Por favor completa todos los campos";
+            errorMsg.style.display = "block";
+          }
+          btn.disabled = false;
+          btn.innerText = originalText;
+          btn.style.opacity = "1";
+          return;
+        }
+
+        try {
+          console.log("Registrando usuario:", { nombre, email, cedula, tipo });
+          await authService.register({ nombre, email, password, cedula, tipo });
+          console.log("Registro exitoso");
+
+          btn.innerText = "¡Éxito!";
+
+          if (successMsg) {
+            successMsg.innerText =
+              "¡Registro exitoso! Redirigiendo al login...";
+            successMsg.style.display = "block";
           }
 
-          const nombre = nombreInput?.value;
-          const email = emailInput?.value;
-          const cedula = cedulaInput?.value;
-          const password = passInput?.value;
-          const tipo = tipoSelect?.value || "cliente";
-
-          if (!nombre || !email || !cedula || !password) {
-            if (errorMsg) {
-              errorMsg.innerText = "Por favor completa todos los campos";
-              errorMsg.style.display = "block";
-            }
-            btn.disabled = false;
-            btn.innerText = originalText;
-            btn.style.opacity = "1";
-            return;
+          setTimeout(() => {
+            window.location.href = "/login";
+          }, 1500);
+        } catch (error: any) {
+          console.error(error);
+          if (errorMsg) {
+            errorMsg.innerText =
+              error.message || "Error al conectar con el servidor";
+            errorMsg.style.display = "block";
           }
 
-          try {
-            console.log("Registrando usuario:", { nombre, email, cedula, tipo });
-            await authService.register({ nombre, email, password, cedula, tipo });
-            console.log("Registro exitoso");
+          btn.disabled = false;
+          btn.innerText = originalText;
+          btn.style.opacity = "1";
+        }
+      };
 
-            btn.innerText = "¡Éxito!";
-            
-            if (successMsg) {
-              successMsg.innerText = "¡Registro exitoso! Redirigiendo al login...";
-              successMsg.style.display = "block";
-            }
-
-            setTimeout(() => {
-              window.location.href = "/login";
-            }, 1500);
-
-          } catch (error) {
-            console.error(error);
-            if (errorMsg) {
-              errorMsg.innerText =
-                error.message || "Error al conectar con el servidor";
-              errorMsg.style.display = "block";
-            }
-
-            btn.disabled = false;
-            btn.innerText = originalText;
-            btn.style.opacity = "1";
+      if (btn) btn.addEventListener("click", handleRegistro);
+      if (form)
+        form.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            handleRegistro();
           }
-        };
-
-        if (btn) btn.addEventListener("click", handleRegistro);
-        if (form)
-          form.addEventListener("keydown", (e) => {
-            if (e.key === "Enter") {
-              e.preventDefault();
-              handleRegistro();
-            }
-          });
-      </script>
-    </main>
-  </body>
-</html>
+        });
+    </script>
+  </main>
+</LandingLayout>

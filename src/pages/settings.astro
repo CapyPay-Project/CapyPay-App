@@ -1,12 +1,13 @@
 ---
 import MainLayout from "../layouts/MainLayout.astro";
+import { Card, Button, Input } from "../components/ui";
 ---
 
 <MainLayout title="Configuración | CapyPay">
   <div class="flex flex-col gap-6 h-full p-4 lg:p-0">
     <!-- Header -->
-    <div
-      class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-brand-black p-6 rounded-3xl border border-white/10 shadow-lg relative overflow-hidden group"
+    <Card
+      class="flex flex-col md:flex-row justify-between items-start md:items-center p-6 relative overflow-hidden group"
     >
       <div
         class="absolute -top-24 -right-24 w-48 h-48 bg-brand-lime/10 rounded-full blur-3xl group-hover:bg-brand-lime/20 transition-all duration-700"
@@ -19,16 +20,14 @@ import MainLayout from "../layouts/MainLayout.astro";
           Administra tus preferencias personales y de la cuenta.
         </p>
       </div>
-    </div>
+    </Card>
 
     <!-- Settings Content -->
     <div
       class="grid grid-cols-1 lg:grid-cols-2 gap-6 flex-1 overflow-y-auto custom-scrollbar"
     >
       <!-- Profile Settings -->
-      <section
-        class="bg-brand-black border border-white/5 rounded-3xl p-6 h-fit"
-      >
+      <Card class="h-fit">
         <h2 class="text-xl font-bold text-white mb-6 flex items-center gap-2">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -51,46 +50,37 @@ import MainLayout from "../layouts/MainLayout.astro";
             <label class="block text-slate-400 text-sm mb-2"
               >Nombre de Usuario</label
             >
-            <input
-              id="profile-name"
-              type="text"
-              class="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-brand-lime/50 transition-colors"
-            />
+            <Input id="profile-name" type="text" />
           </div>
           <div>
             <label class="block text-slate-400 text-sm mb-2"
               >Correo Electrónico</label
             >
-            <input
-              id="profile-email"
-              type="email"
-              class="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-brand-lime/50 transition-colors"
-            />
+            <Input id="profile-email" type="email" />
           </div>
           <div>
             <label class="block text-slate-400 text-sm mb-2">Cédula</label>
-            <input
+            <Input
               id="profile-cedula"
               type="text"
               readonly
-              class="w-full bg-black/30 border border-white/5 rounded-xl px-4 py-3 text-slate-500 cursor-not-allowed focus:outline-none"
+              class="text-slate-500 cursor-not-allowed"
             />
           </div>
 
-          <button
+          <Button
             id="btn-save-profile"
             type="button"
-            class="mt-2 bg-brand-lime text-black font-bold py-3 px-6 rounded-xl hover:bg-[#ccf044] transition-colors w-full sm:w-auto flex items-center justify-center gap-2"
+            variant="primary"
+            class="w-full sm:w-auto mt-2"
           >
             Guardar Cambios
-          </button>
+          </Button>
         </form>
-      </section>
+      </Card>
 
       <!-- Security Settings -->
-      <section
-        class="bg-brand-black border border-white/5 rounded-3xl p-6 h-fit"
-      >
+      <Card class="h-fit">
         <h2 class="text-xl font-bold text-white mb-6 flex items-center gap-2">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -119,21 +109,23 @@ import MainLayout from "../layouts/MainLayout.astro";
             </p>
 
             <div class="flex gap-2 mb-4">
-              <input
+              <Input
                 type="password"
                 id="pin-input"
                 maxlength="6"
                 placeholder="0000"
-                class="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-white text-center tracking-[0.5em] font-bold focus:outline-none focus:border-brand-lime/50 transition-colors placeholder:tracking-normal placeholder:font-normal"
+                class="text-center tracking-[0.5em] font-bold placeholder:tracking-normal placeholder:font-normal"
               />
             </div>
 
-            <button
+            <Button
               id="btn-save-pin"
-              class="w-full bg-white/10 hover:bg-white/20 text-brand-lime font-bold py-2 rounded-lg text-sm transition-colors border border-brand-lime/20 hover:border-brand-lime/50"
+              variant="secondary"
+              class="w-full text-brand-lime border-brand-lime/20 hover:border-brand-lime/50"
+              size="sm"
             >
               Actualizar PIN
-            </button>
+            </Button>
           </div>
 
           <div
@@ -145,7 +137,7 @@ import MainLayout from "../layouts/MainLayout.astro";
             <p class="text-slate-400 text-xs">Próximamente disponible.</p>
           </div>
         </div>
-      </section>
+      </Card>
     </div>
   </div>
 </MainLayout>

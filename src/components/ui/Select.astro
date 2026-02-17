@@ -1,0 +1,195 @@
+---
+interface Option {
+  value: string;
+  label: string;
+  icon?: string;
+}
+
+interface Props {
+  options?: Option[];
+  name?: string;
+  id?: string;
+  placeholder?: string;
+  value?: string;
+  class?: string;
+}
+
+const {
+  options = [],
+  name,
+  id,
+  placeholder = "Selecciona una opción...",
+  value = "",
+  class: className = "",
+} = Astro.props;
+
+// Encontrar la etiqueta inicial si hay un valor predeterminado
+const initialLabel =
+  options.find((opt: Option) => opt.value === value)?.label || placeholder;
+---
+
+<div class={`relative w-full ${className}`} id={`select-container-${id}`}>
+  <input type="hidden" name={name} id={id} value={value} />
+
+  <button
+    type="button"
+    class="w-full bg-black/30 border border-white/10 text-white rounded-xl py-3 px-4 flex justify-between items-center focus:outline-none focus:border-brand-lime transition-colors"
+    aria-haspopup="listbox"
+    aria-expanded="false"
+    id={`trigger-${id}`}
+  >
+    <span class="text-sm text-slate-400 truncate" id={`label-${id}`}>
+      {initialLabel}
+    </span>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="h-5 w-5 text-slate-400 transition-transform duration-200"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M19 9l-7 7-7-7"></path>
+    </svg>
+  </button>
+
+  <ul
+    class="absolute top-full left-0 w-full mt-1 bg-neutral-900 border border-white/10 rounded-xl overflow-hidden shadow-xl z-50 hidden opacity-0 translate-y-2 transition-all duration-200 max-h-60 overflow-y-auto"
+    role="listbox"
+    id={`dropdown-${id}`}
+  >
+    {
+      options.map((option: Option) => (
+        <li role="option" aria-selected={option.value === value}>
+          <button
+            type="button"
+            class="w-full text-left px-4 py-3 hover:bg-white/5 transition-colors text-sm text-slate-300 flex items-center gap-2"
+            data-value={option.value}
+            data-label={option.label}
+          >
+            {option.icon && <span set:html={option.icon} class="w-5 h-5" />}
+            {option.label}
+          </button>
+        </li>
+      ))
+    }
+  </ul>
+</div>
+
+<script define:vars={{ id }}>
+  const container = document.getElementById(`select-container-${id}`);
+  const trigger = document.getElementById(`trigger-${id}`);
+  const dropdown = document.getElementById(`dropdown-${id}`);
+  const input = document.getElementById(id);
+  const labelSpan = document.getElementById(`label-${id}`);
+  const arrow = trigger.querySelector("svg");
+  const options = dropdown.querySelectorAll("button");
+
+  let isOpen = false;
+
+  function toggleDropdown() {
+    isOpen = !isOpen;
+    trigger.setAttribute("aria-expanded", isOpen);
+    if (isOpen) {
+      dropdown.classList.remove("hidden");
+      // Pequeno timeout para permitir que la clase hidden se quite antes de animar opacidad
+      requestAnimationFrame(() => {
+        dropdown.classList.remove("opacity-0", "translate-y-2");
+        arrow.classList.add("rotate-180");
+      });
+    } else {
+      dropdown.classList.add("opacity-0", "translate-y-2");
+      arrow.classList.remove("rotate-180");
+      setTimeout(() => {
+        dropdown.classList.add("hidden");
+      }, 200); // Esperar a que termine la transición
+    }
+  }
+
+  function selectOption(value, label) {
+    input.value = value;
+    labelSpan.textContent = label;
+    labelSpan.classList.remove("text-slate-400"); // Ya no es placeholder
+    labelSpan.classList.add("text-white");
+
+    // Despachar evento 'change'
+    const event = new Event("change", { bubbles: true });
+    input.dispatchEvent(event);
+
+    toggleDropdown();
+  }
+
+  // Event Listeners
+  trigger.addEventListener("click", (e) => {
+    e.stopPropagation(); // Evitar que el clic en trigger cierre inmediatamente
+    toggleDropdown();
+  });
+
+  options.forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      selectOption(btn.dataset.value, btn.dataset.label);
+    });
+  });
+
+  // Cerrar al hacer clic fuera
+  document.addEventListener("click", (e) => {
+    if (isOpen && !container.contains(e.target)) {
+      toggleDropdown();
+    }
+  });
+
+  // Escuchar cambios externos en el input hidden (opcional, por si se resetea el form)
+  /* ... existing observer code (commented out) ... */
+
+  // --- API PÚBLICA PARA ACTUALIZACIÓN DINÁMICA ---
+  container.setOptions = (newOptions) => {
+    // Limpiar lista actual
+    dropdown.innerHTML = "";
+
+    if (!newOptions || newOptions.length === 0) {
+      const emptyLi = document.createElement("li");
+      emptyLi.className = "p-4 text-center text-xs text-slate-500";
+      emptyLi.textContent = "No hay opciones disponibles";
+      dropdown.appendChild(emptyLi);
+      return;
+    }
+
+    newOptions.forEach((opt) => {
+      const li = document.createElement("li");
+      li.setAttribute("role", "option");
+      li.setAttribute("aria-selected", opt.value === input.value);
+
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className =
+        "w-full text-left px-4 py-3 hover:bg-white/5 transition-colors text-sm text-slate-300 flex items-center gap-2 w-full block";
+      btn.dataset.value = opt.value;
+      btn.dataset.label = opt.label;
+
+      if (opt.icon) {
+        const iconSpan = document.createElement("span");
+        iconSpan.className = "w-5 h-5 flex-shrink-0";
+        iconSpan.innerHTML = opt.icon;
+        btn.appendChild(iconSpan);
+      }
+
+      const textSpan = document.createElement("span");
+      textSpan.textContent = opt.label;
+      btn.appendChild(textSpan);
+
+      // Re-attach listener
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        selectOption(opt.value, opt.label);
+        toggleDropdown(); // Cerrar tras seleccionar
+      });
+
+      li.appendChild(btn);
+      dropdown.appendChild(li);
+    });
+  };
+</script>

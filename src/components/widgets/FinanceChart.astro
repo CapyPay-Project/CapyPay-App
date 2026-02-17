@@ -1,9 +1,9 @@
 ---
-
+import Card from "../ui/Card.astro";
 ---
 
-<div
-  class="bg-brand-black rounded-3xl p-4 sm:p-6 border border-white/10 shadow-none w-full h-full flex flex-col isolate relative overflow-hidden group"
+<Card
+  class="p-4 sm:p-6 shadow-none w-full h-full flex flex-col isolate relative overflow-hidden group"
 >
   <!-- Sección de Encabezado -->
   <div
@@ -120,10 +120,10 @@
       </div>
     </div>
   </div>
-</div>
+</Card>
 <script>
   // @ts-nocheck
-  import { authService, userService } from "../services/api.js";
+  import { authService, userService } from "../../services/api.js";
 
   const totalIncomeEl = document.getElementById("total-income-display");
   const totalExpenseEl = document.getElementById("total-expense-display");

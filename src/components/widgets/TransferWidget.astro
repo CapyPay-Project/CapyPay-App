@@ -1,10 +1,10 @@
 ---
-
+import Card from "../ui/Card.astro";
+import Button from "../ui/Button.astro";
+import Select from "../ui/Select.astro";
 ---
 
-<div
-  class="bg-brand-black rounded-3xl p-6 border border-white/10 shadow-none flex flex-col h-full relative overflow-hidden group"
->
+<Card class="flex flex-col h-full relative overflow-hidden group shadow-none">
   <!-- Encabezado -->
   <div class="flex justify-between items-start mb-4 sm:mb-6 z-10">
     <div>
@@ -67,47 +67,13 @@
       <label class="text-[10px] sm:text-xs text-slate-400 font-medium ml-1"
         >Destinatario</label
       >
-      <!-- Select Personalizado -->
-      <div class="relative">
-        <button
-          id="custom-select-trigger"
-          class="w-full bg-black/30 text-white text-xs sm:text-sm rounded-xl border border-white/10 py-2.5 sm:py-3 pl-4 sm:pl-4 pr-4 flex justify-between items-center hover:border-brand-lime/50 focus:outline-none focus:border-brand-lime/50 transition-all"
-          type="button"
-        >
-          <span
-            class="text-slate-400 text-xs sm:text-sm"
-            id="selected-contact-text">Selecciona un contacto...</span
-          >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-4 w-4 text-slate-400 transition-transform duration-200"
-            id="select-arrow"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M19 9l-7 7-7-7"></path>
-          </svg>
-        </button>
-
-        <!-- Opciones del Dropdown -->
-        <div
-          id="custom-select-options"
-          class="absolute top-full left-0 w-full mt-2 bg-[#1a1b2e] border border-white/10 rounded-xl overflow-hidden shadow-2xl z-50 hidden opacity-0 translate-y-2 transition-all duration-200 max-h-48 overflow-y-auto custom-scrollbar"
-        >
-          <!-- Se llenará dinámicamente con JS -->
-          <div class="p-4 text-center text-xs text-slate-500">
-            Cargando contactos...
-          </div>
-        </div>
-
-        <!-- Input oculto para almacenar el valor -->
-        <input type="hidden" name="contact" id="contact-input" />
-      </div>
+      <!-- Select Refactorizado -->
+      <Select
+        id="contact-select"
+        name="contact"
+        placeholder="Selecciona un contacto..."
+        options={[]}
+      />
     </div>
 
     <div class="space-y-1">
@@ -190,9 +156,11 @@
   </div>
 
   <!-- Botón de Enviar -->
-  <button
+  <Button
     id="btn-send-transfer"
-    class="w-full mt-4 sm:mt-6 bg-brand-lime hover:bg-[#c1e63e] text-black font-bold py-2.5 sm:py-3 rounded-xl transition-all shadow-[0_0_15px_rgba(215,253,73,0.3)] hover:shadow-[0_0_25px_rgba(215,253,73,0.5)] active:scale-95 flex justify-center items-center gap-2 group/btn z-10 text-base sm:text-lg lg:text-xl"
+    variant="primary"
+    size="md"
+    class="w-full mt-4 sm:mt-6 z-10 text-base sm:text-lg lg:text-xl group/btn"
   >
     <span>Enviar Ahora</span>
     <svg
@@ -208,8 +176,8 @@
         stroke-width="2"
         d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
     </svg>
-  </button>
-</div>
+  </Button>
+</Card>
 
 <script>
   // @ts-nocheck
@@ -217,34 +185,32 @@
     authService,
     transactionService,
     userService,
-  } from "../services/api.js";
+  } from "../../services/api.js";
 
   const buttons = document.querySelectorAll("#transferTabs button");
   const tabContact = document.getElementById("tabContact");
   const tabExternal = document.getElementById("tabExternal");
 
-  // Lógica del Select Personalizado (Dropdown)
-  const selectTrigger = document.getElementById("custom-select-trigger");
-  const selectOptions = document.getElementById("custom-select-options");
-  const selectArrow = document.getElementById("select-arrow");
-  const selectedText = document.getElementById("selected-contact-text");
-  const contactInput = document.getElementById("contact-input");
-  const wrapper = document.getElementById("contact-select-wrapper");
+  // Referencias al nuevo Select
+  // El ID del contenedor es 'select-container-{id}' donde id='contact-select'
+  const selectContainer = document.getElementById(
+    "select-container-contact-select",
+  );
+  const contactInput = document.getElementById("contact-select");
 
   // --- CARGAR CONTACTOS REALES ---
   async function loadContacts() {
-    if (!selectOptions) return;
+    if (!selectContainer) return;
+
     try {
+      // Esperar un momento a que el script del componente Select inicialice la función setOptions si es necesario
+      // Pero si loadContacts es async y se llama directo, podría ejecutarse antes de que Select.astro corra su script?
+      // Astro scripts se ejecutan en orden de aparición diferida o como móduloe.
+      // Mejor verificar si existe setOptions.
+
       const result = await userService.getContacts();
       const contactos = result.contactos || [];
 
-      if (!contactos || contactos.length === 0) {
-        selectOptions.innerHTML =
-          '<div class="p-4 text-center text-xs text-slate-500">No tienes contactos guardados.</div>';
-        return;
-      }
-
-      let html = "";
       const colors = [
         {
           bg: "bg-purple-500/20",
@@ -268,126 +234,53 @@
         },
       ];
 
+      const options = [];
+
       contactos.forEach((c, index) => {
         const style = colors[index % colors.length];
-        html += `
-            <div
-                class="p-2 cursor-pointer hover:bg-white/5 flex items-center gap-3 transition-colors contact-option"
-                data-value="${c.cedula}" 
-                data-label="${c.nombre}"
-                data-image="${c.iniciales}"
-                data-style-bg="${style.bg}"
-                data-style-text="${style.text}"
-                data-style-border="${style.border}"
-            >
-                <div class="w-8 h-8 rounded-full ${style.bg} ${style.text} flex items-center justify-center text-xs font-bold border ${style.border}">
-                ${c.iniciales}
-                </div>
-                <div class="flex flex-col">
-                <span class="text-white text-sm font-medium">${c.nombre}</span>
-                <span class="text-[10px] text-slate-400">${c.cedula}</span>
-                </div>
+        const iconHtml = `
+            <div class="w-6 h-6 rounded-full ${style.bg} ${style.text} flex items-center justify-center text-[10px] font-bold border ${style.border}">
+              ${c.iniciales}
             </div>
-            `;
+        `;
+        options.push({
+          value: c.cedula,
+          label: c.nombre,
+          icon: iconHtml,
+        });
       });
 
-      selectOptions.innerHTML = html;
-      bindContactOptions(); // Re-asignar eventos clicks
+      if (selectContainer.setOptions) {
+        selectContainer.setOptions(options);
+      } else {
+        // Fallback or retry if method not yet attached (though usually fine in modules)
+        console.warn("Select component not ready yet.");
+      }
 
       // --- AUTO-SELECT FROM URL ---
       const urlParams = new URLSearchParams(window.location.search);
       const targetCedula = urlParams.get("transferTo");
 
       if (targetCedula) {
-        // Buscar la opción con esa cédula
-        const targetOption = document.querySelector(
-          `.contact-option[data-value="${targetCedula}"]`,
-        );
-        if (targetOption) {
-          targetOption.click(); // Simular click para seleccionar
-          document.getElementById("contact-amount")?.focus();
-        }
+        // Buscar el botón dentro del dropdown que tenga este valor y hacer click
+        setTimeout(() => {
+          const targetBtn = selectContainer.querySelector(
+            `button[data-value="${targetCedula}"]`,
+          );
+          if (targetBtn) targetBtn.click();
+        }, 100);
       }
     } catch (e) {
       console.error(e);
-      selectOptions.innerHTML =
-        '<div class="p-4 text-center text-xs text-red-500">Error cargando contactos.</div>';
     }
   }
 
   // Llamar al inicio
-  loadContacts();
-
-  function closeSelect() {
-    if (!selectOptions) return;
-    selectOptions.classList.add("opacity-0", "translate-y-2");
-    selectArrow?.classList.remove("rotate-180");
-    selectTrigger?.classList.remove("border-brand-lime");
-
-    setTimeout(() => {
-      selectOptions.classList.add("hidden");
-    }, 200);
-  }
-
-  // Función para bindear el click en las opciones dinámicas
-  function bindContactOptions() {
-    const newOptions = document.querySelectorAll(".contact-option");
-    newOptions.forEach((opt) => {
-      opt.addEventListener("click", () => {
-        const val = opt.getAttribute("data-value"); // Esto es la CEDULA
-        const label = opt.getAttribute("data-label");
-        const image = opt.getAttribute("data-image");
-
-        // Estilos guardados en data-attributes
-        const bgClass = opt.getAttribute("data-style-bg");
-        const textClass = opt.getAttribute("data-style-text");
-        const borderClass = opt.getAttribute("data-style-border");
-
-        if (val && label && selectedText && contactInput) {
-          // Actualizar el contenido del disparador
-          selectedText.innerHTML = `
-                <div class="flex items-center gap-2">
-                    <div class="w-5 h-5 rounded-full ${bgClass} ${textClass} ${borderClass} flex items-center justify-center text-[8px] font-bold border">
-                    ${image}
-                    </div>
-                    <span class="text-white font-medium">${label}</span>
-                </div>
-            `;
-
-          contactInput.value = val;
-          closeSelect();
-        }
-      });
-    });
-  }
-
-  if (selectTrigger && selectOptions && selectArrow) {
-    selectTrigger.addEventListener("click", () => {
-      // Alternar visibilidad
-      const isHidden = selectOptions.classList.contains("hidden");
-
-      if (isHidden) {
-        selectOptions.classList.remove("hidden");
-        // Pequeño retraso para permitir la transición CSS
-        setTimeout(() => {
-          selectOptions.classList.remove("opacity-0", "translate-y-2");
-        }, 10);
-        selectArrow.classList.add("rotate-180");
-        selectTrigger.classList.add("border-brand-lime");
-      } else {
-        closeSelect();
-      }
-    });
-
-    // Cerrar al hacer clic fuera del componente
-    document.addEventListener("click", (e) => {
-      if (wrapper && !wrapper.contains(e.target)) {
-        closeSelect();
-      }
-    });
-  }
+  // Pequeño delay para asegurar que el componente hijo se hidrató/ejecutó su script
+  setTimeout(loadContacts, 50);
 
   // Manejo de Pestañas (Tabs)
+
   buttons.forEach((btn) => {
     btn.addEventListener("click", () => {
       const target = btn.getAttribute("data-tab");

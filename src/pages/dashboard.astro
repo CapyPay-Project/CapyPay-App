@@ -1,12 +1,12 @@
 ---
 import CapyPay from "../layouts/MainLayout.astro";
-import BalanceCard from "../components/BalanceCard.astro";
-import HistoryCard from "../components/HistoryCard.astro";
-import QuickPay from "../components/QuickPay.astro";
-import FinanceChart from "../components/FinanceChart.astro";
-import TransferWidget from "../components/TransferWidget.astro";
-import ExchangeRateWidget from "../components/ExchangeRateWidget.astro";
-import NivelBadge from "../components/NivelBadge.astro";
+import { NivelBadge } from "../components/ui/index";
+import BalanceCard from "../components/widgets/BalanceCard.astro";
+import HistoryCard from "../components/widgets/HistoryCard.astro";
+import QuickPay from "../components/widgets/QuickPay.astro";
+import FinanceChart from "../components/widgets/FinanceChart.astro";
+import TransferWidget from "../components/widgets/TransferWidget.astro";
+import ExchangeRateWidget from "../components/widgets/ExchangeRateWidget.astro";
 ---
 
 <CapyPay title="Dashboard | CapyPay" showSidebar={true}>

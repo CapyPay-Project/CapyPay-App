@@ -1,0 +1,61 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+interface Props extends HTMLAttributes<"button"> {
+  href?: string;
+  variant?: "primary" | "secondary" | "ghost" | "icon";
+  size?: "sm" | "md" | "lg" | "icon";
+  class?: string;
+  disabled?: boolean;
+  type?: "button" | "submit" | "reset";
+}
+
+const {
+  href,
+  variant = "primary",
+  size = "md",
+  class: className = "",
+  disabled = false,
+  type = "button",
+  ...rest
+} = Astro.props;
+
+const Element = href ? "a" : "button";
+
+const baseStyles =
+  "inline-flex items-center justify-center font-bold rounded-xl transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none cursor-pointer border";
+
+const variants: Record<string, string> = {
+  primary:
+    "bg-brand-lime hover:bg-[#c1e63e] text-black shadow-[0_0_15px_rgba(215,253,73,0.3)] hover:shadow-[0_0_25px_rgba(215,253,73,0.5)] border-transparent",
+  secondary: "bg-transparent border-white/20 text-white hover:bg-white/10",
+  ghost: "bg-transparent border-transparent text-slate-400 hover:text-white",
+  icon: "rounded-full flex items-center justify-center border-transparent hover:bg-white/10 text-slate-400 hover:text-white transition-colors",
+};
+
+const sizes: Record<string, string> = {
+  sm: "text-xs py-1.5 px-3 gap-1",
+  md: "text-sm sm:text-base py-2.5 sm:py-3 px-4 gap-2",
+  lg: "text-base sm:text-lg py-3 sm:py-4 px-6 gap-3",
+  icon: "p-2 sm:p-2.5", // Special size for icon variant
+};
+
+// If variant is icon, force size to icon if no specific size is passed, or handle it in logic
+// Actually, user said 'icon' is a variant.
+// Let's adjust logic. typical buttons have x/y padding. icon buttons have equal padding.
+
+const sizeClasses = variant === "icon" ? sizes.icon : sizes[size];
+const variantClasses = variants[variant] || variants.primary;
+
+const finalClass = `${baseStyles} ${variantClasses} ${sizeClasses} ${className}`;
+---
+
+<Element
+  href={href}
+  type={!href ? type : undefined}
+  class={finalClass}
+  disabled={disabled}
+  {...rest}
+>
+  <slot />
+</Element>

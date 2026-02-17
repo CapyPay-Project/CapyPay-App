@@ -1,0 +1,51 @@
+---
+const {
+  type = "text",
+  placeholder = "",
+  name,
+  id,
+  value,
+  required = false,
+  disabled = false,
+  label,
+  class: className = "",
+  ...rest
+} = Astro.props;
+
+const hasIcon = Astro.slots.has("icon");
+---
+
+<div class={`w-full ${className}`}>
+  {
+    label && (
+      <label
+        for={id}
+        class="block text-sm font-medium text-slate-400 mb-1.5 ml-1"
+      >
+        {label}
+      </label>
+    )
+  }
+  <div class="relative">
+    {
+      hasIcon && (
+        <div class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
+          <slot name="icon" />
+        </div>
+      )
+    }
+    <input
+      type={type}
+      name={name}
+      id={id}
+      value={value}
+      placeholder={placeholder}
+      required={required}
+      disabled={disabled}
+      class={`w-full bg-black/30 border border-white/10 text-white placeholder-slate-500 rounded-xl py-3 px-4 focus:outline-none focus:border-brand-lime transition-colors ${
+        hasIcon ? "pl-10" : ""
+      }`}
+      {...rest}
+    />
+  </div>
+</div>

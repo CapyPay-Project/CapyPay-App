@@ -1,4 +1,6 @@
 ---
+import { Card } from "../ui/index";
+
 const { date, description } = Astro.props;
 let amount = Astro.props.amount;
 let isNegative = amount.toString().includes("-");
@@ -11,8 +13,8 @@ const iconColor = isNegative ? "text-purple-400" : "text-[#d7fd48]";
 const displayAmount = isNegative ? amount : `+${amount}`;
 ---
 
-<div
-  class="group flex items-center justify-between p-4 rounded-xl bg-neutral-900 border border-white/5 transition-all duration-300 cursor-pointer w-[calc(100%-8px)] mx-auto hover:bg-neutral-800 hover:border-[#d7fd48]/30 hover:scale-[1.01] overflow-hidden"
+<Card
+  class="group flex items-center justify-between p-4! rounded-xl! transition-all duration-300 cursor-pointer w-[calc(100%-8px)] mx-auto hover:bg-neutral-800 hover:border-[#d7fd48]/30 hover:scale-[1.01] overflow-hidden"
 >
   <div class="flex items-center gap-4 min-w-0">
     <div
@@ -62,4 +64,4 @@ const displayAmount = isNegative ? amount : `+${amount}`;
   <div class={`text-sm font-bold ${amountColor} whitespace-nowrap`}>
     {displayAmount}
   </div>
-</div>
+</Card>

@@ -1,7 +1,8 @@
 ---
 import MainLayout from "../layouts/MainLayout.astro";
-import NavBar from "../components/NavBar.astro";
-import ToastNotification from "../components/ToastNotification.astro";
+import NavBar from "../components/layout/NavBar.astro";
+import ToastNotification from "../components/ui/ToastNotification.astro";
+import { Card, Button } from "../components/ui";
 ---
 
 <MainLayout title="Notificaciones | CapyPay" showSidebar={true}>
@@ -9,17 +10,17 @@ import ToastNotification from "../components/ToastNotification.astro";
     class="flex flex-col gap-4 lg:gap-6 min-h-screen lg:h-full p-3 sm:p-4 lg:p-0 relative overflow-y-auto"
   >
     <!-- Header Page -->
-    <header
-      class="flex justify-between items-center gap-3 lg:gap-4 shrink-0"
-    >
+    <header class="flex justify-between items-center gap-3 lg:gap-4 shrink-0">
       <div class="flex items-center gap-3 lg:gap-4 min-w-0">
-        <a
+        <Button
           href="/dashboard"
-          class="w-9 h-9 lg:w-10 lg:h-10 rounded-full border border-white/10 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/5 transition-colors shrink-0"
+          variant="secondary"
+          size="icon"
+          class="shrink-0 text-slate-400 hover:text-white border-white/10"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            class="h-4 w-4 lg:h-5 lg:w-5"
+            class="h-5 w-5"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -28,10 +29,9 @@ import ToastNotification from "../components/ToastNotification.astro";
               stroke-linecap="round"
               stroke-linejoin="round"
               stroke-width="2"
-              d="M15 19l-7-7 7-7"
-            ></path>
+              d="M15 19l-7-7 7-7"></path>
           </svg>
-        </a>
+        </Button>
         <div class="min-w-0">
           <h1 class="text-xl sm:text-2xl lg:text-3xl font-bold text-white">
             Notificaciones
@@ -43,11 +43,13 @@ import ToastNotification from "../components/ToastNotification.astro";
       </div>
 
       <!-- Botón Limpiar -->
-      <button
+      <Button
         id="clear-notifications-btn"
-        class="flex items-center gap-2 px-4 py-2.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 rounded-xl transition-all border border-red-500/20 group disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
+        variant="ghost"
+        class="shrink-0 bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 border-red-500/20 group"
       >
         <svg
+          slot="icon-left"
           xmlns="http://www.w3.org/2000/svg"
           class="h-4 w-4 group-hover:rotate-180 transition-transform duration-300"
           fill="none"
@@ -61,196 +63,220 @@ import ToastNotification from "../components/ToastNotification.astro";
             d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
           ></path>
         </svg>
-        <span class="text-xs sm:text-sm font-medium hidden sm:inline">Limpiar</span>
-      </button>
+        <span class="text-xs sm:text-sm font-medium hidden sm:inline"
+          >Limpiar</span
+        >
+      </Button>
     </header>
- 
+
     <!-- Contador de no leídas -->
     <div
       id="unread-counter"
-      class="hidden bg-brand-lime/10 border border-brand-lime/30 text-brand-lime px-4 py-2.5 rounded-xl mb-4 flex items-center justify-between shadow-[0_0_10px_rgba(215,253,73,0.2)]"
+      class="flex bg-brand-lime/10 border border-brand-lime/30 text-brand-lime px-4 py-2.5 rounded-xl mb-4 items-center justify-between shadow-[0_0_10px_rgba(215,253,73,0.2)]"
+      style="display: none;"
     >
       <span class="text-sm font-medium flex items-center gap-2">
         <span class="w-2 h-2 rounded-full bg-brand-lime animate-pulse"></span>
         Tienes <span id="unread-count" class="font-bold text-base">0</span> sin leer
       </span>
-      <button
+      <Button
         id="mark-all-read-btn"
-        class="text-xs sm:text-xs font-semibold bg-brand-lime hover:bg-white text-black px-3 py-1 rounded-lg transition-colors"
+        variant="primary"
+        size="sm"
+        class="text-xs font-semibold hover:bg-white"
       >
         Marcar todas
-      </button>
+      </Button>
     </div>
- 
+
     <!-- Lista de Notificaciones -->
     <div
       id="notifications-container"
       class="space-y-3 pb-32 lg:pb-0 animate-fade-in-up"
     >
-    <!-- Estado de carga -->
-    <div class="bg-brand-black border border-white/10 rounded-3xl p-8 text-center animate-fade-in-up shadow-none isolate relative overflow-hidden">
-      <!-- Glow FX -->
-      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-brand-purple/10 rounded-full blur-[100px] pointer-events-none"></div>
-      
-      <div class="flex flex-col items-center gap-4 relative z-10">
+      <!-- Estado de carga -->
+      <Card
+        class="p-8 text-center animate-fade-in-up shadow-none isolate relative overflow-hidden"
+      >
+        <!-- Glow FX -->
         <div
-          class="w-16 h-16 rounded-full bg-brand-purple/10 border border-brand-purple/30 flex items-center justify-center animate-pulse shadow-[0_0_20px_rgba(131,98,232,0.2)]"
+          class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-brand-purple/10 rounded-full blur-[100px] pointer-events-none"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-8 w-8 text-brand-purple"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-            ></path>
-          </svg>
         </div>
-        <p class="text-slate-400 text-base font-medium">Cargando notificaciones...</p>
-      </div>
+
+        <div class="flex flex-col items-center gap-4 relative z-10">
+          <div
+            class="w-16 h-16 rounded-full bg-brand-purple/10 border border-brand-purple/30 flex items-center justify-center animate-pulse shadow-[0_0_20px_rgba(131,98,232,0.2)]"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-8 w-8 text-brand-purple"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+              ></path>
+            </svg>
+          </div>
+          <p class="text-slate-400 text-base font-medium">
+            Cargando notificaciones...
+          </p>
+        </div>
+      </Card>
+
+      <!-- Spacer para bottom nav en mobile -->
+      <div class="lg:hidden h-20 w-full shrink-0"></div>
     </div>
-
-    <!-- Spacer para bottom nav en mobile -->
-    <div class="lg:hidden h-20 w-full shrink-0"></div>
   </div>
-</MainLayout>
 
-<style>
-  @keyframes fadeInDown {
-    from {
+  <style>
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-fade-in-down {
+      animation: fadeInDown 0.5s ease-out forwards;
+    }
+
+    .animate-fade-in-up {
+      animation: fadeInUp 0.5s ease-out forwards;
       opacity: 0;
-      transform: translateY(-20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .animate-fade-in-down {
-    animation: fadeInDown 0.5s ease-out forwards;
-  }
-
-  .animate-fade-in-up {
-    animation: fadeInUp 0.5s ease-out forwards;
-    opacity: 0;
-    animation-delay: 0.1s;
-  }
-
-  /* Estilo para notificación no leída */
-  .notification-unread {
-    border-left: 3px solid #D7FD49;
-    background: linear-gradient(to right, rgba(215, 253, 73, 0.08), transparent);
-  }
- 
-  .notification-read {
-    border-left: 3px solid transparent;
-    opacity: 0.6;
-  }
-
-  /* Asegurar que el contenido no desborde */
-  .notification-card {
-    overflow: hidden;
-  }
-
-  /* Mejorar efecto glow en hover */
-  .notification-card:hover::before {
-    content: '';
-    position: absolute;
-    inset: -2px;
-    border-radius: 1.5rem;
-    background: linear-gradient(45deg, rgba(215, 253, 73, 0.2), rgba(215, 253, 73, 0.05), rgba(215, 253, 73, 0.2));
-    filter: blur(15px);
-    z-index: -1;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-
-  .notification-card:hover::after {
-    content: '';
-    position: absolute;
-    inset: -1px;
-    border-radius: 1.5rem;
-    background: linear-gradient(45deg, rgba(215, 253, 73, 0.3), rgba(215, 253, 73, 0.1), rgba(215, 253, 73, 0.3));
-    filter: blur(20px);
-    z-index: -1;
-    opacity: 1;
-    transition: opacity 0.3s ease;
-  }
-
-</style>
-
-<script>
-  // @ts-nocheck
-  import { authService, notificationService } from "../services/api.js";
-
-  let notifications = [];
-
-  async function loadNotifications() {
-    const container = document.getElementById("notifications-container");
-    const user = authService.getCurrentUser();
-
-    if (!user || (!user.id && !user.usuarioId && !user._id)) {
-      container.innerHTML =
-        '<div class="text-center py-20"><p class="text-red-500 text-sm">Error: No hay sesión activa</p></div>';
-      return;
+      animation-delay: 0.1s;
     }
 
-    try {
-      const userId = user.id || user.usuarioId || user._id;
-      const { notifications: notifs } = await notificationService.getNotifications(
-        userId,
+    /* Estilo para notificación no leída */
+    .notification-unread {
+      border-left: 3px solid #d7fd49;
+      background: linear-gradient(
+        to right,
+        rgba(215, 253, 73, 0.08),
+        transparent
       );
-
-      notifications = notifs || [];
-      renderNotifications();
-    } catch (e) {
-      console.error("Error cargando notificaciones:", e);
-      container.innerHTML =
-        '<div class="text-center py-20"><p class="text-red-500 text-sm">Error al cargar notificaciones</p></div>';
-    }
-  }
-
-  function renderNotifications() {
-    const container = document.getElementById("notifications-container");
-    const unreadCounter = document.getElementById("unread-counter");
-    const unreadCountEl = document.getElementById("unread-count");
-    const clearBtn = document.getElementById("clear-notifications-btn");
-
-    // Calcular no leídas
-    const unreadCount = notifications.filter((n) => !n.is_read).length;
-
-    // Mostrar/ocultar contador de no leídas
-    if (unreadCount > 0) {
-      unreadCounter.classList.remove("hidden");
-      unreadCountEl.innerText = unreadCount;
-    } else {
-      unreadCounter.classList.add("hidden");
     }
 
-    // Habilitar/deshabilitar botón limpiar
-    if (clearBtn) {
-      clearBtn.disabled = notifications.length === 0;
+    .notification-read {
+      border-left: 3px solid transparent;
+      opacity: 0.6;
     }
 
-    // Bandeja vacía
-    if (notifications.length === 0) {
-      container.innerHTML = `
+    /* Asegurar que el contenido no desborde */
+    .notification-card {
+      overflow: hidden;
+    }
+
+    /* Mejorar efecto glow en hover */
+    .notification-card:hover::before {
+      content: "";
+      position: absolute;
+      inset: -2px;
+      border-radius: 1.5rem;
+      background: linear-gradient(
+        45deg,
+        rgba(215, 253, 73, 0.2),
+        rgba(215, 253, 73, 0.05),
+        rgba(215, 253, 73, 0.2)
+      );
+      filter: blur(15px);
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .notification-card:hover::after {
+      content: "";
+      position: absolute;
+      inset: -1px;
+      border-radius: 1.5rem;
+      background: linear-gradient(
+        45deg,
+        rgba(215, 253, 73, 0.3),
+        rgba(215, 253, 73, 0.1),
+        rgba(215, 253, 73, 0.3)
+      );
+      filter: blur(20px);
+      z-index: -1;
+      opacity: 1;
+      transition: opacity 0.3s ease;
+    }
+  </style>
+
+  <script>
+    // @ts-nocheck
+    import { authService, notificationService } from "../services/api.js";
+
+    let notifications = [];
+
+    async function loadNotifications() {
+      const container = document.getElementById("notifications-container");
+      const user = authService.getCurrentUser();
+
+      if (!user || (!user.id && !user.usuarioId && !user._id)) {
+        container.innerHTML =
+          '<div class="text-center py-20"><p class="text-red-500 text-sm">Error: No hay sesión activa</p></div>';
+        return;
+      }
+
+      try {
+        const userId = user.id || user.usuarioId || user._id;
+        const { notifications: notifs } =
+          await notificationService.getNotifications(userId);
+
+        notifications = notifs || [];
+        renderNotifications();
+      } catch (e) {
+        console.error("Error cargando notificaciones:", e);
+        container.innerHTML =
+          '<div class="text-center py-20"><p class="text-red-500 text-sm">Error al cargar notificaciones</p></div>';
+      }
+    }
+
+    function renderNotifications() {
+      const container = document.getElementById("notifications-container");
+      const unreadCounter = document.getElementById("unread-counter");
+      const unreadCountEl = document.getElementById("unread-count");
+      const clearBtn = document.getElementById("clear-notifications-btn");
+
+      // Calcular no leídas
+      const unreadCount = notifications.filter((n) => !n.is_read).length;
+
+      // Mostrar/ocultar contador de no leídas
+      if (unreadCount > 0) {
+        unreadCounter.style.display = "flex";
+        unreadCountEl.innerText = unreadCount;
+      } else {
+        unreadCounter.style.display = "none";
+      }
+
+      // Habilitar/deshabilitar botón limpiar
+      if (clearBtn) {
+        clearBtn.disabled = notifications.length === 0;
+      }
+
+      // Bandeja vacía
+      if (notifications.length === 0) {
+        container.innerHTML = `
         <div class="bg-brand-black border border-white/10 rounded-3xl p-8 text-center animate-fade-in-up shadow-none isolate relative overflow-hidden">
           <!-- Glow FX -->
           <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-brand-purple/10 rounded-full blur-[100px] pointer-events-none"></div>
@@ -266,30 +292,30 @@ import ToastNotification from "../components/ToastNotification.astro";
           </div>
         </div>
       `;
-      return;
-    }
+        return;
+      }
 
-    // Renderizar notificaciones
-    let html = '<div class="space-y-3">';
+      // Renderizar notificaciones
+      let html = '<div class="space-y-3">';
 
-    notifications.forEach((notif, index) => {
-      const icon = notif.type === "payment_received" ? "💰" : "📢";
-      const isUnread = !notif.is_read;
-      const bgClass = isUnread ? "notification-unread" : "notification-read";
-      const iconBg = isUnread
-        ? "bg-brand-lime/10 border-brand-lime/30"
-        : "bg-slate-800/50 border-white/5";
-      const iconColor = isUnread ? "text-brand-lime" : "text-slate-400";
-      const textClass = isUnread ? "text-white" : "text-slate-300";
-      const dateStr = new Date(notif.created_at).toLocaleString("es-VE", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-      });
+      notifications.forEach((notif, index) => {
+        const icon = notif.type === "payment_received" ? "💰" : "📢";
+        const isUnread = !notif.is_read;
+        const bgClass = isUnread ? "notification-unread" : "notification-read";
+        const iconBg = isUnread
+          ? "bg-brand-lime/10 border-brand-lime/30"
+          : "bg-slate-800/50 border-white/5";
+        const iconColor = isUnread ? "text-brand-lime" : "text-slate-400";
+        const textClass = isUnread ? "text-white" : "text-slate-300";
+        const dateStr = new Date(notif.created_at).toLocaleString("es-VE", {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        });
 
-       html += `
+        html += `
          <div class="notification-card bg-brand-black border border-white/10 rounded-3xl p-4 hover:border-brand-lime/30 hover:bg-white/5 transition-all cursor-pointer ${bgClass} group shadow-none isolate relative overflow-hidden"
               style="animation-delay: ${index * 0.05}s"
               onclick="window.handleNotificationClick('${notif.id}', ${isUnread})">
@@ -305,9 +331,11 @@ import ToastNotification from "../components/ToastNotification.astro";
                 <p class="text-sm sm:text-base font-medium ${textClass} line-clamp-2 leading-relaxed">
                   ${notif.message}
                 </p>
-                ${isUnread
-                  ? '<span class="shrink-0 w-2.5 h-2.5 rounded-full bg-brand-lime shadow-[0_0_8px_rgba(215,253,73,0.6)]"></span>'
-                  : ""}
+                ${
+                  isUnread
+                    ? '<span class="shrink-0 w-2.5 h-2.5 rounded-full bg-brand-lime shadow-[0_0_8px_rgba(215,253,73,0.6)]"></span>'
+                    : ""
+                }
               </div>
               <p class="text-xs text-slate-500 font-medium">${dateStr}</p>
             </div>
@@ -321,102 +349,105 @@ import ToastNotification from "../components/ToastNotification.astro";
           </div>
         </div>
       `;
-    });
+      });
 
-    html += "</div>";
-    container.innerHTML = html;
-  }
-
-  // Manejador para click en notificación
-  window.handleNotificationClick = async (notifId, isUnread) => {
-    if (isUnread) {
-      try {
-        await notificationService.markAsRead(notifId);
-        // Actualizar estado local
-        const notif = notifications.find((n) => n.id === notifId);
-        if (notif) notif.is_read = true;
-        renderNotifications();
-      } catch (e) {
-        console.error("Error marcando notificación como leída:", e);
-      }
+      html += "</div>";
+      container.innerHTML = html;
     }
-  };
 
-  // Limpiar todas las notificaciones
-  document.addEventListener("DOMContentLoaded", () => {
-    const clearBtn = document.getElementById("clear-notifications-btn");
-    const markAllReadBtn = document.getElementById("mark-all-read-btn");
-
-    if (clearBtn) {
-      clearBtn.addEventListener("click", async () => {
-        if (notifications.length === 0) return;
-
-        // Confirmación
-        if (
-          !confirm("¿Estás seguro de que quieres limpiar todas las notificaciones?")
-        ) {
-          return;
-        }
-
-        const user = authService.getCurrentUser();
-        if (!user) return;
-
+    // Manejador para click en notificación
+    window.handleNotificationClick = async (notifId, isUnread) => {
+      if (isUnread) {
         try {
-          const userId = user.id || user.usuarioId || user._id;
-          await notificationService.clearAll(userId);
-
+          await notificationService.markAsRead(notifId);
           // Actualizar estado local
-          notifications = [];
+          const notif = notifications.find((n) => n.id === notifId);
+          if (notif) notif.is_read = true;
           renderNotifications();
-
-          if (window.showToast) {
-            window.showToast(
-              "Notificaciones eliminadas",
-              "success",
-              "Bandeja limpia",
-            );
-          }
         } catch (e) {
-          console.error("Error limpiando notificaciones:", e);
-          if (window.showToast) {
-            window.showToast("Error al limpiar notificaciones", "error");
-          }
+          console.error("Error marcando notificación como leída:", e);
         }
-      });
-    }
+      }
+    };
 
-    // Marcar todas como leídas
-    if (markAllReadBtn) {
-      markAllReadBtn.addEventListener("click", async () => {
-        const user = authService.getCurrentUser();
-        if (!user) return;
+    // Limpiar todas las notificaciones
+    document.addEventListener("DOMContentLoaded", () => {
+      const clearBtn = document.getElementById("clear-notifications-btn");
+      const markAllReadBtn = document.getElementById("mark-all-read-btn");
 
-        try {
-          const userId = user.id || user.usuarioId || user._id;
-          // Obtener no leídas
-          const unreadNotifs = notifications.filter((n) => !n.is_read);
+      if (clearBtn) {
+        clearBtn.addEventListener("click", async () => {
+          if (notifications.length === 0) return;
 
-          // Marcar cada una como leída
-          for (const notif of unreadNotifs) {
-            await notificationService.markAsRead(notif.id);
-            notif.is_read = true;
+          // Confirmación
+          if (
+            !confirm(
+              "¿Estás seguro de que quieres limpiar todas las notificaciones?",
+            )
+          ) {
+            return;
           }
 
-          renderNotifications();
+          const user = authService.getCurrentUser();
+          if (!user) return;
 
-          if (window.showToast) {
-            window.showToast(
-              "Todas las notificaciones marcadas como leídas",
-              "success",
-            );
+          try {
+            const userId = user.id || user.usuarioId || user._id;
+            await notificationService.clearAll(userId);
+
+            // Actualizar estado local
+            notifications = [];
+            renderNotifications();
+
+            if (window.showToast) {
+              window.showToast(
+                "Notificaciones eliminadas",
+                "success",
+                "Bandeja limpia",
+              );
+            }
+          } catch (e) {
+            console.error("Error limpiando notificaciones:", e);
+            if (window.showToast) {
+              window.showToast("Error al limpiar notificaciones", "error");
+            }
           }
-        } catch (e) {
-          console.error("Error marcando como leídas:", e);
-        }
-      });
-    }
+        });
+      }
 
-    // Cargar notificaciones
-    loadNotifications();
-  });
-</script>
+      // Marcar todas como leídas
+      if (markAllReadBtn) {
+        markAllReadBtn.addEventListener("click", async () => {
+          const user = authService.getCurrentUser();
+          if (!user) return;
+
+          try {
+            const userId = user.id || user.usuarioId || user._id;
+            // Obtener no leídas
+            const unreadNotifs = notifications.filter((n) => !n.is_read);
+
+            // Marcar cada una como leída
+            for (const notif of unreadNotifs) {
+              await notificationService.markAsRead(notif.id);
+              notif.is_read = true;
+            }
+
+            renderNotifications();
+
+            if (window.showToast) {
+              window.showToast(
+                "Todas las notificaciones marcadas como leídas",
+                "success",
+              );
+            }
+          } catch (e) {
+            console.error("Error marcando como leídas:", e);
+          }
+        });
+      }
+
+      // Cargar notificaciones
+      loadNotifications();
+    });
+  </script>
+</MainLayout>

@@ -1,387 +1,380 @@
 ---
-import "../styles/landing.css";
+import LandingLayout from "../layouts/LandingLayout.astro";
 ---
 
-<!doctype html>
-<html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <title>CapyPay - Vive la experiencia universitaria</title>
-  </head>
-  <body>
-    <header class="main-header">
-      <div class="header-container">
-        <!-- Botón de menú hamburguesa -->
-        <button class="menu-hamburguesa" id="menuBtn">
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
+<LandingLayout title="CapyPay - Vive la experiencia universitaria">
+  <header class="main-header">
+    <div class="header-container">
+      <!-- Botón de menú hamburguesa -->
+      <button class="menu-hamburguesa" id="menuBtn">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
 
-        <div class="logo">
-          <img
-            src="/assets/landing/vectors/logocapinamedbottom.svg"
-            alt="CapyPay Logo"
-            style="width: 76px; height: 91.48px;"
-          />
-        </div>
-
-        <div class="header-buttons">
-          <a
-            href="/login"
-            class="btn-login f-texto"
-            style="text-decoration: none; display: flex; align-items: center;"
-            >Iniciar Sesión</a
-          >
-          <a
-            href="/login"
-            class="btn-registro f-texto"
-            style="text-decoration: none;">Regístrate</a
-          >
-        </div>
+      <div class="logo">
+        <img
+          src="/assets/landing/vectors/logocapinamedbottom.svg"
+          alt="CapyPay Logo"
+          style="width: 76px; height: 91.48px;"
+        />
       </div>
-    </header>
 
-    <!-- Menú desplegable -->
-    <div class="menu-desplegable" id="menuDesplegable">
-      <div class="menu-contenido">
-        <h3 class="menu-titulo">Menú</h3>
-        <ul class="menu-lista">
-          <li><a href="#" class="menu-enlace">Sobre Nosotros</a></li>
-          <li><a href="#" class="menu-enlace">Términos y Condiciones</a></li>
-          <li><a href="#" class="menu-enlace">Política de Privacidad</a></li>
-          <li><a href="#" class="menu-enlace">Contacto</a></li>
-        </ul>
-        <button class="menu-cerrar" id="menuCerrar">✕</button>
+      <div class="header-buttons">
+        <a
+          href="/login"
+          class="btn-login f-texto"
+          style="text-decoration: none; display: flex; align-items: center;"
+          >Iniciar Sesión</a
+        >
+        <a
+          href="/login"
+          class="btn-registro f-texto"
+          style="text-decoration: none;">Regístrate</a
+        >
       </div>
     </div>
+  </header>
 
-    <main>
-      <section class="hero-titulo-seccion">
-        <div class="hero-titulo-container">
-          <div class="t-linea">VIVE AL LÍMITE TU</div>
-          <div class="t-linea">EXPERIENCIA</div>
-          <div class="t-linea">UNIVERSITARIA</div>
+  <!-- Menú desplegable -->
+  <div class="menu-desplegable" id="menuDesplegable">
+    <div class="menu-contenido">
+      <h3 class="menu-titulo">Menú</h3>
+      <ul class="menu-lista">
+        <li><a href="#" class="menu-enlace">Sobre Nosotros</a></li>
+        <li><a href="#" class="menu-enlace">Términos y Condiciones</a></li>
+        <li><a href="#" class="menu-enlace">Política de Privacidad</a></li>
+        <li><a href="#" class="menu-enlace">Contacto</a></li>
+      </ul>
+      <button class="menu-cerrar" id="menuCerrar">✕</button>
+    </div>
+  </div>
 
-          <div class="frase-inclinada f-decorativa parte-1">CONTROLA TUS</div>
-          <div class="frase-inclinada f-decorativa parte-2">FINANZAS</div>
-        </div>
+  <main>
+    <section class="hero-titulo-seccion">
+      <div class="hero-titulo-container">
+        <div class="t-linea">VIVE AL LÍMITE TU</div>
+        <div class="t-linea">EXPERIENCIA</div>
+        <div class="t-linea">UNIVERSITARIA</div>
 
-        <div class="contenedor-boton-hero">
-          <a
-            href="/login"
-            class="btn-comenzar f-texto"
-            style="text-decoration: none;">Comenzar Ahora</a
+        <div class="frase-inclinada f-decorativa parte-1">CONTROLA TUS</div>
+        <div class="frase-inclinada f-decorativa parte-2">FINANZAS</div>
+      </div>
+
+      <div class="contenedor-boton-hero">
+        <a
+          href="/login"
+          class="btn-comenzar f-texto"
+          style="text-decoration: none;">Comenzar Ahora</a
+        >
+      </div>
+      <div class="contenedor-animacion-choque">
+        <img
+          src="/assets/landing/vectors/punoizquierdo.svg"
+          class="puno-izq"
+          alt="Puño Izquierdo"
+        />
+        <img
+          src="/assets/landing/vectors/punoderecho.svg"
+          class="puno-der"
+          alt="Puño Derecho"
+        />
+        <img
+          src="/assets/landing/vectors/lineas.svg"
+          class="lineas-fx"
+          alt="Efecto de choque"
+        />
+      </div>
+
+      <div class="contenedor-personajes-hero">
+        <img
+          src="/assets/landing/vectors/logocapinamedside.svg"
+          class="vector-chiguire"
+          alt="Chigüire CapyPay"
+        />
+        <img
+          src="/assets/landing/images/imagentelefono.png"
+          class="img-estatica-celular"
+          alt="Celular"
+        />
+      </div>
+    </section>
+
+    <section class="seccion-info-blanca">
+      <img
+        src="/assets/landing/vectors/estrella.svg"
+        class="decoracion-superior"
+        alt="decoracion"
+      />
+      <img
+        src="/assets/landing/vectors/taptelefono.svg"
+        class="vector-tap-derecha"
+        alt="Tap Telefono"
+      />
+
+      <div class="contenedor-endgame">
+        <h2 class="titulo-endgame-lineal">
+          EL ENDGAME CONTRA LOS PAGOS ABURRIDOS
+        </h2>
+
+        <p class="descripcion-endgame f-texto">
+          Diseñada para que los universitarios tomen el <span
+            class="resaltado-morado">control total</span
           >
-        </div>
-        <div class="contenedor-animacion-choque">
-          <img
-            src="/assets/landing/vectors/punoizquierdo.svg"
-            class="puno-izq"
-            alt="Puño Izquierdo"
-          />
-          <img
-            src="/assets/landing/vectors/punoderecho.svg"
-            class="puno-der"
-            alt="Puño Derecho"
-          />
-          <img
-            src="/assets/landing/vectors/lineas.svg"
-            class="lineas-fx"
-            alt="Efecto de choque"
-          />
-        </div>
-
-        <div class="contenedor-personajes-hero">
-          <img
-            src="/assets/landing/vectors/logocapinamedside.svg"
-            class="vector-chiguire"
-            alt="Chigüire CapyPay"
-          />
-          <img
-            src="/assets/landing/images/imagentelefono.png"
-            class="img-estatica-celular"
-            alt="Celular"
-          />
-        </div>
-      </section>
-
-      <section class="seccion-info-blanca">
-        <img
-          src="/assets/landing/vectors/estrella.svg"
-          class="decoracion-superior"
-          alt="decoracion"
-        />
-        <img
-          src="/assets/landing/vectors/taptelefono.svg"
-          class="vector-tap-derecha"
-          alt="Tap Telefono"
-        />
-
-        <div class="contenedor-endgame">
-          <h2 class="titulo-endgame-lineal">
-            EL ENDGAME CONTRA LOS PAGOS ABURRIDOS
-          </h2>
-
-          <p class="descripcion-endgame f-texto">
-            Diseñada para que los universitarios tomen el <span
-              class="resaltado-morado">control total</span
-            >
-            de su <span class="resaltado-morado">vida financiera</span>. Combina
-            la utilidad de una billetera digital con la potencia de una <span
-              class="resaltado-morado">plataforma de pagos.</span
-            >
-          </p>
-
-          <div class="contenedor-tarjetas-beneficios">
-            <div class="tarjeta-informativa">
-              <h3 class="titulo-tarjeta">Pagos Universitarios</h3>
-              <h4 class="subtitulo-tarjeta">Priority Access</h4>
-
-              <p class="texto-tarjeta">
-                Permite pagar transporte, servicios del campus y cafetería de
-                forma instantánea, eliminando las filas y viejos métodos de
-                pago.
-              </p>
-
-              <img
-                src="/assets/landing/vectors/iconopagosuniversitarios.svg"
-                class="icono-tarjeta icono-base"
-                alt="Icono Pagos"
-              />
-              <img
-                src="/assets/landing/vectors/contraste1.svg"
-                class="icono-tarjeta icono-contraste"
-                alt="Icono Contraste"
-              />
-            </div>
-
-            <div class="tarjeta-informativa">
-              <h3 class="titulo-tarjeta">Mejora continua</h3>
-              <h4 class="subtitulo-tarjeta">Level up</h4>
-              <p class="texto-tarjeta">
-                Reinversión para mejorar los servicios e infraestructura
-                universitaria
-              </p>
-
-              <img
-                src="/assets/landing/vectors/levelup.svg"
-                class="icono-tarjeta icono-base"
-                alt="Icono Mejora"
-              />
-
-              <img
-                src="/assets/landing/vectors/contrast2.svg"
-                class="icono-tarjeta icono-contraste"
-                alt="Icono Contraste"
-              />
-            </div>
-
-            <div class="tarjeta-informativa">
-              <h3 class="titulo-tarjeta">Bóvedas de ahorro</h3>
-              <h4 class="subtitulo-tarjeta">LootBox</h4>
-              <p class="texto-tarjeta">
-                Herramientas de ahorro programado para metas específicas
-                (tecnología, viajes o emergencias) que funcionan de forma
-                automática
-              </p>
-
-              <img
-                src="/assets/landing/vectors/boveda.svg"
-                class="icono-tarjeta icono-base"
-                alt="Icono Bóveda"
-              />
-
-              <img
-                src="/assets/landing/vectors/contraste3.svg"
-                class="icono-tarjeta icono-contraste"
-                alt="Icono Contraste"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="seccion-morada">
-        <div class="contenido-morado">
-          <h2 class="titulo-planes">SELECCIONA TU PLAN!</h2>
-        </div>
-
-        <div class="contenedor-planes">
-          <div class="boton-plan">
-            <h3 class="titulo-plan">Transporte</h3>
-            <img
-              src="/assets/landing/vectors/iconobus.svg"
-              class="icono-plan"
-              alt="Icono Bus"
-            />
-
-            <div class="precio-contenedor">
-              <span class="precio-grande">$15</span>
-              <span class="precio-mes">/mes</span>
-            </div>
-
-            <ul class="lista-beneficios">
-              <li>
-                <img
-                  src="/assets/landing/vectors/iconocheck.svg"
-                  class="check-plan"
-                /> Viajes ilimitados
-              </li>
-              <li>
-                <img
-                  src="/assets/landing/vectors/iconocheck.svg"
-                  class="check-plan"
-                /> Rutas directas a residencias
-              </li>
-              <li>
-                <img
-                  src="/assets/landing/vectors/iconocheck.svg"
-                  class="check-plan"
-                /> Horarios extendidos
-              </li>
-            </ul>
-          </div>
-
-          <div class="boton-plan boton-comedor">
-            <h3 class="titulo-plan">Comedor</h3>
-            <img
-              src="/assets/landing/vectors/iconocomida.svg"
-              class="icono-plan"
-              alt="Icono Comida"
-            />
-
-            <div class="precio-contenedor">
-              <span class="precio-grande">$25</span>
-              <span class="precio-mes">/mes</span>
-            </div>
-
-            <ul class="lista-beneficios">
-              <li>
-                <img
-                  src="/assets/landing/vectors/iconocheck.svg"
-                  class="check-plan"
-                /> Menú variado
-              </li>
-              <li>
-                <img
-                  src="/assets/landing/vectors/iconocheck.svg"
-                  class="check-plan"
-                /> Desayuno y almuerzo incluido
-              </li>
-              <li>
-                <img
-                  src="/assets/landing/vectors/iconocheck.svg"
-                  class="check-plan"
-                /> Sin cola de esperas
-              </li>
-            </ul>
-          </div>
-
-          <div class="boton-plan boton-biblioteca">
-            <h3 class="titulo-plan">Biblioteca</h3>
-            <img
-              src="/assets/landing/vectors/iconolibro.svg"
-              class="icono-plan"
-              alt="Icono Libro"
-            />
-
-            <div class="precio-contenedor">
-              <span class="precio-grande">$10</span>
-              <span class="precio-mes">/mes</span>
-            </div>
-
-            <ul class="lista-beneficios">
-              <li>
-                <img
-                  src="/assets/landing/vectors/iconocheck.svg"
-                  class="check-plan"
-                /> Acceso a salas de estudio
-              </li>
-              <li>
-                <img
-                  src="/assets/landing/vectors/iconocheck.svg"
-                  class="check-plan"
-                /> Recursos Digitales
-              </li>
-              <li>
-                <img
-                  src="/assets/landing/vectors/iconocheck.svg"
-                  class="check-plan"
-                /> Préstamo de libros ilimitados
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        <p class="frase-cierre">
-          ''Mientras los demás hacen fila, tú ya estás en clase.''
+          de su <span class="resaltado-morado">vida financiera</span>. Combina
+          la utilidad de una billetera digital con la potencia de una <span
+            class="resaltado-morado">plataforma de pagos.</span
+          >
         </p>
-      </section>
 
-      <section class="seccion-unete">
-        <div class="unete-contenido">
-          <h2 class="unete-titulo">¿POR QUÉ UNIRTE A <br /> CAPYPAY?</h2>
+        <div class="contenedor-tarjetas-beneficios">
+          <div class="tarjeta-informativa">
+            <h3 class="titulo-tarjeta">Pagos Universitarios</h3>
+            <h4 class="subtitulo-tarjeta">Priority Access</h4>
 
-          <div class="bloque-simplicidad">
-            <h3 class="simplicidad-titulo">SIMPLICIDAD TOTAL</h3>
-            <p class="simplicidad-texto">
-              Un solo pago, acceso ilimitado. <br />
-              Olvídate de múltiples transacciones <br />
-              y preocupaciones
+            <p class="texto-tarjeta">
+              Permite pagar transporte, servicios del campus y cafetería de
+              forma instantánea, eliminando las filas y viejos métodos de pago.
             </p>
-            <p class="texto-listo">
-              Listo para <br />
-              <span class="palabra-comenzar">comenzar?</span>
-            </p>
+
+            <img
+              src="/assets/landing/vectors/iconopagosuniversitarios.svg"
+              class="icono-tarjeta icono-base"
+              alt="Icono Pagos"
+            />
+            <img
+              src="/assets/landing/vectors/contraste1.svg"
+              class="icono-tarjeta icono-contraste"
+              alt="Icono Contraste"
+            />
           </div>
-          <a
-            href="/login"
-            class="boton-unete"
-            style="text-decoration: none; display: flex; align-items: center; justify-content: center;"
-            >Únete ahora!</a
-          >
+
+          <div class="tarjeta-informativa">
+            <h3 class="titulo-tarjeta">Mejora continua</h3>
+            <h4 class="subtitulo-tarjeta">Level up</h4>
+            <p class="texto-tarjeta">
+              Reinversión para mejorar los servicios e infraestructura
+              universitaria
+            </p>
+
+            <img
+              src="/assets/landing/vectors/levelup.svg"
+              class="icono-tarjeta icono-base"
+              alt="Icono Mejora"
+            />
+
+            <img
+              src="/assets/landing/vectors/contrast2.svg"
+              class="icono-tarjeta icono-contraste"
+              alt="Icono Contraste"
+            />
+          </div>
+
+          <div class="tarjeta-informativa">
+            <h3 class="titulo-tarjeta">Bóvedas de ahorro</h3>
+            <h4 class="subtitulo-tarjeta">LootBox</h4>
+            <p class="texto-tarjeta">
+              Herramientas de ahorro programado para metas específicas
+              (tecnología, viajes o emergencias) que funcionan de forma
+              automática
+            </p>
+
+            <img
+              src="/assets/landing/vectors/boveda.svg"
+              class="icono-tarjeta icono-base"
+              alt="Icono Bóveda"
+            />
+
+            <img
+              src="/assets/landing/vectors/contraste3.svg"
+              class="icono-tarjeta icono-contraste"
+              alt="Icono Contraste"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="seccion-morada">
+      <div class="contenido-morado">
+        <h2 class="titulo-planes">SELECCIONA TU PLAN!</h2>
+      </div>
+
+      <div class="contenedor-planes">
+        <div class="boton-plan">
+          <h3 class="titulo-plan">Transporte</h3>
+          <img
+            src="/assets/landing/vectors/iconobus.svg"
+            class="icono-plan"
+            alt="Icono Bus"
+          />
+
+          <div class="precio-contenedor">
+            <span class="precio-grande">$15</span>
+            <span class="precio-mes">/mes</span>
+          </div>
+
+          <ul class="lista-beneficios">
+            <li>
+              <img
+                src="/assets/landing/vectors/iconocheck.svg"
+                class="check-plan"
+              /> Viajes ilimitados
+            </li>
+            <li>
+              <img
+                src="/assets/landing/vectors/iconocheck.svg"
+                class="check-plan"
+              /> Rutas directas a residencias
+            </li>
+            <li>
+              <img
+                src="/assets/landing/vectors/iconocheck.svg"
+                class="check-plan"
+              /> Horarios extendidos
+            </li>
+          </ul>
         </div>
 
-        <img
-          src="/assets/landing/vectors/capsula.svg"
-          class="img-capsula"
-          alt="Ilustración Cápsula"
-        />
-      </section>
-    </main>
+        <div class="boton-plan boton-comedor">
+          <h3 class="titulo-plan">Comedor</h3>
+          <img
+            src="/assets/landing/vectors/iconocomida.svg"
+            class="icono-plan"
+            alt="Icono Comida"
+          />
 
-    <script>
-      // Funcionalidad del menú hamburguesa
-      const menuBtn = document.getElementById('menuBtn');
-      const menuDesplegable = document.getElementById('menuDesplegable');
-      const menuCerrar = document.getElementById('menuCerrar');
+          <div class="precio-contenedor">
+            <span class="precio-grande">$25</span>
+            <span class="precio-mes">/mes</span>
+          </div>
 
-      if (menuBtn && menuDesplegable && menuCerrar) {
-        menuBtn.addEventListener('click', () => {
-          menuDesplegable.classList.add('active');
-        });
+          <ul class="lista-beneficios">
+            <li>
+              <img
+                src="/assets/landing/vectors/iconocheck.svg"
+                class="check-plan"
+              /> Menú variado
+            </li>
+            <li>
+              <img
+                src="/assets/landing/vectors/iconocheck.svg"
+                class="check-plan"
+              /> Desayuno y almuerzo incluido
+            </li>
+            <li>
+              <img
+                src="/assets/landing/vectors/iconocheck.svg"
+                class="check-plan"
+              /> Sin cola de esperas
+            </li>
+          </ul>
+        </div>
 
-        menuCerrar.addEventListener('click', () => {
-          menuDesplegable.classList.remove('active');
-        });
+        <div class="boton-plan boton-biblioteca">
+          <h3 class="titulo-plan">Biblioteca</h3>
+          <img
+            src="/assets/landing/vectors/iconolibro.svg"
+            class="icono-plan"
+            alt="Icono Libro"
+          />
 
-        // Cerrar menú al hacer clic fuera del contenido
-        menuDesplegable.addEventListener('click', (e) => {
-          if (e.target === menuDesplegable) {
-            menuDesplegable.classList.remove('active');
-          }
-        });
+          <div class="precio-contenedor">
+            <span class="precio-grande">$10</span>
+            <span class="precio-mes">/mes</span>
+          </div>
 
-        // Cerrar menú al presionar la tecla Escape
-        document.addEventListener('keydown', (e) => {
-          if (e.key === 'Escape' && menuDesplegable.classList.contains('active')) {
-            menuDesplegable.classList.remove('active');
-          }
-        });
-      }
-    </script>
-  </body>
-</html>
+          <ul class="lista-beneficios">
+            <li>
+              <img
+                src="/assets/landing/vectors/iconocheck.svg"
+                class="check-plan"
+              /> Acceso a salas de estudio
+            </li>
+            <li>
+              <img
+                src="/assets/landing/vectors/iconocheck.svg"
+                class="check-plan"
+              /> Recursos Digitales
+            </li>
+            <li>
+              <img
+                src="/assets/landing/vectors/iconocheck.svg"
+                class="check-plan"
+              /> Préstamo de libros ilimitados
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <p class="frase-cierre">
+        ''Mientras los demás hacen fila, tú ya estás en clase.''
+      </p>
+    </section>
+
+    <section class="seccion-unete">
+      <div class="unete-contenido">
+        <h2 class="unete-titulo">¿POR QUÉ UNIRTE A <br /> CAPYPAY?</h2>
+
+        <div class="bloque-simplicidad">
+          <h3 class="simplicidad-titulo">SIMPLICIDAD TOTAL</h3>
+          <p class="simplicidad-texto">
+            Un solo pago, acceso ilimitado. <br />
+            Olvídate de múltiples transacciones <br />
+            y preocupaciones
+          </p>
+          <p class="texto-listo">
+            Listo para <br />
+            <span class="palabra-comenzar">comenzar?</span>
+          </p>
+        </div>
+        <a
+          href="/login"
+          class="boton-unete"
+          style="text-decoration: none; display: flex; align-items: center; justify-content: center;"
+          >Únete ahora!</a
+        >
+      </div>
+
+      <img
+        src="/assets/landing/vectors/capsula.svg"
+        class="img-capsula"
+        alt="Ilustración Cápsula"
+      />
+    </section>
+  </main>
+
+  <script>
+    // Funcionalidad del menú hamburguesa
+    const menuBtn = document.getElementById("menuBtn");
+    const menuDesplegable = document.getElementById("menuDesplegable");
+    const menuCerrar = document.getElementById("menuCerrar");
+
+    if (menuBtn && menuDesplegable && menuCerrar) {
+      menuBtn.addEventListener("click", () => {
+        menuDesplegable.classList.add("active");
+      });
+
+      menuCerrar.addEventListener("click", () => {
+        menuDesplegable.classList.remove("active");
+      });
+
+      // Cerrar menú al hacer clic fuera del contenido
+      menuDesplegable.addEventListener("click", (e) => {
+        if (e.target === menuDesplegable) {
+          menuDesplegable.classList.remove("active");
+        }
+      });
+
+      // Cerrar menú al presionar la tecla Escape
+      document.addEventListener("keydown", (e) => {
+        if (
+          e.key === "Escape" &&
+          menuDesplegable.classList.contains("active")
+        ) {
+          menuDesplegable.classList.remove("active");
+        }
+      });
+    }
+  </script>
+</LandingLayout>

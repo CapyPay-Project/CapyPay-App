@@ -1,1086 +1,1089 @@
-/* IMPORTACIONES  */
-@import "./parts/auth.css";
-@import url('https://fonts.googleapis.com/css2?family=Anton&family=Baloo+Bhaijaan+2:wght@400..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@400..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Anton&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Staatliches&display=swap');
 
 @font-face {
     font-family: 'BrickFont';
     src: url('/fonts/Brick.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
 }
 
-/* HERRAMIENTAS TIPOGRÁFICAS */
+/* CONTENEDOR DE SCOPE PARA LA LANDING */
+.landing-scope {
 
-.f-titulo {
-    font-family: 'Anton', sans-serif;
-}
+    /* HERRAMIENTAS TIPOGRÁFICAS */
 
-.f-texto {
-    font-family: 'Baloo Bhaijaan 2', sans-serif;
-}
-
-.f-decorativa {
-    font-family: 'BrickFont', cursive;
-}
-
-html, body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    overflow-x: hidden;
-}
-
-body {
-    background-color: #D7FD49; 
-}
-    
-
-/*estilo del Header y los botones */
-
-/* Estilos del Header */
-.main-header {
-    width: 100%;
-    padding: 5px 0;
-    background-color: #F8F5FF;
-    border-bottom: 4px solid #292929;
-    box-shadow: 0 4px 0px #292929;
-}
-
-.header-container {
-    display: flex;
-    justify-content: center; 
-    align-items: center;
-    position: relative;
-    max-width: 1440px; 
-    margin: 0 auto;
-}
-
-.header-buttons {
-    position: absolute;
-    right: 50px; 
-    display: flex;
-    align-items: center;
-    gap: 40px; 
-}
-
-/* Botón Iniciar Sesión */
-.btn-login {
-    background: none;
-    border: none;
-    color: #292929;
-    font-family: 'Baloo Bhaijaan 2', sans-serif;
-    font-weight: 800; 
-    font-size: 16px;
-    cursor: pointer;
-    transition: color 0.1s;
-}
-
-.btn-login:active {
-    color: #8362E8; 
-}
-
-/* Botón Regístro */
-.btn-registro {
-    width: 125px;
-    height: 36px;
-    background-color: #8362E8;
-    color: #F8F5FF;
-    font-family: 'Baloo Bhaijaan 2', sans-serif;
-    font-weight: 800;
-    font-size: 14px;
-    border: 3px solid #292929; 
-    border-radius: 80px; 
-    cursor: pointer;
-    position: relative;
-    box-shadow: 8px 8px 0px #292929;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: all 0.05s;
-}
-
-.btn-registro:active {
-    transform: translate(6px, 6px);
-    box-shadow: 2px 2px 0px #292929;
-}
-
-/* Botón de menú hamburguesa */
-.menu-hamburguesa {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    width: 30px;
-    height: 21px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-    position: absolute;
-    left: 20px;
-    top: 50%;
-    transform: translateY(-50%);
-}
-
-.menu-hamburguesa span {
-    display: block;
-    width: 100%;
-    height: 3px;
-    background-color: #292929;
-    border-radius: 2px;
-    transition: all 0.3s ease;
-}
-
-/* Menú desplegable */
-.menu-desplegable {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(41, 41, 41, 0.95);
-    z-index: 1000;
-    display: none;
-    justify-content: center;
-    align-items: center;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.menu-desplegable.active {
-    display: flex;
-    opacity: 1;
-}
-
-.menu-contenido {
-    background-color: #F8F5FF;
-    border: 5px solid #292929;
-    border-radius: 20px;
-    padding: 40px;
-    max-width: 400px;
-    width: 90%;
-    position: relative;
-    box-shadow: 15px 15px 0px #292929;
-}
-
-.menu-titulo {
-    font-family: 'Anton', sans-serif;
-    font-size: 32px;
-    color: #292929;
-    text-align: center;
-    margin: 0 0 30px 0;
-    text-transform: uppercase;
-}
-
-.menu-lista {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.menu-lista li {
-    margin-bottom: 20px;
-}
-
-.menu-enlace {
-    font-family: 'Baloo Bhaijaan 2', sans-serif;
-    font-size: 20px;
-    font-weight: 600;
-    color: #292929;
-    text-decoration: none;
-    display: block;
-    padding: 15px 20px;
-    background-color: #D7FD49;
-    border: 3px solid #292929;
-    border-radius: 10px;
-    text-align: center;
-    transition: all 0.2s ease;
-    box-shadow: 5px 5px 0px #292929;
-}
-
-.menu-enlace:hover {
-    background-color: #8362E8;
-    color: #F8F5FF;
-    transform: translate(3px, 3px);
-    box-shadow: 2px 2px 0px #292929;
-}
-
-.menu-cerrar {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    width: 40px;
-    height: 40px;
-    background-color: #8362E8;
-    border: 3px solid #292929;
-    border-radius: 50%;
-    color: #F8F5FF;
-    font-size: 20px;
-    font-weight: bold;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    box-shadow: 5px 5px 0px #292929;
-    transition: all 0.2s ease;
-}
-
-.menu-cerrar:hover {
-    background-color: #292929;
-    transform: translate(2px, 2px);
-    box-shadow: 3px 3px 0px #8362E8;
-}
-
-.menu-cerrar:active {
-    transform: translate(4px, 4px);
-    box-shadow: 1px 1px 0px #8362E8;
-}
-
-.hero-titulo-container {
-    padding-left: 68px; /* margen  */
-    padding-top: 50px;
-}
-
-.t-linea {
-    font-family: 'Anton', sans-serif;
-    font-size: 120px;
-    color: #292929;
-    text-transform: uppercase;
-    
-    /* Control de espacio exacto */
-    margin-bottom: 10px; 
-    line-height: 0.85; 
-    
-    display: block; /* ocupacion de cada linea */
-}
-
-/*  margen de última linea */
-.t-linea:last-child {
-    margin-bottom: 0;
-}
-
-/* posicionamiento libre */
-.hero-titulo-container {
-    position: relative;
-    padding-left: 68px;
-    padding-top: 25px;
-}
-
-/* Estilo  Controla tus Finanzas GENERAL*/
-.frase-inclinada {
-    position: absolute;
-    color: #8362E8;
-    font-family: 'BrickFont', cursive;
-    font-size: 90px; 
-    transform: rotate(-22.72deg); 
-    white-space: nowrap;
-    line-height: 1;
-}
-
-/* Posición  "CONTROLA TUS" */
-.parte-1 {
-    top: 110px;  
-    left: 635px; 
-}
-
-/* Posición exacta para "FINANZAS" */
-.parte-2 {
-    top: 186px; 
-    left: 711px;
-}
-
-.btn-comenzar {
-    background-color: #8362E8;
-    color: #F8F5FF;
-    font-family: 'Baloo Bhaijaan 2', sans-serif;
-    font-weight: 800;
-    
-    /* 1. cambiar tamaños de letra*/
-    font-size: 22px; 
-    
-    /* 2. reduccion de espacio interno (arriba/abajo y lados) */
-    padding: 10px 35px; 
-    
-    /* trazos */
-    border: 4px solid #292929; 
-    border-radius: 50px; /* redondeado o */
-    
-    cursor: pointer;
-    position: relative;
-    
-    /* 4. Ajuste de sombra*/
-    box-shadow: 12px 10px 0px #292929; 
-    
-    transition: all 0.1s ease;
-}
-
-.contenedor-boton-hero {
-    display: flex;            
-    justify-content: center;  
-    width: 100%;             
-    margin-top: 50px;         
-    margin-bottom: 40px;      
-}
-
-.btn-comenzar:active {
-    transform: translate(8px, 6px);
-    box-shadow: 4px 4px 0px #292929;
-}
-
-/* AJUSTE DEL CONTENEDOR  */
-
-.contenedor-animacion-choque {
-    position: absolute;
-    /* Removed duplicate position: absolute; */
-    
-    top: -60px; 
-    
-    right: -110px;
-    width: 660px;
-    height: 500px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: visible;
-    z-index: 10;
-    
-}
-
-/* ESTILO DE LOS PUÑOS */
-.puno-izq, .puno-der {
-    position: absolute;
-    width: 452px;
-    height: auto;
-    /* duracion d animacion */
-    animation-duration: 5s;
-    animation-iteration-count: infinite;
-    /* ajuste de tiempo */
-    animation-timing-function: cubic-bezier(0.45, 0, 0.55, 1);
-}
-
-.puno-izq {
-    left: 0;
-    animation-name: choque-suave-izq;
-}
-
-.puno-der {
-    right: 0;
-    animation-name: choque-suave-der;
-}
-
-.lineas-fx {
-    position: absolute;
-    left: 33%;
-    /* 2. desplazamiento y centrado */
-    transform: translateX(-80%);
-    width: 298px;
-    opacity: 0;
-    z-index: 5;
-    animation: brillo-impacto 5s infinite;
-}
-
-/*  REGLAS DE MOVIMIENTO */
-
-/* 1.  TIEMPO */
-.puno-izq, .puno-der {
-    
-    animation-duration: 3s; 
-    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.lineas-fx {
-    
-    animation-duration: 3s;
-}
-
-/* POSICIÓN INICIAL */
-
-@keyframes choque-suave-izq {
-    /* Posición inicial  para que haya movimiento */
-    0% { transform: translateX(100px); }    
-    /* punto de impacto máximo */
-    45%, 55% { transform: translateX(110px); } 
-    /* Regreso */
-    100% { transform: translateX(100px); } 
-}
-
-@keyframes choque-suave-der {
-    /* Posición inicial */
-    0% { transform: translateX(-100px); }   
-    /* punto de impacto máximo */
-    45%, 55% { transform: translateX(-110px); } 
-    /* Regreso  */
-    100% { transform: translateX(-100px); } 
-}
-
-/* ANIMACIÓN DE LÍNEAS */
-@keyframes brillo-impacto {
-    /* inicio */
-    0%, 11.9% { 
-        opacity: 0; 
-        transform: scale(0.5); 
+    .f-titulo {
+        font-family: 'Anton', sans-serif;
     }
-    /* impacto */
-    12%, 65% { 
-        opacity: 1; 
-        transform: scale(2.2); 
+
+    .f-texto {
+        font-family: 'Baloo Bhaijaan 2', sans-serif;
     }
-    /* Desaparición  */
-    65.1%, 100% { 
-        opacity: 0; 
-        transform: scale(0.5); 
+
+    .f-decorativa {
+        font-family: 'BrickFont', cursive;
     }
-}
 
-/*seccion baja*/
-
-.hero-titulo-seccion {
-    
-    min-height: 30vh; 
-    height: auto;
-    padding-bottom: 0px; 
-    position: relative;
-    background-color: #D7FD49;
-    overflow: visible;
-}
-
-.contenedor-capypay-footer {
-    position: relative; 
-    margin-top: 20px;
-    display: flex;
-    align-items: flex-end; /* Mantiene al capi y al texto alineados abajo */
-    justify-content: center;
-    gap: 30px;
-    width: 100%;
-}
-
-.img-estatica-chiguire, .vector-chiguire {
-    width: 320px;
-    height: auto;
-}
-
-
-.img-estatica-celular {
-    width: 300px; 
-    height: auto;
-    position: relative;  
-    top: 8px; 
-    z-index: 10;
-    display: inline-block;
-    filter: drop-shadow(0px 10px 20px rgba(0,0,0,0.15)); /* Sombra */
-}
-
-/* LA SECCIÓN BLANCA */
-.seccion-info-blanca {
-    background-color: #F8F5FF;
-    padding: 10px 0px 150px 0px;
-    width: 100%;
-    min-height: 80vh; 
-    position: relative;
-    z-index: 10;
-}
-
-.decoracion-superior {
-    position: absolute;
-    top: 0;             
-    left: 83%;          
-    width: 75px;        
-    transform: translateY(-50%); 
-    z-index: 20;
-}
-
-.titulo-endgame-lineal {
-    font-family: 'Anton', sans-serif; 
-    font-size: 60px;                 
-    color: #292929;                  
-    text-transform: uppercase;
-    margin: 0;
-    white-space: nowrap;            /* Mantiene todo en una sola línea */
-    letter-spacing: 2px;           
-
-    
-    margin-top: 40px;    /* Esto lo baja un poco más respecto al borde blanco */
-    margin-left: 70px;  /* Esto lo empuja hacia la derecha.  */
-
-}
-
-.descripcion-endgame {
-    
-    font-family: 'Baloo Bhaijaan 2', sans-serif; 
-    font-size: 32px;                 
-    color: #292929;                  
-    line-height: 1.4;                
-    margin-top: 30px;                
-    margin-left: 70px;              
-    max-width: 900px;                
-    font-weight: 400;                
-}
-
-.resaltado-morado {
-    color: #8362E8;                  
-    font-weight: 600;                
-}
-
-.vector-tap-derecha {
-    position: absolute;
-    right: 2%;          
-    top: 0;             
-    width: 400px;       
-    z-index: 15;
-    pointer-events: none;
-    transform: translateY(0); 
-}
-
-.contenedor-tarjetas-beneficios {
-    display: flex;
-    justify-content: center; /* Esto centra las 3 tarjetas perfectamente al medio */
-    align-items: center;
-    gap: 40px;               /* separacion */
-    margin-top: 100px;        /* Espacio respecto al título de arriba */
-    width: 100%;    
-    z-index: 1;         /* ancho para poder centrar */
-}
-
-
-.contenedor-tarjetas-beneficios::before {
-    content: "";
-    position: absolute;
-    right: 30%;           
-    top: 65%;
-    transform: translateY(-50%);
-    
-    /* Dimensiones del rectángulo */
-    width: 600px;         
-    height: 300px;        
-    
-    background-color: #D7FD49; 
-    border-radius: 20px;
-    
-    /* para mandarlo al fondo o al frente */
-    z-index: -2; 
-    
-
-}
-
-
-.tarjeta-informativa {
-
-            
-    padding-bottom: 80px; /* Espacio al final para que no pegue con lo siguiente */
-    width: 320px;
-    height: 400px;
-    background-color: #F8F5FF; 
-    border: 5px solid #8362E8;  
-    border-radius: 10px;        
-    padding: 25px 20px;         /* Espaciado interno superior y lateral */
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    position: relative;         /* Para posicionar el icono y el texto */
-    overflow: hidden;
-    
-}
-
-.titulo-tarjeta {
-    font-family: 'Baloo Bhaijaan 2', sans-serif;
-    font-weight: 700;
-    font-size: 30px;
-    color: #8362E8;
-    margin: 0;             /*  espacio alrededor */
-    line-height: 0.9;      /*  espacio vertical */
-}
-
-.subtitulo-tarjeta {
-    font-family: 'Baloo Bhaijaan 2', sans-serif;
-    font-weight: 500;
-    font-size: 25px;
-    color: #8362E8;
-    margin: 0;             
-    line-height: 1.2;
-}
-
-.texto-tarjeta {
-    font-family: 'Baloo Bhaijaan 2', sans-serif;
-    font-weight: 500;
-    font-size: 20px;
-    color: #292929;
-    line-height: 1.2;      /*  espacio entre líneas del párrafo */
-    margin-top: 10px;      
-    margin-bottom: 0;
-    max-width: 280px;
-}
-
-.icono-tarjeta {
-    width: 180px;              
-    position: absolute;
-    bottom: 15px;              
-    left: 20px;                 
-    margin: 0;
-}
-
-/* 1. transición y ocultamos el icono de contraste al inicio */
-.tarjeta-informativa {
-    transition: all 0.4s ease; /* Hace que el cambio de color sea fluido */
-}
-
-.icono-contraste {
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.4s ease;
-}
-
-.icono-base {
-    transition: opacity 0.4s ease;
-}
-
-/* 2. EFECTO HOVER: Transformación total al pasar el ratón */
-.tarjeta-informativa:hover {
-    transform: translateY(-20px);      /* La tarjeta sube */
-    background-color: #8362E8;         /* El fondo cambia a morado profundo */
-    border-color: #D7FD49;
-    box-shadow: 10px 10px 0px #D7FD49; /* Sombra sólida */
-}
-
-/* 3. Cambiar el color de todos los textos a la vez */
-.tarjeta-informativa:hover .titulo-tarjeta,
-.tarjeta-informativa:hover .subtitulo-tarjeta,
-.tarjeta-informativa:hover .texto-tarjeta {
-    color: #F8F5FF; /* Letras pasan a color blanco*/
-}
-
-/* 4. Intercambio de imágenes en hover */
-.tarjeta-informativa:hover .icono-base {
-    opacity: 0;
-    visibility: hidden;
-}
-
-.tarjeta-informativa:hover .icono-contraste {
-    opacity: 1;
-    visibility: visible;
-}
-
-.seccion-morada {
-    background-color: #8362E8;
-    width: 100%;
-    min-height: 500px;
-    padding: 80px 0;
-    display: block;
-    position: relative; /* ancla para el título */
-    z-index: 10;
-}
-
-.titulo-planes {
-    font-family: 'Anton', sans-serif;
-    font-size: 100px;
-    color: #D7FD49;
-    letter-spacing: 3px;  
-    line-height: 1;
-    white-space: nowrap; /* Evita que el texto se salte de línea al moverlo */
-    position: absolute;  /* Lo hace flotar  */
-    top: 20px;           /* Distancia desde arriba */
-    left: 90px;          /* Distancia desde la izquierda */
-}
-
-/* Contenedor para alinear los planes */
-.contenedor-planes {
-    display: flex;
-    justify-content: center;
-    gap: 50px;
-    margin-top: 150px; /* para que no choque con el título absoluto */
-    padding-bottom: 50px;
-}
-
-.boton-plan {
-    /* Dimensiones y Forma */
-    width: 331px;
-    height: 500px;
-    border-radius: 34px;
-    background-color: #F8F5FF; 
-    border: 8.5px solid #292929;
-    box-shadow: 13px 8.5px 0px #292929;
-    
-    /* Diseño interno */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 34px 17px;
-    cursor: pointer;
-    transition: all 0.1s ease; /* Transición rápida para el clic */
-    position: relative;
-  
-    
-}
-
-/* EFECTO DE HUNDIMIENTO */
-.boton-plan:active {
-    transform: translate(8.5px, 4.25px); 
-    box-shadow: 4px 4px 0px #292929;     
-}
-
-/* Tipografía de Títulos */
-.titulo-plan {
-    font-family: 'Baloo Bhaijaan 2', sans-serif;
-    font-weight: 700;
-    font-size: 40px;
-    color: #292929;
-    /* CONTROL DE POSICIÓN */
-    width: 100%;           /* Ocupa todo el ancho para poder alinearlo */
-    text-align: left;      /* Lo manda a la izquierda */
-    padding-left: 45px;    /* Ajustar este número para moverlo más o menos a la izquierda */
-    margin-top: 5px;      /* Espacio con el borde superior del botón */
-    margin-bottom: 0px;    /* Pegadito al icono de abajo */
-}
-
-.icono-plan {
-    width: 70px;
-    height: 70px;
-    margin-top: 0px;
-    margin-bottom: 5px;
-    /* CONTROL DE POSICIÓN */
-    align-self: flex-start;  /* Lo empuja a la izquierda del botón */
-    margin-left: 25px;       /* USA EL MISMO VALOR QUE EL TÍTULO para que alineen */
-    
-}
-
-/* Sección de Precio */
-.precio-contenedor {
-    font-family: 'Baloo Bhaijaan 2', sans-serif;
-    color: #292929;
-    /* CONTROL DE POSICIÓN */
-    width: 100%;            /* Ocupa todo el ancho del botón */
-    display: flex;          /*  flex para alinear el $15 y el /mes */
-    justify-content: flex-start; /* Los manda a la izquierda */
-    align-items: baseline;  /* Alinea el texto por la parte de abajo */ 
-    padding-left: 51px;     
-    margin-bottom: 5x;   
-}
-
-.precio-grande {
-    font-size: 55px;
-    font-weight: 800; 
-}
-
-.precio-mes {
-    font-size: 35px;
-    font-weight: 600; 
-}
-
-/* Lista de beneficios */
-.lista-beneficios {
-    list-style: none;
-    padding: 0;
-    font-weight: 600;
-    /* CONTROL DE POSICIÓN */
-    width: 100%;            /* ancho para alinear contenido */
-    display: flex;
-    flex-direction: column;
-    align-self: flex-start;
-    
-    /* este margen debe coincidir visualmente con el del título */
-    padding-left: 25px;     
-    margin-top: 0px;       
-}
-
-.lista-beneficios li {
-    font-family: 'Baloo Bhaijaan 2', sans-serif;
-    font-size: 20px;
-    color: #292929;
-    display: flex;
-    align-items: center;
-    margin-bottom: 15px;
-    text-align: left;
-}
-
-.check-plan {
-    
-    width: 30px; 
-    height: 30px; 
-    margin-right: 15px; /* Espacio entre el check y el texto */
-    object-fit: contain;
-}
-
-.boton-comedor {
-    background-color: #D7FD49 !important;
-}
-
-.frase-cierre {
-    font-family: 'Baloo Bhaijaan 2', sans-serif;
-    font-weight: 800; 
-    font-size: 45px;
-    color: #D7FD49; 
-    text-align: center;
-    margin-top: 0px; 
-    width: 100%;
-}
-
-
-.seccion-unete {
-    background-color: #D7FD49; 
-    width: 100%;
-    /* el min-height para que sea manejable */
-    min-height: 120vh; 
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    position: relative;
-    overflow: hidden;
-    padding-bottom: 200px; 
-    
-}
-
-/* Estilos para el título gigante */
-.unete-titulo {
-    font-family: 'Anton', sans-serif; 
-    font-size: 110px; 
-    color: #292929; 
-    line-height: 0.9; /* Reduce el espacio entre líneas para que se vea compacto */
-    padding-left: 80px; 
-    margin: 0;
-    text-transform: uppercase;
-    padding-top: 25px; 
-    line-height: 1.2; /* para separar las palabras verticalmente */
-    letter-spacing: 8px; /* Aumenta si quieres más separación */
-    display: inline-block; /* Necesario para que el transform funcione */
-    transform: scaleY(1.1); 
-    transform-origin: top; /* Asegura que se estiren desde la parte superior */
-}
-
-/* Contenedor para alinear el contenido */
-.unete-contenido {
-    display: flex;
-    flex-direction: column; /* Esto pone un texto debajo del otro */
-    align-items: flex-start;
-    z-index: 2; /* El contenido (textos y botón) pasa al frente */
-}
-
-/* Contenedor del nuevo bloque para que se alinee a la izquierda */
-.bloque-simplicidad {
-    padding-left: 80px; 
-    margin-top: 40px; 
-    color: #292929;
-}
-
-.simplicidad-titulo {
-    font-family: 'Staatliches', sans-serif;
-    font-size: 60px;
-    margin: 0;
-    line-height: 1;
-    margin-top: 80px; 
-    letter-spacing: 3px;
-}
-
-.simplicidad-texto {
-    font-family: 'Staatliches', sans-serif;
-    font-size: 40px;
-    margin-top: 10px;
-    line-height: 1.1; /* Ajuste para que los saltos de línea se vean bien */
-    margin-top: 70px; 
-    letter-spacing: 3px; 
-}
-
-.texto-listo {
-    font-family: 'BrickFont', sans-serif; 
-    font-size: 130px;
-    color: #8362E8;
-    -webkit-text-stroke: 1px #8362E8; 
-    
-    display: inline-block;
-    transform: rotate(-13.3deg); 
-    margin-left: 50px; 
-    line-height: 1;
-}
-
-.palabra-comenzar {
-    display: inline-block; /* Importante para que acepte el movimiento */
-    padding-left: 65px; 
-    
-}
-
-.boton-unete {
-    /* Dimensiones y Forma */
-    width: 405px;
-    height: 105px;
-    border-radius: 80px;
-    cursor: pointer;
-    margin-top: -130px;
-    margin-left: 230px; 
-    display: inline-block;
-    transform: rotate(-13deg); /* Rotación */
-    
-    /* Colores y Borde */
-    background-color: #8362E8;
-    border: 5px solid #292929; 
-    
-    /* Texto */
-    font-family: 'Baloo Bhaijaan 2', sans-serif;
-    font-weight: 800; 
-    font-size: 48px;
-    color: #F8F5FF;
-    box-shadow: 18px 15px 0px 0px #292929;
-    
-    /* transición */
-    transition: all 0.1s ease;
-    outline: none;
-
-}
-
-/* EFECTO DE HUNDIR AL PRESIONAR */
-.boton-unete:active {
-    
-    transform: rotate(-13deg) translate(10px, 8px); 
-    box-shadow: 8px 7px 0px 0px #292929;
-}
-
-.img-capsula {
-    position: absolute; /* La hace moversobre el contenido */
-    width: 1100px; 
-    height: auto;
-    top: 200px;    
-    right: 0px;  
-    z-index: 1; /* Asegura que esté por encima del fondo verde pero detrás delos rtextos */
-}
-
-
-/*** RESPONSIVE DESIGN (Mobile First Adjustments) ***/
-
-@media (max-width: 768px) {
-    .header-container {
-        flex-direction: column;
-        padding-bottom: 20px;
-    }
-    .header-buttons {
-        position: static;
-        margin-top: 20px;
-        justify-content: center;
+    /* Configuración básica (antes html, body) */
+    & {
+        margin: 0;
+        padding: 0;
         width: 100%;
-        flex-wrap: wrap;
+        overflow-x: hidden;
+        background-color: #D7FD49; 
     }
-    .hero-titulo-container {
-        padding-left: 20px;
-        padding-top: 20px;
+    
+
+    /*estilo del Header y los botones */
+
+    /* Estilos del Header */
+    .main-header {
+        width: 100%;
+        padding: 5px 0;
+        background-color: #F8F5FF;
+        border-bottom: 4px solid #292929;
+        box-shadow: 0 4px 0px #292929;
+    }
+
+    .header-container {
+        display: flex;
+        justify-content: center; 
+        align-items: center;
+        position: relative;
+        max-width: 1440px; 
+        margin: 0 auto;
+    }
+
+    .header-buttons {
+        position: absolute;
+        right: 50px; 
+        display: flex;
+        align-items: center;
+        gap: 40px; 
+    }
+
+    /* Botón Iniciar Sesión */
+    .btn-login {
+        background: none;
+        border: none;
+        color: #292929;
+        font-family: 'Baloo Bhaijaan 2', sans-serif;
+        font-weight: 800; 
+        font-size: 16px;
+        cursor: pointer;
+        transition: color 0.1s;
+    }
+
+    .btn-login:active {
+        color: #8362E8; 
+    }
+
+    /* Botón Regístro */
+    .btn-registro {
+        width: 125px;
+        height: 36px;
+        background-color: #8362E8;
+        color: #F8F5FF;
+        font-family: 'Baloo Bhaijaan 2', sans-serif;
+        font-weight: 800;
+        font-size: 14px;
+        border: 3px solid #292929; 
+        border-radius: 80px; 
+        cursor: pointer;
+        position: relative;
+        box-shadow: 8px 8px 0px #292929;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: all 0.05s;
+    }
+
+    .btn-registro:active {
+        transform: translate(6px, 6px);
+        box-shadow: 2px 2px 0px #292929;
+    }
+
+    /* Botón de menú hamburguesa */
+    .menu-hamburguesa {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 30px;
+        height: 21px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        position: absolute;
+        left: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
+    .menu-hamburguesa span {
+        display: block;
+        width: 100%;
+        height: 3px;
+        background-color: #292929;
+        border-radius: 2px;
+        transition: all 0.3s ease;
+    }
+
+    /* Menú desplegable */
+    .menu-desplegable {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(41, 41, 41, 0.95);
+        z-index: 1000;
+        display: none;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .menu-desplegable.active {
+        display: flex;
+        opacity: 1;
+    }
+
+    .menu-contenido {
+        background-color: #F8F5FF;
+        border: 5px solid #292929;
+        border-radius: 20px;
+        padding: 40px;
+        max-width: 400px;
+        width: 90%;
+        position: relative;
+        box-shadow: 15px 15px 0px #292929;
+    }
+
+    .menu-titulo {
+        font-family: 'Anton', sans-serif;
+        font-size: 32px;
+        color: #292929;
         text-align: center;
+        margin: 0 0 30px 0;
+        text-transform: uppercase;
     }
+
+    .menu-lista {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .menu-lista li {
+        margin-bottom: 20px;
+    }
+
+    .menu-enlace {
+        font-family: 'Baloo Bhaijaan 2', sans-serif;
+        font-size: 20px;
+        font-weight: 600;
+        color: #292929;
+        text-decoration: none;
+        display: block;
+        padding: 15px 20px;
+        background-color: #D7FD49;
+        border: 3px solid #292929;
+        border-radius: 10px;
+        text-align: center;
+        transition: all 0.2s ease;
+        box-shadow: 5px 5px 0px #292929;
+    }
+
+    .menu-enlace:hover {
+        background-color: #8362E8;
+        color: #F8F5FF;
+        transform: translate(3px, 3px);
+        box-shadow: 2px 2px 0px #292929;
+    }
+
+    .menu-cerrar {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        width: 40px;
+        height: 40px;
+        background-color: #8362E8;
+        border: 3px solid #292929;
+        border-radius: 50%;
+        color: #F8F5FF;
+        font-size: 20px;
+        font-weight: bold;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 5px 5px 0px #292929;
+        transition: all 0.2s ease;
+    }
+
+    .menu-cerrar:hover {
+        background-color: #292929;
+        transform: translate(2px, 2px);
+        box-shadow: 3px 3px 0px #8362E8;
+    }
+
+    .menu-cerrar:active {
+        transform: translate(4px, 4px);
+        box-shadow: 1px 1px 0px #8362E8;
+    }
+
+    .hero-titulo-container {
+        padding-left: 68px; /* margen  */
+        padding-top: 50px;
+    }
+
     .t-linea {
-        font-size: 50px; /* Reduced from 120px */
+        font-family: 'Anton', sans-serif;
+        font-size: 120px;
+        color: #292929;
+        text-transform: uppercase;
+        
+        /* Control de espacio exacto */
+        margin-bottom: 10px; 
+        line-height: 0.85; 
+        
+        display: block; /* ocupacion de cada linea */
+    }
+
+    /*  margen de última linea */
+    .t-linea:last-child {
+        margin-bottom: 0;
+    }
+
+    /* posicionamiento libre */
+    .hero-titulo-container {
+        position: relative;
+        padding-left: 68px;
+        padding-top: 25px;
+    }
+
+    /* Estilo  Controla tus Finanzas GENERAL*/
+    .frase-inclinada {
+        position: absolute;
+        color: #8362E8;
+        font-family: 'BrickFont', cursive;
+        font-size: 90px; 
+        transform: rotate(-22.72deg); 
+        white-space: nowrap;
         line-height: 1;
     }
-    .frase-inclinada {
-        position: static;
-        font-size: 40px;
-        transform: rotate(0deg);
-        display: block;
-        margin: 20px auto;
-        text-align: center;
-        white-space: normal;
+
+    /* Posición  "CONTROLA TUS" */
+    .parte-1 {
+        top: 110px;  
+        left: 635px; 
     }
+
+    /* Posición exacta para "FINANZAS" */
+    .parte-2 {
+        top: 186px; 
+        left: 711px;
+    }
+
+    .btn-comenzar {
+        background-color: #8362E8;
+        color: #F8F5FF;
+        font-family: 'Baloo Bhaijaan 2', sans-serif;
+        font-weight: 800;
+        
+        /* 1. cambiar tamaños de letra*/
+        font-size: 22px; 
+        
+        /* 2. reduccion de espacio interno (arriba/abajo y lados) */
+        padding: 10px 35px; 
+        
+        /* trazos */
+        border: 4px solid #292929; 
+        border-radius: 50px; /* redondeado o */
+        
+        cursor: pointer;
+        position: relative;
+        
+        /* 4. Ajuste de sombra*/
+        box-shadow: 12px 10px 0px #292929; 
+        
+        transition: all 0.1s ease;
+    }
+
+    .contenedor-boton-hero {
+        display: flex;            
+        justify-content: center;  
+        width: 100%;             
+        margin-top: 50px;         
+        margin-bottom: 40px;      
+    }
+
+    .btn-comenzar:active {
+        transform: translate(8px, 6px);
+        box-shadow: 4px 4px 0px #292929;
+    }
+
+    /* AJUSTE DEL CONTENEDOR  */
+
     .contenedor-animacion-choque {
-        display: none; /* Hide on mobile */
+        position: absolute;
+        /* Removed duplicate position: absolute; */
+        
+        top: -60px; 
+        
+        right: -110px;
+        width: 660px;
+        height: 500px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: visible;
+        z-index: 10;
+        
     }
-    .hero-titulo-seccion {
+
+    /* ESTILO DE LOS PUÑOS */
+    .puno-izq, .puno-der {
+        position: absolute;
+        width: 452px;
         height: auto;
+        /* duracion d animacion */
+        animation-duration: 5s;
+        animation-iteration-count: infinite;
+        /* ajuste de tiempo */
+        animation-timing-function: cubic-bezier(0.45, 0, 0.55, 1);
+    }
+
+    .puno-izq {
+        left: 0;
+        animation-name: choque-suave-izq;
+    }
+
+    .puno-der {
+        right: 0;
+        animation-name: choque-suave-der;
+    }
+
+    .lineas-fx {
+        position: absolute;
+        left: 33%;
+        /* 2. desplazamiento y centrado */
+        transform: translateX(-80%);
+        width: 298px;
+        opacity: 0;
+        z-index: 5;
+        animation: brillo-impacto 5s infinite;
+    }
+
+    /*  REGLAS DE MOVIMIENTO */
+
+    /* 1.  TIEMPO */
+    .puno-izq, .puno-der {
+        
+        animation-duration: 3s; 
+        animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .lineas-fx {
+        
+        animation-duration: 3s;
+    }
+
+    /* POSICIÓN INICIAL */
+
+    @keyframes choque-suave-izq {
+        /* Posición inicial  para que haya movimiento */
+        0% { transform: translateX(100px); }    
+        /* punto de impacto máximo */
+        45%, 55% { transform: translateX(110px); } 
+        /* Regreso */
+        100% { transform: translateX(100px); } 
+    }
+
+    @keyframes choque-suave-der {
+        /* Posición inicial */
+        0% { transform: translateX(-100px); }   
+        /* punto de impacto máximo */
+        45%, 55% { transform: translateX(-110px); } 
+        /* Regreso  */
+        100% { transform: translateX(-100px); } 
+    }
+
+    /* ANIMACIÓN DE LÍNEAS */
+    @keyframes brillo-impacto {
+        /* inicio */
+        0%, 11.9% { 
+            opacity: 0; 
+            transform: scale(0.5); 
+        }
+        /* impacto */
+        12%, 65% { 
+            opacity: 1; 
+            transform: scale(2.2); 
+        }
+        /* Desaparición  */
+        65.1%, 100% { 
+            opacity: 0; 
+            transform: scale(0.5); 
+        }
+    }
+
+    /*seccion baja*/
+
+    .hero-titulo-seccion {
+        
+        min-height: 30vh; 
+        height: auto;
+        padding-bottom: 0px; 
+        position: relative;
+        background-color: #D7FD49;
+        overflow: visible;
+    }
+
+    .contenedor-capypay-footer {
+        position: relative; 
+        margin-top: 20px;
+        display: flex;
+        align-items: flex-end; /* Mantiene al capi y al texto alineados abajo */
+        justify-content: center;
+        gap: 30px;
+        width: 100%;
+    }
+
+    .img-estatica-chiguire, .vector-chiguire {
+        width: 320px;
+        height: auto;
+    }
+
+
+    .img-estatica-celular {
+        width: 300px; 
+        height: auto;
+        position: relative;  
+        top: 8px; 
+        z-index: 10;
+        display: inline-block;
+        filter: drop-shadow(0px 10px 20px rgba(0,0,0,0.15)); /* Sombra */
+    }
+
+    /* LA SECCIÓN BLANCA */
+    .seccion-info-blanca {
+        background-color: #F8F5FF;
+        padding: 10px 0px 150px 0px;
+        width: 100%;
+        min-height: 80vh; 
+        position: relative;
+        z-index: 10;
+    }
+
+    .decoracion-superior {
+        position: absolute;
+        top: 0;             
+        left: 83%;          
+        width: 75px;        
+        transform: translateY(-50%); 
+        z-index: 20;
+    }
+
+    .titulo-endgame-lineal {
+        font-family: 'Anton', sans-serif; 
+        font-size: 60px;                 
+        color: #292929;                  
+        text-transform: uppercase;
+        margin: 0;
+        white-space: nowrap;            /* Mantiene todo en una sola línea */
+        letter-spacing: 2px;           
+
+        
+        margin-top: 40px;    /* Esto lo baja un poco más respecto al borde blanco */
+        margin-left: 70px;  /* Esto lo empuja hacia la derecha.  */
+
+    }
+
+    .descripcion-endgame {
+        
+        font-family: 'Baloo Bhaijaan 2', sans-serif; 
+        font-size: 32px;                 
+        color: #292929;                  
+        line-height: 1.4;                
+        margin-top: 30px;                
+        margin-left: 70px;              
+        max-width: 900px;                
+        font-weight: 400;                
+    }
+
+    .resaltado-morado {
+        color: #8362E8;                  
+        font-weight: 600;                
+    }
+
+    .vector-tap-derecha {
+        position: absolute;
+        right: 2%;          
+        top: 0;             
+        width: 400px;       
+        z-index: 15;
+        pointer-events: none;
+        transform: translateY(0); 
+    }
+
+    .contenedor-tarjetas-beneficios {
+        display: flex;
+        justify-content: center; /* Esto centra las 3 tarjetas perfectamente al medio */
+        align-items: center;
+        gap: 40px;               /* separacion */
+        margin-top: 100px;        /* Espacio respecto al título de arriba */
+        width: 100%;    
+        z-index: 1;         /* ancho para poder centrar */
+    }
+
+
+    .contenedor-tarjetas-beneficios::before {
+        content: "";
+        position: absolute;
+        right: 30%;           
+        top: 65%;
+        transform: translateY(-50%);
+        
+        /* Dimensiones del rectángulo */
+        width: 600px;         
+        height: 300px;        
+        
+        background-color: #D7FD49; 
+        border-radius: 20px;
+        
+        /* para mandarlo al fondo o al frente */
+        z-index: -2; 
+        
+
+    }
+
+
+    .tarjeta-informativa {
+
+                
+        padding-bottom: 80px; /* Espacio al final para que no pegue con lo siguiente */
+        width: 320px;
+        height: 400px;
+        background-color: #F8F5FF; 
+        border: 5px solid #8362E8;  
+        border-radius: 10px;        
+        padding: 25px 20px;         /* Espaciado interno superior y lateral */
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        position: relative;         /* Para posicionar el icono y el texto */
+        overflow: hidden;
+        
+    }
+
+    .titulo-tarjeta {
+        font-family: 'Baloo Bhaijaan 2', sans-serif;
+        font-weight: 700;
+        font-size: 30px;
+        color: #8362E8;
+        margin: 0;             /*  espacio alrededor */
+        line-height: 0.9;      /*  espacio vertical */
+    }
+
+    .subtitulo-tarjeta {
+        font-family: 'Baloo Bhaijaan 2', sans-serif;
+        font-weight: 500;
+        font-size: 25px;
+        color: #8362E8;
+        margin: 0;             
+        line-height: 1.2;
+    }
+
+    .texto-tarjeta {
+        font-family: 'Baloo Bhaijaan 2', sans-serif;
+        font-weight: 500;
+        font-size: 20px;
+        color: #292929;
+        line-height: 1.2;      /*  espacio entre líneas del párrafo */
+        margin-top: 10px;      
+        margin-bottom: 0;
+        max-width: 280px;
+    }
+
+    .icono-tarjeta {
+        width: 180px;              
+        position: absolute;
+        bottom: 15px;              
+        left: 20px;                 
+        margin: 0;
+    }
+
+    /* 1. transición y ocultamos el icono de contraste al inicio */
+    .tarjeta-informativa {
+        transition: all 0.4s ease; /* Hace que el cambio de color sea fluido */
+    }
+
+    .icono-contraste {
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.4s ease;
+    }
+
+    .icono-base {
+        transition: opacity 0.4s ease;
+    }
+
+    /* 2. EFECTO HOVER: Transformación total al pasar el ratón */
+    .tarjeta-informativa:hover {
+        transform: translateY(-20px);      /* La tarjeta sube */
+        background-color: #8362E8;         /* El fondo cambia a morado profundo */
+        border-color: #D7FD49;
+        box-shadow: 10px 10px 0px #D7FD49; /* Sombra sólida */
+    }
+
+    /* 3. Cambiar el color de todos los textos a la vez */
+    .tarjeta-informativa:hover .titulo-tarjeta,
+    .tarjeta-informativa:hover .subtitulo-tarjeta,
+    .tarjeta-informativa:hover .texto-tarjeta {
+        color: #F8F5FF; /* Letras pasan a color blanco*/
+    }
+
+    /* 4. Intercambio de imágenes en hover */
+    .tarjeta-informativa:hover .icono-base {
+        opacity: 0;
+        visibility: hidden;
+    }
+
+    .tarjeta-informativa:hover .icono-contraste {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .seccion-morada {
+        background-color: #8362E8;
+        width: 100%;
+        min-height: 500px;
+        padding: 80px 0;
+        display: block;
+        position: relative; /* ancla para el título */
+        z-index: 10;
+    }
+
+    .titulo-planes {
+        font-family: 'Anton', sans-serif;
+        font-size: 100px;
+        color: #D7FD49;
+        letter-spacing: 3px;  
+        line-height: 1;
+        white-space: nowrap; /* Evita que el texto se salte de línea al moverlo */
+        position: absolute;  /* Lo hace flotar  */
+        top: 20px;           /* Distancia desde arriba */
+        left: 90px;          /* Distancia desde la izquierda */
+    }
+
+    /* Contenedor para alinear los planes */
+    .contenedor-planes {
+        display: flex;
+        justify-content: center;
+        gap: 50px;
+        margin-top: 150px; /* para que no choque con el título absoluto */
         padding-bottom: 50px;
     }
-    .contenedor-personajes-hero {
-        position: relative;
+    
+    .boton-plan {
+        /* Dimensiones y Forma */
+        width: 331px;
+        height: 500px;
+        border-radius: 34px;
+        background-color: #F8F5FF; 
+        border: 8.5px solid #292929;
+        box-shadow: 13px 8.5px 0px #292929;
+        
+        /* Diseño interno */
         display: flex;
         flex-direction: column;
         align-items: center;
-        margin-top: 40px;
-        width: 100%;
-    }
-    .vector-chiguire, .img-estatica-celular {
-        width: 80%;
-        max-width: 300px;
-        position: static;
-        top: 0;
-        margin-bottom: 20px;
-    }
-    .titulo-endgame-lineal {
-        font-size: 40px;
-        white-space: normal;
-        margin-left: 0;
-        text-align: center;
-        margin-top: 20px;
-        padding: 0 10px;
-    }
-    .descripcion-endgame {
-        font-size: 20px;
-        margin-left: 20px;
-        margin-right: 20px;
-        text-align: center;
-    }
-    .contenedor-tarjetas-beneficios {
-        flex-direction: column;
-        margin-top: 50px;
-    }
-    .contenedor-tarjetas-beneficios::before {
-        display: none; /* Hide background shape on mobile as it won't fit well */
-    }
-    .titulo-planes {
-        font-size: 50px;
-        position: static;
-        text-align: center;
-        padding: 20px; /* Reset padding/margin */
-        white-space: normal;
-    }
-    .seccion-morada {
-        padding-top: 20px;
-    }
-    .contenedor-planes {
-        flex-direction: column;
-        align-items: center;
-        margin-top: 20px;
-    }
-    .boton-plan {
-        width: 90%;
-        height: auto;
-        min-height: 400px;
-    }
-    .seccion-unete {
-        min-height: auto;
-        padding-bottom: 50px;
-    }
-    .unete-titulo {
-        font-size: 50px;
-        padding-left: 20px;
-        transform: none;
-        display: block;
-        text-align: center;
-        padding-right: 20px;
-    }
-    .bloque-simplicidad {
-        padding-left: 20px;
-        text-align: center;
-    }
-    .simplicidad-titulo {
-        font-size: 40px;
-    }
-    .simplicidad-texto {
-        font-size: 24px;
-        margin-top: 20px;
-    }
-    .texto-listo {
-        font-size: 60px;
-        display: block;
-        margin: 20px auto;
-        transform: none;
-        text-align: center;
-    }
-    .boton-unete {
-        margin: 20px auto;
-        display: block;
-        transform: none;
-        width: 80%;
-        height: auto;
-        padding: 20px;
-        margin-left: auto;
-        margin-right: auto;
-    }
-    .img-capsula {
+        padding: 34px 17px;
+        cursor: pointer;
+        transition: all 0.1s ease; /* Transición rápida para el clic */
         position: relative;
-        width: 100%;
-        top: 0;
-        margin-top: 40px;
+      
+        
     }
-    .decoracion-superior, .vector-tap-derecha {
-        display: none;
+
+    /* EFECTO DE HUNDIMIENTO */
+    .boton-plan:active {
+        transform: translate(8.5px, 4.25px); 
+        box-shadow: 4px 4px 0px #292929;     
+    }
+
+    /* Tipografía de Títulos */
+    .titulo-plan {
+        font-family: 'Baloo Bhaijaan 2', sans-serif;
+        font-weight: 700;
+        font-size: 40px;
+        color: #292929;
+        /* CONTROL DE POSICIÓN */
+        width: 100%;           /* Ocupa todo el ancho para poder alinearlo */
+        text-align: left;      /* Lo manda a la izquierda */
+        padding-left: 45px;    /* Ajustar este número para moverlo más o menos a la izquierda */
+        margin-top: 5px;      /* Espacio con el borde superior del botón */
+        margin-bottom: 0px;    /* Pegadito al icono de abajo */
+    }
+
+    .icono-plan {
+        width: 70px;
+        height: 70px;
+        margin-top: 0px;
+        margin-bottom: 5px;
+        /* CONTROL DE POSICIÓN */
+        align-self: flex-start;  /* Lo empuja a la izquierda del botón */
+        margin-left: 25px;       /* USA EL MISMO VALOR QUE EL TÍTULO para que alineen */
+        
+    }
+
+    /* Sección de Precio */
+    .precio-contenedor {
+        font-family: 'Baloo Bhaijaan 2', sans-serif;
+        color: #292929;
+        /* CONTROL DE POSICIÓN */
+        width: 100%;            /* Ocupa todo el ancho del botón */
+        display: flex;          /*  flex para alinear el $15 y el /mes */
+        justify-content: flex-start; /* Los manda a la izquierda */
+        align-items: baseline;  /* Alinea el texto por la parte de abajo */ 
+        padding-left: 51px;     
+        margin-bottom: 5x;   
+    }
+
+    .precio-grande {
+        font-size: 55px;
+        font-weight: 800; 
+    }
+
+    .precio-mes {
+        font-size: 35px;
+        font-weight: 600; 
+    }
+
+    /* Lista de beneficios */
+    .lista-beneficios {
+        list-style: none;
+        padding: 0;
+        font-weight: 600;
+        /* CONTROL DE POSICIÓN */
+        width: 100%;            /* ancho para alinear contenido */
+        display: flex;
+        flex-direction: column;
+        align-self: flex-start;
+        
+        /* este margen debe coincidir visualmente con el del título */
+        padding-left: 25px;     
+        margin-top: 0px;       
+    }
+
+    .lista-beneficios li {
+        font-family: 'Baloo Bhaijaan 2', sans-serif;
+        font-size: 20px;
+        color: #292929;
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+        text-align: left;
+    }
+
+    .check-plan {
+        
+        width: 30px; 
+        height: 30px; 
+        margin-right: 15px; /* Espacio entre el check y el texto */
+        object-fit: contain;
+    }
+
+    .boton-comedor {
+        background-color: #D7FD49 !important;
+    }
+
+    .frase-cierre {
+        font-family: 'Baloo Bhaijaan 2', sans-serif;
+        font-weight: 800; 
+        font-size: 45px;
+        color: #D7FD49; 
+        text-align: center;
+        margin-top: 0px; 
+        width: 100%;
+    }
+
+
+    .seccion-unete {
+        background-color: #D7FD49; 
+        width: 100%;
+        /* el min-height para que sea manejable */
+        min-height: 120vh; 
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        position: relative;
+        overflow: hidden;
+        padding-bottom: 200px; 
+        
+    }
+
+    /* Estilos para el título gigante */
+    .unete-titulo {
+        font-family: 'Anton', sans-serif; 
+        font-size: 110px; 
+        color: #292929; 
+        line-height: 0.9; /* Reduce el espacio entre líneas para que se vea compacto */
+        padding-left: 80px; 
+        margin: 0;
+        text-transform: uppercase;
+        padding-top: 25px; 
+        line-height: 1.2; /* para separar las palabras verticalmente */
+        letter-spacing: 8px; /* Aumenta si quieres más separación */
+        display: inline-block; /* Necesario para que el transform funcione */
+        transform: scaleY(1.1); 
+        transform-origin: top; /* Asegura que se estiren desde la parte superior */
+    }
+
+    /* Contenedor para alinear el contenido */
+    .unete-contenido {
+        display: flex;
+        flex-direction: column; /* Esto pone un texto debajo del otro */
+        align-items: flex-start;
+        z-index: 2; /* El contenido (textos y botón) pasa al frente */
+    }
+
+    /* Contenedor del nuevo bloque para que se alinee a la izquierda */
+    .bloque-simplicidad {
+        padding-left: 80px; 
+        margin-top: 40px; 
+        color: #292929;
+    }
+
+    .simplicidad-titulo {
+        font-family: 'Staatliches', sans-serif;
+        font-size: 60px;
+        margin: 0;
+        line-height: 1;
+        margin-top: 80px; 
+        letter-spacing: 3px;
+    }
+
+    .simplicidad-texto {
+        font-family: 'Staatliches', sans-serif;
+        font-size: 40px;
+        margin-top: 10px;
+        line-height: 1.1; /* Ajuste para que los saltos de línea se vean bien */
+        margin-top: 70px; 
+        letter-spacing: 3px; 
+    }
+
+    .texto-listo {
+        font-family: 'BrickFont', sans-serif; 
+        font-size: 130px;
+        color: #8362E8;
+        -webkit-text-stroke: 1px #8362E8; 
+        
+        display: inline-block;
+        transform: rotate(-13.3deg); 
+        margin-left: 50px; 
+        line-height: 1;
+    }
+
+    .palabra-comenzar {
+        display: inline-block; /* Importante para que acepte el movimiento */
+        padding-left: 65px; 
+        
+    }
+
+    .boton-unete {
+        /* Dimensiones y Forma */
+        width: 405px;
+        height: 105px;
+        border-radius: 80px;
+        cursor: pointer;
+        margin-top: -130px;
+        margin-left: 230px; 
+        display: inline-block;
+        transform: rotate(-13deg); /* Rotación */
+        
+        /* Colores y Borde */
+        background-color: #8362E8;
+        border: 5px solid #292929; 
+        
+        /* Texto */
+        font-family: 'Baloo Bhaijaan 2', sans-serif;
+        font-weight: 800; 
+        font-size: 48px;
+        color: #F8F5FF;
+        box-shadow: 18px 15px 0px 0px #292929;
+        
+        /* transición */
+        transition: all 0.1s ease;
+        outline: none;
+
+    }
+
+    /* EFECTO DE HUNDIR AL PRESIONAR */
+    .boton-unete:active {
+        
+        transform: rotate(-13deg) translate(10px, 8px); 
+        box-shadow: 8px 7px 0px 0px #292929;
+    }
+
+    .img-capsula {
+        position: absolute; /* La hace moversobre el contenido */
+        width: 1100px; 
+        height: auto;
+        top: 200px;    
+        right: 0px;  
+        z-index: 1; /* Asegura que esté por encima del fondo verde pero detrás delos rtextos */
+    }
+
+
+    /*** RESPONSIVE DESIGN (Mobile First Adjustments) ***/
+
+    @media (max-width: 768px) {
+        .header-container {
+            flex-direction: column;
+            padding-bottom: 20px;
+        }
+        .header-buttons {
+            position: static;
+            margin-top: 20px;
+            justify-content: center;
+            width: 100%;
+            flex-wrap: wrap;
+        }
+        .hero-titulo-container {
+            padding-left: 20px;
+            padding-top: 20px;
+            text-align: center;
+        }
+        .t-linea {
+            font-size: 50px; /* Reduced from 120px */
+            line-height: 1;
+        }
+        .frase-inclinada {
+            position: static;
+            font-size: 40px;
+            transform: rotate(0deg);
+            display: block;
+            margin: 20px auto;
+            text-align: center;
+            white-space: normal;
+        }
+        .contenedor-animacion-choque {
+            display: none; /* Hide on mobile */
+        }
+        .hero-titulo-seccion {
+            height: auto;
+            padding-bottom: 50px;
+        }
+        .contenedor-personajes-hero {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 40px;
+            width: 100%;
+        }
+        .vector-chiguire, .img-estatica-celular {
+            width: 80%;
+            max-width: 300px;
+            position: static;
+            top: 0;
+            margin-bottom: 20px;
+        }
+        .titulo-endgame-lineal {
+            font-size: 40px;
+            white-space: normal;
+            margin-left: 0;
+            text-align: center;
+            margin-top: 20px;
+            padding: 0 10px;
+        }
+        .descripcion-endgame {
+            font-size: 20px;
+            margin-left: 20px;
+            margin-right: 20px;
+            text-align: center;
+        }
+        .contenedor-tarjetas-beneficios {
+            flex-direction: column;
+            margin-top: 50px;
+        }
+        .contenedor-tarjetas-beneficios::before {
+            display: none; /* Hide background shape on mobile as it won't fit well */
+        }
+        .titulo-planes {
+            font-size: 50px;
+            position: static;
+            text-align: center;
+            padding: 20px; /* Reset padding/margin */
+            white-space: normal;
+        }
+        .seccion-morada {
+            padding-top: 20px;
+        }
+        .contenedor-planes {
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .boton-plan {
+            width: 90%;
+            height: auto;
+            min-height: 400px;
+        }
+        .seccion-unete {
+            min-height: auto;
+            padding-bottom: 50px;
+        }
+        .unete-titulo {
+            font-size: 50px;
+            padding-left: 20px;
+            transform: none;
+            display: block;
+            text-align: center;
+            padding-right: 20px;
+        }
+        .bloque-simplicidad {
+            padding-left: 20px;
+            text-align: center;
+        }
+        .simplicidad-titulo {
+            font-size: 40px;
+        }
+        .simplicidad-texto {
+            font-size: 24px;
+            margin-top: 20px;
+        }
+        .texto-listo {
+            font-size: 60px;
+            display: block;
+            margin: 20px auto;
+            transform: none;
+            text-align: center;
+        }
+        .boton-unete {
+            margin: 20px auto;
+            display: block;
+            transform: none;
+            width: 80%;
+            height: auto;
+            padding: 20px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .img-capsula {
+            position: relative;
+            width: 100%;
+            top: 0;
+            margin-top: 40px;
+        }
+        .decoracion-superior, .vector-tap-derecha {
+            display: none;
+        }
     }
 }

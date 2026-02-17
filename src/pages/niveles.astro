@@ -1,6 +1,6 @@
 ---
 import CapyPay from "../layouts/MainLayout.astro";
-import ModuloNiveles from "../components/ModuloNiveles.astro";
+import ModuloNiveles from "../components/widgets/ModuloNiveles.astro";
 const url = new URL(Astro.request.url);
 const xpParam = url.searchParams.get("xp");
 const puntosActuales = xpParam ? parseInt(xpParam) : 1500;

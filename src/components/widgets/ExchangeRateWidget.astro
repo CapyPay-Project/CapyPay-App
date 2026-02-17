@@ -1,4 +1,5 @@
 ---
+import Card from "../ui/Card.astro";
 const currentDate = new Date();
 const dateString = currentDate.toLocaleDateString("es-VE", {
   weekday: "short",
@@ -11,8 +12,8 @@ const timeString = currentDate.toLocaleTimeString("es-VE", {
 });
 ---
 
-<div
-  class="bg-brand-black rounded-3xl p-4 border border-white/10 shadow-none flex flex-col justify-between h-full relative overflow-hidden isolate"
+<Card
+  class="p-4 shadow-none flex flex-col justify-between h-full relative overflow-hidden isolate"
 >
   <!-- Background Decoration -->
   <div
@@ -22,7 +23,9 @@ const timeString = currentDate.toLocaleTimeString("es-VE", {
 
   <!-- Header -->
   <div class="flex justify-between items-center">
-    <h3 class="text-slate-400 text-xs sm:text-sm font-semibold uppercase tracking-wider">
+    <h3
+      class="text-slate-400 text-xs sm:text-sm font-semibold uppercase tracking-wider"
+    >
       Tasa del Día
     </h3>
     <span class="flex h-2 w-2 relative">
@@ -45,22 +48,22 @@ const timeString = currentDate.toLocaleTimeString("es-VE", {
       <span class="text-[10px] text-slate-400 font-medium">Moneda Base</span>
     </div>
 
-     <!-- Divider Icon -->
-     <div class="text-brand-lime">
-       <svg
-         xmlns="http://www.w3.org/2000/svg"
-         class="h-6 w-6"
-         fill="none"
-         viewBox="0 0 24 24"
-         stroke="currentColor"
-       >
-         <path
-           stroke-linecap="round"
-           stroke-linejoin="round"
-           stroke-width="2"
-           d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
-       </svg>
-     </div>
+    <!-- Divider Icon -->
+    <div class="text-brand-lime">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-6 w-6"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+      </svg>
+    </div>
 
     <!-- Bs Side -->
     <div class="flex flex-col items-end">
@@ -100,11 +103,11 @@ const timeString = currentDate.toLocaleTimeString("es-VE", {
       {timeString}
     </p>
   </div>
-</div>
+</Card>
 
 <script>
   // @ts-nocheck
-  import { transactionService } from "../services/api.js";
+  import { transactionService } from "../../services/api.js";
 
   const rateDisplay = document.getElementById("widget-rate-display");
 

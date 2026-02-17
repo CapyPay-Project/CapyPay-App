@@ -1,5 +1,7 @@
 ---
-// src/components/Sidebar.astro
+import Button from "../ui/Button.astro";
+
+const currentPath = Astro.url.pathname;
 ---
 
 <aside
@@ -35,10 +37,11 @@
       id="toggleContainer"
     >
       <!-- Collapse Button -->
-      <button
+      <Button
         id="sidebarToggle"
-        class="text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-all p-1"
+        variant="icon"
         aria-label="Toggle Sidebar"
+        class="text-slate-400 hover:text-white hover:bg-white/5"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -54,7 +57,7 @@
             stroke-width="2"
             d="M11 19l-7-7 7-7m8 14l-7-7 7-7"></path>
         </svg>
-      </button>
+      </Button>
     </div>
   </div>
 
@@ -121,14 +124,23 @@
     <!-- MAIN NAVIGATION -->
     <div class="flex flex-col gap-1 px-3 mt-4 pb-4">
       <!-- Dashboard Link -->
-      <a
+      <Button
         href="/dashboard"
-        class="group/nav flex items-center p-2 rounded-lg hover:bg-white/5 transition-colors relative w-full text-left"
+        variant="ghost"
+        class={`flex! w-full! items-center! justify-start! p-2! gap-0! relative group/nav text-left ${
+          currentPath === "/dashboard"
+            ? "bg-white/5 text-white"
+            : "text-slate-400 hover:text-white hover:bg-white/5"
+        }`}
         title="Ir al Dashboard"
       >
-        <div class="relative shrink-0">
+        <div class="relative shrink-0 flex items-center justify-center w-9 h-9">
           <div
-            class="w-9 h-9 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 group-hover/nav:text-brand-lime transition-colors"
+            class={`w-9 h-9 rounded-full flex items-center justify-center transition-colors absolute inset-0 ${
+              currentPath === "/dashboard"
+                ? "bg-brand-lime text-black"
+                : "bg-slate-800 group-hover/nav:text-brand-lime"
+            }`}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -147,21 +159,30 @@
           </div>
         </div>
         <div
-          class="overflow-hidden whitespace-nowrap sidebar-content opacity-0 pointer-events-none max-w-0 ml-0 transition-all duration-500 ease-in-out"
+          class="overflow-hidden whitespace-nowrap sidebar-content opacity-0 pointer-events-none max-w-0 ml-3 transition-all duration-500 ease-in-out"
         >
-          <p class="text-sm text-slate-200 font-medium truncate">Dashboard</p>
+          <p class="text-sm font-medium truncate">Dashboard</p>
         </div>
-      </a>
+      </Button>
 
       <!-- Historial Link -->
-      <a
+      <Button
         href="/history"
-        class="group/nav flex items-center p-2 rounded-lg hover:bg-white/5 transition-colors relative w-full text-left"
+        variant="ghost"
+        class={`flex! w-full! items-center! justify-start! p-2! gap-0! relative group/nav text-left ${
+          currentPath === "/history"
+            ? "bg-white/5 text-white"
+            : "text-slate-400 hover:text-white hover:bg-white/5"
+        }`}
         title="Historial"
       >
-        <div class="relative shrink-0">
+        <div class="relative shrink-0 flex items-center justify-center w-9 h-9">
           <div
-            class="w-9 h-9 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 group-hover/nav:text-brand-lime transition-colors"
+            class={`w-9 h-9 rounded-full flex items-center justify-center transition-colors absolute inset-0 ${
+              currentPath === "/history"
+                ? "bg-brand-lime text-black"
+                : "bg-slate-800 group-hover/nav:text-brand-lime"
+            }`}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -180,21 +201,30 @@
           </div>
         </div>
         <div
-          class="overflow-hidden whitespace-nowrap sidebar-content opacity-0 pointer-events-none max-w-0 ml-0 transition-all duration-500 ease-in-out"
+          class="overflow-hidden whitespace-nowrap sidebar-content opacity-0 pointer-events-none max-w-0 ml-3 transition-all duration-500 ease-in-out"
         >
-          <p class="text-sm text-slate-200 font-medium truncate">Historial</p>
+          <p class="text-sm font-medium truncate">Historial</p>
         </div>
-      </a>
+      </Button>
 
       <!-- Pedidos/Órdenes Link (Center Action Style) -->
-      <a
+      <Button
         href="/orders"
-        class="group/nav flex items-center p-2 rounded-lg hover:bg-white/5 transition-colors relative w-full text-left"
+        variant="ghost"
+        class={`flex! w-full! items-center! justify-start! p-2! gap-0! relative group/nav text-left ${
+          currentPath === "/orders"
+            ? "bg-white/5 text-white"
+            : "text-slate-400 hover:text-white hover:bg-white/5"
+        }`}
         title="Mis Pedidos"
       >
-        <div class="relative shrink-0">
+        <div class="relative shrink-0 flex items-center justify-center w-9 h-9">
           <div
-            class="w-9 h-9 rounded-full bg-brand-lime/20 flex items-center justify-center text-brand-lime group-hover/nav:bg-brand-lime group-hover/nav:text-black transition-colors"
+            class={`w-9 h-9 rounded-full flex items-center justify-center transition-colors absolute inset-0 ${
+              currentPath === "/orders"
+                ? "bg-brand-lime text-black"
+                : "bg-brand-lime/20 text-brand-lime group-hover/nav:bg-brand-lime group-hover/nav:text-black"
+            }`}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -213,21 +243,30 @@
           </div>
         </div>
         <div
-          class="overflow-hidden whitespace-nowrap sidebar-content opacity-0 pointer-events-none max-w-0 ml-0 transition-all duration-500 ease-in-out"
+          class="overflow-hidden whitespace-nowrap sidebar-content opacity-0 pointer-events-none max-w-0 ml-3 transition-all duration-500 ease-in-out"
         >
-          <p class="text-sm text-slate-200 font-medium truncate">Pedidos</p>
+          <p class="text-sm font-medium truncate">Pedidos</p>
         </div>
-      </a>
+      </Button>
 
       <!-- Contactos Link -->
-      <a
+      <Button
         href="/contacts"
-        class="group/nav flex items-center p-2 rounded-lg hover:bg-white/5 transition-colors relative w-full text-left"
+        variant="ghost"
+        class={`flex! w-full! items-center! justify-start! p-2! gap-0! relative group/nav text-left ${
+          currentPath === "/contacts"
+            ? "bg-white/5 text-white"
+            : "text-slate-400 hover:text-white hover:bg-white/5"
+        }`}
         title="Contactos"
       >
-        <div class="relative shrink-0">
+        <div class="relative shrink-0 flex items-center justify-center w-9 h-9">
           <div
-            class="w-9 h-9 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 group-hover/nav:text-brand-lime transition-colors"
+            class={`w-9 h-9 rounded-full flex items-center justify-center transition-colors absolute inset-0 ${
+              currentPath === "/contacts"
+                ? "bg-brand-lime text-black"
+                : "bg-slate-800 group-hover/nav:text-brand-lime"
+            }`}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -246,21 +285,30 @@
           </div>
         </div>
         <div
-          class="overflow-hidden whitespace-nowrap sidebar-content opacity-0 pointer-events-none max-w-0 ml-0 transition-all duration-500 ease-in-out"
+          class="overflow-hidden whitespace-nowrap sidebar-content opacity-0 pointer-events-none max-w-0 ml-3 transition-all duration-500 ease-in-out"
         >
-          <p class="text-sm text-slate-200 font-medium truncate">Contactos</p>
+          <p class="text-sm font-medium truncate">Contactos</p>
         </div>
-      </a>
+      </Button>
 
       <!-- Niveles Link -->
-      <a
+      <Button
         href="/niveles"
-        class="group/nav flex items-center p-2 rounded-lg hover:bg-white/5 transition-colors relative w-full text-left"
+        variant="ghost"
+        class={`flex! w-full! items-center! justify-start! p-2! gap-0! relative group/nav text-left ${
+          currentPath === "/niveles"
+            ? "bg-white/5 text-white"
+            : "text-slate-400 hover:text-white hover:bg-white/5"
+        }`}
         title="Mis Niveles"
       >
-        <div class="relative shrink-0">
+        <div class="relative shrink-0 flex items-center justify-center w-9 h-9">
           <div
-            class="w-9 h-9 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 group-hover/nav:text-brand-lime transition-colors"
+            class={`w-9 h-9 rounded-full flex items-center justify-center transition-colors absolute inset-0 ${
+              currentPath === "/niveles"
+                ? "bg-brand-lime text-black"
+                : "bg-slate-800 group-hover/nav:text-brand-lime"
+            }`}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -273,17 +321,17 @@
                 stroke-linecap="round"
                 stroke-linejoin="round"
                 stroke-width="2"
-                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                d="M9 19v-6a2 2 0 00-2 2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
               ></path>
             </svg>
           </div>
         </div>
         <div
-          class="overflow-hidden whitespace-nowrap sidebar-content opacity-0 pointer-events-none max-w-0 ml-0 transition-all duration-500 ease-in-out"
+          class="overflow-hidden whitespace-nowrap sidebar-content opacity-0 pointer-events-none max-w-0 ml-3 transition-all duration-500 ease-in-out"
         >
-          <p class="text-sm text-slate-200 font-medium truncate">Niveles</p>
+          <p class="text-sm font-medium truncate">Niveles</p>
         </div>
-      </a>
+      </Button>
     </div>
 
     <!-- Contacts Section (Frecuentes) -->
@@ -455,7 +503,7 @@
     authService,
     userService,
     notificationService,
-  } from "../services/api.js";
+  } from "../../services/api.js";
 
   // --- Quick Transfer Handler ---
   window.handleQuickTransfer = (cedula) => {

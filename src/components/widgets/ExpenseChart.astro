@@ -1,10 +1,8 @@
 ---
-
+import Card from "../ui/Card.astro";
 ---
 
-<div
-  class="bg-white/5 rounded-3xl p-6 border border-white/10 shadow-lg w-full h-full flex flex-col isolate"
->
+<Card class="w-full h-full flex flex-col isolate shadow-lg bg-white/5">
   <div class="flex justify-between items-end mb-4 shrink-0">
     <h3 class="text-white text-lg font-semibold">Resumen Semanal</h3>
     <span class="text-green-400 text-sm font-medium"
@@ -42,4 +40,4 @@
       ))
     }
   </div>
-</div>
+</Card>

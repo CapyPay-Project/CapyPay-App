@@ -1,395 +1,400 @@
 
-/* --- ESTILOS REGISTRO / AUTH --- */
+/* CONTENEDOR DE SCOPE PARA LA LANDING (AUTH) */
+.landing-scope {
 
-/* Botón de regresar al landing */
-.btn-regresar {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    background-color: #8362E8;
-    color: #F8F5FF;
-    font-family: 'Baloo Bhaijaan 2', sans-serif;
-    font-weight: 800;
-    font-size: 16px;
-    border: 3px solid #292929;
-    border-radius: 50px;
-    cursor: pointer;
-    box-shadow: 6px 6px 0px #292929;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 16px;
-    transition: all 0.1s;
-    z-index: 100;
-    text-decoration: none;
-}
+    /* --- ESTILOS REGISTRO / AUTH --- */
 
-.btn-regresar:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: 8px 8px 0px #292929;
-}
-
-.btn-regresar:active {
-    transform: translate(4px, 4px);
-    box-shadow: 2px 2px 0px #292929;
-}
-
-main {
-    position: relative;
-    width: 100%;
-    max-width: 100vw;
-    overflow-x: hidden;
-}
-
-.contenedor-registro {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start; 
-    padding: 0px 8%;    
-    min-height: 80vh;
-}
-
-.texto-hero {
-    transform: rotate(-6deg); 
-    margin-top: 50px; /* Bajar los textos manteniendo distancia con la mano */
-    z-index: 20;
-}
-
-.titulo-hackea {
-    display: inline-block; 
-    transform: scaleY(1); 
-    transform-origin: top;   
-    font-family: 'Anton', sans-serif;
-    font-weight: 350;
-    font-size: 80px;         
-   
-    color: #292929;         
-    line-height: -0.10;      
-    letter-spacing: -2px;   
-    text-transform: uppercase;
-    margin: 0;
-}
-
-.subtitulo-cero {
-    font-family: 'BrickFont', sans-serif; 
-    font-size: 130px;
-    color: #8362E8;        
-    margin-top: -15px;      
-    margin-left: 70px;      
-    transform: rotate(-3deg); 
-    z-index: 5;
-    position: relative;
-    font-weight: 580;
-}
-
-/*  TARJETA DE REGISTROp */
-
-.card-registro {
-    background-color: #F8F5FF;
-    position: absolute;
-    right: 8%;      
-    top: 50%;        /* La centramos verticalmente */
-    transform: translateY(-30%); 
-    z-index: 10;      
-    width: 556px;
-    height: 480px; /* Altura reducida para login pero manteniendo margen con botón */
-    border: 6px solid #292929;
-    border-radius: 40px;
-    box-shadow: 15px 10px 0px #292929;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 40px;
-    
-    /* Evita que el contenedor la deforme */
-    box-sizing: border-box;
-    flex-shrink: 0;
-    margin-left: 20px;
-    padding-top: 0px !important; /* Reduccion de espacio*/
-    justify-content: flex-start !important; /* Alinea el contenido al inicio, no al centro */
-}
-
-/* Card específica para página de registro */
-.card-registro.registro-page {
-    height: 680px; /* Altura aumentada más para que quepa el botón */
-}
-
-.card-registro h2 {
-
-    font-family: 'Baloo Bhaijaan 2', sans-serif;
-    font-weight: 800;
-    font-size: 27px;
-    
-    /* Ajustes adicionales*/
-    margin-bottom: 30px;
-    color: #292929;
-    text-align: center;
-    text-transform: uppercase;
-}
-
-/* Estilo de los Input */
-.form-neubrutalist {
-    width: 100%;
-}
-
-.input-group {
-    position: relative;
-    margin-bottom: 35px;
-    width: 100%;
-    display: flex;     /* flex para centrar lo que hay dentro */
-    flex-direction: column;
-    align-items: center;
-    
-}
-
-.input-group label {
-    position: absolute;
-    top: -7px;
-    left: 13%;          /* Esto lo alinea justo donde empieza el input/select */
-    transform: translateX(15px); /*para que no toque la curva */
-    background-color: #F8F5FF;
-    padding: 0 5px;
-    line-height: 1;
-    font-family: 'Baloo Bhaijaan 2', sans-serif;
-    font-weight: 600;   /* título principal(nombre,correo electronico...*/
-    font-size: 17px;
-    z-index: 1;
-    color: #292929
-}
-
-.input-group input,
-.input-group select {
-    width: 80%;
-    height: 50px;
-    border: 2px solid #292929;
-    border-radius: 50px;
-    padding: 0 10px;
-    font-family: 'Baloo Bhaijaan 2', sans-serif;
-    font-size: 16px;
-    background: transparent;
-    outline: none;
-    box-sizing: border-box;
-}
-
-/* Enlace de login */
-.login-link {
-    font-family: 'Baloo Bhaijaan 2', sans-serif;
-    font-size: 20px;
-    margin-bottom: 20px;
-    color: #292929;
-    width: 100%;
-    text-align: center; /* Esto centra el texto y el enlace */
-    margin-bottom: 15px;
-    font-family: 'Baloo Bhaijaan 2', sans-serif;
-}
-
-.login-link a:hover {
-    color: #292929; /* Cambia a negro para que el usuario sepa que es clickeable */
-}
-
-/* Botón Súmate al Plan */
-.btn-sumate {
-    width: 60%;
-    height: 65px;
-    /* Esto lo empuja al centro automáticamente */
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    background-color: #8362E8;
-    color: #F8F5FF;
-    font-family: 'Baloo Bhaijaan 2', sans-serif;
-    font-size: 26px;
-    font-weight: 700;
-    border: 5px solid #292929;
-    border-radius: 50px;
-    cursor: pointer;
-    box-shadow: 6px 6px 0px #292929;
-    transition: all 0.1s;
-}
-
-.btn-sumate:hover {
-    transform: translate(-2px, -2px); 
-    box-shadow: 8px 8px 0px #292929; 
-}
-
-/* 3. EFECTO DE HUNDIDO (Cuando haces clic) */
-.btn-sumate:active {
-    transform: translate(4px, 4px);  
-    box-shadow: 2px 2px 0px #292929; 
-}
-
-
-.ilustracion-libre {
-    position: absolute; /* Esto permite moverla libremente */
-    
-    /* COORDENADAS PARA MOVERLA */
-    top: 5%;          /* Subir la mano para que no tape el texto */
-    left: 27%;        /* Ajusta r% para mover a los lados (0% izquierda, 100% derecha) */
-    
-    /* TAMAÑO Y ESTILO */
-    width: 250px;     /* Cambia el tamaño aquí */
-    height: auto;
-    z-index: 100;     /* Valor alto para que esté por encima de todo */
-    transform: rotate(-3deg); 
-    pointer-events: none;      /* Permite que puedas hacer clic a través de ella si tapa algo */
-}
-/* monedas*/
-.ilustracion-fondo {
-    position: absolute; 
-    top: 80%;         
-    left: 0%;         
-    width: 650px;      
-    height: auto;
-    z-index: -1;       /* VA DETRÁS DE TODO EL CONTENIDO */ 
-    transform: rotate(-2deg); 
-    
-    /* Evita que las monedas bloqueen clics en el formulario */
-    pointer-events: none;
-}
-
-.espejo {
-    
-    position: absolute;
-    top: 80%; 
-    left: 50%;
-    width: 700px;     
-    height: auto;
-    z-index: -1; 
-
-    /* scaleX(-1) voltea la imagen.  */
-    transform: scaleX(-1) rotate(15deg); 
-    pointer-events: none;
-
-}
-
-/* intento de responsive REGISTRO */
-@media (max-width: 768px) {
-    
-    /* Botón de regresar en móvil */
+    /* Botón de regresar al landing */
     .btn-regresar {
-        top: 15px;
-        left: 15px;
-        padding: 6px 12px;
-        font-size: 14px;
-        box-shadow: 4px 4px 0px #292929;
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        background-color: #8362E8;
+        color: #F8F5FF;
+        font-family: 'Baloo Bhaijaan 2', sans-serif;
+        font-weight: 800;
+        font-size: 16px;
+        border: 3px solid #292929;
+        border-radius: 50px;
+        cursor: pointer;
+        box-shadow: 6px 6px 0px #292929;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        transition: all 0.1s;
+        z-index: 100;
+        text-decoration: none;
     }
-    
+
     .btn-regresar:hover {
-        transform: none;
-        box-shadow: 4px 4px 0px #292929;
+        transform: translate(-2px, -2px);
+        box-shadow: 8px 8px 0px #292929;
     }
-    
+
     .btn-regresar:active {
-        transform: translate(2px, 2px);
+        transform: translate(4px, 4px);
         box-shadow: 2px 2px 0px #292929;
     }
-    
+
     main {
+        position: relative;
+        width: 100%;
+        max-width: 100vw;
         overflow-x: hidden;
     }
-    
+
     .contenedor-registro {
-        flex-direction: column; /* Apila el texto y el formulario uno arriba del otro */
-        align-items: center;
-        text-align: center;
-        padding: 20px 5%;
-    }
-
-    .titulo-hackea {
-        font-size: 45px; /* Reducimos de 80px a 45px */
-        line-height: 0.9; 
-        transform: scaleY(1.1); 
-    }
-
-    .subtitulo-cero {
-        font-size: 60px; /* Reducimos de 130px a 60px */
-        margin-left: 0;  
-        margin-top: -10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start; 
+        padding: 0px 8%;    
+        min-height: 80vh;
     }
 
     .texto-hero {
-        transform: rotate(-3deg); /* Menos inclinación */
-        margin-top: 20px;
-        z-index: 20;
-    }
-
-    /* 1. La tarjeta deja de ser absoluta */
-    .card-registro {
-        position: relative;
-        right: auto;
-        top: auto;
-        transform: none;
-        width: 95%;      /* Ocupa casi todo el ancho */
-        height: auto;    /* Que crezca según el contenido */
-        margin: 5px auto; /* Margen mínimo para acercar mucho más al texto */
-        padding: 30px 20px;
-        min-height: 450px; /* Altura reducida para login en móvil pero manteniendo margen */
-    }
-
-    /* Card específica para página de registro en móvil */
-    .card-registro.registro-page {
-        min-height: 700px; /* Altura aumentada más para que quepa el botón en móvil */
-    }
-
-    /* 2. los textos del Hero para que no se amontonen */
-    .texto-hero {
-        transform: rotate(-3deg); /* Menos inclinación */
-        margin-top: 20px;
-        margin-bottom: 5px; /* Reducir drásticamente el espacio entre texto y tarjeta */
+        transform: rotate(-6deg); 
+        margin-top: 50px; /* Bajar los textos manteniendo distancia con la mano */
         z-index: 20;
     }
 
     .titulo-hackea {
-        font-size: 65px;
-        line-height: 1;
-    }
-
-    .subtitulo-cero {
-        font-size: 75px;
-        margin-left: 0;
-        margin-top: -10px;
-    }
-
-    /* 3. REUBICACIÓN DE ILUSTRACIONES */
+        display: inline-block; 
+        transform: scaleY(1); 
+        transform-origin: top;   
+        font-family: 'Anton', sans-serif;
+        font-weight: 350;
+        font-size: 80px;         
     
-    /* La mano pequeña cerca del título - movida para no tapar el texto */
-    .ilustracion-libre {
-        width: 80px;
-        top: 12%; /* Bajar la mano un poco más */
-        left: 75%; /* Mover la mano al lado derecho para que no tape el texto */
-        transform: scaleX(-1) rotate(-8deg); /* Invertir la mano horizontalmente */
-        z-index: 1; /* Bajo z-index para que el texto pase por encima */
+        color: #292929;         
+        line-height: -0.10;      
+        letter-spacing: -2px;   
+        text-transform: uppercase;
+        margin: 0;
     }
 
-    /* Las monedas de fondo  */
-    .ilustracion-fondo {
-        width: 300px;
-        top: 85%;
-        left: -10%;
-        opacity: 0.5; /* Un poco más transparentes para que se lea bien */
+    .subtitulo-cero {
+        font-family: 'BrickFont', sans-serif; 
+        font-size: 130px;
+        color: #8362E8;        
+        margin-top: -15px;      
+        margin-left: 70px;      
+        transform: rotate(-3deg); 
+        z-index: 5;
+        position: relative;
+        font-weight: 580;
     }
 
-    /* El espejo (las otras monedas) */
-    .espejo {
-        width: 350px;
-        top: 10%;
-        left: 60%;
-        opacity: 0.4;
+    /*  TARJETA DE REGISTROp */
+
+    .card-registro {
+        background-color: #F8F5FF;
+        position: absolute;
+        right: 8%;      
+        top: 50%;        /* La centramos verticalmente */
+        transform: translateY(-30%); 
+        z-index: 10;      
+        width: 556px;
+        height: 480px; /* Altura reducida para login pero manteniendo margen con botón */
+        border: 6px solid #292929;
+        border-radius: 40px;
+        box-shadow: 15px 10px 0px #292929;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 40px;
+        
+        /* Evita que el contenedor la deforme */
+        box-sizing: border-box;
+        flex-shrink: 0;
+        margin-left: 20px;
+        padding-top: 0px !important; /* Reduccion de espacio*/
+        justify-content: flex-start !important; /* Alinea el contenido al inicio, no al centro */
     }
 
-    /* 4. Ajustes de botones e inputs  */
-    .btn-sumate {
-        width: 90%;
-        font-size: 22px;
+    /* Card específica para página de registro */
+    .card-registro.registro-page {
+        height: 680px; /* Altura aumentada más para que quepa el botón */
+    }
+
+    .card-registro h2 {
+
+        font-family: 'Baloo Bhaijaan 2', sans-serif;
+        font-weight: 800;
+        font-size: 27px;
+        
+        /* Ajustes adicionales*/
+        margin-bottom: 30px;
+        color: #292929;
+        text-align: center;
+        text-transform: uppercase;
+    }
+
+    /* Estilo de los Input */
+    .form-neubrutalist {
+        width: 100%;
+    }
+
+    .input-group {
+        position: relative;
+        margin-bottom: 35px;
+        width: 100%;
+        display: flex;     /* flex para centrar lo que hay dentro */
+        flex-direction: column;
+        align-items: center;
+        
+    }
+
+    .input-group label {
+        position: absolute;
+        top: -7px;
+        left: 13%;          /* Esto lo alinea justo donde empieza el input/select */
+        transform: translateX(15px); /*para que no toque la curva */
+        background-color: #F8F5FF;
+        padding: 0 5px;
+        line-height: 1;
+        font-family: 'Baloo Bhaijaan 2', sans-serif;
+        font-weight: 600;   /* título principal(nombre,correo electronico...*/
+        font-size: 17px;
+        z-index: 1;
+        color: #292929
     }
 
     .input-group input,
     .input-group select {
-        width: 95%;
+        width: 80%;
+        height: 50px;
+        border: 2px solid #292929;
+        border-radius: 50px;
+        padding: 0 10px;
+        font-family: 'Baloo Bhaijaan 2', sans-serif;
+        font-size: 16px;
+        background: transparent;
+        outline: none;
+        box-sizing: border-box;
     }
 
-    .input-group label {
-        left: 5%;
+    /* Enlace de login */
+    .login-link {
+        font-family: 'Baloo Bhaijaan 2', sans-serif;
+        font-size: 20px;
+        margin-bottom: 20px;
+        color: #292929;
+        width: 100%;
+        text-align: center; /* Esto centra el texto y el enlace */
+        margin-bottom: 15px;
+        font-family: 'Baloo Bhaijaan 2', sans-serif;
     }
+
+    .login-link a:hover {
+        color: #292929; /* Cambia a negro para que el usuario sepa que es clickeable */
+    }
+
+    /* Botón Súmate al Plan */
+    .btn-sumate {
+        width: 60%;
+        height: 65px;
+        /* Esto lo empuja al centro automáticamente */
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        background-color: #8362E8;
+        color: #F8F5FF;
+        font-family: 'Baloo Bhaijaan 2', sans-serif;
+        font-size: 26px;
+        font-weight: 700;
+        border: 5px solid #292929;
+        border-radius: 50px;
+        cursor: pointer;
+        box-shadow: 6px 6px 0px #292929;
+        transition: all 0.1s;
+    }
+
+    .btn-sumate:hover {
+        transform: translate(-2px, -2px); 
+        box-shadow: 8px 8px 0px #292929; 
+    }
+
+    /* 3. EFECTO DE HUNDIDO (Cuando haces clic) */
+    .btn-sumate:active {
+        transform: translate(4px, 4px);  
+        box-shadow: 2px 2px 0px #292929; 
+    }
+
+
+    .ilustracion-libre {
+        position: absolute; /* Esto permite moverla libremente */
+        
+        /* COORDENADAS PARA MOVERLA */
+        top: 5%;          /* Subir la mano para que no tape el texto */
+        left: 27%;        /* Ajusta r% para mover a los lados (0% izquierda, 100% derecha) */
+        
+        /* TAMAÑO Y ESTILO */
+        width: 250px;     /* Cambia el tamaño aquí */
+        height: auto;
+        z-index: 100;     /* Valor alto para que esté por encima de todo */
+        transform: rotate(-3deg); 
+        pointer-events: none;      /* Permite que puedas hacer clic a través de ella si tapa algo */
+    }
+    /* monedas*/
+    .ilustracion-fondo {
+        position: absolute; 
+        top: 80%;         
+        left: 0%;         
+        width: 650px;      
+        height: auto;
+        z-index: -1;       /* VA DETRÁS DE TODO EL CONTENIDO */ 
+        transform: rotate(-2deg); 
+        
+        /* Evita que las monedas bloqueen clics en el formulario */
+        pointer-events: none;
+    }
+
+    .espejo {
+        
+        position: absolute;
+        top: 80%; 
+        left: 50%;
+        width: 700px;     
+        height: auto;
+        z-index: -1; 
+
+        /* scaleX(-1) voltea la imagen.  */
+        transform: scaleX(-1) rotate(15deg); 
+        pointer-events: none;
+
+    }
+
+    /* intento de responsive REGISTRO */
+    @media (max-width: 768px) {
+        
+        /* Botón de regresar en móvil */
+        .btn-regresar {
+            top: 15px;
+            left: 15px;
+            padding: 6px 12px;
+            font-size: 14px;
+            box-shadow: 4px 4px 0px #292929;
+        }
+        
+        .btn-regresar:hover {
+            transform: none;
+            box-shadow: 4px 4px 0px #292929;
+        }
+        
+        .btn-regresar:active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px #292929;
+        }
+        
+        main {
+            overflow-x: hidden;
+        }
+        
+        .contenedor-registro {
+            flex-direction: column; /* Apila el texto y el formulario uno arriba del otro */
+            align-items: center;
+            text-align: center;
+            padding: 20px 5%;
+        }
+
+        .titulo-hackea {
+            font-size: 45px; /* Reducimos de 80px a 45px */
+            line-height: 0.9; 
+            transform: scaleY(1.1); 
+        }
+
+        .subtitulo-cero {
+            font-size: 60px; /* Reducimos de 130px a 60px */
+            margin-left: 0;  
+            margin-top: -10px;
+        }
+
+        .texto-hero {
+            transform: rotate(-3deg); /* Menos inclinación */
+            margin-top: 20px;
+            z-index: 20;
+        }
+
+        /* 1. La tarjeta deja de ser absoluta */
+        .card-registro {
+            position: relative;
+            right: auto;
+            top: auto;
+            transform: none;
+            width: 95%;      /* Ocupa casi todo el ancho */
+            height: auto;    /* Que crezca según el contenido */
+            margin: 5px auto; /* Margen mínimo para acercar mucho más al texto */
+            padding: 30px 20px;
+            min-height: 450px; /* Altura reducida para login en móvil pero manteniendo margen */
+        }
+
+        /* Card específica para página de registro en móvil */
+        .card-registro.registro-page {
+            min-height: 700px; /* Altura aumentada más para que quepa el botón en móvil */
+        }
+
+        /* 2. los textos del Hero para que no se amontonen */
+        .texto-hero {
+            transform: rotate(-3deg); /* Menos inclinación */
+            margin-top: 20px;
+            margin-bottom: 5px; /* Reducir drásticamente el espacio entre texto y tarjeta */
+            z-index: 20;
+        }
+
+        .titulo-hackea {
+            font-size: 65px;
+            line-height: 1;
+        }
+
+        .subtitulo-cero {
+            font-size: 75px;
+            margin-left: 0;
+            margin-top: -10px;
+        }
+
+        /* 3. REUBICACIÓN DE ILUSTRACIONES */
+        
+        /* La mano pequeña cerca del título - movida para no tapar el texto */
+        .ilustracion-libre {
+            width: 80px;
+            top: 12%; /* Bajar la mano un poco más */
+            left: 75%; /* Mover la mano al lado derecho para que no tape el texto */
+            transform: scaleX(-1) rotate(-8deg); /* Invertir la mano horizontalmente */
+            z-index: 1; /* Bajo z-index para que el texto pase por encima */
+        }
+
+        /* Las monedas de fondo  */
+        .ilustracion-fondo {
+            width: 300px;
+            top: 85%;
+            left: -10%;
+            opacity: 0.5; /* Un poco más transparentes para que se lea bien */
+        }
+
+        /* El espejo (las otras monedas) */
+        .espejo {
+            width: 350px;
+            top: 10%;
+            left: 60%;
+            opacity: 0.4;
+        }
+
+        /* 4. Ajustes de botones e inputs  */
+        .btn-sumate {
+            width: 90%;
+            font-size: 22px;
+        }
+
+        .input-group input,
+        .input-group select {
+            width: 95%;
+        }
+
+        .input-group label {
+            left: 5%;
+        }
+    }
+
 }

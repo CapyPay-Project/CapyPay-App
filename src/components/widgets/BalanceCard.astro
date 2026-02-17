@@ -1,10 +1,11 @@
 ---
+import Card from "../ui/Card.astro";
 const { amount, xp } = Astro.props;
 ---
 
-<div
+<Card
   id="balance-card-container"
-  class="relative overflow-hidden rounded-3xl p-6 text-white transition-all duration-500 isolate z-10 w-full shadow-xl"
+  class="relative overflow-hidden text-white transition-all duration-500 isolate z-10 w-full shadow-xl"
   style="background-color: #5833ef;"
 >
   <!-- Background Decoration -->
@@ -187,11 +188,11 @@ const { amount, xp } = Astro.props;
       </button>
     </div>
   </div>
-</div>
+</Card>
 
 <script>
   // @ts-nocheck
-  import { pinService, userService } from "../services/api.js";
+  import { pinService, userService } from "../../services/api.js";
 
   // Auto-refresh balance
   async function updateRealBalance() {
