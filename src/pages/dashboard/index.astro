@@ -1,0 +1,737 @@
+---
+import CapyPay from "../../layouts/MainLayout.astro";
+import { NivelBadge } from "../../components/ui/index";
+import BalanceCard from "../../components/widgets/dashboard/BalanceCard.astro";
+import HistoryCard from "../../components/widgets/dashboard/HistoryCard.astro";
+import QuickPay from "../../components/widgets/dashboard/QuickPay.astro";
+import FinanceChart from "../../components/widgets/dashboard/FinanceChart.astro";
+import TransferWidget from "../../components/widgets/dashboard/TransferWidget.astro";
+import ExchangeRateWidget from "../../components/widgets/dashboard/ExchangeRateWidget.astro";
+---
+
+<CapyPay title="Dashboard | CapyPay" showSidebar={true}>
+  <!-- 
+    GRID PRINCIPAL
+    Movil: Una sola columna (reordenada via Flex Order o Contents para cambiar el orden visual)
+    Escritorio: Malla de 12 columnas para un diseño complejo
+  -->
+  <div
+    class="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 w-full lg:h-full lg:min-h-0"
+  >
+    <!-- ENCABEZADO MOVIL (Orden 1) - Visible solo en pantallas pequeñas -->
+    <div
+      class="flex items-center justify-between px-2 py-3 lg:hidden order-1 animate-fade-in-down"
+    >
+      <div class="flex items-center gap-2 sm:gap-3">
+        <!-- Widget de Nivel -->
+        <NivelBadge nombre="Bachiller" xp={1500} icono="🎓" />
+        <!-- Saludo -->
+        <h1
+          class="text-xl sm:text-2xl font-bold text-white flex items-center gap-2"
+        >
+          Hola, <span id="header-username">Cormex</span>
+          <span
+            class="animate-wave origin-bottom-right inline-block text-2xl sm:text-3xl"
+            >👋</span
+          >
+        </h1>
+      </div>
+      <!-- Campanita de Notificaciones y Cerrar Sesion -->
+      <div class="flex items-center gap-2">
+        <!-- Notificaciones -->
+        <a
+          href="/account/notifications"
+          class="w-8 h-8 rounded-full bg-brand-black border border-white/10 flex items-center justify-center text-slate-400 hover:text-brand-lime hover:border-brand-lime/50 transition-colors relative group"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-4 w-4 group-hover:scale-110 transition-transform"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+            ></path>
+          </svg>
+          <!-- Badge de notificaciones no leídas -->
+          <span
+            id="mobile-notif-badge"
+            class="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-brand-black hidden shadow-[0_0_5px_rgba(239,68,68,0.5)]"
+          ></span>
+        </a>
+        <!-- Boton de Cerrar Sesion (Movil) -->
+        <button
+          id="mobile-logout-btn"
+          class="w-8 h-8 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400 cursor-pointer"
+          aria-label="Cerrar Sesión"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-4 w-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+            ></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- BUSQUEDA MOVIL (Orden 2) -->
+    <div
+      class="lg:hidden order-2 animate-fade-in-down"
+      style="animation-delay: 100ms;"
+    >
+      <div class="relative group/search">
+        <input
+          type="text"
+          autocomplete="off"
+          placeholder="Buscar contactos..."
+          class="w-full bg-brand-black text-white text-sm rounded-xl pl-10 pr-4 py-2.5 sm:py-3 border border-white/10 focus:outline-none focus:border-brand-lime/50 focus:bg-black transition-all placeholder:text-slate-500"
+        />
+        <div
+          class="absolute left-0 top-0 h-full w-10 flex items-center justify-center text-slate-500 pointer-events-none group-focus-within/search:text-brand-lime"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- 
+      COLUMNA IZQUIERDA: Widgets (5 Columnas en Escritorio para más espacio)
+      Movil: Contents (Los hijos se convierten en Orden 3, 4, 6)
+    -->
+    <aside
+      class="contents lg:col-span-5 lg:flex lg:flex-col lg:order-1 animate-fade-in-left gap-4 sm:gap-6 h-full min-h-0"
+    >
+      <div class="shrink-0 order-3 lg:order-0">
+        <BalanceCard amount="..." />
+      </div>
+
+      <div class="shrink-0 order-4 lg:order-0">
+        <QuickPay />
+      </div>
+
+      <div class="shrink-0 lg:flex-1 lg:min-h-0 order-6 lg:order-0">
+        <FinanceChart />
+      </div>
+    </aside>
+
+    <!-- 
+      COLUMNA PRINCIPAL (7 Columnas en Escritorio)
+      Movil: Contents (Encabezado Oculto, Hijos Orden 5, 7, 8)
+    -->
+    <section
+      class="contents lg:col-span-7 lg:flex lg:flex-col lg:order-2 animate-fade-in-up gap-4 sm:gap-6 h-full min-h-0"
+    >
+      <!-- Encabezado (Solo Escritorio) -->
+      <header
+        class="hidden lg:flex justify-between items-center bg-brand-black border border-white/10 rounded-3xl p-6 w-full shrink-0 isolate shadow-none animate-fade-in-down"
+      >
+        <div>
+          <h1
+            class="text-3xl sm:text-4xl lg:text-5xl font-bold text-white flex gap-3 items-center"
+          >
+            Hola, <span id="desktop-username">Cormex</span>
+            <span
+              class="animate-wave origin-bottom-right inline-block text-4xl sm:text-5xl lg:text-6xl"
+              >👋</span
+            >
+          </h1>
+          <p
+            class="text-slate-400 text-sm sm:text-base mt-2 flex items-center gap-2"
+          >
+            <span class="w-2 h-2 rounded-full bg-brand-lime"></span>
+            <span id="last-access-display">Último acceso: Cargando...</span>
+          </p>
+        </div>
+        <div
+          class="text-xs font-medium bg-brand-lime/10 text-brand-lime border border-brand-lime/30 px-3 py-1.5 rounded-full whitespace-nowrap"
+        >
+          {
+            new Date().toLocaleDateString("es-ES", {
+              month: "long",
+              day: "numeric",
+            })
+          }
+        </div>
+      </header>
+
+      <!-- Malla Interna: Centro + Derecha -->
+      <div
+        class="contents lg:grid lg:grid-cols-2 lg:gap-6 lg:flex-1 lg:min-h-0"
+      >
+        <!-- COLUMNA CENTRAL (Transferencias/Tasa de Cambio) -->
+        <div class="contents lg:flex lg:flex-col lg:gap-6 animate-fade-in-up">
+          <!-- Widget de Transferencia (Orden 5) -->
+          <div class="shrink-0 lg:flex-1 lg:min-h-50 order-5 lg:order-0">
+            <TransferWidget />
+          </div>
+          <!-- Widget de Tasa de Cambio (Orden 7) -->
+          <div class="h-32 sm:h-40 shrink-0 order-7 lg:order-0">
+            <ExchangeRateWidget />
+          </div>
+        </div>
+
+        <!-- COLUMNA DERECHA (Actividad) (Orden 8) -->
+        <div
+          class="h-full min-h-0 animate-fade-in-up order-8 lg:order-0"
+          style="animation-delay: 100ms;"
+        >
+          <!-- Modulo de Actividad -->
+          <div
+            class="bg-brand-black border border-white/10 rounded-3xl flex flex-col h-full isolate shadow-none w-full overflow-hidden lg:min-h-0 min-h-75"
+          >
+            <div
+              class="p-4 sm:p-6 pb-3 sm:pb-4 shrink-0 border-b border-white/10"
+            >
+              <div class="flex flex-col gap-2">
+                <div class="flex items-center justify-between">
+                  <h2
+                    class="text-base sm:text-lg lg:text-xl font-bold text-white"
+                  >
+                    Actividad
+                  </h2>
+                  <a
+                    href="/finance/history"
+                    class="text-[10px] sm:text-xs text-brand-lime hover:text-white transition-colors flex items-center gap-1 group"
+                  >
+                    Ver historial
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-3 w-3 group-hover:translate-x-0.5 transition-transform"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M9 5l7 7-7 7"></path>
+                    </svg>
+                  </a>
+                </div>
+                <div class="flex gap-1 overflow-x-auto pb-1 no-scrollbar">
+                  <button
+                    id="filter-all"
+                    class="text-[10px] bg-brand-lime hover:bg-[#ccf044] text-black font-bold px-2 sm:px-3 py-1 rounded-full transition-colors whitespace-nowrap shadow-[0_0_10px_rgba(215,253,73,0.2)]"
+                    >Todos</button
+                  >
+                  <button
+                    id="filter-income"
+                    class="text-[10px] text-slate-400 hover:text-brand-lime px-2 sm:px-3 py-1 rounded-full transition-colors whitespace-nowrap"
+                    >Ingresos</button
+                  >
+                  <button
+                    id="filter-expenses"
+                    class="text-[10px] text-slate-400 hover:text-brand-lime px-2 sm:px-3 py-1 rounded-full transition-colors whitespace-nowrap"
+                    >Gastos</button
+                  >
+                </div>
+              </div>
+            </div>
+
+            <div
+              id="history-list-container"
+              class="p-3 sm:p-4 overflow-y-auto custom-scrollbar flex-1"
+            >
+              <p class="text-center text-slate-500 text-sm mt-10">
+                Cargando movimientos...
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Espaciador para la Barra de Navegación Inferior en Movil -->
+    <div class="lg:hidden h-24 sm:h-28 w-full order-12 shrink-0"></div>
+  </div>
+
+  <!-- MODAL DE CONFIRMACIÓN PARA CERRAR SESIÓN -->
+  <div
+    id="logout-modal"
+    class="fixed inset-0 z-100 hidden items-center justify-center bg-black/80 backdrop-blur-md opacity-0 transition-opacity duration-300"
+  >
+    <div
+      class="bg-brand-black border border-white/10 rounded-3xl w-full max-w-sm p-6 m-4 transform scale-95 transition-transform duration-300 relative overflow-hidden shadow-2xl"
+    >
+      <!-- Glow FX -->
+      <div
+        class="absolute top-0 right-0 w-48 h-48 bg-red-500/10 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2 pointer-events-none"
+      >
+      </div>
+
+      <div class="relative z-10 text-center">
+        <!-- Icono -->
+        <div
+          class="w-16 h-16 bg-red-500/10 rounded-full mx-auto mb-4 flex items-center justify-center text-red-400 border border-red-500/20 shadow-[0_0_15px_rgba(239,68,68,0.2)]"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-8 w-8"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1.5"
+              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 11-6 0v-1m6 0H9"></path>
+          </svg>
+        </div>
+
+        <h3 class="text-xl font-bold text-white mb-2">¿Cerrar Sesión?</h3>
+        <p class="text-slate-400 text-sm mb-6">
+          Estás a punto de salir de tu cuenta. ¿Estás seguro?
+        </p>
+
+        <div class="flex gap-3">
+          <button
+            id="cancel-logout"
+            class="flex-1 py-3 bg-white/5 hover:bg-white/10 text-white text-sm font-bold rounded-xl transition-colors"
+            >No</button
+          >
+          <button
+            id="confirm-logout"
+            class="flex-1 py-3 bg-red-500 hover:bg-red-600 text-white text-sm font-bold rounded-xl shadow-[0_0_10px_rgba(239,68,68,0.3)] transition-colors"
+            >Sí, cerrar sesión</button
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    @keyframes fadeInLeft {
+      from {
+        opacity: 0;
+        transform: translateX(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+    @keyframes wave {
+      0%,
+      100% {
+        transform: rotate(0deg);
+      }
+      25% {
+        transform: rotate(20deg);
+      }
+      75% {
+        transform: rotate(-15deg);
+      }
+    }
+
+    .animate-fade-in-down {
+      animation: fadeInDown 0.6s ease-out forwards;
+    }
+    .animate-fade-in-up {
+      animation: fadeInUp 0.6s ease-out forwards;
+      opacity: 0;
+      animation-delay: 0.2s;
+    }
+    .animate-fade-in-left {
+      animation: fadeInLeft 0.6s ease-out forwards;
+      opacity: 0;
+      animation-delay: 0.1ms;
+    }
+    .animate-wave {
+      animation: wave 1.5s infinite;
+    }
+  </style>
+
+  <script>
+    // @ts-nocheck
+    import {
+      authService,
+      userService,
+      notificationService,
+    } from "../../services/api.js";
+
+    let cachedMovements = [];
+    let currentFilter = "all"; // 'all' | 'income' | 'expense'
+
+    function setupFilters() {
+      const btnAll = document.getElementById("filter-all");
+      const btnIncome = document.getElementById("filter-income");
+      const btnExpense = document.getElementById("filter-expenses");
+
+      const updateStyles = (activeId) => {
+        [btnAll, btnIncome, btnExpense].forEach((btn) => {
+          if (!btn) return;
+          if (btn.id === activeId) {
+            btn.classList.remove("text-slate-400", "hover:text-brand-lime");
+            btn.classList.add(
+              "bg-brand-lime",
+              "text-black",
+              "shadow-[0_0_10px_rgba(215,253,73,0.2)]",
+            );
+          } else {
+            btn.classList.add("text-slate-400", "hover:text-brand-lime");
+            btn.classList.remove(
+              "bg-brand-lime",
+              "text-black",
+              "shadow-[0_0_10px_rgba(215,253,73,0.2)]",
+            );
+          }
+        });
+      };
+
+      if (btnAll)
+        btnAll.onclick = () => {
+          currentFilter = "all";
+          updateStyles("filter-all");
+          renderHistoryList();
+        };
+      if (btnIncome)
+        btnIncome.onclick = () => {
+          currentFilter = "income";
+          updateStyles("filter-income");
+          renderHistoryList();
+        };
+      if (btnExpense)
+        btnExpense.onclick = () => {
+          currentFilter = "expense";
+          updateStyles("filter-expenses");
+          renderHistoryList();
+        };
+    }
+
+    function renderHistoryList() {
+      const container = document.getElementById("history-list-container");
+      if (!container) return;
+
+      // Filtrar
+      let moves = cachedMovements;
+      if (currentFilter === "income") {
+        moves = moves.filter((m) => !m.es_negativo);
+      } else if (currentFilter === "expense") {
+        moves = moves.filter((m) => m.es_negativo);
+      }
+
+      if (moves.length === 0) {
+        container.innerHTML =
+          '<p class="text-center text-slate-500 text-sm mt-10">No hay movimientos.</p>';
+        return;
+      }
+
+      let html = '<div class="space-y-4"><div class="grid grid-cols-1 gap-2">';
+
+      // Show max 7 items of the filtered list
+      const recentMoves = moves.slice(0, 7);
+
+      recentMoves.forEach((mov) => {
+        const isNegative = mov.es_negativo;
+        const amount = mov.monto;
+        const displayAmount = isNegative ? `-$${amount}` : `+$${amount}`;
+        const amountColor = isNegative ? "text-purple-400" : "text-[#d7fd48]";
+        const iconBg = isNegative ? "bg-purple-500/10" : "bg-[#d7fd48]/10";
+        const iconColor = isNegative ? "text-purple-400" : "text-[#d7fd48]";
+        const dateObj = new Date(mov.fecha);
+        const dateStr = adjustDate(dateObj); // Using helper if needed, or simple local
+        // const dateStr = dateObj.toLocaleTimeString([], {
+        const dateTime = dateObj.toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+        const dateFull = dateObj.toLocaleDateString();
+
+        const iconSvg = isNegative
+          ? '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" /></svg>'
+          : '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" /></svg>';
+
+        html += `
+                    <div class="group flex items-center justify-between p-4 rounded-xl bg-neutral-900 border border-white/5 transition-all duration-300 cursor-pointer w-[calc(100%-8px)] mx-auto hover:bg-neutral-800 hover:border-[#d7fd48]/30 hover:scale-[1.01] overflow-hidden">
+                      <div class="flex items-center gap-4 min-w-0">
+                        <div class="w-12 h-12 rounded-full ${iconBg} flex items-center justify-center ${iconColor} shrink-0">
+                           ${iconSvg}
+                        </div>
+                        <div class="flex flex-col min-w-0">
+                          <h4 class="text-sm font-bold text-white truncate">${mov.descripcion || mov.concept || mov.tipo}</h4>
+                          <p class="text-[10px] text-slate-500">${dateFull} ${dateTime}</p>
+                        </div>
+                      </div>
+                      <div class="text-sm font-bold ${amountColor} whitespace-nowrap">
+                        ${displayAmount}
+                      </div>
+                    </div>`;
+      });
+
+      container.innerHTML = html + "</div></div>";
+    }
+
+    // Helper just in case
+    function adjustDate(d) {
+      return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    }
+
+    async function initDashboard() {
+      setupFilters();
+      console.log("Iniciando Dashboard..."); // Debug
+      const user = authService.getCurrentUser();
+      console.log("Usuario en Storage:", user); // Debug
+
+      if (!user) {
+        console.warn(
+          "No hay usuario, redireccionando a login en 3s para depurar...",
+        );
+        // Comentamos la redirección inmediata para ver el log
+        // window.location.href = '/login';
+        return;
+      }
+
+      // Actualizar nombre desde localStorage (rápido)
+      const mobileName = document.getElementById("header-username");
+      const desktopName = document.getElementById("desktop-username");
+
+      const updateName = (name) => {
+        const firstName = name.split(" ")[0];
+        if (mobileName) mobileName.innerText = firstName;
+        if (desktopName) desktopName.innerText = firstName;
+      };
+
+      const updateLastAccess = (dateString) => {
+        const el = document.getElementById("last-access-display");
+        if (!el || !dateString) return;
+
+        const date = new Date(dateString);
+        const now = new Date();
+        const isToday = date.toDateString() === now.toDateString();
+
+        const timeStr = date.toLocaleTimeString("es-ES", {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true,
+        });
+
+        if (isToday) {
+          el.innerText = `Último acceso: Hoy, ${timeStr}`;
+        } else {
+          const dateStr = date.toLocaleDateString("es-ES", {
+            month: "long",
+            day: "numeric",
+          });
+          el.innerText = `Último acceso: ${dateStr}, ${timeStr}`;
+        }
+      };
+
+      if (user.nombre || user.name) {
+        updateName(user.nombre || user.name);
+      }
+
+      if (user.last_login) {
+        updateLastAccess(user.last_login);
+      }
+
+      // Logout Mobile
+      const mobileLogout = document.getElementById("mobile-logout-btn");
+      const logoutModal = document.getElementById("logout-modal");
+      const confirmLogoutBtn = document.getElementById("confirm-logout");
+      const cancelLogoutBtn = document.getElementById("cancel-logout");
+
+      // Función global para mostrar el modal de logout (accesible desde Sidebar)
+      window.showLogoutModal = () => {
+        if (!logoutModal) return;
+        logoutModal.classList.remove("hidden");
+        logoutModal.classList.add("flex");
+        // Allow render
+        requestAnimationFrame(() => {
+          logoutModal.classList.remove("opacity-0");
+          logoutModal.querySelector("div").classList.remove("scale-95");
+          logoutModal.querySelector("div").classList.add("scale-100");
+        });
+      };
+
+      // Función para cerrar el modal
+      window.closeLogoutModal = () => {
+        if (!logoutModal) return;
+        logoutModal.classList.add("opacity-0");
+        logoutModal.querySelector("div").classList.add("scale-95");
+        logoutModal.querySelector("div").classList.remove("scale-100");
+        setTimeout(() => {
+          logoutModal.classList.add("hidden");
+          logoutModal.classList.remove("flex");
+        }, 300);
+      };
+
+      if (mobileLogout) {
+        mobileLogout.addEventListener("click", (e) => {
+          e.preventDefault();
+          window.showLogoutModal();
+        });
+      }
+
+      // Confirmar logout
+      if (confirmLogoutBtn) {
+        confirmLogoutBtn.addEventListener("click", () => {
+          authService.logout();
+        });
+      }
+
+      // Cancelar logout
+      if (cancelLogoutBtn) {
+        cancelLogoutBtn.addEventListener("click", () => {
+          window.closeLogoutModal();
+        });
+      }
+
+      // Cerrar modal al hacer clic fuera
+      if (logoutModal) {
+        logoutModal.addEventListener("click", (e) => {
+          if (e.target === logoutModal) {
+            window.closeLogoutModal();
+          }
+        });
+      }
+
+      // Mobile notification badge
+      const mobileNotifBadge = document.getElementById("mobile-notif-badge");
+      async function checkMobileNotifications() {
+        const userId = user.id || user.usuarioId || user._id;
+        if (!userId || !mobileNotifBadge) return;
+
+        try {
+          const { notifications } =
+            await notificationService.getNotifications(userId);
+
+          if (notifications && notifications.length > 0) {
+            const unreadCount = notifications.filter((n) => !n.is_read).length;
+
+            if (unreadCount > 0) {
+              mobileNotifBadge.classList.remove("hidden");
+            } else {
+              mobileNotifBadge.classList.add("hidden");
+            }
+          } else {
+            mobileNotifBadge.classList.add("hidden");
+          }
+        } catch (e) {
+          console.error("Error checking notifications:", e);
+        }
+      }
+
+      // Check notifications immediately and every 10 seconds
+      checkMobileNotifications();
+      setInterval(checkMobileNotifications, 10000);
+
+      // Obtener datos frescos del backend
+      try {
+        // En tu backend devuelve 'usuarioId', no id. Pero api.js lo mapea a id. Revisamos ambas.
+        const userId = user.id || user.usuarioId || user._id;
+        console.log("Intentando obtener perfil para ID:", userId);
+
+        if (userId) {
+          const profileData = await userService.getProfile(userId);
+          console.log("Datos del perfil frescos:", profileData);
+
+          // Adaptamos según venga la respuesta del backend
+          const realUser =
+            profileData.usuario || profileData.user || profileData;
+
+          // Actualizar Saldo
+          if (realUser.balance !== undefined) {
+            const balanceEl = document.getElementById("user-balance-display");
+            if (balanceEl) {
+              balanceEl.innerText = new Intl.NumberFormat("en-US", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              }).format(realUser.balance);
+            }
+          }
+
+          // Guardar XP en localStorage para que las otras cards usen el color correcto
+          const xp = realUser.xp || realUser.puntos || 1500;
+          localStorage.setItem("capypay_user_xp", xp.toString());
+
+          // Actualizar Nombre si cambió
+          if (realUser.nombre || realUser.name) {
+            updateName(realUser.nombre || realUser.name);
+          }
+
+          // Actualizar Último Acceso
+          if (realUser.last_login) {
+            updateLastAccess(realUser.last_login);
+          }
+
+          // Cargar Historial
+          if (realUser.cedula) {
+            loadHistory(realUser.cedula);
+          }
+        } else {
+          console.error("No se encontró un ID válido en el usuario local");
+        }
+      } catch (e) {
+        console.error("Error cargando perfil", e);
+      }
+    }
+
+    async function loadHistory(cedula) {
+      const container = document.getElementById("history-list-container");
+      if (!container) return;
+
+      try {
+        const response = await userService.getHistory(cedula);
+        if (response && response.movimientos) {
+          cachedMovements = response.movimientos;
+          renderHistoryList();
+        }
+      } catch (e) {
+        console.error(e);
+        container.innerHTML =
+          '<p class="text-center text-red-500/50 text-xs mt-10">Error al cargar historial</p>';
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", initDashboard);
+    // Escuchar evento global para refrescar datos sin recargar (ej: tras transferencia)
+    document.addEventListener("capypay:refresh-data", initDashboard);
+  </script>
+</CapyPay>

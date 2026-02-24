@@ -1,0 +1,233 @@
+---
+import MainLayout from "../../layouts/MainLayout.astro";
+import { Card, Button, Input } from "../../components/ui";
+---
+
+<MainLayout title="Configuración | CapyPay">
+  <div class="flex flex-col gap-6 h-full p-4 lg:p-0">
+    <!-- Header -->
+    <Card
+      class="flex flex-col md:flex-row justify-between items-start md:items-center p-6 relative overflow-hidden group"
+    >
+      <div
+        class="absolute -top-24 -right-24 w-48 h-48 bg-brand-lime/10 rounded-full blur-3xl group-hover:bg-brand-lime/20 transition-all duration-700"
+      >
+      </div>
+
+      <div class="relative z-10">
+        <h1 class="text-2xl font-bold text-white mb-2">Configuración</h1>
+        <p class="text-slate-400 text-sm">
+          Administra tus preferencias personales y de la cuenta.
+        </p>
+      </div>
+    </Card>
+
+    <!-- Settings Content -->
+    <div
+      class="grid grid-cols-1 lg:grid-cols-2 gap-6 flex-1 overflow-y-auto custom-scrollbar"
+    >
+      <!-- Profile Settings -->
+      <Card class="h-fit">
+        <h2 class="text-xl font-bold text-white mb-6 flex items-center gap-2">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6 text-brand-lime"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+            ></path>
+          </svg>
+          Perfil
+        </h2>
+        <form class="space-y-4">
+          <div>
+            <label class="block text-slate-400 text-sm mb-2"
+              >Nombre de Usuario</label
+            >
+            <Input id="profile-name" type="text" />
+          </div>
+          <div>
+            <label class="block text-slate-400 text-sm mb-2"
+              >Correo Electrónico</label
+            >
+            <Input id="profile-email" type="email" />
+          </div>
+          <div>
+            <label class="block text-slate-400 text-sm mb-2">Cédula</label>
+            <Input
+              id="profile-cedula"
+              type="text"
+              readonly
+              class="text-slate-500 cursor-not-allowed"
+            />
+          </div>
+
+          <Button
+            id="btn-save-profile"
+            type="button"
+            variant="primary"
+            class="w-full sm:w-auto mt-2"
+          >
+            Guardar Cambios
+          </Button>
+        </form>
+      </Card>
+
+      <!-- Security Settings -->
+      <Card class="h-fit">
+        <h2 class="text-xl font-bold text-white mb-6 flex items-center gap-2">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6 text-brand-lime"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+            ></path>
+          </svg>
+          Seguridad
+        </h2>
+
+        <div class="space-y-4">
+          <div class="bg-white/5 p-4 rounded-xl border border-white/5">
+            <h3 class="text-white font-bold text-sm mb-1">
+              PIN de Transacciones
+            </h3>
+            <p class="text-slate-400 text-xs mb-4">
+              Establece un código de 4 o 6 dígitos para autorizar pagos.
+            </p>
+
+            <div class="flex gap-2 mb-4">
+              <Input
+                type="password"
+                id="pin-input"
+                maxlength="6"
+                placeholder="0000"
+                class="text-center tracking-[0.5em] font-bold placeholder:tracking-normal placeholder:font-normal"
+              />
+            </div>
+
+            <Button
+              id="btn-save-pin"
+              variant="secondary"
+              class="w-full text-brand-lime border-brand-lime/20 hover:border-brand-lime/50"
+              size="sm"
+            >
+              Actualizar PIN
+            </Button>
+          </div>
+
+          <div
+            class="bg-white/5 p-4 rounded-xl border border-white/5 opacity-50 cursor-not-allowed"
+          >
+            <h3 class="text-white font-bold text-sm mb-1">
+              Cambiar Contraseña
+            </h3>
+            <p class="text-slate-400 text-xs">Próximamente disponible.</p>
+          </div>
+        </div>
+      </Card>
+    </div>
+  </div>
+</MainLayout>
+
+<script>
+  // @ts-nocheck
+  import { authService, userService } from "../../services/api.js";
+
+  const nameInput = document.getElementById("profile-name");
+  const emailInput = document.getElementById("profile-email");
+  const cedulaInput = document.getElementById("profile-cedula");
+  const btnSave = document.getElementById("btn-save-profile");
+
+  async function loadProfile() {
+    try {
+      const user = authService.getCurrentUser();
+      if (!user) return; // No logueado
+
+      // Intentar obtener datos frescos del backend
+      const userId = user.id || user.usuarioId;
+      if (!userId) return;
+
+      const profile = await userService.getProfile(userId);
+
+      if (profile) {
+        if (nameInput) nameInput.value = profile.nombre || profile.name || "";
+        if (emailInput) emailInput.value = profile.email || "";
+        if (cedulaInput) cedulaInput.value = profile.cedula || "";
+      }
+    } catch (e) {
+      console.error("Error loading settings:", e);
+    }
+  }
+
+  loadProfile();
+
+  if (btnSave) {
+    btnSave.addEventListener("click", async () => {
+      // TODO: Implementar Update en Backend
+      alert("La función de actualizar perfil estará disponible pronto.");
+    });
+  }
+
+  // --- PIN UPDATE LOGIC ---
+  const btnSavePin = document.getElementById("btn-save-pin");
+  if (btnSavePin) {
+    btnSavePin.addEventListener("click", async () => {
+      const pinInput = document.getElementById("pin-input");
+      const pin = pinInput ? pinInput.value : "";
+
+      if ((pin.length !== 4 && pin.length !== 6) || isNaN(Number(pin))) {
+        alert("El PIN debe ser de 4 o 6 números.");
+        return;
+      }
+
+      const user = authService.getCurrentUser();
+      if (!user) return;
+
+      const userId = user.id || user.usuarioId || user._id;
+
+      const originalText = btnSavePin.innerText;
+      btnSavePin.innerText = "Guardando...";
+      btnSavePin.disabled = true;
+
+      try {
+        // TODO: Mover esto a userService en api.js
+        const response = await fetch(
+          `http://localhost:3000/api/usuario/${userId}/pin`,
+          {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ pin }),
+          },
+        );
+
+        const data = await response.json();
+
+        if (response.ok) {
+          alert("PIN actualizado con éxito.");
+          pinInput.value = "";
+        } else {
+          alert("Error: " + (data.error || "No se pudo actualizar"));
+        }
+      } catch (e) {
+        console.error(e);
+        alert("Error de conexión");
+      } finally {
+        btnSavePin.innerText = originalText;
+        btnSavePin.disabled = false;
+      }
+    });
+  }
+</script>

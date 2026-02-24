@@ -1,0 +1,196 @@
+---
+import CapyPay from "../../layouts/MainLayout.astro";
+import ModuloNiveles from "../../components/widgets/ModuloNiveles.astro";
+const url = new URL(Astro.request.url);
+const xpParam = url.searchParams.get("xp");
+const puntosActuales = xpParam ? parseInt(xpParam) : 1500;
+---
+
+<CapyPay title="Niveles | CapyPay" showSidebar={true}>
+  <div class="w-full max-w-2xl mx-auto">
+    <!-- Header -->
+    <header
+      class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 lg:gap-4 shrink-0 mb-6"
+    >
+      <div class="flex items-center gap-3 lg:gap-4 w-full md:w-auto">
+        <a
+          href="/dashboard"
+          class="w-9 h-9 lg:w-10 lg:h-10 rounded-full border border-white/10 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/5 transition-colors shrink-0"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-4 w-4 lg:h-5 lg:w-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M15 19l-7-7 7-7"></path>
+          </svg>
+        </a>
+        <div class="min-w-0 flex-1">
+          <h1
+            class="text-xl sm:text-2xl lg:text-3xl font-bold text-white truncate"
+          >
+            Mis Niveles
+          </h1>
+          <p class="text-slate-400 text-xs sm:text-sm mt-0.5 lg:mt-1">
+            Visualiza tu progreso y desbloquea recompensas
+          </p>
+        </div>
+      </div>
+    </header>
+
+    <!-- Controles de Demo -->
+    <div
+      class="bg-brand-black/60 backdrop-blur-lg border border-white/10 rounded-3xl p-4 mb-6"
+    >
+      <h3 class="text-white text-sm font-bold mb-3 flex items-center gap-2">
+        <svg
+          class="w-4 h-4 text-brand-lime"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
+          ></path>
+        </svg>
+        Panel de Control (Demo)
+      </h3>
+      <div class="flex flex-wrap gap-2">
+        <button
+          onclick="window.actualizarXPModulo(200)"
+          class="xp-demo-btn px-3 py-1.5 bg-white/5 hover:bg-white/10 text-white text-xs font-bold rounded-lg transition-colors border border-white/10 hover:border-brand-lime/30"
+          data-xp="200"
+        >
+          Novato (200 XP)
+        </button>
+        <button
+          onclick="window.actualizarXPModulo(1500)"
+          class="xp-demo-btn px-3 py-1.5 bg-white/5 hover:bg-white/10 text-white text-xs font-bold rounded-lg transition-colors border border-white/10 hover:border-brand-lime/30"
+          data-xp="1500"
+        >
+          Bachiller (1,500 XP)
+        </button>
+        <button
+          onclick="window.actualizarXPModulo(3500)"
+          class="xp-demo-btn px-3 py-1.5 bg-white/5 hover:bg-white/10 text-white text-xs font-bold rounded-lg transition-colors border border-white/10 hover:border-brand-lime/30"
+          data-xp="3500"
+        >
+          Licenciado (3,500 XP)
+        </button>
+        <button
+          onclick="window.actualizarXPModulo(7500)"
+          class="xp-demo-btn px-3 py-1.5 bg-white/5 hover:bg-white/10 text-white text-xs font-bold rounded-lg transition-colors border border-white/10 hover:border-brand-lime/30"
+          data-xp="7500"
+        >
+          Magíster (7,500 XP)
+        </button>
+        <button
+          onclick="window.actualizarXPModulo(12000)"
+          class="xp-demo-btn px-3 py-1.5 bg-white/5 hover:bg-white/10 text-white text-xs font-bold rounded-lg transition-colors border border-white/10 hover:border-brand-lime/30"
+          data-xp="12000"
+        >
+          Doctorado (12,000 XP)
+        </button>
+      </div>
+      <p class="text-slate-500 text-xs mt-2">
+        Haz clic en los botones para ver cómo cambia el módulo visualmente
+      </p>
+    </div>
+
+    <!-- Módulo de Niveles -->
+    <div id="modulo-niveles-wrapper">
+      <ModuloNiveles puntosActuales={puntosActuales} />
+    </div>
+
+    <!-- Espaciador para Bottom Nav en móvil -->
+    <div class="lg:hidden h-24 w-full"></div>
+  </div>
+
+  <script>
+    import { authService } from "../../services/api";
+
+    declare global {
+      interface Window {
+        actualizarXPModulo?: (xp: number) => void;
+        actualizarTarjetaDashboard?: (xp: number) => void;
+      }
+    }
+
+    const container = document.getElementById("modulo-niveles-wrapper");
+    if (container) {
+      container.style.transition = "opacity 0.2s ease, transform 0.2s ease";
+    }
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      // 1. ESTRATEGIA: Stale-While-Revalidate (SWR) manual
+      // Primero cargamos lo que está en caché (localStorage) para que sea instantáneo
+      const userStr = localStorage.getItem("capypay_user");
+      let currentXP = 0;
+
+      if (userStr) {
+        try {
+          const user = JSON.parse(userStr);
+          if (user.xp !== undefined) {
+            currentXP = user.xp;
+            // Actualizamos UI inmediatamente con caché
+            if (window.actualizarXPModulo) window.actualizarXPModulo(currentXP);
+          }
+        } catch (e) {
+          console.error("Error leyendo caché de usuario", e);
+        }
+      }
+
+      // 2. Luego consultamos a la API en segundo plano para ver si hay cambios
+      // Esto es mucho más "escalable" que polling, porque solo ocurre al entrar a la página
+      try {
+        // Obtenemos el perfil actualizado del servidor
+        const freshUser = await authService.getProfile();
+
+        if (freshUser && freshUser.xp !== undefined) {
+          // Si la XP del servidor es diferente a la local, actualizamos
+          if (freshUser.xp !== currentXP) {
+            console.log("XP actualizada desde servidor:", freshUser.xp);
+            if (window.actualizarXPModulo)
+              window.actualizarXPModulo(freshUser.xp);
+            // Si la XP cambia desde el servidor, podríamos querer notificar al usuario, etc.
+          }
+        }
+      } catch (err) {
+        // Si falla la red, el usuario ni se entera porque ya vio la versión en caché
+        console.log("Usando versión en caché (offline o error de red)");
+      }
+
+      // --- Lógica del Demo Panel (Mantener para testeo DEV) ---
+      const demoBtns = document.querySelectorAll(".xp-demo-btn");
+      demoBtns.forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          const xpValue = parseInt(
+            (e.target as HTMLElement).getAttribute("data-xp") || "0",
+          );
+          if (window.actualizarXPModulo) {
+            // Actualizar módulo de niveles
+            window.actualizarXPModulo(xpValue);
+
+            // Guardar XP en localStorage para testing
+            // OJO: En producción esto se quitaría para no ensuciar la data real
+            console.log("Simulando XP (Demo):", xpValue);
+
+            // Actualizar tarjeta del dashboard si existe la función
+            if (window.actualizarTarjetaDashboard) {
+              window.actualizarTarjetaDashboard(xpValue);
+            }
+          }
+        });
+      });
+    });
+  </script>
+</CapyPay>

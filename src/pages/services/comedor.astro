@@ -1,0 +1,102 @@
+---
+import MainLayout from "../../layouts/MainLayout.astro";
+import CartSidebar from "../../components/widgets/CartSidebar.astro";
+
+// Widgets
+import ComedorHeader from "../../components/widgets/comedor/ComedorHeader.astro";
+import QueueWidget from "../../components/widgets/comedor/QueueWidget.astro";
+import TimerWidget from "../../components/widgets/comedor/TimerWidget.astro";
+import GamificationCard from "../../components/widgets/comedor/GamificationCard.astro";
+import MenuDelDia from "../../components/widgets/comedor/MenuDelDia.astro";
+import PopularRotator from "../../components/widgets/comedor/PopularRotator.astro";
+import CapyTip from "../../components/widgets/comedor/CapyTip.astro";
+import MenuCarousel from "../../components/widgets/comedor/MenuCarousel.astro";
+import FloatingActions from "../../components/widgets/comedor/FloatingActions.astro";
+---
+
+<MainLayout title="Comedor | CapyPay" showSidebar={true}>
+  <CartSidebar />
+  <style is:global>
+    .hide-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .hide-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+  <style>
+    @media (max-width: 768px) {
+      :global(#cart-sidebar) {
+        padding-bottom: calc(5.5rem + env(safe-area-inset-bottom));
+      }
+      :global(#checkout-btn) {
+        margin-bottom: calc(4.5rem + env(safe-area-inset-bottom));
+      }
+    }
+  </style>
+
+  <div class="max-w-7xl mx-auto px-4 md:px-6 py-8 pb-40 overflow-x-hidden">
+    <ComedorHeader />
+
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-4 pb-12">
+      <QueueWidget />
+      <TimerWidget />
+      <GamificationCard />
+      <MenuDelDia />
+      <PopularRotator />
+      <MenuCarousel />
+      <div class="col-span-2 md:col-span-3 order-4 md:order-5">
+        <CapyTip />
+      </div>
+    </div>
+
+    <FloatingActions />
+
+    <script>
+      // @ts-nocheck
+      import { initComedor } from "../../utils/comedorLogic";
+      import { isCartOpen, cartItems } from "../../store/cartStore";
+
+      // Initialize Page Logic
+      document.addEventListener("astro:page-load", () => {
+        initComedor();
+      });
+      // Fallback for non-ViewTransitions if used (or initial load)
+      if (
+        document.readyState === "complete" ||
+        document.readyState === "interactive"
+      ) {
+        initComedor();
+      }
+
+      // Cart Badge Sync (Simple UI logic remains here or moves if strictly needed)
+      const manualCartBtn = document.getElementById("manual-cart-btn");
+      const cartBadge = document.getElementById("cart-badge-count");
+
+      cartItems.subscribe((items) => {
+        const count = Object.values(items).reduce(
+          (acc, item) => acc + item.quantity,
+          0,
+        );
+        if (cartBadge) {
+          cartBadge.textContent = count.toString();
+          if (count > 0) {
+            cartBadge.style.display = "flex"; // Ensure flex so alignment works
+            cartBadge.classList.remove("hidden");
+          } else {
+            cartBadge.style.display = "none";
+            cartBadge.classList.add("hidden");
+          }
+        }
+        if (count > 0 && manualCartBtn) {
+          manualCartBtn.classList.add("scale-110");
+          setTimeout(() => manualCartBtn.classList.remove("scale-110"), 200);
+        }
+      });
+
+      if (manualCartBtn)
+        manualCartBtn.addEventListener("click", () => isCartOpen.set(true));
+    </script>
+  </div>
+</MainLayout>

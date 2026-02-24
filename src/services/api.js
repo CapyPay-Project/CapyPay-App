@@ -27,7 +27,7 @@ export async function fetchAPI(endpoint, options = {}) {
     if (response.status === 401) {
       localStorage.removeItem('capypay_token');
       localStorage.removeItem('capypay_user');
-      window.location.href = '/login'; 
+      window.location.href = '/auth/login'; 
       return null;
     }
 

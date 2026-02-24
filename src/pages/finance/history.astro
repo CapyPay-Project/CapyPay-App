@@ -1,0 +1,713 @@
+---
+import MainLayout from "../../layouts/MainLayout.astro";
+import { Button, Input, Select, Card } from "../../components/ui";
+---
+
+<MainLayout title="Historial | CapyPay" showSidebar={true}>
+  <div
+    class="flex flex-col gap-4 lg:gap-6 min-h-screen lg:h-full p-3 sm:p-4 lg:p-0 pb-28 lg:pb-0 relative overflow-y-auto"
+  >
+    <!-- Modal de Detalles (Invisible por defecto) -->
+    <div
+      id="transaction-modal"
+      class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-md opacity-0 transition-opacity duration-300"
+    >
+      <div
+        class="bg-[#131313] border border-brand-lime/20 rounded-3xl w-full max-w-md p-6 m-4 transform scale-95 transition-transform duration-300 relative overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.8)]"
+      >
+        <!-- Background Glow -->
+        <div
+          class="absolute top-0 right-0 w-64 h-64 bg-brand-lime/5 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2 pointer-events-none"
+        >
+        </div>
+
+        <!-- Header Modal -->
+        <div class="flex justify-between items-start mb-6">
+          <div>
+            <h3 class="text-xl font-bold text-white">Detalle de Transacción</h3>
+            <p class="text-slate-400 text-xs mt-1" id="modal-id">ID: #---</p>
+          </div>
+          <button
+            id="close-modal-btn"
+            class="p-2 bg-white/5 rounded-full text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Body Modal -->
+        <div class="space-y-6">
+          <!-- Amount Section -->
+          <div
+            class="text-center py-4 bg-white/5 rounded-2xl border border-white/5"
+          >
+            <p class="text-slate-400 text-xs uppercase tracking-widest mb-1">
+              Monto Total
+            </p>
+            <h2
+              class="text-3xl font-bold text-white flex justify-center items-center gap-2"
+              id="modal-amount"
+            >
+              $0.00
+            </h2>
+            <span
+              class="inline-block mt-2 px-3 py-1 rounded-full text-[10px] font-bold uppercase"
+              id="modal-status-badge"
+            >
+              Completado
+            </span>
+          </div>
+
+          <!-- Grid Info -->
+          <div class="grid grid-cols-2 gap-4">
+            <div class="bg-white/5 p-3 rounded-xl border border-white/5">
+              <p class="text-slate-500 text-[10px] uppercase">Fecha</p>
+              <p class="text-white text-sm font-medium mt-1" id="modal-date">
+                --/--/----
+              </p>
+            </div>
+            <div class="bg-white/5 p-3 rounded-xl border border-white/5">
+              <p class="text-slate-500 text-[10px] uppercase">Hora</p>
+              <p class="text-white text-sm font-medium mt-1" id="modal-time">
+                --:--
+              </p>
+            </div>
+            <div
+              class="col-span-2 bg-white/5 p-3 rounded-xl border border-white/5"
+            >
+              <p class="text-slate-500 text-[10px] uppercase">
+                Concepto / Descripción
+              </p>
+              <p
+                class="text-white text-sm font-medium mt-1 wrap-break-word"
+                id="modal-desc"
+              >
+                ---
+              </p>
+            </div>
+            <div
+              class="col-span-2 bg-white/5 p-3 rounded-xl border border-white/5"
+            >
+              <p class="text-slate-500 text-[10px] uppercase">Tipo</p>
+              <p
+                class="text-white text-sm font-medium mt-1 capitalize"
+                id="modal-type"
+              >
+                ---
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer Modal -->
+        <div class="mt-8 pt-4 border-t border-white/10 flex justify-center">
+          <button
+            class="text-brand-lime hover:text-white text-xs flex items-center gap-2 transition-colors"
+            onclick="alert('Funcionalidad de comprobante en desarrollo')"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              ></path>
+            </svg>
+            Descargar Comprobante
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Header Section -->
+    <header
+      class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 lg:gap-4 shrink-0"
+    >
+      <div class="flex items-center gap-3 lg:gap-4 w-full md:w-auto">
+        <Button
+          href="/dashboard"
+          variant="secondary"
+          size="icon"
+          class="border-white/10 text-slate-400 hover:text-white shrink-0"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M15 19l-7-7 7-7"></path>
+          </svg>
+        </Button>
+        <div class="min-w-0 flex-1">
+          <h1
+            class="text-xl sm:text-2xl lg:text-3xl font-bold text-white truncate"
+          >
+            Historial de Transacciones
+          </h1>
+          <p class="text-slate-400 text-xs sm:text-sm mt-0.5 lg:mt-1">
+            Gestiona y visualiza todos tus movimientos
+          </p>
+        </div>
+      </div>
+
+      <!-- PDF Button -->
+      <Button
+        variant="primary"
+        onclick="window.exportToPDF()"
+        class="flex items-center gap-2"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+          ></path>
+        </svg>
+        <span class="hidden sm:inline">Exportar PDF</span>
+      </Button>
+    </header>
+
+    <!-- Filters Area -->
+    <div
+      class="bg-brand-black border border-white/10 rounded-3xl p-4 lg:p-6 mb-6 shadow-xl space-y-4"
+    >
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Search -->
+        <div class="col-span-1 sm:col-span-2 lg:col-span-1">
+          <Input
+            type="text"
+            id="search-input"
+            label="BÚSQUEDA"
+            autocomplete="off"
+            placeholder="Concepto, monto..."
+          >
+            <svg
+              slot="icon"
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+          </Input>
+        </div>
+
+        <!-- Type Filter (Refactored to Buttons) -->
+        <div class="flex flex-col">
+          <label
+            class="block text-slate-500 text-[10px] uppercase font-bold mb-1.5 ml-1"
+            >TIPO</label
+          >
+          <div
+            class="flex bg-black/30 border border-white/10 rounded-xl p-1 h-12.5 items-center"
+          >
+            <input type="hidden" id="filter-type" value="all" />
+            <button
+              type="button"
+              data-val="all"
+              class="filter-btn flex-1 rounded-lg text-xs font-bold transition-all text-black bg-brand-lime shadow-lg"
+              >TODOS</button
+            >
+            <button
+              type="button"
+              data-val="income"
+              class="filter-btn flex-1 rounded-lg text-xs font-bold transition-all text-slate-400 hover:text-white"
+              >INGRESOS</button
+            >
+            <button
+              type="button"
+              data-val="expense"
+              class="filter-btn flex-1 rounded-lg text-xs font-bold transition-all text-slate-400 hover:text-white"
+              >GASTOS</button
+            >
+          </div>
+        </div>
+
+        <!-- Date From -->
+        <div>
+          <Input type="date" id="date-from" label="DESDE" class="scheme-dark" />
+        </div>
+
+        <!-- Date To -->
+        <div>
+          <Input type="date" id="date-to" label="HASTA" class="scheme-dark" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Table Container -->
+    <div
+      class="bg-brand-black border border-white/10 rounded-3xl overflow-hidden shadow-xl flex-1 flex flex-col min-h-0"
+    >
+      <!-- Table Body -->
+      <div
+        id="history-rows-container"
+        class="flex-1 overflow-y-auto custom-scrollbar p-4 space-y-3"
+      >
+        <!-- Dynamic Rows go here -->
+        <p class="text-center text-slate-500 mt-20 animate-pulse">
+          Cargando...
+        </p>
+      </div>
+
+      <!-- Pagination -->
+      <div
+        class="p-4 border-t border-white/10 bg-black/30 flex items-center justify-between"
+      >
+        <p class="text-xs text-slate-400">
+          Mostrando <span id="pagination-info" class="font-bold text-white"
+            >0-0</span
+          > de <span id="total-items" class="font-bold text-white">0</span>
+        </p>
+
+        <div class="flex gap-2">
+          <Button
+            id="prev-page"
+            variant="secondary"
+            size="icon"
+            class="disabled:opacity-30 disabled:cursor-not-allowed"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 19l-7-7 7-7"></path>
+            </svg>
+          </Button>
+          <div
+            class="flex items-center justify-center px-4 bg-white/5 rounded-lg text-sm text-white font-medium min-w-8 h-9"
+            id="page-indicator"
+          >
+            1 / 1
+          </div>
+          <Button
+            id="next-page"
+            variant="secondary"
+            size="icon"
+            class="disabled:opacity-30 disabled:cursor-not-allowed"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 5l7 7-7 7"></path>
+            </svg>
+          </Button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"
+  ></script>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"
+  ></script>
+
+  <script>
+    // @ts-nocheck
+    import { authService, userService } from "../../services/api.js";
+
+    // State
+    let allMovements = [];
+    let filteredMovements = [];
+    let currentPage = 1;
+    let itemsPerPage = 8;
+
+    // Elements
+    const container = document.getElementById("history-rows-container");
+    const prevBtn = document.getElementById("prev-page");
+    const nextBtn = document.getElementById("next-page");
+    const pageInd = document.getElementById("page-indicator");
+    const infoSpan = document.getElementById("pagination-info");
+    const totalSpan = document.getElementById("total-items");
+
+    // Modal Elements
+    const modal = document.getElementById("transaction-modal");
+
+    async function initHistory() {
+      const user = authService.getCurrentUser();
+      if (!user) {
+        window.location.href = "/auth/login";
+        return;
+      }
+
+      try {
+        const userId = user.id || user.usuarioId || user._id;
+        const profileData = await userService.getProfile(userId);
+        const realUser = profileData.usuario || profileData.user || profileData;
+
+        if (realUser.cedula) {
+          const response = await userService.getHistory(realUser.cedula);
+          if (response && response.movimientos) {
+            allMovements = response.movimientos.map((m, i) => ({
+              ...m,
+              uniqueId: i + 12450,
+            })); // Add fake ID for demo
+            applyFilters(); // Initial render
+          } else {
+            showEmpty("No hay movimientos registrados.");
+          }
+        }
+      } catch (e) {
+        console.error("Error loading history:", e);
+        showEmpty("Error al cargar el historial.");
+      }
+    }
+
+    function showEmpty(msg) {
+      if (container) {
+        container.innerHTML = `<div class="flex flex-col items-center justify-center h-full p-10 opacity-50"><p class="text-center text-slate-500 text-sm">${msg}</p></div>`;
+      }
+      updatePaginationUI(0);
+    }
+
+    // --- FILTERS ---
+    function applyFilters() {
+      const searchInput = document.getElementById("search-input");
+      const typeInput = document.getElementById("filter-type");
+      const dateFromInput = document.getElementById("date-from");
+      const dateToInput = document.getElementById("date-to");
+
+      const search = searchInput ? searchInput.value.toLowerCase() : "";
+      const type = typeInput ? typeInput.value : "";
+      const dateFrom = dateFromInput ? dateFromInput.value : "";
+      const dateTo = dateToInput ? dateToInput.value : "";
+
+      filteredMovements = allMovements.filter((m) => {
+        // Search
+        const desc = (m.descripcion || m.concept || m.tipo || "").toLowerCase();
+        const matchesSearch =
+          desc.includes(search) || m.monto.toString().includes(search);
+
+        // Type
+        let matchesType = true;
+        if (type === "income") matchesType = !m.es_negativo;
+        if (type === "expense") matchesType = m.es_negativo;
+
+        // Date
+        let matchesDate = true;
+        if (dateFrom || dateTo) {
+          const mDate = new Date(m.fecha).setHours(0, 0, 0, 0);
+          if (dateFrom) {
+            if (mDate < new Date(dateFrom + "T00:00:00").getTime())
+              matchesDate = false;
+          }
+          if (dateTo) {
+            if (mDate > new Date(dateTo + "T23:59:59").getTime())
+              matchesDate = false;
+          }
+        }
+
+        return matchesSearch && matchesType && matchesDate;
+      });
+
+      currentPage = 1;
+      renderTable();
+    }
+
+    const searchInp = document.getElementById("search-input");
+    if (searchInp) searchInp.addEventListener("input", applyFilters);
+
+    const filterType = document.getElementById("filter-type");
+    // Trigger filter update when hidden input changes programmatically? Not natively supported.
+    // Instead we handle button clicks directly.
+
+    // --- FILTER BUTTONS LOGIC ---
+    document.querySelectorAll(".filter-btn").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        const val = e.target.dataset.val;
+
+        // Update hidden input
+        if (filterType) {
+          filterType.value = val;
+          applyFilters();
+        }
+
+        // Update UI
+        document.querySelectorAll(".filter-btn").forEach((b) => {
+          b.className =
+            "filter-btn flex-1 rounded-lg text-xs font-bold transition-all p-2 text-slate-400 hover:text-white";
+        });
+        e.target.className =
+          "filter-btn flex-1 rounded-lg text-xs font-bold transition-all p-2 text-black bg-brand-lime shadow-lg";
+      });
+    });
+
+    const dateFromEl = document.getElementById("date-from");
+    if (dateFromEl) dateFromEl.addEventListener("change", applyFilters);
+
+    const dateToEl = document.getElementById("date-to");
+    if (dateToEl) dateToEl.addEventListener("change", applyFilters);
+
+    // --- RENDER ---
+    function renderTable() {
+      if (filteredMovements.length === 0) {
+        showEmpty("No se encontraron resultados con los filtros actuales.");
+        return;
+      }
+
+      const start = (currentPage - 1) * itemsPerPage;
+      const end = start + itemsPerPage;
+      const pageData = filteredMovements.slice(start, end);
+
+      let html = "";
+      pageData.forEach((mov) => {
+        const isNegative = mov.es_negativo;
+        const amountColor = isNegative ? "text-purple-400" : "text-[#d7fd48]";
+        const iconBg = isNegative ? "bg-purple-500/10" : "bg-[#d7fd48]/10";
+        const iconColor = isNegative ? "text-purple-400" : "text-[#d7fd48]";
+        const sign = isNegative ? "-" : "+";
+
+        // Dates
+        const dateObj = new Date(mov.fecha);
+        const dateStr = dateObj.toLocaleDateString("es-ES", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+        });
+
+        // Safe strings
+        const desc = mov.descripcion || mov.concept || "Transferencia";
+        const category = mov.tipo || "General";
+
+        // Render using HistoryCard structure (replicated for Client Side Rendering)
+        html += `
+            <div onclick="window.openModal('${mov.uniqueId}')" class="group flex items-center justify-between !p-4 !rounded-xl transition-all duration-300 cursor-pointer w-full mx-auto hover:bg-neutral-800 hover:border-[#d7fd48]/30 hover:scale-[1.01] overflow-hidden bg-black/40 border border-white/10 rounded-3xl backdrop-blur-sm shadow-xl mb-3">
+              <div class="flex items-center gap-4 min-w-0 flex-1">
+                <div class="w-12 h-12 rounded-full ${iconBg} flex items-center justify-center ${iconColor} transition-transform shrink-0 group-hover:scale-110 group-hover:rotate-12">
+                  ${
+                    isNegative
+                      ? `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" /></svg>`
+                      : `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" /></svg>`
+                  }
+                </div>
+                <div class="flex flex-col min-w-0">
+                  <span class="text-white font-bold group-hover:text-brand-lime transition-colors truncate text-sm sm:text-base">${desc}</span>
+                  <span class="text-xs text-slate-500 font-mono">${dateStr}</span>
+                </div>
+              </div>
+              <div class="text-right shrink-0">
+                <p class="font-bold text-lg sm:text-xl font-mono ${amountColor} group-hover:scale-110 transition-transform origin-right">
+                  ${sign}${mov.monto}
+                </p>
+                <p class="text-[10px] text-slate-500 uppercase tracking-wider">${category}</p>
+              </div>
+            </div>`;
+      });
+
+      if (container) {
+        container.innerHTML = html;
+      }
+      updatePaginationUI(filteredMovements.length);
+    }
+
+    function updatePaginationUI(total) {
+      const totalPages = Math.ceil(total / itemsPerPage) || 1;
+
+      // Ensure bounds
+      if (currentPage > totalPages) currentPage = totalPages;
+      if (currentPage < 1) currentPage = 1;
+
+      // Info text
+      const start = total === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1;
+      const end = Math.min(currentPage * itemsPerPage, total);
+      if (infoSpan) infoSpan.innerText = `${start}-${end}`;
+      if (totalSpan) totalSpan.innerText = total.toString();
+
+      if (pageInd) pageInd.innerText = `${currentPage} / ${totalPages}`;
+
+      // Btns
+      if (prevBtn) prevBtn.disabled = currentPage === 1;
+      if (nextBtn) nextBtn.disabled = currentPage === totalPages || total === 0;
+    }
+
+    if (prevBtn)
+      prevBtn.addEventListener("click", () => {
+        if (currentPage > 1) {
+          currentPage--;
+          renderTable();
+        }
+      });
+
+    if (nextBtn)
+      nextBtn.addEventListener("click", () => {
+        // Recalc total pages
+        const totalPages = Math.ceil(filteredMovements.length / itemsPerPage);
+        if (currentPage < totalPages) {
+          currentPage++;
+          renderTable();
+        }
+      });
+
+    // --- MODAL LOGIC ---
+    window.openModal = (uniqueId) => {
+      // Need to find in filteredMovements or allMovements. Using allMovements is safer if filter changes.
+      // Actually uniqueId was added as prop earlier in map.
+      // Since we are passing string in onclick, ensure type match
+      const mov = allMovements.find((m) => m.uniqueId == uniqueId);
+      if (!mov || !modal) return;
+
+      // Populate
+      const modalIdEl = document.getElementById("modal-id");
+      if (modalIdEl) modalIdEl.innerText = `ID: #${uniqueId}`;
+      const isNeg = mov.es_negativo;
+      const sign = isNeg ? "-" : "+";
+      const amtEl = document.getElementById("modal-amount");
+      if (amtEl) {
+        amtEl.innerText = `${sign}${mov.monto}$`;
+        amtEl.className = `text-3xl font-bold flex justify-center items-center gap-2 ${isNeg ? "text-purple-400" : "text-[#d7fd48]"}`;
+      }
+      const modalBadge = document.getElementById("modal-status-badge");
+      if (modalBadge) {
+        modalBadge.className = `inline-block mt-2 px-3 py-1 rounded-full text-[10px] font-bold uppercase ${isNeg ? "bg-purple-500/10 text-purple-400" : "bg-[#d7fd48]/10 text-[#d7fd48]"}`;
+      }
+
+      const dateObj = new Date(mov.fecha);
+      const mDate = document.getElementById("modal-date");
+      if (mDate) mDate.innerText = dateObj.toLocaleDateString();
+      const mTime = document.getElementById("modal-time");
+      if (mTime) mTime.innerText = dateObj.toLocaleTimeString();
+      const mDesc = document.getElementById("modal-desc");
+      if (mDesc)
+        mDesc.innerText = mov.descripcion || mov.concept || "Sin descripción";
+      const mType = document.getElementById("modal-type");
+      if (mType) mType.innerText = mov.tipo || "General";
+
+      // Show
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+      // Small delay for CSS transition
+      setTimeout(() => {
+        if (!modal) return;
+        modal.classList.remove("opacity-0");
+        const inner = modal.querySelector("div");
+        if (inner) {
+          inner.classList.remove("scale-95");
+          inner.classList.add("scale-100");
+        }
+      }, 10);
+    };
+
+    const closeModal = () => {
+      if (!modal) return;
+      modal.classList.add("opacity-0");
+      const inner = modal.querySelector("div");
+      if (inner) {
+        inner.classList.add("scale-95");
+        inner.classList.remove("scale-100");
+      }
+      setTimeout(() => {
+        modal.classList.add("hidden");
+        modal.classList.remove("flex");
+      }, 300);
+    };
+
+    const btnCloseModal = document.getElementById("close-modal-btn");
+    if (btnCloseModal) btnCloseModal.addEventListener("click", closeModal);
+
+    if (modal)
+      modal.addEventListener("click", (e) => {
+        if (e.target === modal) closeModal();
+      });
+
+    // --- PDF EXPORT ---
+    window.exportToPDF = () => {
+      if (filteredMovements.length === 0) {
+        alert("No hay datos para exportar");
+        return;
+      }
+
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      // Branding
+      doc.setFillColor(10, 10, 10); // Brand Black simulation
+      doc.rect(0, 0, 210, 20, "F");
+      doc.setTextColor(215, 253, 73); // Brand Lime
+      doc.setFontSize(16);
+      doc.setFont("helvetica", "bold");
+      doc.text("CapyPay - Historial de Transacciones", 14, 13);
+
+      // Filter info
+      doc.setTextColor(100);
+      doc.setFontSize(10);
+      const dateStr = new Date().toLocaleDateString();
+      doc.text(`Generado el: ${dateStr}`, 14, 28);
+
+      // Data prep
+      const tableBody = filteredMovements.map((m) => [
+        new Date(m.fecha).toLocaleDateString(),
+        m.descripcion || m.concept,
+        m.tipo || "General",
+        (m.es_negativo ? "-$" : "+$") + m.monto,
+      ]);
+
+      doc.autoTable({
+        head: [["Fecha", "Descripción", "Categoría", "Monto"]],
+        body: tableBody,
+        startY: 35,
+        theme: "grid",
+        styles: { fontSize: 8, cellPadding: 3 },
+        headStyles: { fillColor: [20, 20, 20], textColor: [255, 255, 255] },
+        alternateRowStyles: { fillColor: [245, 245, 245] },
+      });
+
+      doc.save("CapyPay_Historial.pdf");
+    };
+
+    document.addEventListener("DOMContentLoaded", initHistory);
+  </script>
+</MainLayout>

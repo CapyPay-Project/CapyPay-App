@@ -71,7 +71,7 @@ const currentPath = Astro.url.pathname;
     >
       <!-- Profile Photo (Clickable) -->
       <a
-        href="/profile"
+        href="/account/profile"
         id="sidebar-profile-photo"
         class="w-9 h-9 rounded-full p-1 bg-transparent mb-2 transition-all duration-300 sidebar-photo border-2 hover:scale-105"
         title="Ver mi perfil"
@@ -167,7 +167,7 @@ const currentPath = Astro.url.pathname;
 
       <!-- Historial Link -->
       <Button
-        href="/history"
+        href="/finance/history"
         variant="ghost"
         class={`flex! w-full! items-center! justify-start! p-2! gap-0! relative group/nav text-left ${
           currentPath === "/history"
@@ -209,7 +209,7 @@ const currentPath = Astro.url.pathname;
 
       <!-- Pedidos/Órdenes Link (Center Action Style) -->
       <Button
-        href="/orders"
+        href="/services/orders"
         variant="ghost"
         class={`flex! w-full! items-center! justify-start! p-2! gap-0! relative group/nav text-left ${
           currentPath === "/orders"
@@ -251,7 +251,7 @@ const currentPath = Astro.url.pathname;
 
       <!-- Contactos Link -->
       <Button
-        href="/contacts"
+        href="/account/contacts"
         variant="ghost"
         class={`flex! w-full! items-center! justify-start! p-2! gap-0! relative group/nav text-left ${
           currentPath === "/contacts"
@@ -293,7 +293,7 @@ const currentPath = Astro.url.pathname;
 
       <!-- Niveles Link -->
       <Button
-        href="/niveles"
+        href="/account/niveles"
         variant="ghost"
         class={`flex! w-full! items-center! justify-start! p-2! gap-0! relative group/nav text-left ${
           currentPath === "/niveles"
@@ -687,7 +687,7 @@ const currentPath = Astro.url.pathname;
         const contactos = result.contactos || [];
 
         const addBtnHtml = `
-            <a href="/contacts" class="group/add flex items-center p-2 rounded-lg hover:bg-white/5 transition-colors relative w-full text-left mt-1">
+            <a href="/account/contacts" class="group/add flex items-center p-2 rounded-lg hover:bg-white/5 transition-colors relative w-full text-left mt-1">
                 <div class="relative shrink-0">
                     <div class="w-9 h-9 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 group-hover/add:text-brand-lime transition-colors">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

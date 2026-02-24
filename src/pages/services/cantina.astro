@@ -1,0 +1,1191 @@
+---
+import MainLayout from "../../layouts/MainLayout.astro";
+import { showToast } from "../../utils/toast";
+---
+
+<MainLayout title="Cantinas | CapyPay" showSidebar={true}>
+  <div class="max-w-7xl mx-auto px-4 md:px-6 py-8 pb-32">
+    <!-- Header -->
+    <header class="flex flex-col md:flex-row items-center justify-between gap-6 mb-8">
+      <div class="flex items-center gap-2 sm:gap-4 w-full md:w-auto">
+        <a
+          href="/dashboard"
+          class="w-9 h-9 lg:w-10 lg:h-10 rounded-full border border-white/10 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/5 transition-colors shrink-0"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-4 w-4 lg:h-5 lg:w-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M15 19l-7-7 7-7"
+            ></path>
+          </svg>
+        </a>
+        <div
+          class="w-10 h-10 sm:w-12 sm:h-12 bg-brand-purple rounded-2xl flex items-center justify-center text-black shadow-[0_0_20px_rgba(147,51,234,0.3)]"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="24px"
+            viewBox="0 0 24 24"
+            width="24px"
+            fill="none"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+            ></path>
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight text-white leading-tight">
+            CapyPay <span class="text-brand-purple">Cantinas</span>
+          </h1>
+          <p class="text-white/40 text-sm font-medium">
+            Snacks rápidos, satisfacción garantizada
+          </p>
+        </div>
+      </div>
+    </header>
+
+    <!-- VISTA 1: LISTADO DE ÁREAS (Nivel 1) -->
+    <div id="areas-view">
+      <!-- Banners de Promociones -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-8 min-w-0">
+        <!-- Banner Promo Especial -->
+        <div
+          class="bg-linear-to-r from-brand-lime to-brand-lime/80 rounded-3xl p-4 sm:p-5 relative overflow-hidden group cursor-pointer transition-transform hover:scale-[1.02] min-w-0"
+        >
+          <div class="absolute -right-8 -top-8 w-32 h-32 bg-white/20 rounded-full blur-2xl group-hover:bg-white/30 transition-all"></div>
+          <div class="relative z-10">
+            <div class="flex flex-wrap items-center gap-2 mb-2">
+              <span class="bg-black/20 px-2 py-0.5 rounded-full text-[10px] font-bold text-black uppercase whitespace-nowrap">
+                🔥 Promo Flash
+              </span>
+              <span class="text-black/60 text-[10px] font-bold whitespace-nowrap">Termina hoy</span>
+            </div>
+            <h3 class="text-lg sm:text-xl font-extrabold text-black mb-1">
+              2x1 en Tostones
+            </h3>
+            <p class="text-black/70 text-xs mb-3 line-clamp-2">
+              Compra 1 tostón y lleva el segundo GRATIS en todas las cantinas
+            </p>
+            <button class="bg-black text-brand-lime font-bold px-4 py-2 rounded-xl text-xs hover:bg-black/80 transition-all w-fit">
+              Ver detalles
+            </button>
+          </div>
+          <div class="absolute right-4 top-1/2 -translate-y-1/2 opacity-20 hidden sm:block">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-24 w-24 text-black"
+              fill="currentColor"
+              viewBox="0 -960 960 960"
+            >
+              <path d="M120-80v-366q-51-14-85.5-56T160-600v-280h80v280h40v-280h80v280h40v-280h80v280q0 56-34.5 98T360-446v366h-80Zm400 0v-320H560v-280q0-83 58.5-141.5T760-880v800h-80Z" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- Banner Descuento Magister -->
+        <div
+          class="bg-linear-to-r from-brand-purple to-purple-800 rounded-3xl p-4 sm:p-5 relative overflow-hidden group cursor-pointer transition-transform hover:scale-[1.02] min-w-0"
+        >
+          <div class="absolute -right-8 -top-8 w-32 h-32 bg-white/10 rounded-full blur-2xl group-hover:bg-white/20 transition-all"></div>
+          <div class="relative z-10">
+            <div class="flex flex-wrap items-center gap-2 mb-2">
+              <span class="bg-white/20 px-2 py-0.5 rounded-full text-[10px] font-bold text-white uppercase whitespace-nowrap">
+                👑 Exclusivo
+              </span>
+              <span class="text-white/60 text-[10px] font-bold whitespace-nowrap">Nivel Magister</span>
+            </div>
+            <h3 class="text-lg sm:text-xl font-extrabold text-white mb-1">
+              25% de Descuento
+            </h3>
+            <p class="text-white/70 text-xs mb-3 line-clamp-2">
+              Usuarios de nivel Magister disfrutan de descuento en todas las cantinas
+            </p>
+            <button class="bg-white text-brand-purple font-bold px-4 py-2 rounded-xl text-xs hover:bg-white/90 transition-all w-fit">
+              Ver mi nivel
+            </button>
+          </div>
+          <div class="absolute right-4 top-1/2 -translate-y-1/2 opacity-20 hidden sm:block">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-24 w-24 text-white"
+              fill="currentColor"
+              viewBox="0 -960 960 960"
+            >
+              <path d="M280-80v-366q-51-14-85.5-56T160-600v-280h80v280h40v-280h80v280h40v-280h80v280q0 56-34.5 98T360-446v366h-80Zm400 0v-320H560v-280q0-83 58.5-141.5T760-880v800h-80Z" />
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ranking de Cantina del Día -->
+      <div
+        class="mb-8 bg-linear-to-br from-brand-lime/20 to-brand-purple/20 border border-brand-lime/30 rounded-3xl p-6 relative overflow-hidden"
+      >
+        <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-brand-lime/10 rounded-full blur-3xl"></div>
+        <div class="absolute -right-10 -top-10 w-40 h-40 bg-brand-purple/10 rounded-full blur-3xl"></div>
+
+        <div class="relative z-10">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
+            <div class="flex items-center gap-3">
+              <div class="size-10 bg-brand-lime rounded-full flex items-center justify-center text-black">
+                <span class="text-lg">🏆</span>
+              </div>
+              <div>
+                <h3 class="text-lg font-extrabold text-white">Cantina del Día</h3>
+                <p class="text-white/50 text-xs">La más votada por los estudiantes</p>
+              </div>
+            </div>
+            <a
+              href="#"
+              class="text-xs text-brand-lime font-bold hover:underline flex items-center gap-1 whitespace-nowrap"
+            >
+              Ver ranking completo
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-3 w-3"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 5l7 7-7 7"
+                ></path>
+              </svg>
+            </a>
+          </div>
+
+          <div
+            id="cantina-del-dia"
+            class="flex flex-col sm:flex-row items-start sm:items-center gap-4 bg-black/30 rounded-2xl p-4 border border-white/10 hover:border-brand-lime/50 transition-all cursor-pointer min-w-0"
+          >
+            <div class="relative shrink-0">
+              <img
+                id="cantina-del-dia-img"
+                src=""
+                alt="Cantina del Día"
+                class="w-16 h-16 sm:w-20 sm:h-20 rounded-xl object-cover"
+              />
+              <div
+                class="absolute -top-2 -left-2 w-7 h-7 sm:w-8 sm:h-8 bg-brand-lime rounded-full flex items-center justify-center text-black font-bold text-xs sm:text-sm shadow-lg"
+              >
+                1
+              </div>
+            </div>
+            <div class="flex-1 min-w-0">
+              <h4
+                id="cantina-del-dia-name"
+                class="text-base font-bold text-white mb-1 truncate"
+              ></h4>
+              <p
+                id="cantina-del-dia-faculty"
+                class="text-xs text-white/50 mb-2"
+              ></p>
+              <div class="flex flex-wrap items-center gap-2 sm:gap-3">
+                <span class="flex items-center gap-1 text-xs text-brand-lime">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0"
+                    fill="currentColor"
+                    viewBox="0 -960 960 960"
+                  >
+                    <path d="M480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-82q130 0 221-91t91-221q0-130-91-221t-221-91q-130 0-221 91t-91 221q0 130 91 221t221 91Z" />
+                  </svg>
+                  <span id="cantina-del-dia-votes">245</span> votos
+                </span>
+                <span class="flex items-center gap-1 text-xs text-brand-purple">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0"
+                    fill="currentColor"
+                    viewBox="0 -960 960 960"
+                  >
+                    <path d="M720-120H280v-520l280-280 50 50-220 220H720v530Zm-40-40H280-80v-450h360v450Z" />
+                  </svg>
+                  Top rated
+                </span>
+              </div>
+            </div>
+            <div class="text-right shrink-0">
+              <div class="flex items-center gap-0.5 text-brand-lime">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-3.5 w-3.5 sm:h-4 sm:w-4"
+                  fill="currentColor"
+                  viewBox="0 -960 960 960"
+                >
+                  <path d="m233-120 65-281H80l340-560 68 560-165 120h-90Zm266 0 65-281H346l340-560 68 560-165 120h-90Z" />
+                </svg>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-3.5 w-3.5 sm:h-4 sm:w-4"
+                  fill="currentColor"
+                  viewBox="0 -960 960 960"
+                >
+                  <path d="m233-120 65-281H80l340-560 68 560-165 120h-90Zm266 0 65-281H346l340-560 68 560-165 120h-90Z" />
+                </svg>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-3.5 w-3.5 sm:h-4 sm:w-4"
+                  fill="currentColor"
+                  viewBox="0 -960 960 960"
+                >
+                  <path d="m233-120 65-281H80l340-560 68 560-165 120h-90Zm266 0 65-281H346l340-560 68 560-165 120h-90Z" />
+                </svg>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-3.5 w-3.5 sm:h-4 sm:w-4"
+                  fill="currentColor"
+                  viewBox="0 -960 960 960"
+                >
+                  <path d="m233-120 65-281H80l340-560 68 560-165 120h-90Zm266 0 65-281H346l340-560 68 560-165 120h-90Z" />
+                </svg>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-3.5 w-3.5 sm:h-4 sm:w-4"
+                  fill="currentColor"
+                  viewBox="0 -960 960 960"
+                >
+                  <path d="m233-120 65-281H80l340-560 68 560-165 120h-90Zm266 0 65-281H346l340-560 68 560-165 120h-90Z" />
+                </svg>
+              </div>
+              <p class="text-[10px] text-white/50 mt-1">4.9/5</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="text-lg font-bold text-white/60 uppercase tracking-widest mb-6 mt-8">
+        Selecciona el área donde deseas comprar:
+      </h2>
+
+      <div id="areas-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 min-w-0">
+        <!-- Las tarjetas de áreas se generan dinámicamente -->
+      </div>
+    </div>
+
+    <!-- VISTA 2: LISTADO DE CANTINAS DEL ÁREA (Nivel 2) -->
+    <div id="cantinas-view" class="hidden">
+      <!-- Botón regresar a áreas -->
+      <button
+        id="back-to-areas"
+        class="mb-4 sm:mb-6 flex items-center gap-2 text-slate-400 hover:text-brand-purple transition-colors font-medium text-sm sm:text-base"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-4 w-4 sm:h-5 sm:w-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M15 19l-7-7 7-7"
+          ></path>
+        </svg>
+        Volver a áreas
+      </button>
+
+      <!-- Encabezado del área -->
+      <div id="cantinas-header" class="bg-linear-to-br from-brand-lime/20 via-brand-purple/10 to-brand-black border border-brand-lime/30 rounded-3xl p-4 sm:p-6 mb-8 relative overflow-hidden min-w-0">
+        <div class="absolute -right-10 -top-10 w-40 h-40 bg-brand-lime/10 rounded-full blur-3xl"></div>
+        <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-brand-purple/10 rounded-full blur-3xl"></div>
+        <div class="relative z-10 min-w-0">
+          <h2 id="area-title" class="text-xl sm:text-2xl md:text-3xl font-extrabold text-white mb-2 truncate"></h2>
+          <p id="area-stats" class="text-white/60 text-xs sm:text-sm flex items-center gap-2">
+            <div class="w-2 h-2 rounded-full bg-brand-lime animate-pulse shrink-0"></div>
+          </p>
+        </div>
+      </div>
+
+       <!-- Lista de cantinas del área -->
+       <div id="cantinas-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 min-w-0">
+         <!-- Las tarjetas de cantinas se generan dinámicamente -->
+       </div>
+     </div>
+
+    <!-- VISTA 3: PRODUCTOS DE LA CANTINA (Nivel 3) -->
+    <div id="products-view" class="hidden">
+      <!-- Botón regresar a cantinas -->
+      <button
+        id="back-to-cantinas"
+        class="mb-4 sm:mb-6 flex items-center gap-2 text-slate-400 hover:text-brand-purple transition-colors font-medium text-sm sm:text-base"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-4 w-4 sm:h-5 sm:w-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M15 19l-7-7 7-7"
+          ></path>
+        </svg>
+        Volver a cantinas
+      </button>
+
+      <!-- Encabezado de la cantina -->
+      <div class="bg-linear-to-br from-brand-lime/20 via-brand-purple/10 to-brand-black border border-brand-lime/30 rounded-3xl p-4 sm:p-6 mb-8 relative overflow-hidden min-w-0">
+        <div class="absolute -right-10 -top-10 w-40 h-40 bg-brand-lime/10 rounded-full blur-3xl"></div>
+        <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-brand-purple/10 rounded-full blur-3xl"></div>
+        <div class="relative z-10 min-w-0">
+          <div class="flex flex-col md:flex-row gap-4 md:gap-6">
+            <div class="w-full md:w-48 h-28 md:h-32 rounded-2xl overflow-hidden shrink-0 border-2 border-brand-lime/30">
+              <img
+                id="cantina-image"
+                src=""
+                alt="Cantina"
+                class="w-full h-full object-cover"
+              />
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-2 mb-2">
+                <h2 id="cantina-name" class="text-xl sm:text-2xl md:text-3xl font-extrabold text-white truncate"></h2>
+                <span id="cantina-status" class="px-3 py-1 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-wider whitespace-nowrap"></span>
+              </div>
+              <p id="cantina-description" class="text-white/80 text-xs sm:text-sm"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grid de productos -->
+      <h3 id="products-title" class="text-lg sm:text-xl font-bold text-white mb-4 sm:mb-6">Menú Disponible</h3>
+      <div id="products-grid" class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 min-w-0">
+        <!-- Los productos se generan dinámicamente -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom Styles -->
+  <style>
+    .glass-card {
+      background: rgba(20, 20, 20, 0.6);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      position: relative;
+    }
+
+    /* Ocultar scrollbar horizontal en todas las vistas */
+    #areas-view,
+    #cantinas-view,
+    #products-view,
+    #areas-list,
+    #cantinas-list,
+    #products-grid {
+      overflow-x: hidden;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    #areas-view::-webkit-scrollbar,
+    #cantinas-view::-webkit-scrollbar,
+    #products-view::-webkit-scrollbar,
+    #areas-list::-webkit-scrollbar,
+    #cantinas-list::-webkit-scrollbar,
+    #products-grid::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* Asegurar que el contenido no desborde */
+    .overflow-hidden-text {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* Mejorar efecto glow en hover */
+    .glass-card:hover::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: 1rem;
+      background: linear-linear(45deg, rgba(215, 253, 73, 0.3), rgba(215, 253, 73, 0.1), rgba(215, 253, 73, 0.3));
+      filter: blur(20px);
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .glass-card:hover::after {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: 1rem;
+      background: linear-linear(45deg, rgba(215, 253, 73, 0.4), rgba(215, 253, 73, 0.1), rgba(215, 253, 73, 0.4));
+      filter: blur(30px);
+      z-index: -1;
+      opacity: 1;
+      transition: opacity 0.3s ease;
+    }
+  </style>
+
+  <script>
+    // @ts-nocheck
+    // ==========================================
+    // MOCK DATA - Datos Simulados
+    // ==========================================
+    const cantinasData = [
+      // INGENIERÍA
+      {
+        id: "cantina-ingenieria-principal",
+        name: "Cantina Principal",
+        faculty: "ingenieria",
+        isOpen: true,
+        image: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600",
+        description: "La cantina más grande de la facultad. Snacks variados y bebidas frías.",
+        products: [
+          { id: "p1", name: "Tostones", priceBs: 10, priceCapys: 1.5, image: "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=300", xpReward: 5 },
+          { id: "p2", name: "Malta", priceBs: 8, priceCapys: 1, image: "https://images.unsplash.com/photo-1607962837359-5e7e89f86776?w=300", xpReward: 4 },
+          { id: "p3", name: "Jugo de Naranja", priceBs: 12, priceCapys: 1.8, image: "https://images.unsplash.com/photo-1613478223719-2ab802602423?w=300", xpReward: 6 },
+          { id: "p4", name: "Refresco Cola", priceBs: 10, priceCapys: 1.5, image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300", xpReward: 5 },
+          { id: "p5", name: "Chupetas Varias", priceBs: 5, priceCapys: 0.8, image: "https://images.unsplash.com/photo-1519834785169-98be25ec3f84?w=300", xpReward: 3 },
+          { id: "p6", name: "Mentas", priceBs: 3, priceCapys: 0.5, image: "https://images.unsplash.com/photo-1589445393346-79a4a2e0486e?w=300", xpReward: 2 },
+        ],
+      },
+      {
+        id: "cantina-ingenieria-pasillo",
+        name: "Cantina Pasillo 2",
+        faculty: "ingenieria",
+        isOpen: true,
+        image: "https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=600",
+        description: "Cantina de paso rápida. Perfecta para un snack entre clases.",
+        products: [
+          { id: "p7", name: "Empanadas", priceBs: 15, priceCapys: 2, image: "https://images.unsplash.com/photo-1663526652623-493d22b642c4?w=300", xpReward: 8 },
+          { id: "p8", name: "Café Negro", priceBs: 6, priceCapys: 0.8, image: "https://images.unsplash.com/photo-1610632380989-680fe40816c6?w=300", xpReward: 4 },
+          { id: "p9", name: "Galletas", priceBs: 8, priceCapys: 1.2, image: "https://images.unsplash.com/photo-1499636138143-bd64986a642b?w=300", xpReward: 5 },
+          { id: "p10", name: "Agua", priceBs: 5, priceCapys: 0.7, image: "https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=300", xpReward: 3 },
+        ],
+      },
+      {
+        id: "cantina-ingenieria-laboratorio",
+        name: "Kiosco Laboratorios",
+        faculty: "ingenieria",
+        isOpen: false,
+        image: "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=600",
+        description: "Kiosco ubicado cerca de los laboratorios. Cerrado por mantenimiento.",
+        products: [
+          { id: "p11", name: "Sandwich", priceBs: 20, priceCapys: 3, image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=300", xpReward: 10 },
+          { id: "p12", name: "Jugo de Parchita", priceBs: 14, priceCapys: 2, image: "https://images.unsplash.com/photo-1623065422902-30a2d299bbe4?w=300", xpReward: 7 },
+        ],
+      },
+
+      // CIENCIAS DE LA SALUD
+      {
+        id: "cantina-salud-principal",
+        name: "Cantina Enfermería",
+        faculty: "salud",
+        isOpen: true,
+        image: "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=600",
+        description: "Cantina principal de la facultad de salud. Especialidad en jugos naturales.",
+        products: [
+          { id: "p13", name: "Jugo Verde", priceBs: 15, priceCapys: 2, image: "https://images.unsplash.com/photo-1610970881699-44a5587cabec?w=300", xpReward: 8 },
+          { id: "p14", name: "Tostones con Queso", priceBs: 12, priceCapys: 1.8, image: "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=300", xpReward: 6 },
+          { id: "p15", name: "Malta Polar", priceBs: 8, priceCapys: 1, image: "https://images.unsplash.com/photo-1607962837359-5e7e89f86776?w=300", xpReward: 4 },
+          { id: "p16", name: "Refresco de Uva", priceBs: 10, priceCapys: 1.5, image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300", xpReward: 5 },
+          { id: "p17", name: "Fruta Picada", priceBs: 18, priceCapys: 2.5, image: "https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=300", xpReward: 10 },
+          { id: "p18", name: "Chupetas", priceBs: 5, priceCapys: 0.8, image: "https://images.unsplash.com/photo-1519834785169-98be25ec3f84?w=300", xpReward: 3 },
+        ],
+      },
+      {
+        id: "cantina-salud-pediatria",
+        name: "Kiosco Pediatria",
+        faculty: "salud",
+        isOpen: true,
+        image: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=600",
+        description: "Kiosco pequeño cerca del área de pediatría. Snacks rápidos.",
+        products: [
+          { id: "p19", name: "Mentas", priceBs: 3, priceCapys: 0.5, image: "https://images.unsplash.com/photo-1589445393346-79a4a2e0486e?w=300", xpReward: 2 },
+          { id: "p20", name: "Galletas de Animalitos", priceBs: 7, priceCapys: 1, image: "https://images.unsplash.com/photo-1499636138143-bd64986a642b?w=300", xpReward: 4 },
+          { id: "p21", name: "Jugo de Manzana", priceBs: 10, priceCapys: 1.5, image: "https://images.unsplash.com/photo-1613478223719-2ab802602423?w=300", xpReward: 5 },
+        ],
+      },
+      {
+        id: "cantina-salud-clinica",
+        name: "Cafetería Clínica",
+        faculty: "salud",
+        isOpen: true,
+        image: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600",
+        description: "Cafetería ubicada en la clínica universitaria. Café y postres.",
+        products: [
+          { id: "p22", name: "Cappuccino", priceBs: 18, priceCapys: 2.5, image: "https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=300", xpReward: 10 },
+          { id: "p23", name: "Brownie", priceBs: 20, priceCapys: 3, image: "https://images.unsplash.com/photo-1607958996333-41aef7caefaa?w=300", xpReward: 10 },
+          { id: "p24", name: "Té", priceBs: 8, priceCapys: 1, image: "https://images.unsplash.com/photo-1556881286-fc6915169721?w=300", xpReward: 4 },
+        ],
+      },
+
+      // DERECHO
+      {
+        id: "cantina-derecho-principal",
+        name: "Cantina Principal Derecho",
+        faculty: "derecho",
+        isOpen: true,
+        image: "https://images.unsplash.com/photo-1559339352-11d035aa65de?w=600",
+        description: "La cantina más concurrida de Derecho. Tostones y malta fría.",
+        products: [
+          { id: "p25", name: "Tostones", priceBs: 10, priceCapys: 1.5, image: "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=300", xpReward: 5 },
+          { id: "p26", name: "Malta", priceBs: 8, priceCapys: 1, image: "https://images.unsplash.com/photo-1607962837359-5e7e89f86776?w=300", xpReward: 4 },
+          { id: "p27", name: "Refresco", priceBs: 10, priceCapys: 1.5, image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300", xpReward: 5 },
+          { id: "p28", name: "Jugo de Naranja", priceBs: 12, priceCapys: 1.8, image: "https://images.unsplash.com/photo-1613478223719-2ab802602423?w=300", xpReward: 6 },
+          { id: "p29", name: "Chupetas", priceBs: 5, priceCapys: 0.8, image: "https://images.unsplash.com/photo-1519834785169-98be25ec3f84?w=300", xpReward: 3 },
+          { id: "p30", name: "Mentas", priceBs: 3, priceCapys: 0.5, image: "https://images.unsplash.com/photo-1589445393346-79a4a2e0486e?w=300", xpReward: 2 },
+        ],
+      },
+      {
+        id: "cantina-derecho-biblioteca",
+        name: "Cafetería Biblioteca",
+        faculty: "derecho",
+        isOpen: true,
+        image: "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=600",
+        description: "Cafetería silenciosa en la biblioteca. Perfecta para estudiar.",
+        products: [
+          { id: "p31", name: "Café Americano", priceBs: 12, priceCapys: 1.8, image: "https://images.unsplash.com/photo-1610632380989-680fe40816c6?w=300", xpReward: 6 },
+          { id: "p32", name: "Croissant", priceBs: 15, priceCapys: 2, image: "https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=300", xpReward: 8 },
+          { id: "p33", name: "Tostones", priceBs: 10, priceCapys: 1.5, image: "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=300", xpReward: 5 },
+          { id: "p34", name: "Jugo Natural", priceBs: 14, priceCapys: 2, image: "https://images.unsplash.com/photo-1623065422902-30a2d299bbe4?w=300", xpReward: 7 },
+        ],
+      },
+      {
+        id: "cantina-derecho-aulas",
+        name: "Kiosco Aulas 3-4",
+        faculty: "derecho",
+        isOpen: false,
+        image: "https://images.unsplash.com/photo-1556910103-1c02745a30bf?w=600",
+        description: "Kiosco pequeño cerca de las aulas 3 y 4. Cerrado temporalmente.",
+        products: [
+          { id: "p35", name: "Malta", priceBs: 8, priceCapys: 1, image: "https://images.unsplash.com/photo-1607962837359-5e7e89f86776?w=300", xpReward: 4 },
+          { id: "p36", name: "Chupetas", priceBs: 5, priceCapys: 0.8, image: "https://images.unsplash.com/photo-1519834785169-98be25ec3f84?w=300", xpReward: 3 },
+        ],
+      },
+
+      // VETERINARIA
+      {
+        id: "cantina-veterinaria-principal",
+        name: "Cantina Principal Veterinaria",
+        faculty: "veterinaria",
+        isOpen: true,
+        image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600",
+        description: "Cantina principal con vista a los jardines. Comida casera.",
+        products: [
+          { id: "p37", name: "Tostones", priceBs: 10, priceCapys: 1.5, image: "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=300", xpReward: 5 },
+          { id: "p38", name: "Malta", priceBs: 8, priceCapys: 1, image: "https://images.unsplash.com/photo-1607962837359-5e7e89f86776?w=300", xpReward: 4 },
+          { id: "p39", name: "Jugo de Parchita", priceBs: 14, priceCapys: 2, image: "https://images.unsplash.com/photo-1623065422902-30a2d299bbe4?w=300", xpReward: 7 },
+          { id: "p40", name: "Refresco", priceBs: 10, priceCapys: 1.5, image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300", xpReward: 5 },
+          { id: "p41", name: "Chupetas", priceBs: 5, priceCapys: 0.8, image: "https://images.unsplash.com/photo-1519834785169-98be25ec3f84?w=300", xpReward: 3 },
+          { id: "p42", name: "Mentas", priceBs: 3, priceCapys: 0.5, image: "https://images.unsplash.com/photo-1589445393346-79a4a2e0486e?w=300", xpReward: 2 },
+        ],
+      },
+      {
+        id: "cantina-veterinaria-patos",
+        name: "Kiosco Patos",
+        faculty: "veterinaria",
+        isOpen: true,
+        image: "https://images.unsplash.com/photo-1555462410-d2af568d80c8?w=600",
+        description: "Kiosco cerca del estanque de patos. Snacks fríos.",
+        products: [
+          { id: "p43", name: "Malta", priceBs: 8, priceCapys: 1, image: "https://images.unsplash.com/photo-1607962837359-5e7e89f86776?w=300", xpReward: 4 },
+          { id: "p44", name: "Tostones", priceBs: 10, priceCapys: 1.5, image: "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=300", xpReward: 5 },
+          { id: "p45", name: "Galletas", priceBs: 7, priceCapys: 1, image: "https://images.unsplash.com/photo-1499636138143-bd64986a642b?w=300", xpReward: 4 },
+          { id: "p46", name: "Agua", priceBs: 5, priceCapys: 0.7, image: "https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=300", xpReward: 3 },
+        ],
+      },
+      {
+        id: "cantina-veterinaria-farmacia",
+        name: "Cantina Farmacia",
+        faculty: "veterinaria",
+        isOpen: true,
+        image: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600",
+        description: "Cantina pequeña cerca de la farmacia. Productos variados.",
+        products: [
+          { id: "p47", name: "Refresco", priceBs: 10, priceCapys: 1.5, image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300", xpReward: 5 },
+          { id: "p48", name: "Jugo de Naranja", priceBs: 12, priceCapys: 1.8, image: "https://images.unsplash.com/photo-1613478223719-2ab802602423?w=300", xpReward: 6 },
+          { id: "p49", name: "Mentas", priceBs: 3, priceCapys: 0.5, image: "https://images.unsplash.com/photo-1589445393346-79a4a2e0486e?w=300", xpReward: 2 },
+          { id: "p50", name: "Chupetas", priceBs: 5, priceCapys: 0.8, image: "https://images.unsplash.com/photo-1519834785169-98be25ec3f84?w=300", xpReward: 3 },
+        ],
+      },
+
+      // ODONTOLOGÍA
+      {
+        id: "cantina-odontologia-principal",
+        name: "Cantina Principal Odontología",
+        faculty: "odontologia",
+        isOpen: true,
+        image: "https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=600",
+        description: "Cantina principal de la facultad de odontología. Snacks frescos.",
+        products: [
+          { id: "p51", name: "Tostones", priceBs: 10, priceCapys: 1.5, image: "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=300", xpReward: 5 },
+          { id: "p52", name: "Malta", priceBs: 8, priceCapys: 1, image: "https://images.unsplash.com/photo-1607962837359-5e7e89f86776?w=300", xpReward: 4 },
+          { id: "p53", name: "Jugo de Naranja", priceBs: 12, priceCapys: 1.8, image: "https://images.unsplash.com/photo-1613478223719-2ab802602423?w=300", xpReward: 6 },
+          { id: "p54", name: "Refresco", priceBs: 10, priceCapys: 1.5, image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300", xpReward: 5 },
+          { id: "p55", name: "Chupetas", priceBs: 5, priceCapys: 0.8, image: "https://images.unsplash.com/photo-1519834785169-98be25ec3f84?w=300", xpReward: 3 },
+          { id: "p56", name: "Mentas", priceBs: 3, priceCapys: 0.5, image: "https://images.unsplash.com/photo-1589445393346-79a4a2e0486e?w=300", xpReward: 2 },
+        ],
+      },
+      {
+        id: "cantina-odontologia-clinica",
+        name: "Kiosco Clínica Odontológica",
+        faculty: "odontologia",
+        isOpen: true,
+        image: "https://images.unsplash.com/photo-1606811841689-23dfddce3e95?w=600",
+        description: "Kiosco cerca de las clínicas de práctica. Ideal para pausas rápidas.",
+        products: [
+          { id: "p57", name: "Galletas", priceBs: 7, priceCapys: 1, image: "https://images.unsplash.com/photo-1499636138143-bd64986a642b?w=300", xpReward: 4 },
+          { id: "p58", name: "Agua", priceBs: 5, priceCapys: 0.7, image: "https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=300", xpReward: 3 },
+          { id: "p59", name: "Jugo de Parchita", priceBs: 14, priceCapys: 2, image: "https://images.unsplash.com/photo-1623065422902-30a2d299bbe4?w=300", xpReward: 7 },
+          { id: "p60", name: "Café", priceBs: 8, priceCapys: 1, image: "https://images.unsplash.com/photo-1610632380989-680fe40816c6?w=300", xpReward: 4 },
+        ],
+      },
+      {
+        id: "cantina-odontologia-laboratorios",
+        name: "Cantina Laboratorios",
+        faculty: "odontologia",
+        isOpen: false,
+        image: "https://images.unsplash.com/photo-1516627145497-ae6968895b74?w=600",
+        description: "Cantina ubicada cerca de los laboratorios de prótesis. Cerrado por remodelación.",
+        products: [
+          { id: "p61", name: "Tostones", priceBs: 10, priceCapys: 1.5, image: "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=300", xpReward: 5 },
+          { id: "p62", name: "Malta", priceBs: 8, priceCapys: 1, image: "https://images.unsplash.com/photo-1607962837359-5e7e89f86776?w=300", xpReward: 4 },
+        ],
+      },
+
+      // CIENCIAS ECONÓMICAS Y SOCIALES
+      {
+        id: "cantina-economicas-principal",
+        name: "Cantina Principal Económicas",
+        faculty: "economicas",
+        isOpen: true,
+        image: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=600",
+        description: "La cantina más grande de la facultad. Tostones, malta y más.",
+        products: [
+          { id: "p63", name: "Tostones", priceBs: 10, priceCapys: 1.5, image: "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=300", xpReward: 5 },
+          { id: "p64", name: "Malta", priceBs: 8, priceCapys: 1, image: "https://images.unsplash.com/photo-1607962837359-5e7e89f86776?w=300", xpReward: 4 },
+          { id: "p65", name: "Jugo de Naranja", priceBs: 12, priceCapys: 1.8, image: "https://images.unsplash.com/photo-1613478223719-2ab802602423?w=300", xpReward: 6 },
+          { id: "p66", name: "Refresco", priceBs: 10, priceCapys: 1.5, image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300", xpReward: 5 },
+          { id: "p67", name: "Chupetas", priceBs: 5, priceCapys: 0.8, image: "https://images.unsplash.com/photo-1519834785169-98be25ec3f84?w=300", xpReward: 3 },
+          { id: "p68", name: "Mentas", priceBs: 3, priceCapys: 0.5, image: "https://images.unsplash.com/photo-1589445393346-79a4a2e0486e?w=300", xpReward: 2 },
+        ],
+      },
+      {
+        id: "cantina-economicas-biblioteca",
+        name: "Cafetería Biblioteca Económicas",
+        faculty: "economicas",
+        isOpen: true,
+        image: "https://images.unsplash.com/photo-1568667256549-094345857637?w=600",
+        description: "Cafetería en la biblioteca. Perfecta para estudiar administración y contabilidad.",
+        products: [
+          { id: "p69", name: "Café Americano", priceBs: 12, priceCapys: 1.8, image: "https://images.unsplash.com/photo-1610632380989-680fe40816c6?w=300", xpReward: 6 },
+          { id: "p70", name: "Croissant", priceBs: 15, priceCapys: 2, image: "https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=300", xpReward: 8 },
+          { id: "p71", name: "Tostones", priceBs: 10, priceCapys: 1.5, image: "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=300", xpReward: 5 },
+          { id: "p72", name: "Jugo Natural", priceBs: 14, priceCapys: 2, image: "https://images.unsplash.com/photo-1623065422902-30a2d299bbe4?w=300", xpReward: 7 },
+          { id: "p73", name: "Galletas", priceBs: 7, priceCapys: 1, image: "https://images.unsplash.com/photo-1499636138143-bd64986a642b?w=300", xpReward: 4 },
+        ],
+      },
+      {
+        id: "cantina-economicas-aulas",
+        name: "Kiosco Aulas Magistrales",
+        faculty: "economicas",
+        isOpen: true,
+        image: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=600",
+        description: "Kiosco estratégicamente ubicado cerca de las aulas más grandes.",
+        products: [
+          { id: "p74", name: "Malta", priceBs: 8, priceCapys: 1, image: "https://images.unsplash.com/photo-1607962837359-5e7e89f86776?w=300", xpReward: 4 },
+          { id: "p75", name: "Refresco", priceBs: 10, priceCapys: 1.5, image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300", xpReward: 5 },
+          { id: "p76", name: "Chupetas", priceBs: 5, priceCapys: 0.8, image: "https://images.unsplash.com/photo-1519834785169-98be25ec3f84?w=300", xpReward: 3 },
+          { id: "p77", name: "Mentas", priceBs: 3, priceCapys: 0.5, image: "https://images.unsplash.com/photo-1589445393346-79a4a2e0486e?w=300", xpReward: 2 },
+          { id: "p78", name: "Agua", priceBs: 5, priceCapys: 0.7, image: "https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=300", xpReward: 3 },
+        ],
+      },
+    ];
+
+    // Datos de las áreas
+    const areasData = [
+      {
+        id: "ingenieria",
+        name: "Ingeniería",
+        image: "https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=600",
+        description: "Snacks y bebidas para los ingenieros",
+        color: "bg-blue-500/20 border-blue-500/30 text-blue-400",
+      },
+      {
+        id: "salud",
+        name: "Ciencias de la Salud",
+        image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=600",
+        description: "Opciones saludables y naturales",
+        color: "bg-green-500/20 border-green-500/30 text-green-400",
+      },
+      {
+        id: "derecho",
+        name: "Derecho",
+        image: "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?w=600",
+        description: "Café y snacks para estudiar",
+        color: "bg-purple-500/20 border-purple-500/30 text-purple-400",
+      },
+      {
+        id: "veterinaria",
+        name: "Veterinaria",
+        image: "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=600",
+        description: "Comida casera y opciones variadas",
+        color: "bg-orange-500/20 border-orange-500/30 text-orange-400",
+      },
+      {
+        id: "odontologia",
+        name: "Odontología",
+        image: "https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=600",
+        description: "Frescura y sonrisas",
+        color: "bg-cyan-500/20 border-cyan-500/30 text-cyan-400",
+      },
+      {
+        id: "economicas",
+        name: "Ciencias Económicas y Sociales",
+        image: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=600",
+        description: "Negocios y snacks",
+        color: "bg-yellow-500/20 border-yellow-500/30 text-yellow-400",
+      },
+    ];
+
+    // ==========================================
+    // ESTADO DE LA APLICACIÓN
+    // ==========================================
+    let currentArea = null;
+    let currentCantina = null;
+
+    // ==========================================
+    // ELEMENTOS DEL DOM
+    // ==========================================
+    const areasView = document.getElementById("areas-view");
+    const cantinasView = document.getElementById("cantinas-view");
+    const productsView = document.getElementById("products-view");
+    const areasList = document.getElementById("areas-list");
+    const cantinasList = document.getElementById("cantinas-list");
+    const productsGrid = document.getElementById("products-grid");
+    const backToAreasBtn = document.getElementById("back-to-areas");
+    const backToCantinasBtn = document.getElementById("back-to-cantinas");
+
+    // ==========================================
+    // FUNCIONES DE RENDERIZADO
+    // ==========================================
+
+    function renderCantinaDelDia() {
+      // Seleccionar una cantina aleatoria de las que están abiertas
+      const openCantinas = cantinasData.filter((c) => c.isOpen);
+      const randomCantina = openCantinas[Math.floor(Math.random() * openCantinas.length)];
+
+      // Obtener el nombre del área
+      const area = areasData.find((a) => a.id === randomCantina.faculty);
+
+      // Actualizar UI
+      document.getElementById("cantina-del-dia-img").src = randomCantina.image;
+      document.getElementById("cantina-del-dia-name").textContent = randomCantina.name;
+      document.getElementById("cantina-del-dia-faculty").textContent = area ? area.name : "";
+      document.getElementById("cantina-del-dia-votes").textContent = Math.floor(Math.random() * 200) + 150;
+
+      // Añadir click para ir a la cantina
+      document.getElementById("cantina-del-dia").addEventListener("click", () => {
+        showCantinasList(area);
+        setTimeout(() => {
+          showProductsView(randomCantina);
+        }, 100);
+      });
+    }
+
+    function renderAreasList() {
+      areasList.innerHTML = "";
+
+      const fragment = document.createDocumentFragment();
+
+      areasData.forEach((area) => {
+        // Calcular estadísticas del área
+        const areaCantinas = cantinasData.filter((c) => c.faculty === area.id);
+        const totalCantinas = areaCantinas.length;
+        const activeCantinas = areaCantinas.filter((c) => c.isOpen).length;
+
+        const card = document.createElement("div");
+        card.className =
+          "bg-white/5 border border-white/5 rounded-3xl overflow-hidden cursor-pointer transition-all hover:bg-white/8 hover:-translate-y-2 duration-500 ease-out group min-w-0";
+        card.innerHTML = `
+          <div class="relative h-48 rounded-2xl overflow-hidden mb-3 shadow-lg">
+            <img
+              src="${area.image}"
+              alt="${area.name}"
+              class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+            />
+            <div class="absolute top-2 right-2 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10">
+              <span class="text-brand-lime font-black text-xs">${activeCantinas}/${totalCantinas} cantinas</span>
+            </div>
+          </div>
+          <div class="px-4 pb-4">
+            <h4 class="font-bold text-base text-white mb-1 truncate">${area.name}</h4>
+            <p class="text-white/50 text-[10px] mb-3 line-clamp-2">${area.description}</p>
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] text-brand-lime font-medium flex items-center gap-1.5 truncate">
+                <div class="w-1.5 h-1.5 rounded-full bg-brand-lime animate-pulse shrink-0"></div>
+                ${activeCantinas} abiertas
+              </span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-4 w-4 text-brand-lime group-hover:translate-x-1 transition-transform shrink-0"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 5l7 7-7 7"
+                ></path>
+              </svg>
+            </div>
+          </div>
+        `;
+        card.addEventListener("click", () => showCantinasList(area));
+        fragment.appendChild(card);
+      });
+
+      areasList.appendChild(fragment);
+    }
+
+    function renderCantinasList(area) {
+      const areaCantinas = cantinasData.filter((c) => c.faculty === area.id);
+      const activeCantinas = areaCantinas.filter((c) => c.isOpen).length;
+
+      // Actualizar encabezado
+      document.getElementById("area-title").textContent = area.name;
+      document.getElementById("area-stats").textContent = `${activeCantinas} de ${areaCantinas.length} cantinas activas`;
+
+      // Limpiar contenedor de manera suave
+      cantinasList.style.opacity = '0';
+      cantinasList.innerHTML = "";
+
+      // Renderizar cards
+      const fragment = document.createDocumentFragment();
+
+      areaCantinas.forEach((cantina, index) => {
+        const statusBadge = cantina.isOpen
+          ? `<span class="absolute top-2 left-2 inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-brand-lime/20 border border-brand-lime/50 text-brand-lime text-xs font-bold uppercase tracking-wider backdrop-blur-md">
+               <span class="w-1.5 h-1.5 rounded-full bg-brand-lime animate-pulse"></span>
+               Abierto
+             </span>`
+          : `<span class="absolute top-2 left-2 inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-red-500/20 border border-red-500/50 text-red-400 text-xs font-bold uppercase tracking-wider backdrop-blur-md">
+               <span class="w-1.5 h-1.5 rounded-full bg-red-400"></span>
+               Cerrado
+             </span>`;
+
+        const card = document.createElement("div");
+        card.className =
+          "bg-white/5 border border-white/5 rounded-3xl p-4 group transition-all hover:bg-white/8 hover:-translate-y-2 duration-500 ease-out cursor-pointer min-w-0";
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(10px)';
+        card.innerHTML = `
+          <div class="relative h-48 rounded-2xl overflow-hidden mb-3 shadow-lg">
+            <img
+              src="${cantina.image}"
+              alt="${cantina.name}"
+              class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+            />
+            ${statusBadge}
+          </div>
+          <h4 class="font-bold text-base text-white mb-1 truncate">${cantina.name}</h4>
+          <p class="text-white/50 text-[10px] mb-3 line-clamp-2">${cantina.description}</p>
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] text-brand-lime font-medium flex items-center gap-1.5 truncate">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 shrink-0" fill="currentColor" viewBox="0 -960 960 960"><path d="M120-80v-366q-51-14-85.5-56T160-600v-280h80v280h40v-280h80v280h40v-280h80v280q0 56-34.5 98T360-446v366h-80Zm400 0v-320H560v-280q0-83 58.5-141.5T760-880v800h-80Z" /></svg>
+              ${cantina.products.length} productos
+            </span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4 text-brand-lime group-hover:translate-x-1 transition-transform shrink-0"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 5l7 7-7 7"
+              ></path>
+            </svg>
+          </div>
+        `;
+        card.addEventListener("click", () => showProductsView(cantina));
+        fragment.appendChild(card);
+      });
+
+      cantinasList.appendChild(fragment);
+
+      // Animar entrada de las cards
+      requestAnimationFrame(() => {
+        const cards = cantinasList.querySelectorAll('div');
+        cards.forEach((card, index) => {
+          if (card.style.opacity === '0') {
+            setTimeout(() => {
+              card.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+              card.style.opacity = '1';
+              card.style.transform = 'translateY(0)';
+            }, index * 50);
+          }
+        });
+
+        // Mostrar el contenedor
+        cantinasList.style.transition = 'opacity 0.2s ease';
+        cantinasList.style.opacity = '1';
+      });
+    }
+
+    function renderProducts(cantina) {
+      productsGrid.innerHTML = "";
+
+      cantina.products.forEach((product) => {
+        const card = document.createElement("div");
+        card.className =
+          "bg-white/5 border border-white/5 rounded-3xl p-4 group transition-all hover:bg-white/8 hover:-translate-y-2 duration-500 ease-out min-w-0";
+        card.innerHTML = `
+          <div class="relative h-48 rounded-2xl overflow-hidden mb-3 shadow-lg">
+            <img
+              src="${product.image}"
+              alt="${product.name}"
+              class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+            />
+            <div class="absolute top-2 right-2 bg-black/60 backdrop-blur-md px-2 py-0.5 rounded-full border border-white/10">
+              <span class="text-brand-lime font-black text-[10px]">+${product.xpReward} XP</span>
+            </div>
+          </div>
+          <h4 class="font-bold text-base text-white mb-1 truncate">${product.name}</h4>
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-white/50 text-[10px]">Bs ${product.priceBs}</span>
+            <span class="text-brand-lime font-black text-[10px]">${product.priceCapys} BARAS</span>
+          </div>
+          <button
+            class="buy-btn w-full py-2.5 rounded-xl border border-brand-lime/30 text-brand-lime font-bold text-[10px] uppercase hover:bg-brand-lime hover:text-black transition-all"
+            data-product-id="${product.id}"
+            data-product-name="${product.name}"
+            data-xp="${product.xpReward}"
+          >
+            Comprar
+          </button>
+        `;
+        productsGrid.appendChild(card);
+      });
+
+      // Añadir event listeners a los botones de compra
+      document.querySelectorAll(".buy-btn").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const productName = btn.dataset.productName;
+          const xpReward = parseInt(btn.dataset.xp);
+          handlePurchase(productName, xpReward);
+        });
+      });
+    }
+
+    // ==========================================
+    // NAVEGACIÓN ENTRE VISTAS
+    // ==========================================
+
+    function showCantinasList(area) {
+      // Scroll al inicio ANTES de cambiar la vista
+      window.scrollTo({ top: 0, behavior: 'instant' });
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+
+      currentArea = area;
+      renderCantinasList(area);
+
+      areasView.classList.add("hidden");
+      cantinasView.classList.remove("hidden");
+      productsView.classList.add("hidden");
+
+      // Forzar scroll inmediato después de cambiar la vista
+      requestAnimationFrame(() => {
+        window.scrollTo({ top: 0, behavior: 'instant' });
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+
+        // Scroll al encabezado de cantinas
+        const header = document.getElementById("cantinas-header");
+        if (header) {
+          header.scrollIntoView({ behavior: 'instant', block: 'start' });
+        }
+      });
+
+      // Scroll suave adicional después de que las cards terminen de animarse
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 1000);
+    }
+
+    function showProductsView(cantina) {
+      currentCantina = cantina;
+
+      // Actualizar encabezado
+      document.getElementById("cantina-image").src = cantina.image;
+      document.getElementById("cantina-name").textContent = cantina.name;
+      document.getElementById("cantina-description").textContent = cantina.description;
+
+      // Badge de estado
+      const statusBadge = document.getElementById("cantina-status");
+      if (cantina.isOpen) {
+        statusBadge.className =
+          "px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-wider bg-brand-lime/20 border border-brand-lime/50 text-brand-lime";
+        statusBadge.innerHTML = `<span class="inline-flex items-center gap-1 sm:gap-1.5"><span class="w-1 sm:w-1.5 h-1 sm:h-1.5 rounded-full bg-brand-lime animate-pulse"></span>Abierto</span>`;
+      } else {
+        statusBadge.className =
+          "px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-wider bg-red-500/20 border border-red-500/50 text-red-400";
+        statusBadge.innerHTML = `<span class="inline-flex items-center gap-1 sm:gap-1.5"><span class="w-1 sm:w-1.5 h-1 sm:h-1.5 rounded-full bg-red-400"></span>Cerrado</span>`;
+      }
+
+      // Renderizar productos o mensaje de cerrado
+      const productsGrid = document.getElementById("products-grid");
+      const productsTitle = document.getElementById("products-title");
+
+      if (cantina.isOpen) {
+        productsTitle.classList.remove("hidden");
+        renderProducts(cantina);
+      } else {
+        productsTitle.classList.add("hidden");
+        productsGrid.innerHTML = `
+          <div class="col-span-full flex flex-col items-center justify-center py-16 text-center">
+            <div class="w-24 h-24 rounded-full bg-red-500/10 flex items-center justify-center mb-6">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-12 w-12 text-red-400"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                ></path>
+              </svg>
+            </div>
+            <h4 class="text-2xl font-bold text-white mb-3">Esta cantina está cerrada</h4>
+            <p class="text-white/60 text-sm max-w-md">
+              Lo sentimos, pero por el momento esta cantina no está disponible para realizar compras.
+              Por favor, intenta con otra cantina de la facultad.
+            </p>
+            <button
+              onclick="showCantinasList(currentArea)"
+              class="mt-8 px-6 py-3 rounded-xl bg-brand-lime hover:bg-brand-lime/90 text-black font-bold text-sm uppercase tracking-wider transition-all hover:scale-105 active:scale-95"
+            >
+              Volver a cantinas
+            </button>
+          </div>
+        `;
+      }
+
+      areasView.classList.add("hidden");
+      cantinasView.classList.add("hidden");
+      productsView.classList.remove("hidden");
+
+      // Scroll al inicio de la página
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function showAreasView() {
+      currentArea = null;
+      currentCantina = null;
+
+      areasView.classList.remove("hidden");
+      cantinasView.classList.add("hidden");
+      productsView.classList.add("hidden");
+
+      // Scroll al inicio de la página
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function showCantinasView() {
+      currentCantina = null;
+
+      areasView.classList.add("hidden");
+      cantinasView.classList.remove("hidden");
+      productsView.classList.add("hidden");
+
+      // Scroll al inicio de la página
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ==========================================
+    // MANEJO DE COMPRAS
+    // ==========================================
+
+    function handlePurchase(productName, xpReward) {
+      const btn = event.target;
+      const originalHTML = btn.innerHTML;
+
+      btn.innerHTML = `<svg class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`;
+      btn.disabled = true;
+      btn.classList.add("bg-white/20", "border-white/20");
+
+      setTimeout(() => {
+        updateUserXP(xpReward);
+        showToast("¡Compra Exitosa!", `${productName}. ¡Has ganado ${xpReward} XP!`, "success");
+
+        btn.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          </svg>
+          Comprado
+        `;
+        btn.classList.remove("bg-brand-lime", "text-black");
+        btn.classList.add("bg-green-500", "text-white", "border-green-500/50");
+
+        setTimeout(() => {
+          btn.innerHTML = originalHTML;
+          btn.disabled = false;
+          btn.classList.remove("bg-white/20", "border-white/20", "bg-green-500", "text-white", "border-green-500/50");
+          btn.classList.add("bg-brand-lime", "text-black");
+        }, 2000);
+
+        document.dispatchEvent(new Event("capypay:refresh-data"));
+      }, 1000);
+    }
+
+    function updateUserXP(xpToAdd) {
+      const user = JSON.parse(localStorage.getItem("capypay_user") || "{}");
+      if (user.xp !== undefined) {
+        user.xp += xpToAdd;
+        localStorage.setItem("capypay_user", JSON.stringify(user));
+      }
+    }
+
+    // ==========================================
+    // EVENT LISTENERS
+    // ==========================================
+
+    backToAreasBtn.addEventListener("click", showAreasView);
+    backToCantinasBtn.addEventListener("click", showCantinasView);
+
+    // ==========================================
+    // INICIALIZACIÓN
+    // ==========================================
+    document.addEventListener("DOMContentLoaded", () => {
+      renderAreasList();
+      renderCantinaDelDia();
+    });
+  </script>
+</MainLayout>
