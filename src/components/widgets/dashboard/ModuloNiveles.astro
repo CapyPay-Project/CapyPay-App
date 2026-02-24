@@ -7,13 +7,13 @@ const { puntosActuales = 1500 } = Astro.props;
   <!-- Tarjeta de Perfil -->
   <Card
     id="perfil-card"
-    class="perfil-card border-2 border-[#60A5FA] mb-6 relative overflow-visible transition-all duration-500"
+    class="perfil-card border-2 border-[#60A5FA] mb-6 relative overflow-hidden transition-all duration-500"
     style="box-shadow: 0 0 20px rgba(96, 165, 250, 0.15);"
   >
     <!-- Glow decorativo del nivel -->
     <div
       id="glow-nivel"
-      class="absolute -top-20 -right-20 w-40 h-40 rounded-full blur-[60px] pointer-events-none"
+      class="absolute top-0 right-0 w-40 h-40 rounded-full blur-[60px] pointer-events-none"
       style="background: rgba(96, 165, 250, 0.2);"
     >
     </div>
@@ -364,6 +364,14 @@ const { puntosActuales = 1500 } = Astro.props;
     { accion: "Pagar transporte", xp: 15 },
   ];
 
+  const tareasCompletadasPorNivel = {
+    novato: [false, false, false, false, false, false],
+    bachiller: [true, true, false, false, true, false],
+    licenciado: [true, true, true, false, true, false],
+    master: [true, true, true, false, true, true],
+    doctorado: [true, true, true, true, true, true],
+  };
+
   function calcularNivelActual(puntos) {
     for (let i = nivelesConfig.length - 1; i >= 0; i--) {
       const nivel = nivelesConfig[i];
@@ -486,13 +494,15 @@ const { puntosActuales = 1500 } = Astro.props;
       .join("");
   }
 
-  function renderTareas() {
+  function renderTareas(nivelActual) {
     const container = document.getElementById("tareas-lista");
     if (!container) return;
 
+    const tareasCompletadas = tareasCompletadasPorNivel[nivelActual.id] || tareasCompletadasPorNivel.novato;
+
     container.innerHTML = tareasXP
       .map((tarea, index) => {
-        const completada = Math.random() > 0.7;
+        const completada = tareasCompletadas[index];
 
         return `
         <div class="tarea-item ${completada ? "tarea-completada" : ""} bg-slate-800/30 border border-white/10 rounded-xl p-3 flex items-center justify-between transition-all hover:bg-slate-800/50">
@@ -596,7 +606,7 @@ const { puntosActuales = 1500 } = Astro.props;
 
     renderTimeline();
     renderBeneficios();
-    renderTareas();
+    renderTareas(nivelActual);
   }
 
   function actualizarXP(nuevoXP) {
