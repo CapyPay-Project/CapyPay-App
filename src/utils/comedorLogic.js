@@ -15,6 +15,7 @@ let currentState = DiningState.BROWSING;
 let activeOrder = null;
 let confirmedPresence = false;
 let allCarouselItems = [];
+let orderCheckErrorShown = false;
 
 // Constants
 const CACHE_KEY = "capypay_menu_cache_v3";
@@ -129,6 +130,10 @@ async function checkActiveOrders(userId) {
     }
   } catch (e) {
     console.error("Order check failed", e);
+    if (!orderCheckErrorShown) {
+      showToast("No se pudo verificar tus pedidos activos", "error");
+      orderCheckErrorShown = true;
+    }
   }
 }
 
@@ -143,6 +148,7 @@ function handleCompletedOrder(order) {
     activeOrder = order;
     currentState = DiningState.READY;
     renderStateUI();
+    showToast("¡Tu pedido del comedor está listo! 🍔", "success", "¡A comer!");
     if (isRecent && navigator.vibrate) navigator.vibrate([200, 100, 200]);
   } else {
     localStorage.removeItem("capypay_dining_confirmed");

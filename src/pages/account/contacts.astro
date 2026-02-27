@@ -612,10 +612,13 @@ import { Card, Button, Input } from "../../components/ui";
         if (!confirm("¿Estás seguro de eliminar este contacto?")) return;
         try {
           await userService.deleteContact(id);
-          // Refresh
+          window.showToast("Contacto eliminado", "success");
           loadContacts();
         } catch (err) {
-          alert(err.message);
+          window.showToast(
+            err.message || "No se pudo eliminar el contacto",
+            "error",
+          );
         }
       });
     });
@@ -628,9 +631,16 @@ import { Card, Button, Input } from "../../components/ui";
         const isFav = btn.getAttribute("data-fav") === "true";
         try {
           await userService.toggleFavorite(id, !isFav);
+          window.showToast(
+            isFav ? "Quitado de favoritos" : "Añadido a favoritos ★",
+            "success",
+          );
           loadContacts();
         } catch (err) {
-          alert(err.message);
+          window.showToast(
+            err.message || "No se pudo actualizar favorito",
+            "error",
+          );
         }
       });
     });
@@ -685,13 +695,19 @@ import { Card, Button, Input } from "../../components/ui";
         if (isEditMode && contactId) {
           // UPDATE existing
           await userService.updateContact(contactId, alias);
+          window.showToast("Alias actualizado correctamente", "success");
         } else {
           // ADD new
           await userService.addContact(cedula, alias);
+          window.showToast("Contacto añadido exitosamente", "success");
         }
         toggleModal(false);
         loadContacts();
       } catch (error) {
+        window.showToast(
+          error.message || "No se pudo guardar el contacto",
+          "error",
+        );
         errorText.innerText = error.message;
         errorContainer.classList.remove("hidden");
       }

@@ -1,0 +1,160 @@
+---
+/**
+ * SkeletonLoader - Pantalla de esqueleto animada para estados de carga.
+ *
+ * Props:
+ *   variant: 'card' | 'balance' | 'history-item' | 'notification' | 'menu-item' | 'profile-header' | 'text'
+ *   lines:   number  — solo aplica en variant="text" y "card" (nro de líneas de texto). Default: 2
+ *   count:   number  — cuántos skeletons renderizar en lista. Default: 1
+ *   class:   string  — clases CSS adicionales para el wrapper externo
+ */
+const {
+  variant = "card",
+  lines = 2,
+  count = 1,
+  class: className = "",
+} = Astro.props;
+---
+
+<div class={`skeleton-wrapper ${className}`} aria-hidden="true">
+  {
+    Array.from({ length: count }).map(() => {
+      if (variant === "balance") {
+        return (
+          <div class="skeleton-card rounded-3xl p-6 border border-white/5 flex flex-col gap-4">
+            <div class="flex justify-between items-start">
+              <div class="flex flex-col gap-2">
+                <div class="shimmer h-3 w-24 rounded-full" />
+                <div class="shimmer h-8 w-40 rounded-lg" />
+              </div>
+              <div class="shimmer h-10 w-10 rounded-xl" />
+            </div>
+            <div class="flex gap-3 mt-2">
+              <div class="shimmer h-9 w-28 rounded-xl" />
+              <div class="shimmer h-9 w-28 rounded-xl" />
+            </div>
+          </div>
+        );
+      }
+
+      if (variant === "history-item") {
+        return (
+          <div class="skeleton-card rounded-2xl p-4 border border-white/5 flex items-center gap-4">
+            <div class="shimmer w-12 h-12 rounded-2xl shrink-0" />
+            <div class="flex-1 flex flex-col gap-2">
+              <div class="shimmer h-4 w-3/4 rounded-full" />
+              <div class="shimmer h-3 w-1/2 rounded-full" />
+            </div>
+            <div class="flex flex-col items-end gap-2">
+              <div class="shimmer h-4 w-16 rounded-full" />
+              <div class="shimmer h-3 w-10 rounded-full" />
+            </div>
+          </div>
+        );
+      }
+
+      if (variant === "notification") {
+        return (
+          <div class="skeleton-card rounded-3xl p-4 border border-white/5 flex items-start gap-4">
+            <div class="shimmer w-14 h-14 rounded-2xl shrink-0" />
+            <div class="flex-1 flex flex-col gap-2.5 pt-1">
+              <div class="shimmer h-4 w-5/6 rounded-full" />
+              <div class="shimmer h-3 w-2/3 rounded-full" />
+              <div class="shimmer h-3 w-1/3 rounded-full" />
+            </div>
+          </div>
+        );
+      }
+
+      if (variant === "menu-item") {
+        return (
+          <div class="skeleton-card rounded-2xl border border-white/5 overflow-hidden">
+            <div class="shimmer h-36 w-full" />
+            <div class="p-3 flex flex-col gap-2">
+              <div class="shimmer h-4 w-3/4 rounded-full" />
+              <div class="shimmer h-3 w-1/2 rounded-full" />
+              <div class="flex justify-between items-center mt-1">
+                <div class="shimmer h-5 w-16 rounded-full" />
+                <div class="shimmer h-8 w-8 rounded-lg" />
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      if (variant === "profile-header") {
+        return (
+          <div class="skeleton-card rounded-3xl p-6 border border-white/5 flex flex-col items-center gap-4">
+            <div class="shimmer w-24 h-24 rounded-full" />
+            <div class="flex flex-col items-center gap-2 w-full">
+              <div class="shimmer h-5 w-36 rounded-full" />
+              <div class="shimmer h-4 w-24 rounded-full" />
+            </div>
+            <div class="flex gap-3 w-full">
+              <div class="shimmer h-10 flex-1 rounded-xl" />
+              <div class="shimmer h-10 flex-1 rounded-xl" />
+            </div>
+          </div>
+        );
+      }
+
+      if (variant === "text") {
+        return (
+          <div class="flex flex-col gap-2.5 py-1">
+            {Array.from({ length: lines }).map((_, i) => (
+              <div
+                class={`shimmer h-3.5 rounded-full ${i === lines - 1 ? "w-3/5" : "w-full"}`}
+              />
+            ))}
+          </div>
+        );
+      }
+
+      /* Default: "card" */
+      return (
+        <div class="skeleton-card rounded-3xl p-5 border border-white/5 flex flex-col gap-3">
+          <div class="flex items-center gap-3">
+            <div class="shimmer w-10 h-10 rounded-xl shrink-0" />
+            <div class="flex-1 flex flex-col gap-2">
+              <div class="shimmer h-4 w-1/2 rounded-full" />
+              <div class="shimmer h-3 w-1/3 rounded-full" />
+            </div>
+          </div>
+          {Array.from({ length: lines }).map((_, i) => (
+            <div
+              class={`shimmer h-3 rounded-full ${i === lines - 1 ? "w-4/5" : "w-full"}`}
+            />
+          ))}
+        </div>
+      );
+    })
+  }
+</div>
+
+<style>
+  .skeleton-card {
+    background-color: rgba(255, 255, 255, 0.03);
+  }
+
+  /* Shimmer base */
+  .shimmer {
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.05) 25%,
+      rgba(255, 255, 255, 0.12) 50%,
+      rgba(255, 255, 255, 0.05) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer-sweep 1.6s infinite ease-in-out;
+    border-radius: 4px;
+  }
+
+  @keyframes shimmer-sweep {
+    0% {
+      background-position: 200% center;
+    }
+    100% {
+      background-position: -200% center;
+    }
+  }
+</style>

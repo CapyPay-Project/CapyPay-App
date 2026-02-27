@@ -1,0 +1,151 @@
+---
+// RankingPodium.astro
+// Podio Top 3 — los avatares e íconos son poblados por rankingLogic.js
+---
+
+<div
+  id="podium-container"
+  class="grid grid-cols-3 gap-2 md:gap-4 items-end pt-12 min-h-80 transition-opacity duration-300"
+>
+  <!-- Rank 2 -->
+  <div class="flex flex-col items-center gap-4">
+    <div class="relative group cursor-pointer">
+      <div
+        class="absolute -inset-1 bg-[#DB2777]/30 rounded-full blur-sm opacity-50 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"
+      >
+      </div>
+      <div
+        class="size-24 md:size-32 hexagon-clip bg-[#DB2777]/10 group-hover:bg-[#DB2777]/25 transition-colors duration-300 p-1 flex items-center justify-center border-2 border-[#DB2777]/40 glow-pink"
+      >
+        <img
+          id="rank2-avatar"
+          class="hexagon-clip w-full h-full object-cover bg-black"
+          src="https://ui-avatars.com/api/?background=random&color=fff&name=P2"
+          alt="Rank 2"
+        />
+        <span id="rank2-icon" class="hidden text-4xl">🏛️</span>
+      </div>
+      <div
+        class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-[#DB2777] text-white px-3 py-0.5 rounded-full border-2 border-black text-xs font-bold shadow-lg"
+      >
+        #2
+      </div>
+    </div>
+    <div class="text-center">
+      <p
+        id="rank2-name"
+        class="font-bold text-accent-pink text-sm md:text-base uppercase tracking-wider"
+      >
+        -
+      </p>
+      <p
+        id="rank2-points"
+        class="text-white/60 text-xs md:text-sm font-bold italic"
+      >
+        0 pts
+      </p>
+    </div>
+  </div>
+
+  <!-- Rank 1 -->
+  <div class="flex flex-col items-center gap-6 pb-8">
+    <div class="relative group cursor-pointer">
+      <!-- Corona dorada -->
+      <div
+        class="absolute -top-10 left-1/2 -translate-x-1/2 z-20 drop-shadow-[0_0_15px_rgba(255,215,0,0.8)]"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          height="48px"
+          viewBox="0 -960 960 960"
+          width="48px"
+          fill="#FFD700"
+          ><path
+            d="M200-200v-560l160 120 120-120 120 120 160-120v560H200Zm80-80h400v-326L556-486 480-562 404-486l-124-120v326Zm200-240Z"
+          ></path></svg
+        >
+      </div>
+      <!-- Partículas (ocultas, sin animación pesada) -->
+      <div class="particles-container">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+      </div>
+      <!-- Hexágono brillante -->
+      <div
+        class="absolute -inset-2 bg-linear-to-tr from-brand-lime via-accent-purple to-brand-lime rounded-full blur-lg opacity-40 group-hover:opacity-70 transition duration-1000"
+      >
+      </div>
+      <div
+        class="size-32 md:size-44 hexagon-clip bg-brand-lime p-1.5 flex items-center justify-center glow-neon-strong"
+      >
+        <img
+          id="rank1-avatar"
+          class="hexagon-clip w-full h-full object-cover bg-black"
+          src="https://ui-avatars.com/api/?background=random&color=fff&name=P1"
+          alt="Rank 1"
+        />
+        <span id="rank1-icon" class="hidden text-5xl">👑</span>
+      </div>
+      <div
+        class="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-brand-lime text-black px-4 py-1 rounded-full text-sm font-black border-2 border-black shadow-[0_0_15px_rgba(215,253,73,0.6)]"
+      >
+        #1
+      </div>
+    </div>
+    <div class="text-center">
+      <p
+        id="rank1-name"
+        class="text-lg md:text-xl font-black text-white uppercase tracking-tight"
+      >
+        -
+      </p>
+      <p
+        id="rank1-points"
+        class="text-brand-lime text-base md:text-lg font-black italic drop-shadow-[0_0_5px_rgba(166,242,13,0.5)]"
+      >
+        0 pts
+      </p>
+    </div>
+  </div>
+
+  <!-- Rank 3 -->
+  <div class="flex flex-col items-center gap-4">
+    <div class="relative group cursor-pointer">
+      <div
+        class="absolute -inset-1 bg-[#7C3AED]/30 rounded-full blur-sm opacity-50 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"
+      >
+      </div>
+      <div
+        class="size-24 md:size-32 hexagon-clip bg-[#7C3AED]/10 group-hover:bg-[#7C3AED]/25 transition-colors duration-300 p-1 flex items-center justify-center border-2 border-[#7C3AED]/40 glow-purple"
+      >
+        <img
+          id="rank3-avatar"
+          class="hexagon-clip w-full h-full object-cover bg-black"
+          src="https://ui-avatars.com/api/?background=random&color=fff&name=P3"
+          alt="Rank 3"
+        />
+        <span id="rank3-icon" class="hidden text-4xl">🏛️</span>
+      </div>
+      <div
+        class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-[#7C3AED] text-white px-3 py-0.5 rounded-full border-2 border-black text-xs font-bold shadow-lg"
+      >
+        #3
+      </div>
+    </div>
+    <div class="text-center">
+      <p
+        id="rank3-name"
+        class="font-bold text-accent-purple text-sm md:text-base uppercase tracking-wider"
+      >
+        -
+      </p>
+      <p
+        id="rank3-points"
+        class="text-white/60 text-xs md:text-sm font-bold italic"
+      >
+        0 pts
+      </p>
+    </div>
+  </div>
+</div>

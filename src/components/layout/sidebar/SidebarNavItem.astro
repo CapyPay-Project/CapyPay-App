@@ -1,0 +1,99 @@
+---
+/**
+ * SidebarNavItem.astro
+ * ─────────────────────────────────────────────────────────────────
+ * Elemento de navegación reutilizable para la barra lateral.
+ * Recibe el ícono como contenido del slot, gestiona el estado activo
+ * automáticamente y soporta badge de notificaciones opcional.
+ *
+ * Props:
+ *  - href          → Ruta de destino
+ *  - label         → Texto de la etiqueta
+ *  - currentPath   → Ruta actual (Astro.url.pathname)
+ *  - title         → Tooltip al pasar el cursor (default: label)
+ *  - highlight     → Estilo de acento verde lima (Ej: Pedidos)
+ *  - badgeIconId   → ID del badge cuando el sidebar está colapsado
+ *  - badgeTextId   → ID del badge cuando el sidebar está expandido
+ */
+import Button from "../../ui/Button.astro";
+
+interface Props {
+  href: string;
+  label: string;
+  currentPath: string;
+  title?: string;
+  highlight?: boolean;
+  badgeIconId?: string;
+  badgeTextId?: string;
+}
+
+const {
+  href,
+  label,
+  currentPath,
+  title = label,
+  highlight = false,
+  badgeIconId,
+  badgeTextId,
+} = Astro.props;
+
+// Activo si la ruta coincide exactamente o si es un sub-segmento
+const isActive =
+  currentPath === href ||
+  (href !== "/" && currentPath.startsWith(href + "/"));
+
+// Clases del ícono según estado
+const iconClass = isActive
+  ? "bg-brand-lime text-black"
+  : highlight
+    ? "bg-brand-lime/20 text-brand-lime group-hover/nav:bg-brand-lime group-hover/nav:text-black"
+    : "bg-slate-800 group-hover/nav:text-brand-lime";
+---
+
+<Button
+  href={href}
+  variant="ghost"
+  class={`flex! w-full! items-center! justify-start! p-2! gap-0! relative group/nav text-left ${
+    isActive
+      ? "bg-white/5 text-white"
+      : "text-slate-400 hover:text-white hover:bg-white/5"
+  }`}
+  title={title}
+>
+  <!-- Contenedor circular del ícono -->
+  <div class="relative shrink-0 flex items-center justify-center w-9 h-9">
+    <div
+      class={`w-9 h-9 rounded-full flex items-center justify-center transition-colors absolute inset-0 ${iconClass}`}
+    >
+      <!-- Ícono SVG pasado como slot -->
+      <slot />
+    </div>
+
+    <!-- Badge compacto: visible solo cuando el sidebar está colapsado -->
+    {
+      badgeIconId && (
+        <span
+          id={badgeIconId}
+          class="hidden absolute -top-0.5 -right-0.5 min-w-4 h-4 px-0.5 bg-brand-lime text-black text-[9px] font-black rounded-full items-center justify-center leading-none shadow-[0_0_8px_rgba(215,253,73,0.6)]"
+        />
+      )
+    }
+  </div>
+
+  <!-- Etiqueta de texto: visible solo cuando el sidebar está expandido -->
+  <div
+    class={`overflow-hidden whitespace-nowrap sidebar-content opacity-0 pointer-events-none max-w-0 ml-3 transition-all duration-500 ease-in-out ${badgeTextId ? "flex items-center gap-2" : ""}`}
+  >
+    <p class="text-sm font-medium truncate">{label}</p>
+
+    <!-- Badge con contador: visible junto a la etiqueta -->
+    {
+      badgeTextId && (
+        <span
+          id={badgeTextId}
+          class="hidden bg-brand-lime text-black text-[9px] font-black min-w-4 h-4 px-1 rounded-full items-center justify-center leading-none"
+        />
+      )
+    }
+  </div>
+</Button>

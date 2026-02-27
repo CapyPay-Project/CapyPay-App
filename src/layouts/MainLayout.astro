@@ -19,6 +19,8 @@ const { title = "CapyPay", showSidebar = false } = Astro.props;
       name="apple-mobile-web-app-status-bar-style"
       content="black-translucent"
     />
+    <!-- Meta estándar para modo app en Android/Chrome -->
+    <meta name="mobile-web-app-capable" content="yes" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{title}</title>
     <!-- Auth Guard Anti-Flash (Improved) -->

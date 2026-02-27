@@ -1,0 +1,96 @@
+---
+// RankingFilters.astro
+// Filtros de alcance (Global / Facultad / Carrera) y dropdown de periodo.
+// Conectados por rankingLogic.js → inicializarFiltrosAlcance() e inicializarDropdownTiempo()
+---
+
+<div
+  class="flex flex-col md:flex-row justify-between items-center gap-4 bg-white/5 p-2 rounded-2xl border border-white/10"
+>
+  <!-- Filtro: Alcance -->
+  <div
+    class="flex flex-wrap bg-black/40 rounded-xl p-1 gap-1"
+    id="scope-filters"
+  >
+    <button
+      class="scope-btn px-4 py-2 rounded-lg text-sm font-bold bg-brand-lime text-black shadow-[0_0_10px_rgba(215,253,73,0.3)] transition-all"
+      data-value="global">Global</button
+    >
+    <button
+      class="scope-btn px-4 py-2 rounded-lg text-sm font-bold text-white/50 hover:text-white hover:bg-white/10 transition-all"
+      data-value="facultad">Facultad</button
+    >
+    <button
+      class="scope-btn px-4 py-2 rounded-lg text-sm font-bold text-white/50 hover:text-white hover:bg-white/10 transition-all"
+      data-value="carrera">Carrera</button
+    >
+    <button
+      class="scope-btn px-4 py-2 rounded-lg text-sm font-bold text-white/50 hover:text-white hover:bg-white/10 transition-all"
+      data-value="amigos">Amigos 🤝</button
+    >
+  </div>
+
+  <!-- Filtro: Periodo (dropdown custom) -->
+  <div class="relative w-full md:w-48 z-20">
+    <button
+      id="time-filter-btn"
+      class="w-full bg-black/40 text-white text-sm font-bold rounded-xl border border-white/10 py-2.5 px-4 flex justify-between items-center hover:border-brand-lime/50 transition-all focus:outline-none focus:border-brand-lime/50 group"
+      type="button"
+    >
+      <span class="text-white" id="time-filter-label">Esta Semana</span>
+      <svg
+        id="time-filter-arrow"
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-4 w-4 text-white/50 transition-transform duration-200 group-hover:text-brand-lime"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M19 9l-7 7-7-7"></path>
+      </svg>
+    </button>
+
+    <!-- Menú desplegable -->
+    <div
+      id="time-filter-menu"
+      class="absolute top-full right-0 w-full mt-2 bg-[#1a1b2e] border border-brand-lime/20 rounded-xl overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.5)] z-50 hidden"
+    >
+      <div class="p-1 flex flex-col gap-1">
+        <button
+          class="time-option w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium text-white hover:bg-white/10 transition-colors flex items-center justify-between group"
+          data-label="Esta Semana"
+        >
+          <span>Esta Semana</span>
+          <span
+            class="opacity-0 group-hover:opacity-100 text-brand-lime text-xs"
+            >●</span
+          >
+        </button>
+        <button
+          class="time-option w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium text-white/70 hover:text-white hover:bg-white/10 transition-colors flex items-center justify-between group"
+          data-label="Este Mes"
+        >
+          <span>Este Mes</span>
+          <span
+            class="opacity-0 group-hover:opacity-100 text-brand-lime text-xs"
+            >●</span
+          >
+        </button>
+        <button
+          class="time-option w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium text-white/70 hover:text-white hover:bg-white/10 transition-colors flex items-center justify-between group"
+          data-label="Histórico"
+        >
+          <span>Histórico</span>
+          <span
+            class="opacity-0 group-hover:opacity-100 text-brand-lime text-xs"
+            >●</span
+          >
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

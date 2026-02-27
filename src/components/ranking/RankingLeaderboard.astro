@@ -1,0 +1,76 @@
+---
+// RankingLeaderboard.astro
+// Tabla de posiciones (rank 4+) con paginación.
+// Lista poblada por rankingLogic.js → actualizarLista()
+// Paginación controlada por rankingLogic.js → renderizarPaginacion()
+---
+
+<div
+  class="bg-white/5 rounded-xl border border-white/10 overflow-hidden shadow-2xl"
+>
+  <!-- Encabezado -->
+  <div
+    class="px-6 py-4 border-b border-white/10 flex justify-between items-center bg-white/5"
+  >
+    <h3
+      id="ranking-list-title"
+      class="font-bold text-lg uppercase tracking-wider text-white"
+    >
+      Top Global 10
+    </h3>
+    <span class="text-xs text-white/40 font-bold"
+      >SE ACTUALIZA CADA 5 MINUTOS</span
+    >
+  </div>
+
+  <!-- Lista (populada por JS) -->
+  <div id="ranking-list-container" class="divide-y divide-white/5 min-h-50">
+    <div class="p-6 text-center text-white/40 italic">Cargando ranking...</div>
+  </div>
+
+  <!-- Paginación (visible solo cuando hay >1 página) -->
+  <div
+    id="ranking-pagination"
+    class="hidden px-6 py-3 border-t border-white/10 items-center justify-between gap-4"
+  >
+    <button
+      id="pag-prev"
+      class="flex items-center gap-1 text-sm font-bold text-white/50 hover:text-brand-lime disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-4 w-4"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="2.5"
+      >
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"
+        ></path>
+      </svg>
+      Anterior
+    </button>
+    <span
+      id="pag-info"
+      class="text-xs text-white/40 font-bold uppercase tracking-widest"
+      >Página 1</span
+    >
+    <button
+      id="pag-next"
+      class="flex items-center gap-1 text-sm font-bold text-white/50 hover:text-brand-lime disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+    >
+      Siguiente
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-4 w-4"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="2.5"
+      >
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"
+        ></path>
+      </svg>
+    </button>
+  </div>
+</div>

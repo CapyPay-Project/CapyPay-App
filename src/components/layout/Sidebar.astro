@@ -1,5 +1,22 @@
 ---
+/**
+ * Sidebar.astro
+ * ─────────────────────────────────────────────────────────────────
+ * Barra lateral de navegación principal (solo escritorio).
+ * Se expande/colapsa con animación.
+ *
+ * Sub-componentes (en sidebar/):
+ *  - SidebarNavItem  → elemento de navegación reutilizable
+ *  - SidebarProfile  → foto, nombre y barra de XP del usuario
+ *  - SidebarFooter   → botones de ajustes y cerrar sesión
+ *
+ * Script: carga de datos del usuario, polling de notificaciones
+ * y lógica de expansión/colapso del sidebar.
+ */
 import Button from "../ui/Button.astro";
+import SidebarNavItem from "./sidebar/SidebarNavItem.astro";
+import SidebarProfile from "./sidebar/SidebarProfile.astro";
+import SidebarFooter from "./sidebar/SidebarFooter.astro";
 
 const currentPath = Astro.url.pathname;
 ---
@@ -61,277 +78,155 @@ const currentPath = Astro.url.pathname;
     </div>
   </div>
 
-  <!-- Contenedor scrollable del contenido -->
+  <!-- ── Área scrollable (perfil + nav + contactos) ── -->
   <div
     class="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar scrollable-container"
   >
-    <!-- User Profile Section -->
-    <div
-      class="flex flex-col items-center p-2 py-4 border-b border-white/5 overflow-hidden whitespace-nowrap transition-all duration-300 origin-top"
-    >
-      <!-- Profile Photo (Clickable) -->
-      <a
-        href="/account/profile"
-        id="sidebar-profile-photo"
-        class="w-9 h-9 rounded-full p-1 bg-transparent mb-2 transition-all duration-300 sidebar-photo border-2 hover:scale-105"
-        title="Ver mi perfil"
-      >
-        <img
-          src="https://api.dicebear.com/9.x/lorelei/svg?seed=Aneka"
-          alt="User Profile"
-          class="w-full h-full rounded-full bg-black object-cover"
-        />
-      </a>
+    <!-- Perfil: foto, nombre y barra de XP (datos inyectados por JS) -->
+    <SidebarProfile />
 
-      <!-- Profile Info Wrapper (Name & Level) -->
-      <div
-        class="w-full flex flex-col items-center overflow-hidden transition-all duration-300 profile-content max-h-0 opacity-0"
-      >
-        <!-- Name -->
-        <h3
-          id="sidebar-username"
-          class="text-white font-semibold text-base lg:text-lg mb-1"
-        >
-          Cargando...
-        </h3>
-
-        <!-- Level Info -->
-        <div class="w-full mt-2">
-          <div
-            class="flex justify-between items-center text-xs text-slate-400 mb-1"
-          >
-            <span id="sidebar-level-text" class="text-brand-lime font-bold"
-              >Nivel -</span
-            >
-          </div>
-          <div
-            class="flex justify-between items-center text-[10px] text-slate-500 mb-1"
-          >
-            <span id="sidebar-level-xp">0 XP</span>
-            <span id="sidebar-level-max">0 XP</span>
-          </div>
-          <div class="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
-            <div
-              id="sidebar-level-bar"
-              class="bg-brand-lime h-full rounded-full w-[0%] shadow-[0_0_10px_rgba(215,253,72,0.5)]"
-            >
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- MAIN NAVIGATION -->
+    <!-- ── Navegación principal ── -->
     <div class="flex flex-col gap-1 px-3 mt-4 pb-4">
-      <!-- Dashboard Link -->
-      <Button
+      <!-- Dashboard -->
+      <SidebarNavItem
         href="/dashboard"
-        variant="ghost"
-        class={`flex! w-full! items-center! justify-start! p-2! gap-0! relative group/nav text-left ${
-          currentPath === "/dashboard"
-            ? "bg-white/5 text-white"
-            : "text-slate-400 hover:text-white hover:bg-white/5"
-        }`}
+        label="Dashboard"
+        currentPath={currentPath}
         title="Ir al Dashboard"
       >
-        <div class="relative shrink-0 flex items-center justify-center w-9 h-9">
-          <div
-            class={`w-9 h-9 rounded-full flex items-center justify-center transition-colors absolute inset-0 ${
-              currentPath === "/dashboard"
-                ? "bg-brand-lime text-black"
-                : "bg-slate-800 group-hover/nav:text-brand-lime"
-            }`}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-              ></path>
-            </svg>
-          </div>
-        </div>
-        <div
-          class="overflow-hidden whitespace-nowrap sidebar-content opacity-0 pointer-events-none max-w-0 ml-3 transition-all duration-500 ease-in-out"
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
         >
-          <p class="text-sm font-medium truncate">Dashboard</p>
-        </div>
-      </Button>
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+          ></path>
+        </svg>
+      </SidebarNavItem>
 
-      <!-- Historial Link -->
-      <Button
+      <!-- Historial de transacciones -->
+      <SidebarNavItem
         href="/finance/history"
-        variant="ghost"
-        class={`flex! w-full! items-center! justify-start! p-2! gap-0! relative group/nav text-left ${
-          currentPath === "/history"
-            ? "bg-white/5 text-white"
-            : "text-slate-400 hover:text-white hover:bg-white/5"
-        }`}
-        title="Historial"
+        label="Historial"
+        currentPath={currentPath}
+        title="Historial de Transacciones"
       >
-        <div class="relative shrink-0 flex items-center justify-center w-9 h-9">
-          <div
-            class={`w-9 h-9 rounded-full flex items-center justify-center transition-colors absolute inset-0 ${
-              currentPath === "/history"
-                ? "bg-brand-lime text-black"
-                : "bg-slate-800 group-hover/nav:text-brand-lime"
-            }`}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-              ></path>
-            </svg>
-          </div>
-        </div>
-        <div
-          class="overflow-hidden whitespace-nowrap sidebar-content opacity-0 pointer-events-none max-w-0 ml-3 transition-all duration-500 ease-in-out"
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
         >
-          <p class="text-sm font-medium truncate">Historial</p>
-        </div>
-      </Button>
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+          ></path>
+        </svg>
+      </SidebarNavItem>
 
-      <!-- Pedidos/Órdenes Link (Center Action Style) -->
-      <Button
+      <!-- Pedidos (acción destacada en verde lima) -->
+      <SidebarNavItem
         href="/services/orders"
-        variant="ghost"
-        class={`flex! w-full! items-center! justify-start! p-2! gap-0! relative group/nav text-left ${
-          currentPath === "/orders"
-            ? "bg-white/5 text-white"
-            : "text-slate-400 hover:text-white hover:bg-white/5"
-        }`}
+        label="Pedidos"
+        currentPath={currentPath}
         title="Mis Pedidos"
+        highlight={true}
       >
-        <div class="relative shrink-0 flex items-center justify-center w-9 h-9">
-          <div
-            class={`w-9 h-9 rounded-full flex items-center justify-center transition-colors absolute inset-0 ${
-              currentPath === "/orders"
-                ? "bg-brand-lime text-black"
-                : "bg-brand-lime/20 text-brand-lime group-hover/nav:bg-brand-lime group-hover/nav:text-black"
-            }`}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
-              ></path>
-            </svg>
-          </div>
-        </div>
-        <div
-          class="overflow-hidden whitespace-nowrap sidebar-content opacity-0 pointer-events-none max-w-0 ml-3 transition-all duration-500 ease-in-out"
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
         >
-          <p class="text-sm font-medium truncate">Pedidos</p>
-        </div>
-      </Button>
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
+          ></path>
+        </svg>
+      </SidebarNavItem>
 
-      <!-- Contactos Link -->
-      <Button
+      <!-- Contactos frecuentes -->
+      <SidebarNavItem
         href="/account/contacts"
-        variant="ghost"
-        class={`flex! w-full! items-center! justify-start! p-2! gap-0! relative group/nav text-left ${
-          currentPath === "/contacts"
-            ? "bg-white/5 text-white"
-            : "text-slate-400 hover:text-white hover:bg-white/5"
-        }`}
+        label="Contactos"
+        currentPath={currentPath}
         title="Contactos"
       >
-        <div class="relative shrink-0 flex items-center justify-center w-9 h-9">
-          <div
-            class={`w-9 h-9 rounded-full flex items-center justify-center transition-colors absolute inset-0 ${
-              currentPath === "/contacts"
-                ? "bg-brand-lime text-black"
-                : "bg-slate-800 group-hover/nav:text-brand-lime"
-            }`}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
-              ></path>
-            </svg>
-          </div>
-        </div>
-        <div
-          class="overflow-hidden whitespace-nowrap sidebar-content opacity-0 pointer-events-none max-w-0 ml-3 transition-all duration-500 ease-in-out"
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
         >
-          <p class="text-sm font-medium truncate">Contactos</p>
-        </div>
-      </Button>
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+          ></path>
+        </svg>
+      </SidebarNavItem>
 
-      <!-- Niveles Link -->
-      <Button
+      <!-- Niveles / Gamificación -->
+      <SidebarNavItem
         href="/account/niveles"
-        variant="ghost"
-        class={`flex! w-full! items-center! justify-start! p-2! gap-0! relative group/nav text-left ${
-          currentPath === "/niveles"
-            ? "bg-white/5 text-white"
-            : "text-slate-400 hover:text-white hover:bg-white/5"
-        }`}
+        label="Niveles"
+        currentPath={currentPath}
         title="Mis Niveles"
       >
-        <div class="relative shrink-0 flex items-center justify-center w-9 h-9">
-          <div
-            class={`w-9 h-9 rounded-full flex items-center justify-center transition-colors absolute inset-0 ${
-              currentPath === "/niveles"
-                ? "bg-brand-lime text-black"
-                : "bg-slate-800 group-hover/nav:text-brand-lime"
-            }`}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9 19v-6a2 2 0 00-2 2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-              ></path>
-            </svg>
-          </div>
-        </div>
-        <div
-          class="overflow-hidden whitespace-nowrap sidebar-content opacity-0 pointer-events-none max-w-0 ml-3 transition-all duration-500 ease-in-out"
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
         >
-          <p class="text-sm font-medium truncate">Niveles</p>
-        </div>
-      </Button>
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 19v-6a2 2 0 00-2 2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+          ></path>
+        </svg>
+      </SidebarNavItem>
+
+      <!-- Notificaciones (con badge de conteo no leídas) -->
+      <SidebarNavItem
+        href="/account/notifications"
+        label="Notificaciones"
+        currentPath={currentPath}
+        title="Notificaciones"
+        badgeIconId="sidebar-notif-badge"
+        badgeTextId="sidebar-notif-badge-text"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+          ></path>
+        </svg>
+      </SidebarNavItem>
     </div>
 
     <!-- Contacts Section (Frecuentes) -->
@@ -386,90 +281,8 @@ const currentPath = Astro.url.pathname;
       </div>
     </div>
 
-    <!-- Footer: Settings -->
-    <div
-      class="p-4 border-t border-white/5 mt-auto bg-black/50 flex flex-col gap-1 shrink-0"
-    >
-      <!-- Share Button -->
-      <button
-        class="flex items-center text-slate-400 hover:text-white hover:bg-white/5 p-2 rounded-lg transition-all group/share w-full text-left"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-6 w-6 shrink-0 group-hover/share:scale-110 transition-transform duration-300"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"
-          ></path>
-        </svg>
-        <span
-          class="font-medium whitespace-nowrap sidebar-content opacity-0 pointer-events-none max-w-0 ml-0 overflow-hidden transition-all duration-500 ease-in-out"
-          >Compartir</span
-        >
-      </button>
-
-      <!-- Settings Button -->
-      <a
-        href="/profile#configuracion"
-        class="flex items-center text-slate-400 hover:text-white hover:bg-white/5 p-2 rounded-lg transition-all group/settings w-full"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-6 w-6 shrink-0 group-hover/settings:rotate-90 transition-transform duration-500"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-          ></path>
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-        </svg>
-        <span
-          class="font-medium whitespace-nowrap sidebar-content opacity-0 pointer-events-none max-w-0 ml-0 overflow-hidden transition-all duration-500 ease-in-out"
-          >Ajustes</span
-        >
-      </a>
-
-      <!-- Logout Button -->
-      <a
-        href="#"
-        id="desktop-logout-btn"
-        class="flex items-center text-red-400 hover:text-red-300 hover:bg-white/5 p-2 rounded-lg transition-all group/logout w-full"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-6 w-6 shrink-0 group-hover/logout:translate-x-1 transition-transform duration-300"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-          ></path>
-        </svg>
-        <span
-          class="font-medium whitespace-nowrap sidebar-content opacity-0 pointer-events-none max-w-0 ml-0 overflow-hidden transition-all duration-500 ease-in-out"
-          >Cerrar Sesión</span
-        >
-      </a>
-    </div>
+    <!-- Pie: Compartir, Ajustes, Cerrar Sesión -->
+    <SidebarFooter />
   </div>
 </aside>
 
@@ -505,26 +318,67 @@ const currentPath = Astro.url.pathname;
     notificationService,
   } from "../../services/api.js";
 
-  // --- Quick Transfer Handler ---
-  window.handleQuickTransfer = (cedula) => {
-    const currentPath = window.location.pathname;
-    if (currentPath.includes("/dashboard")) {
-      const event = new CustomEvent("quick-transfer-selected", {
-        detail: { cedula },
-      });
-      window.dispatchEvent(event);
+  // ── Sistema de niveles (colores y nombres por XP) ──
+  function obtenerNivel(xp) {
+    if (xp >= 10001)
+      return {
+        id: "doctorado",
+        color: "#A8E638",
+        nombre: "Doctorado",
+        min: 10001,
+        max: Infinity,
+      };
+    if (xp >= 5001)
+      return {
+        id: "master",
+        color: "#DB2777",
+        nombre: "Magíster",
+        min: 5001,
+        max: 10000,
+      };
+    if (xp >= 2001)
+      return {
+        id: "licenciado",
+        color: "#7C3AED",
+        nombre: "Licenciado",
+        min: 2001,
+        max: 5000,
+      };
+    if (xp >= 501)
+      return {
+        id: "bachiller",
+        color: "#3B82F6",
+        nombre: "Bachiller",
+        min: 501,
+        max: 2000,
+      };
+    return {
+      id: "novato",
+      color: "#6B7280",
+      nombre: "Novato",
+      min: 0,
+      max: 500,
+    };
+  }
 
-      const floatingMenu = document.getElementById("sidebar-floating-menu");
-      if (floatingMenu) {
-        floatingMenu.classList.add("hidden");
-        floatingMenu.dataset.activeId = "";
+  // ── Transferencia rápida desde el menú contextual ──
+  window.handleQuickTransfer = (cedula) => {
+    const enDashboard = window.location.pathname.includes("/dashboard");
+    if (enDashboard) {
+      window.dispatchEvent(
+        new CustomEvent("quick-transfer-selected", { detail: { cedula } }),
+      );
+      const menu = document.getElementById("sidebar-floating-menu");
+      if (menu) {
+        menu.classList.add("hidden");
+        menu.dataset.activeId = "";
       }
     } else {
       window.location.href = `/dashboard?transferTo=${cedula}`;
     }
   };
 
-  // --- LÓGICA DEL MENU LATERAL ---
+  // ── Menú contextual flotante de contactos ──
   window.toggleSidebarContactMenu = (event, id) => {
     event.preventDefault();
     event.stopPropagation();
@@ -554,7 +408,7 @@ const currentPath = Astro.url.pathname;
         <button onclick="window.handleQuickTransfer('${cedula}')" class="w-full text-left px-3 py-2 text-xs font-medium text-white hover:bg-brand-lime hover:text-black rounded-lg transition-colors flex items-center gap-2">
             <span>⚡</span> Transferencia Rápida
         </button>
-        <button onclick="alert('Historial con ${name}')" class="w-full text-left px-3 py-2 text-xs font-medium text-slate-400 hover:bg-white/5 hover:text-white rounded-lg transition-colors">
+        <button onclick="window.location.href='/finance/history?cedula=${cedula}'" class="w-full text-left px-3 py-2 text-xs font-medium text-slate-400 hover:bg-white/5 hover:text-white rounded-lg transition-colors">
             Ver Historial
         </button>
       `;
@@ -576,7 +430,7 @@ const currentPath = Astro.url.pathname;
     floatingMenu.dataset.activeId = id;
   };
 
-  // Close menus on click outside
+  // Cerrar menú flotante al hacer clic fuera de él
   document.addEventListener("click", (e) => {
     const floatingMenu = document.getElementById("sidebar-floating-menu");
     if (floatingMenu && !floatingMenu.classList.contains("hidden")) {
@@ -591,74 +445,27 @@ const currentPath = Astro.url.pathname;
     }
   });
 
-  // --- LÓGICA DE DATOS ----
+  // ── Inicialización del sidebar: carga nombre, XP y contactos ──
   async function initSidebar() {
     const user = authService.getCurrentUser();
 
-    // 1. Nombre
+    // Nombre de usuario
     const nameEl = document.getElementById("sidebar-username");
     if (user && nameEl)
       nameEl.textContent = user.nombre || user.name || "Usuario";
 
-    // 2. XP y Nivel para el borde de la foto
-    let xp = 1500;
-    if (user && (user.xp !== undefined || user.puntos !== undefined)) {
-      xp = user.xp || user.puntos || 1500;
-    }
-
-    // Calcular nivel según XP
-    function obtenerNivel(xp) {
-      if (xp >= 10001)
-        return {
-          id: "doctorado",
-          color: "#A8E638",
-          nombre: "Doctorado",
-          min: 10001,
-          max: Infinity,
-        };
-      if (xp >= 5001)
-        return {
-          id: "master",
-          color: "#DB2777",
-          nombre: "Magíster",
-          min: 5001,
-          max: 10000,
-        };
-      if (xp >= 2001)
-        return {
-          id: "licenciado",
-          color: "#7C3AED",
-          nombre: "Licenciado",
-          min: 2001,
-          max: 5000,
-        };
-      if (xp >= 501)
-        return {
-          id: "bachiller",
-          color: "#3B82F6",
-          nombre: "Bachiller",
-          min: 501,
-          max: 2000,
-        };
-      return {
-        id: "novato",
-        color: "#6B7280",
-        nombre: "Novato",
-        min: 0,
-        max: 500,
-      };
-    }
-
+    // XP actual (fallback a 1500 si no hay datos)
+    const xp = user ? user.xp || user.puntos || 1500 : 1500;
     const nivel = obtenerNivel(xp);
 
-    // Actualizar borde de la foto del perfil
-    const profilePhoto = document.getElementById("sidebar-profile-photo");
-    if (profilePhoto) {
-      profilePhoto.style.borderColor = nivel.color;
-      profilePhoto.style.boxShadow = `0 0 20px ${nivel.color}40`;
+    // Borde de la foto de perfil coloreado según nivel
+    const fotoEl = document.getElementById("sidebar-profile-photo");
+    if (fotoEl) {
+      fotoEl.style.borderColor = nivel.color;
+      fotoEl.style.boxShadow = `0 0 20px ${nivel.color}40`;
     }
 
-    // Actualizar nivel en el sidebar
+    // Actualizar barra de progreso XP
     const levelTextEl = document.getElementById("sidebar-level-text");
     const levelXpEl = document.getElementById("sidebar-level-xp");
     const levelMaxEl = document.getElementById("sidebar-level-max");
@@ -666,20 +473,21 @@ const currentPath = Astro.url.pathname;
 
     if (levelTextEl) levelTextEl.textContent = `Nivel ${nivel.nombre}`;
     if (levelXpEl) levelXpEl.textContent = `${xp} XP`;
-    if (levelMaxEl) levelMaxEl.textContent = `${nivel.max} XP`;
+    if (levelMaxEl)
+      levelMaxEl.textContent =
+        nivel.id === "doctorado" ? "∞ XP" : `${nivel.max} XP`;
 
     if (levelBarEl) {
-      if (nivel.id === "doctorado") {
-        levelBarEl.style.width = "100%";
-      } else {
-        const progress = ((xp - nivel.min) / (nivel.max - nivel.min)) * 100;
-        levelBarEl.style.width = `${Math.min(100, Math.max(0, progress))}%`;
-      }
+      const progreso =
+        nivel.id === "doctorado"
+          ? 100
+          : ((xp - nivel.min) / (nivel.max - nivel.min)) * 100;
+      levelBarEl.style.width = `${Math.min(100, Math.max(0, progreso))}%`;
       levelBarEl.style.backgroundColor = nivel.color;
       levelBarEl.style.boxShadow = `0 0 10px ${nivel.color}60`;
     }
 
-    // 3. Contactos
+    // Carga de contactos frecuentes
     const listEl = document.getElementById("sidebar-contacts-list");
     if (listEl && user) {
       try {
@@ -761,19 +569,20 @@ const currentPath = Astro.url.pathname;
           }
         }
       } catch (e) {
-        console.error("Sidebar error:", e);
+        console.error("Error cargando contactos del sidebar:", e);
       }
     }
   }
 
   initSidebar();
 
+  // ── Referencias a elementos del DOM ──
   const sidebar = document.getElementById("sidebar");
   const toggleBtn = document.getElementById("sidebarToggle");
   const toggleIcon = document.getElementById("toggleIcon");
   const searchTrigger = document.getElementById("sidebar-search-trigger");
 
-  // Logout Logic
+  // ── Cerrar sesión ──
   const logoutBtn = document.getElementById("desktop-logout-btn");
   if (logoutBtn) {
     logoutBtn.addEventListener("click", (e) => {
@@ -786,36 +595,61 @@ const currentPath = Astro.url.pathname;
     });
   }
 
-  // --- NOTIFICATION LÓGIC ---
-  // Persistir IDs de notificaciones ya mostradas en localStorage
-  const SHOWN_NOTIFS_KEY = "capypay_shown_notifs";
+  // ── Sistema de notificaciones: polling + badges ──
+  // Persistir IDs de notificaciones ya mostradas para no repetir toasts
+  const CLAVE_NOTIFS = "capypay_shown_notifs";
 
-  function getShownNotifIds() {
+  function obtenerIdsVistos() {
     try {
-      const stored = localStorage.getItem(SHOWN_NOTIFS_KEY);
-      return stored ? new Set(JSON.parse(stored)) : new Set();
+      const stored = localStorage.getItem(CLAVE_NOTIFS);
+      // Convertir siempre a String para evitar mismatch número/string de Supabase
+      return stored ? new Set(JSON.parse(stored).map(String)) : new Set();
     } catch {
       return new Set();
     }
   }
 
-  function saveShownNotifId(id) {
+  function guardarIdVisto(id) {
     try {
-      const shown = getShownNotifIds();
-      shown.add(id);
-      // Mantener solo los últimos 100 IDs para no llenar localStorage
-      const arr = Array.from(shown).slice(-100);
-      localStorage.setItem(SHOWN_NOTIFS_KEY, JSON.stringify(arr));
+      const vistos = obtenerIdsVistos();
+      vistos.add(String(id));
+      // Límite de 100 IDs para no saturar localStorage
+      const arr = Array.from(vistos).slice(-100);
+      localStorage.setItem(CLAVE_NOTIFS, JSON.stringify(arr));
     } catch (e) {
-      console.error("Error saving notif id", e);
+      console.error("Error guardando ID de notificación:", e);
     }
   }
 
-  // Solo mostrar toasts en el dashboard
-  const isDashboard = window.location.pathname === "/dashboard";
+  // Actualiza los badges de notificación en sidebar y campana del dashboard
+  function actualizarBadgeNotif(cantidad) {
+    const badgeIcono = document.getElementById("sidebar-notif-badge"); // sidebar colapsado
+    const badgeTexto = document.getElementById("sidebar-notif-badge-text"); // sidebar expandido
+    const badgeMovil = document.getElementById("mobile-notif-badge"); // campana móvil
+    const badges = [badgeIcono, badgeTexto, badgeMovil];
+    const etiqueta = cantidad > 99 ? "99+" : String(cantidad);
 
-  // 1. Polling System
-  async function checkNotifications() {
+    if (cantidad > 0) {
+      badges.forEach((b) => {
+        if (!b) return;
+        b.textContent = etiqueta;
+        b.classList.remove("hidden");
+        b.style.display = "flex";
+      });
+    } else {
+      badges.forEach((b) => {
+        if (!b) return;
+        b.style.display = "";
+        b.classList.add("hidden");
+      });
+    }
+  }
+
+  // Los toasts solo aparecen en el dashboard (no en cada página)
+  const estamosEnDashboard = window.location.pathname === "/dashboard";
+
+  // Polling de notificaciones cada 10 segundos
+  async function verificarNotificaciones() {
     const user = authService.getCurrentUser();
     const userId = user?.id || user?.usuarioId || user?._id;
     if (!userId) return;
@@ -825,36 +659,37 @@ const currentPath = Astro.url.pathname;
         await notificationService.getNotifications(userId);
 
       if (notifications && notifications.length > 0) {
-        const shownIds = getShownNotifIds();
+        const idsVistos = obtenerIdsVistos();
+        const noLeidas = notifications.filter((n) => !n.is_read).length;
+        actualizarBadgeNotif(noLeidas);
 
-        // Handle Toasts (New Unread Notifications) - SOLO en dashboard
-        if (isDashboard) {
+        // Mostrar toasts solo en el dashboard y solo para notificaciones nuevas
+        if (estamosEnDashboard) {
           notifications.forEach((n) => {
-            if (!n.is_read && !shownIds.has(n.id)) {
-              if (n.type === "payment_received") {
-                window.showToast(n.message, "success", "Pago Recibido");
-              } else {
-                window.showToast(n.message, "info", "Nueva Notificación");
-              }
-              saveShownNotifId(n.id);
+            if (!n.is_read && !idsVistos.has(String(n.id))) {
+              const tipo = n.type === "payment_received" ? "success" : "info";
+              const titulo =
+                n.type === "payment_received"
+                  ? "Pago Recibido"
+                  : "Nueva Notificación";
+              window.showToast(n.message, tipo, titulo);
+              guardarIdVisto(n.id);
             }
           });
         }
+      } else {
+        actualizarBadgeNotif(0);
       }
     } catch (e) {
-      console.error("Polling error", e);
+      console.error("Error en polling de notificaciones:", e);
     }
   }
 
-  // Poll every 10 seconds
-  setInterval(checkNotifications, 10000);
-  // Initial check (solo en dashboard)
-  if (isDashboard) {
-    setTimeout(checkNotifications, 2000);
-  }
+  // Primera verificación tras 1.5s de carga; luego cada 10s
+  setTimeout(verificarNotificaciones, 1500);
+  setInterval(verificarNotificaciones, 10000);
 
   const toggleContainer = document.getElementById("toggleContainer");
-
   let isCollapsed = true;
   let toggleTimeout;
 
@@ -862,30 +697,29 @@ const currentPath = Astro.url.pathname;
     isCollapsed = false;
     if (toggleTimeout) clearTimeout(toggleTimeout);
 
-    const currentContents = document.querySelectorAll(".sidebar-content");
-    const profileContent = document.querySelector(".profile-content");
+    const contenidos = document.querySelectorAll(".sidebar-content");
+    const perfil = document.querySelector(".profile-content");
     const searchInput = document.getElementById("sidebar-search-input");
-    const profilePhoto = document.getElementById("sidebar-profile-photo");
+    const foto = document.getElementById("sidebar-profile-photo");
 
     sidebar?.classList.remove("w-20");
     sidebar?.classList.add("w-72");
-
     toggleContainer?.classList.add("justify-end", "px-4");
     toggleContainer?.classList.remove("justify-center", "px-0");
 
-    // Expand profile photo
-    if (profilePhoto) {
-      profilePhoto.classList.remove("w-9", "h-9");
-      profilePhoto.classList.add("w-16", "h-16");
+    // Agrandar foto de perfil
+    if (foto) {
+      foto.classList.replace("w-9", "w-16");
+      foto.classList.replace("h-9", "h-16");
     }
 
-    // Show profile info
-    if (profileContent) {
-      profileContent.classList.remove("max-h-0", "opacity-0");
-      profileContent.classList.add("max-h-40", "opacity-100");
+    // Mostrar info de perfil
+    if (perfil) {
+      perfil.classList.remove("max-h-0", "opacity-0");
+      perfil.classList.add("max-h-40", "opacity-100");
     }
 
-    // Show search input
+    // Mostrar buscador
     searchInput?.classList.add(
       "w-full",
       "pl-10",
@@ -902,8 +736,8 @@ const currentPath = Astro.url.pathname;
       "pointer-events-none",
     );
 
-    // Show labels
-    currentContents.forEach((el) => {
+    // Mostrar etiquetas de texto
+    contenidos.forEach((el) => {
       el.classList.remove(
         "opacity-0",
         "pointer-events-none",
@@ -920,30 +754,29 @@ const currentPath = Astro.url.pathname;
     isCollapsed = true;
     if (toggleTimeout) clearTimeout(toggleTimeout);
 
-    const currentContents = document.querySelectorAll(".sidebar-content");
-    const profileContent = document.querySelector(".profile-content");
+    const contenidos = document.querySelectorAll(".sidebar-content");
+    const perfil = document.querySelector(".profile-content");
     const searchInput = document.getElementById("sidebar-search-input");
-    const profilePhoto = document.getElementById("sidebar-profile-photo");
+    const foto = document.getElementById("sidebar-profile-photo");
 
     sidebar?.classList.remove("w-72");
     sidebar?.classList.add("w-20");
-
     toggleContainer?.classList.remove("justify-end", "px-4");
     toggleContainer?.classList.add("justify-center", "px-0");
 
-    // Collapse profile photo
-    if (profilePhoto) {
-      profilePhoto.classList.remove("w-16", "h-16");
-      profilePhoto.classList.add("w-9", "h-9");
+    // Reducir foto de perfil
+    if (foto) {
+      foto.classList.replace("w-16", "w-9");
+      foto.classList.replace("h-16", "h-9");
     }
 
-    // Hide profile info
-    if (profileContent) {
-      profileContent.classList.remove("max-h-40", "opacity-100");
-      profileContent.classList.add("max-h-0", "opacity-0");
+    // Ocultar info de perfil
+    if (perfil) {
+      perfil.classList.remove("max-h-40", "opacity-100");
+      perfil.classList.add("max-h-0", "opacity-0");
     }
 
-    // Hide search input
+    // Ocultar buscador
     searchInput?.classList.remove(
       "w-full",
       "pl-10",
@@ -960,7 +793,8 @@ const currentPath = Astro.url.pathname;
       "pointer-events-none",
     );
 
-    currentContents.forEach((el) => {
+    // Ocultar etiquetas de texto
+    contenidos.forEach((el) => {
       el.classList.add("opacity-0", "pointer-events-none", "max-w-0", "ml-0");
       el.classList.remove("max-w-xs", "ml-3");
     });
@@ -969,21 +803,18 @@ const currentPath = Astro.url.pathname;
   }
 
   toggleBtn?.addEventListener("click", () => {
-    if (isCollapsed) {
-      expandSidebar();
-    } else {
-      collapseSidebar();
-    }
+    if (isCollapsed) expandSidebar();
+    else collapseSidebar();
   });
 
-  // Expand sidebar when clicking on search trigger
+  // Expandir al hacer clic en el buscador cuando está colapsado
   searchTrigger?.addEventListener("click", () => {
     if (isCollapsed) {
       expandSidebar();
-      // Focus search input after expansion
-      setTimeout(() => {
-        document.getElementById("sidebar-search-input")?.focus();
-      }, 300);
+      setTimeout(
+        () => document.getElementById("sidebar-search-input")?.focus(),
+        300,
+      );
     }
   });
 </script>

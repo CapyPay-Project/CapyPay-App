@@ -934,7 +934,7 @@ import ExchangeRateWidget from "../../components/widgets/dashboard/ExchangeRateW
         const text = btn.getAttribute("data-text");
         if (text) {
           navigator.clipboard.writeText(text);
-          // Opcional: Mostrar feedback visual
+          window.showToast("Copiado al portapapeles", "success");
         }
       });
     });
@@ -948,7 +948,7 @@ import ExchangeRateWidget from "../../components/widgets/dashboard/ExchangeRateW
         // Validación simple
         if (step === "2" && inputCapy) {
           if (!inputCapy.value || parseFloat(inputCapy.value) <= 0) {
-            alert("Por favor ingresa un monto válido");
+            window.showToast("Ingresa un monto válido para continuar", "error");
             return;
           }
         }
@@ -1039,8 +1039,11 @@ import ExchangeRateWidget from "../../components/widgets/dashboard/ExchangeRateW
       btnFinalizarRecarga.addEventListener("click", async () => {
         const user = authService.getCurrentUser();
         if (!user) {
-          alert("Sesión no válida");
-          window.location.href = "/auth/login";
+          window.showToast(
+            "Sesión no válida, redirigiendo al login...",
+            "error",
+          );
+          setTimeout(() => (window.location.href = "/auth/login"), 1500);
           return;
         }
 
@@ -1052,11 +1055,11 @@ import ExchangeRateWidget from "../../components/widgets/dashboard/ExchangeRateW
         const referencia = refInput ? refInput.value : "";
 
         if (!montoCapy || montoCapy <= 0) {
-          alert("Monto inválido");
+          window.showToast("Ingresa un monto válido", "error");
           return;
         }
         if (!referencia) {
-          alert("Por favor ingresa el número de referencia");
+          window.showToast("Ingresa el número de referencia del pago", "error");
           return;
         }
 
@@ -1095,21 +1098,24 @@ import ExchangeRateWidget from "../../components/widgets/dashboard/ExchangeRateW
           btnFinalizarRecarga.classList.remove("bg-brand-lime", "text-black");
           btnFinalizarRecarga.classList.add("bg-green-500", "text-white");
 
+          window.showToast(
+            "¡Recarga aplicada! Tu saldo se actualiza en breve 🐹",
+            "success",
+            "Recarga Exitosa",
+          );
           setTimeout(() => {
-            alert(
-              "Recarga aplicada correctamente. Tu saldo se ha actualizado.",
-            );
             window.location.href = "/dashboard";
-          }, 1000);
+          }, 2000);
         } catch (error) {
           console.error(error);
-          alert(
-            "Error: " + (error.message || "No se pudo procesar la recarga"),
+          window.showToast(
+            error.message || "No se pudo procesar la recarga",
+            "error",
+            "Error en Recarga",
           );
           btnFinalizarRecarga.innerHTML = originalText;
           btnFinalizarRecarga.classList.add("bg-brand-lime", "text-black");
           btnFinalizarRecarga.classList.remove("bg-green-500", "text-white");
-
           btnFinalizarRecarga.disabled = false;
         }
       });

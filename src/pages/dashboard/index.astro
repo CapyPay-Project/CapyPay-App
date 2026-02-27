@@ -60,8 +60,8 @@ import ExchangeRateWidget from "../../components/widgets/dashboard/ExchangeRateW
           <!-- Badge de notificaciones no leídas -->
           <span
             id="mobile-notif-badge"
-            class="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-brand-black hidden shadow-[0_0_5px_rgba(239,68,68,0.5)]"
-          ></span>
+            class="absolute -top-1.5 -right-1.5 min-w-4 h-4 px-0.5 bg-brand-lime text-black text-[9px] font-black rounded-full items-center justify-center leading-none shadow-[0_0_8px_rgba(215,253,73,0.5)]"
+            style="display:none;"></span>
         </a>
         <!-- Boton de Cerrar Sesion (Movil) -->
         <button
@@ -646,12 +646,14 @@ import ExchangeRateWidget from "../../components/widgets/dashboard/ExchangeRateW
             const unreadCount = notifications.filter((n) => !n.is_read).length;
 
             if (unreadCount > 0) {
-              mobileNotifBadge.classList.remove("hidden");
+              mobileNotifBadge.textContent =
+                unreadCount > 99 ? "99+" : String(unreadCount);
+              mobileNotifBadge.style.display = "flex";
             } else {
-              mobileNotifBadge.classList.add("hidden");
+              mobileNotifBadge.style.display = "none";
             }
           } else {
-            mobileNotifBadge.classList.add("hidden");
+            mobileNotifBadge.style.display = "none";
           }
         } catch (e) {
           console.error("Error checking notifications:", e);
