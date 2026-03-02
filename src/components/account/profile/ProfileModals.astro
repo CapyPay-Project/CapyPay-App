@@ -1,0 +1,370 @@
+---
+
+---
+
+<div
+  id="editProfileModal"
+  class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4"
+>
+  <div
+    class="bg-slate-800/95 border border-white/10 rounded-2xl w-full max-w-md p-6 shadow-2xl max-h-[90vh] overflow-y-auto"
+  >
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-xl font-bold text-white">Editar Perfil</h3>
+      <button
+        class="text-slate-400 hover:text-white transition-colors"
+        onclick="closeEditModal()"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          ><path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"></path></svg
+        >
+      </button>
+    </div>
+
+    <form id="editProfileForm" class="space-y-4">
+      <div>
+        <label class="block text-sm font-medium text-slate-300 mb-2"
+          >Nombre completo</label
+        >
+        <input
+          id="editNombre"
+          type="text"
+          class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-lime/50 focus:border-brand-lime/50"
+          placeholder="Tu nombre completo"
+          required
+        />
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-slate-300 mb-2"
+          >Alias</label
+        >
+        <input
+          id="editAlias"
+          type="text"
+          class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-lime/50 focus:border-brand-lime/50"
+          placeholder="@tu_alias"
+          required
+        />
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-slate-300 mb-2"
+          >Correo electrónico</label
+        >
+        <input
+          id="editEmail"
+          type="email"
+          class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-lime/50 focus:border-brand-lime/50"
+          placeholder="tu@email.com"
+          required
+        />
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-slate-300 mb-2"
+          >Descripción</label
+        >
+        <textarea
+          id="editDescripcion"
+          rows="3"
+          class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-lime/50 focus:border-brand-lime/50 resize-none"
+          placeholder="Cuéntanos sobre ti..."></textarea>
+      </div>
+
+      <div class="flex gap-3 pt-4">
+        <button
+          type="button"
+          class="flex-1 px-4 py-3 rounded-xl bg-white/10 text-white font-medium hover:bg-white/20 transition-colors"
+          onclick="closeEditModal()"
+        >
+          Cancelar
+        </button>
+        <button
+          type="submit"
+          class="flex-1 px-4 py-3 rounded-xl bg-brand-lime text-slate-900 font-bold hover:brightness-110 transition-all"
+        >
+          Guardar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div
+  id="securityModal"
+  class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4"
+>
+  <div
+    class="bg-slate-800/95 border border-white/10 rounded-2xl w-full max-w-md p-6 shadow-2xl max-h-[90vh] overflow-y-auto"
+  >
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-xl font-bold text-white">Seguridad de la Cuenta</h3>
+      <button
+        class="text-slate-400 hover:text-white transition-colors"
+        onclick="closeSecurityModal()"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          ><path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"></path></svg
+        >
+      </button>
+    </div>
+
+    <div class="space-y-4">
+      <button
+        class="w-full flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/10 hover:border-brand-lime/30 transition-all"
+        onclick="cambiarPin()"
+      >
+        <div class="flex items-center gap-3">
+          <div
+            class="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center text-red-400"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              ><path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 11c0-.552.448-1 1-1h4a1 1 0 011 1v7a1 1 0 01-1 1h-4a1 1 0 01-1-1v-7zM8 7V6a4 4 0 118 0v1M8 7h8v2H8V7z"
+              ></path></svg
+            >
+          </div>
+          <div class="text-left">
+            <p class="text-white font-medium">Cambiar PIN</p>
+            <p class="text-slate-400 text-sm">Actualizar código de seguridad</p>
+          </div>
+        </div>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5 text-slate-500"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          ><path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 5l7 7-7 7"></path></svg
+        >
+      </button>
+
+      <button
+        class="w-full flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/10 hover:border-brand-lime/30 transition-all"
+        onclick="activarBiometria()"
+      >
+        <div class="flex items-center gap-3">
+          <div
+            class="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-400"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              ><path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 11c1.657 0 3-1.343 3-3V7a3 3 0 10-6 0v1c0 1.657 1.343 3 3 3z"
+              ></path><path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 11a7 7 0 11-14 0"></path></svg
+            >
+          </div>
+          <div class="text-left">
+            <p class="text-white font-medium">Autenticación Biométrica</p>
+            <p class="text-slate-400 text-sm">Huella o reconocimiento facial</p>
+          </div>
+        </div>
+        <label class="relative inline-flex items-center cursor-pointer">
+          <input type="checkbox" class="sr-only peer" id="biometria-toggle" />
+          <div
+            class="w-11 h-6 bg-slate-700 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-lime"
+          >
+          </div>
+        </label>
+      </button>
+
+      <button
+        class="w-full flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/10 hover:border-brand-lime/30 transition-all"
+        onclick="verificarDispositivos()"
+      >
+        <div class="flex items-center gap-3">
+          <div
+            class="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center text-green-400"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              ><path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9.75 17L6 20.75V17h3.75zm0 0L14 12.75m0 0l3-3L21 6m-7 6.75L8.25 9m5.75 3.75l2.75 2.75"
+              ></path></svg
+            >
+          </div>
+          <div class="text-left">
+            <p class="text-white font-medium">Dispositivos Conectados</p>
+            <p class="text-slate-400 text-sm">Gestionar sesiones activas</p>
+          </div>
+        </div>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5 text-slate-500"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          ><path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 5l7 7-7 7"></path></svg
+        >
+      </button>
+    </div>
+  </div>
+</div>
+
+<div
+  id="faqModal"
+  class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4"
+>
+  <div
+    class="bg-slate-800/95 border border-white/10 rounded-2xl w-full max-w-2xl p-6 shadow-2xl max-h-[90vh] overflow-y-auto"
+  >
+    <div class="flex items-center justify-between mb-6">
+      <h3 class="text-xl font-bold text-white">Centro de Ayuda</h3>
+      <button
+        class="text-slate-400 hover:text-white transition-colors"
+        onclick="closeFAQModal()"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          ><path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"></path></svg
+        >
+      </button>
+    </div>
+
+    <div class="space-y-4">
+      <div class="bg-white/5 rounded-xl border border-white/10 p-4">
+        <h4 class="text-brand-lime font-semibold mb-2">¿Cómo cambio mi PIN?</h4>
+        <p class="text-slate-300 text-sm">
+          Ve a Seguridad de la Cuenta y selecciona "Cambiar PIN". Recibirás un
+          código de verificación en tu correo.
+        </p>
+      </div>
+
+      <div class="bg-white/5 rounded-xl border border-white/10 p-4">
+        <h4 class="text-brand-lime font-semibold mb-2">
+          ¿Cómo recupero mi cuenta?
+        </h4>
+        <p class="text-slate-300 text-sm">
+          Contacta al soporte técnico con tu cédula y correo institucional para
+          verificar tu identidad.
+        </p>
+      </div>
+
+      <div class="bg-white/5 rounded-xl border border-white/10 p-4">
+        <h4 class="text-brand-lime font-semibold mb-2">
+          ¿Las transferencias son instantáneas?
+        </h4>
+        <p class="text-slate-300 text-sm">
+          Sí, todas las transferencias entre usuarios CapyPay se procesan en
+          tiempo real.
+        </p>
+      </div>
+
+      <div class="bg-white/5 rounded-xl border border-white/10 p-4">
+        <h4 class="text-brand-lime font-semibold mb-2">¿Cómo gano XP?</h4>
+        <p class="text-slate-300 text-sm">
+          Realizando transacciones, recargas y usando los servicios de
+          comedor/cantina.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  id="logoutModal"
+  class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4"
+>
+  <div
+    class="bg-slate-800/95 border border-white/10 rounded-2xl w-full max-w-md p-6 shadow-2xl"
+  >
+    <div class="text-center">
+      <div
+        class="w-16 h-16 mx-auto mb-4 rounded-full bg-orange-500/20 flex items-center justify-center"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-8 w-8 text-orange-400"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          ><path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M17 16l4-4m0 0l-4-4m4 4H7"></path></svg
+        >
+      </div>
+      <h3 class="text-xl font-bold text-white mb-2">¿Cerrar sesión?</h3>
+      <p class="text-slate-300 mb-6">
+        Tendrás que volver a iniciar sesión para acceder a tu cuenta.
+      </p>
+
+      <div class="flex gap-3">
+        <button
+          class="flex-1 px-4 py-3 rounded-xl bg-white/10 text-white font-medium hover:bg-white/20 transition-colors"
+          onclick="closeLogoutModal()"
+        >
+          Cancelar
+        </button>
+        <button
+          class="flex-1 px-4 py-3 rounded-xl bg-orange-500 text-white font-bold hover:bg-orange-600 transition-colors"
+          onclick="confirmLogout()"
+        >
+          Cerrar Sesión
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

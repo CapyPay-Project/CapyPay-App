@@ -1,0 +1,114 @@
+---
+import { Card, Button, Input } from "../../ui";
+---
+
+<div
+  id="modal-add-contact"
+  class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300"
+>
+  <Card
+    class="w-full max-w-md p-6 relative overflow-visible transform scale-95 transition-transform duration-300"
+  >
+    <div
+      class="absolute -top-10 -right-10 w-32 h-32 bg-brand-lime/5 rounded-full blur-3xl pointer-events-none"
+    >
+    </div>
+
+    <h2
+      id="modal-title"
+      class="text-xl font-bold text-white mb-4 relative z-10 flex items-center gap-2"
+    >
+      <div
+        class="w-8 h-8 rounded-lg bg-brand-lime flex items-center justify-center text-black shadow-[0_0_10px_rgba(215,253,73,0.3)]"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M18 9v3m0 0v3m0-3h3m-3 0v3m0-3h3m-2-5a4 4 0 11-8 0 4 4 0 018 0z"
+          ></path>
+        </svg>
+      </div>
+      <span id="modal-title-text">Añadir Contacto</span>
+    </h2>
+
+    <form
+      id="form-add-contact"
+      class="flex flex-col gap-4 relative z-10"
+      autocomplete="off"
+    >
+      <input type="hidden" name="contactId" id="input-contactId" value="" />
+
+      <input type="text" style="display:none" />
+      <input type="password" style="display:none" />
+
+      <div class="relative group/input" id="field-cedula-container">
+        <Input
+          id="input-cedula"
+          name="cedula"
+          required
+          autocomplete="new-password"
+          placeholder="Ej: 8459201"
+          label="Cédula del Usuario"
+        />
+
+        <div
+          id="cedula-suggestions"
+          class="absolute left-0 right-0 top-[calc(100%+0.5rem)] bg-[#0a0a0a] border border-white/10 rounded-xl shadow-2xl max-h-48 overflow-y-auto hidden z-20"
+        >
+        </div>
+      </div>
+
+      <Input
+        name="alias"
+        placeholder="Ej: El Jefe, Mamá, etc."
+        label="Alias (Opcional)"
+      />
+
+      <div
+        id="add-error"
+        class="hidden text-red-400 text-sm bg-red-500/10 p-3 rounded-xl border border-red-500/20 items-center gap-2"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5 shrink-0"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <span id="add-error-text">Error</span>
+      </div>
+
+      <div class="flex gap-3 justify-end mt-2 pt-4 border-t border-white/5">
+        <Button
+          type="button"
+          id="btn-close-modal"
+          variant="ghost"
+          class="text-slate-400 hover:text-white"
+        >
+          Cancelar
+        </Button>
+        <Button
+          type="submit"
+          variant="primary"
+          class="shadow-[0_0_10px_rgba(215,253,73,0.2)] hover:shadow-[0_0_20px_rgba(215,253,73,0.4)]"
+        >
+          Guardar Contacto
+        </Button>
+      </div>
+    </form>
+  </Card>
+</div>

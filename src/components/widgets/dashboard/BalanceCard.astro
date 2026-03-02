@@ -192,7 +192,8 @@ const { amount, xp } = Astro.props;
 
 <script>
   // @ts-nocheck
-  import { pinService, userService } from "../../../services/api.js";
+  import { pinService } from "../../../services/api.js";
+  import { userProfile, fetchUserProfile } from "../../../store/userStore.js";
 
   // Utilidad de contraste para evitar textos ilegibles al cambiar el color por nivel.
   function getContrastColor(hex) {
@@ -207,27 +208,24 @@ const { amount, xp } = Astro.props;
     }
   }
 
-  // Auto-refresh balance
-  async function updateRealBalance() {
-    try {
-      // Attempt to get profile (uses cached user ID)
-      const profile = await userService.getProfile();
-      if (profile) {
-        const balEl = document.getElementById("user-balance-display");
-        if (balEl) {
-          const balanceValue = Number(profile.balance ?? 0);
-          balEl.innerText = Number.isFinite(balanceValue)
-            ? balanceValue.toLocaleString("es-VE")
-            : String(profile.balance ?? 0);
-        }
-      }
-    } catch (e) {
-      console.error("Balance fetch error", e);
+  // Fetch initial profile
+  fetchUserProfile();
+
+  // Create reactive subscriptions to the Nano Store
+  userProfile.subscribe((profile) => {
+    // 1. Update Balance
+    const balEl = document.getElementById("user-balance-display");
+    if (balEl && !profile.isLoading) {
+      balEl.innerText = Number.isFinite(profile.balance)
+        ? profile.balance.toLocaleString("es-VE")
+        : "0";
     }
-  }
-  updateRealBalance();
-  // Listen for transaction events to refresh balance
-  window.addEventListener("transaction-completed", updateRealBalance);
+
+    // 2. Update Card Style based on XP
+    if (!profile.isLoading) {
+      actualizarTarjetaPorNivel(profile.xp);
+    }
+  });
 
   // Configuración de colores por nivel (más oscuros para mejor legibilidad)
   const nivelesColores = {
@@ -265,28 +263,6 @@ const { amount, xp } = Astro.props;
     if (xp >= 2001) return "licenciado";
     if (xp >= 501) return "bachiller";
     return "novato";
-  }
-
-  // Función para obtener el XP del localStorage
-  function obtenerXP() {
-    // Primero intentar de capypay_user_xp (que se guarda al cambiar nivel)
-    let xp = parseInt(localStorage.getItem("capypay_user_xp"));
-
-    // Si no existe, intentar del usuario
-    if (!xp || isNaN(xp)) {
-      try {
-        const userStr = localStorage.getItem("capypay_user");
-        if (userStr) {
-          const user = JSON.parse(userStr);
-          xp = user.xp || user.puntos || 1500;
-        }
-      } catch (e) {
-        console.error("Error al obtener XP del usuario:", e);
-        xp = 1500; // XP por defecto
-      }
-    }
-
-    return xp;
   }
 
   // Función para actualizar el color de la tarjeta según el nivel
@@ -438,18 +414,5 @@ const { amount, xp } = Astro.props;
   // Cleanup on unmount (si el componente se remueve)
   window.addEventListener("beforeunload", () => {
     hideCardInfo();
-  });
-
-  // Actualizar color de tarjeta según nivel al cargar
-  // Primero intentar de capypay_user_xp (que se guarda al cambiar nivel)
-  // y luego fallback al usuario cacheado para evitar NaN en primer render.
-  const xpLocalStorage = obtenerXP();
-  actualizarTarjetaPorNivel(xpLocalStorage);
-
-  // Escuchar cambios en localStorage
-  window.addEventListener("storage", (e) => {
-    if (e.key === "capypay_user_xp" && e.newValue) {
-      actualizarTarjetaPorNivel(parseInt(e.newValue));
-    }
   });
 </script>

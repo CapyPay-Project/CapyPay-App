@@ -1,0 +1,201 @@
+---
+import { Card } from "../../ui";
+---
+
+<Card
+  id="perfil-card"
+  class="p-6! relative overflow-hidden group shadow-2xl shadow-black/50 transition-all duration-500"
+>
+  <div
+    id="glow-nivel"
+    class="absolute -top-24 -right-24 w-48 h-48 rounded-full blur-3xl pointer-events-none"
+    style="background: rgba(96, 165, 250, 0.2)"
+  >
+  </div>
+  <div
+    class="absolute -bottom-16 -left-16 w-40 h-40 bg-brand-purple/10 rounded-full blur-2xl pointer-events-none"
+  >
+  </div>
+
+  <div class="relative z-10">
+    <div
+      class="flex flex-col sm:flex-row items-center sm:items-start gap-6 mb-6"
+    >
+      <div class="relative shrink-0">
+        <div
+          id="profile-photo-border"
+          class="w-24 h-24 sm:w-28 sm:h-28 rounded-full p-1 bg-linear-to-br from-brand-lime to-brand-purple shadow-[0_0_30px_rgba(215,253,73,0.3)] transition-all duration-500"
+        >
+          <div class="w-full h-full rounded-full overflow-hidden bg-black">
+            <img
+              id="profile-avatar"
+              src="https://api.dicebear.com/9.x/lorelei/svg?seed=Angel"
+              alt="Foto de perfil"
+              class="w-full h-full object-cover"
+            />
+          </div>
+        </div>
+        <div
+          class="absolute -bottom-1 -right-1 w-7 h-7 bg-brand-lime rounded-full flex items-center justify-center border-4 border-brand-black shadow-[0_0_15px_rgba(215,253,73,0.5)]"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-4 w-4 text-black"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            ><path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M5 13l4 4L19 7"></path></svg
+          >
+        </div>
+      </div>
+
+      <div class="flex-1 text-center sm:text-left w-full">
+        <h2
+          id="nombre-usuario"
+          class="text-2xl sm:text-3xl font-bold text-white mb-1"
+        >
+          Usuario
+        </h2>
+        <p
+          id="descripcion-usuario"
+          class="text-brand-lime font-medium text-sm mb-3"
+        >
+          Estudiante de Ingeniería en Sistemas
+        </p>
+
+        <div class="inline-flex items-center gap-2 mb-4">
+          <div
+            id="nivel-badge"
+            class="px-4 py-1.5 rounded-lg text-sm font-bold shadow-[0_0_15px_rgba(96,165,250,0.3)] transition-all duration-300"
+            style="background: rgba(96, 165, 250, 0.1); border: 2px solid #60A5FA; color: #60A5FA"
+          >
+            <span id="nivel-text">Bachiller</span>
+          </div>
+          <span class="text-xs text-slate-400">
+            <span id="xp-actual">1,500</span> / <span id="xp-siguiente"
+              >2,000</span
+            > XP
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white/5 rounded-2xl p-3 sm:p-4 border border-white/5 mt-4">
+      <div class="w-full bg-slate-800 rounded-full h-2.5 overflow-hidden">
+        <div
+          id="progreso-bar"
+          class="h-full rounded-full transition-all duration-500 ease-out relative"
+          style="width: 75%; background: linear-gradient(90deg, #60A5FA, #3B82F6)"
+        >
+          <div
+            class="absolute inset-0 bg-linear-to-r from-transparent via-white/30 to-transparent w-full animate-shimmer"
+          >
+          </div>
+        </div>
+      </div>
+      <div class="flex justify-between mt-1.5">
+        <span class="text-[11px] text-slate-500" id="xp-faltante"
+          >500 XP para el siguiente nivel</span
+        >
+        <span class="text-[11px] text-slate-500" id="procentaje"
+          >75% completado</span
+        >
+      </div>
+    </div>
+
+    <div class="pt-4 border-t border-white/5">
+      <div class="flex items-center gap-2 mb-3">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-4 w-4 text-yellow-400"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+          ><path
+            d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+          ></path></svg
+        >
+        <h3 class="text-sm font-bold text-white uppercase tracking-wider">
+          Mis Insignias
+        </h3>
+      </div>
+
+      <div class="flex items-start gap-3 overflow-x-auto pb-2 no-scrollbar">
+        <div
+          class="badge-item group relative flex flex-col items-center gap-1 shrink-0 cursor-pointer transition-all active:scale-95"
+          data-name="Comprador Frecuente"
+        >
+          <div
+            class="badge-tooltip opacity-0 group-hover:opacity-100 transition-opacity duration-200 mb-1 pointer-events-none"
+          >
+            <p
+              class="text-[9px] text-brand-lime font-medium whitespace-nowrap bg-brand-black/90 px-2 py-1 rounded-md border border-brand-purple/30"
+            >
+              Comprador Frecuente
+            </p>
+          </div>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-7 w-7 text-brand-purple group-hover:scale-110 transition-transform duration-300 drop-shadow-[0_0_5px_rgba(131,98,232,0.5)]"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            ><path
+              d="M19 5h-14l1.5-2h11zM21.794 5.392l-2.994-3.992c-.196-.261-.494-.4-.8-.4h-12c-.326 0-.62.133-.828.349l-3.172 3.356c-.196.208-.304.479-.304.765v15c0 .553.447 1 1 1h18c.553 0 1-.447 1-1v-15c0-.264-.088-.512-.232-.704z"
+            ></path></svg
+          >
+        </div>
+
+        <div
+          class="badge-item group relative flex flex-col items-center gap-1 shrink-0 cursor-pointer transition-all active:scale-95"
+          data-name="Racha de 7 días"
+        >
+          <div
+            class="badge-tooltip opacity-0 group-hover:opacity-100 transition-opacity duration-200 mb-1 pointer-events-none"
+          >
+            <p
+              class="text-[9px] text-brand-lime font-medium whitespace-nowrap bg-brand-black/90 px-2 py-1 rounded-md border border-brand-lime/30"
+            >
+              Racha de 7 días
+            </p>
+          </div>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-7 w-7 text-brand-lime group-hover:scale-110 transition-transform duration-300 drop-shadow-[0_0_5px_rgba(215,253,73,0.5)]"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            ><path
+              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-4h-2l4-6v4h2l-4 6z"
+            ></path></svg
+          >
+        </div>
+
+        <div
+          class="badge-item group relative flex flex-col items-center gap-1 shrink-0 cursor-pointer transition-all active:scale-95"
+          data-name="Cuenta Verificada"
+        >
+          <div
+            class="badge-tooltip opacity-0 group-hover:opacity-100 transition-opacity duration-200 mb-1 pointer-events-none"
+          >
+            <p
+              class="text-[9px] text-brand-lime font-medium whitespace-nowrap bg-brand-black/90 px-2 py-1 rounded-md border border-green-400/30"
+            >
+              Cuenta Verificada
+            </p>
+          </div>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-7 w-7 text-green-400 group-hover:scale-110 transition-transform duration-300 drop-shadow-[0_0_5px_rgba(74,222,128,0.5)]"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            ><path
+              d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"
+            ></path></svg
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+</Card>

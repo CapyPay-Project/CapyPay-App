@@ -4,16 +4,13 @@ Este README documenta las mejoras aplicadas a `BalanceCard`, `ModuloNiveles` y `
 
 ## Cambios principales
 
-### 1) BalanceCard (`BalanceCard.astro`)
+### 1) BalanceCard (`BalanceCard.astro`) & Carga de Estado
 
-- Se mantiene **un único** `id="user-balance-display"` (evita conflicto de IDs duplicados).
-- Se agrega `aria-live="polite"` al saldo para lectores de pantalla.
-- `updateRealBalance()` ahora:
-  - normaliza `profile.balance` a número,
-  - formatea con `toLocaleString("es-VE")` si aplica,
-  - evita texto inconsistente cuando llega valor no numérico.
-- Se agregó `getContrastColor()` para apoyar contraste cuando cambia color de tarjeta por nivel.
-- Inicialización de XP robusta usando `obtenerXP()` (evita `NaN` en primer render).
+- **NUEVO:** Se implementó `nanostores` a través de `src/store/userStore.js` para crear un estado global del perfil del usuario con la DB.
+- **Ventajas:** Múltiples componentes (como `BalanceCard`, `ticketbus`, etc.) pueden consumir y suscribirse al mismo estado global sin hacer decenas de llamadas innecesarias a Supabase.
+- Al cargar la página o al emitirse el evento `transaction-completed`, el store actualiza reactivamente el saldo de la tarjeta y su color según el nivel de XP en tiempo real.
+- Esto elimina la necesidad de `obtenerXP()` y la escucha rudimentaria de los cambios en el `localStorage` dentro del componente de la tarjeta de balance, eficientizando la UI.
+- Se mantiene `id="user-balance-display"` y los manejos de contraste `getContrastColor()`.
 
 ### 2) Módulo de niveles (`ModuloNiveles.astro`)
 

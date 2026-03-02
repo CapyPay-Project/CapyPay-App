@@ -1,0 +1,54 @@
+---
+import { Button } from "../../ui";
+---
+
+<header
+  class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 lg:gap-4 shrink-0"
+>
+  <div class="flex items-center gap-3 lg:gap-4 w-full md:w-auto">
+    <Button
+      href="/dashboard"
+      variant="secondary"
+      size="icon"
+      class="border-white/10 text-slate-400 hover:text-white shrink-0"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-5 w-5"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        ><path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M15 19l-7-7 7-7"></path></svg
+      >
+    </Button>
+    <div class="min-w-0 flex-1">
+      <h1 class="text-xl sm:text-2xl lg:text-3xl font-bold text-white truncate">
+        Historial de Transacciones
+      </h1>
+      <p class="text-slate-400 text-xs sm:text-sm mt-0.5 lg:mt-1">
+        Gestiona y visualiza todos tus movimientos
+      </p>
+    </div>
+  </div>
+
+  <Button id="export-pdf-btn" variant="primary" class="flex items-center gap-2">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="h-5 w-5"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      ><path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+      ></path></svg
+    >
+    <span class="hidden sm:inline">Exportar PDF</span>
+  </Button>
+</header>

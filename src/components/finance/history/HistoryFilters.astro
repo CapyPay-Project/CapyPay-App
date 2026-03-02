@@ -1,0 +1,71 @@
+---
+import { Input } from "../../ui";
+---
+
+<div
+  class="bg-brand-black border border-white/10 rounded-3xl p-4 lg:p-6 mb-6 shadow-xl space-y-4"
+>
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div class="col-span-1 sm:col-span-2 lg:col-span-1">
+      <Input
+        type="text"
+        id="search-input"
+        label="BÚSQUEDA"
+        autocomplete="off"
+        placeholder="Concepto, monto..."
+      >
+        <svg
+          slot="icon"
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-4 w-4"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          ><path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg
+        >
+      </Input>
+    </div>
+
+    <div class="flex flex-col">
+      <label
+        class="block text-slate-500 text-[10px] uppercase font-bold mb-1.5 ml-1"
+        >TIPO</label
+      >
+      <div
+        class="flex bg-black/30 border border-white/10 rounded-xl p-1 h-12.5 items-center"
+      >
+        <input type="hidden" id="filter-type" value="all" />
+        <button
+          type="button"
+          data-val="all"
+          class="filter-btn flex-1 rounded-lg text-xs font-bold transition-all text-black bg-brand-lime shadow-lg"
+          >TODOS</button
+        >
+        <button
+          type="button"
+          data-val="income"
+          class="filter-btn flex-1 rounded-lg text-xs font-bold transition-all text-slate-400 hover:text-white"
+          >INGRESOS</button
+        >
+        <button
+          type="button"
+          data-val="expense"
+          class="filter-btn flex-1 rounded-lg text-xs font-bold transition-all text-slate-400 hover:text-white"
+          >GASTOS</button
+        >
+      </div>
+    </div>
+
+    <div>
+      <Input type="date" id="date-from" label="DESDE" class="scheme-dark" />
+    </div>
+
+    <div>
+      <Input type="date" id="date-to" label="HASTA" class="scheme-dark" />
+    </div>
+  </div>
+</div>
