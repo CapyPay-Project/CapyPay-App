@@ -48,17 +48,17 @@ import Card from "../../ui/Card.astro";
     >
       <button
         id="btn-weekly"
-        class="flex-1 px-2 py-1 rounded-lg text-[10px] sm:text-xs font-bold bg-brand-lime text-black shadow-sm transition-all chart-period-btn"
+        class="flex-1 px-2 py-1 rounded-lg text-[11px] sm:text-xs font-bold bg-brand-lime text-black shadow-sm transition-all chart-period-btn"
         data-mode="weekly">Semanal</button
       >
       <button
         id="btn-monthly"
-        class="flex-1 px-2 py-1 rounded-lg text-[10px] sm:text-xs font-medium text-slate-400 hover:text-white transition-all chart-period-btn"
+        class="flex-1 px-2 py-1 rounded-lg text-[11px] sm:text-xs font-medium text-slate-400 hover:text-white transition-all chart-period-btn"
         data-mode="monthly">Mensual</button
       >
       <button
         id="btn-quarterly"
-        class="flex-1 px-2 py-1 rounded-lg text-[10px] sm:text-xs font-medium text-slate-400 hover:text-white transition-all chart-period-btn"
+        class="flex-1 px-2 py-1 rounded-lg text-[11px] sm:text-xs font-medium text-slate-400 hover:text-white transition-all chart-period-btn"
         data-mode="quarterly">3 Meses</button
       >
     </div>
@@ -71,7 +71,7 @@ import Card from "../../ui/Card.astro";
     <!-- Etiquetas Eje Y (Escala de Dinero) -->
     <div
       id="chart-y-axis"
-      class="flex flex-col justify-between text-[10px] sm:text-xs text-slate-400 font-mono py-6 shrink-0 text-right pr-1 sm:pr-2 select-none h-full"
+      class="flex flex-col justify-between text-[11px] sm:text-xs text-slate-400 font-mono py-6 shrink-0 text-right pr-1 sm:pr-2 select-none h-full"
     >
       <span>--</span>
       <span>--</span>
@@ -391,7 +391,7 @@ import Card from "../../ui/Card.astro";
 
         barsHtml += `
                   <div class="flex flex-col justify-end items-center h-full flex-1 gap-2 z-10 group/bar cursor-pointer pb-6">
-                     <div class="opacity-0 group-hover/bar:opacity-100 absolute top-0 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-[10px] sm:text-xs p-2 sm:p-2.5 rounded transform -translate-y-full transition-opacity border border-white/10 pointer-events-none whitespace-nowrap z-50 shadow-xl">
+                     <div class="opacity-0 group-hover/bar:opacity-100 absolute top-0 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-[11px] sm:text-xs p-2 sm:p-2.5 rounded transform -translate-y-full transition-opacity border border-white/10 pointer-events-none whitespace-nowrap z-50 shadow-xl">
                          <span class="text-brand-lime">Ing: $${stat.income.toFixed(2)}</span> <br/>
                          <span class="text-purple-400">Gas: $${stat.expense.toFixed(2)}</span>
                      </div>
@@ -399,7 +399,7 @@ import Card from "../../ui/Card.astro";
                          <div style="height: ${incomeH}%" class="w-full bg-brand-lime rounded-t-sm opacity-90 group-hover/bar:opacity-100 transition-all"></div>
                          <div style="height: ${expenseH}%" class="w-full bg-purple-600 rounded-t-sm opacity-90 group-hover/bar:opacity-100 transition-all"></div>
                      </div>
-                     <span class="absolute bottom-1 text-[10px] sm:text-xs text-slate-400 font-medium whitespace-nowrap">${stat.day}</span>
+                     <span class="absolute bottom-1 text-[11px] sm:text-xs text-slate-400 font-medium whitespace-nowrap">${stat.day}</span>
                   </div>
                  `;
       });

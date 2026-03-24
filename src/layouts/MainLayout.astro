@@ -25,11 +25,6 @@ const { title = "CapyPay", showSidebar = false } = Astro.props;
     <title>{title}</title>
     <!-- Auth Guard Anti-Flash (Improved) -->
     <script is:inline>
-      // 1. Ocultar el contenido inmediatamente
-      document.write(
-        "<style>body { visibility: hidden; opacity: 0; transition: opacity 0.5s ease; }</style>",
-      );
-
       (function () {
         try {
           const token = localStorage.getItem("capypay_token");
@@ -43,12 +38,6 @@ const { title = "CapyPay", showSidebar = false } = Astro.props;
           if (!token && !isPublic) {
             // NO Logueado y ruta privada -> Echar fuera
             window.location.replace("/login");
-          } else {
-            // Logueado o ruta publica -> Permitir entrada
-            document.addEventListener("DOMContentLoaded", () => {
-              document.body.style.visibility = "visible";
-              document.body.style.opacity = "1";
-            });
           }
         } catch (e) {
           /* Si falla algo, por seguridad mandamos al login */
@@ -58,10 +47,20 @@ const { title = "CapyPay", showSidebar = false } = Astro.props;
       })();
     </script>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
+      media="print"
+      onload="this.media='all'"
     />
+    <noscript>
+      <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet"
+      />
+    </noscript>
     <style>
       body {
         font-family: "Outfit", sans-serif;

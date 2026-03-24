@@ -12,7 +12,7 @@
 
 <div
   id="widget-a-container"
-  class="glass-card flex flex-col justify-between h-48 col-span-1 border border-white/5 hover:border-brand-lime/20 transition-all duration-500 group relative overflow-hidden rounded-4xl"
+  class="glass-card flex flex-col justify-between h-48 col-span-1 border border-white/5 hover:border-brand-lime/20 transition duration-500 group relative overflow-hidden rounded-4xl"
 >
   <!-- View: Browsing (Default) -->
   <div
@@ -32,7 +32,7 @@
           ></span>
         </span>
         <p
-          class="text-white/50 text-[10px] sm:text-xs font-bold uppercase tracking-widest"
+          class="text-white/50 text-[11px] sm:text-xs font-bold uppercase tracking-widest"
         >
           Cola Virtual
         </p>
@@ -46,11 +46,11 @@
         >
           <span id="ocupacion-text">--</span>
         </h3>
-        <span class="text-sm font-medium text-white/40 mb-2">personas</span>
+        <span class="text-sm font-medium text-white/70 mb-2">personas</span>
       </div>
       <p
         id="ocupacion-detail"
-        class="text-[11px] text-white/60 font-medium truncate mt-1"
+        class="text-sm text-white/70 font-medium truncate mt-1"
       >
         Cargando...
       </p>
@@ -60,18 +60,17 @@
       <div class="w-full bg-white/5 h-1.5 rounded-full overflow-hidden mb-2">
         <div
           id="ocupacion-bar"
-          class="h-full bg-brand-lime w-[0%] transition-all duration-1000"
+          class="h-full bg-brand-lime w-full scale-x-0 origin-left transition-transform duration-1000"
         >
         </div>
       </div>
       <div class="flex items-center justify-between">
-        <span
-          class="text-[9px] text-white/30 font-bold uppercase tracking-wider"
+        <span class="text-xs text-white/60 font-bold uppercase tracking-wider"
           >CAPACIDAD</span
         >
         <span
           id="ocupacion-status"
-          class="text-[10px] font-bold text-brand-lime">--</span
+          class="text-[11px] font-bold text-brand-lime">--</span
         >
       </div>
     </div>
@@ -97,7 +96,7 @@
         >
       </div>
       <p
-        class="text-white/50 text-[10px] sm:text-xs font-bold uppercase tracking-widest"
+        class="text-white/50 text-[11px] sm:text-xs font-bold uppercase tracking-widest"
       >
         Ritmo Cocina
       </p>
@@ -109,7 +108,7 @@
       >
         Alta
       </h3>
-      <span class="text-xs text-secondary font-medium text-white/40"
+      <span class="text-xs text-secondary font-medium text-white/70"
         >Frecuencia de lotes</span
       >
     </div>
@@ -125,7 +124,7 @@
           <span class="relative inline-flex rounded-full h-2 w-2 bg-cyan-400"
           ></span>
         </span>
-        <span class="text-[9px] text-white/90 uppercase font-bold tracking-wide"
+        <span class="text-xs text-white/90 uppercase font-bold tracking-wide"
           >Produciendo a tope</span
         >
       </div>
