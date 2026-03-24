@@ -1,88 +1,227 @@
 ---
 import MainLayout from "../../layouts/MainLayout.astro";
+
+// Nota: Ya no necesitamos el fetch aquí arriba porque Luis usa el "store" en el script de abajo.
+const precioPasaje = 5.00;
+const paradasUNERG = ["Terminal", "La Redoma", "Plaza Bolívar", "UNERG Entrada", "Área de Salud", "Ingeniería"];
 ---
 
 <MainLayout title="Ticket Bus | CapyPay">
   <div class="flex flex-col gap-6 h-full p-4 lg:p-0">
-    <div
-      class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-brand-black p-6 rounded-3xl border border-white/10 shadow-lg relative overflow-hidden group"
-    >
-      <div
-        class="absolute -top-24 -right-24 w-48 h-48 bg-brand-lime/10 rounded-full blur-3xl group-hover:bg-brand-lime/20 transition-all duration-700"
-      >
-      </div>
-
+    
+    <div class="bg-brand-black p-6 rounded-3xl border border-white/10 shadow-lg relative overflow-hidden group">
       <div class="relative z-10 flex gap-4 items-center w-full">
-        <!-- Botón de regresar -->
-        <a
-          href="/dashboard"
-          class="flex items-center justify-center w-12 h-12 rounded-full bg-white/5 hover:bg-white/10 text-white border border-white/10 transition-all hover:border-brand-lime/30 group"
-          aria-label="Regresar al dashboard"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-6 w-6 transition-transform group-hover:-translate-x-1"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M15 19l-7-7 7-7"
-            ></path>
+        <a href="/dashboard" class="flex items-center justify-center w-12 h-12 rounded-full bg-white/5 hover:bg-white/10 text-white border border-white/10 transition-all">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
           </svg>
         </a>
-        <div
-          class="w-16 h-16 rounded-full bg-brand-purple/20 flex items-center justify-center text-brand-purple border border-brand-purple/30"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-8 w-8"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
+        <div class="w-16 h-16 rounded-full bg-brand-purple/20 flex items-center justify-center text-brand-purple border border-brand-purple/30">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h8a2 2 0 012 2v10a2 2 0 01-2 2H8a2 2 0 01-2-2V9a2 2 0 012-2zM6 13h12M7 17h.01M17 17h.01" />
           </svg>
         </div>
         <div>
           <h1 class="text-2xl font-bold text-white mb-1">Ticket Bus</h1>
-          <p class="text-slate-400 text-sm">
-            Compra y gestiona tus boletos de transporte.
-          </p>
+          <p class="text-slate-400 text-sm">San Juan de los Morros - UNERG</p>
         </div>
       </div>
     </div>
 
-    <!-- Placeholder Content -->
-    <div
-      class="flex-1 flex flex-col items-center justify-center p-8 border-2 border-dashed border-white/10 rounded-3xl bg-brand-black/20"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-16 w-16 text-slate-600 mb-4"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
-        ></path>
-      </svg>
-      <h2 class="text-xl font-bold text-white mb-2">Servicio Próximamente</h2>
-      <p class="text-slate-400 text-center max-w-md">
-        Estamos trabajando para integrar el sistema de tickets de autobús.
-        Pronto podrás ver rutas y comprar pasajes aquí.
-      </p>
+    <div class="bg-brand-black p-6 rounded-3xl border border-white/10 shadow-lg">
+      <div class="flex flex-col">
+        <span class="text-slate-400 text-sm uppercase mb-1">Tu saldo actual:</span>
+        <div class="flex items-baseline gap-2">
+          <span id="ticketbus-balance" class="text-5xl font-bold text-brand-lime font-monaco">Cargando...</span>
+          <span class="text-slate-400 text-lg font-bold">BARAS</span>
+        </div>
+      </div>
     </div>
+
+    <div class="bg-brand-black p-6 rounded-3xl border border-white/10 shadow-lg flex flex-col gap-4">
+      <div class="relative">
+        <button id="btn-rutas" class="w-full flex justify-between items-center bg-white/5 p-5 rounded-2xl border border-white/10 hover:border-brand-lime/50 transition-all text-white font-bold text-lg">
+          <span id="ruta-seleccionada">Selecciona tu parada</span>
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-brand-lime" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        
+        <div id="lista-paradas" class="hidden absolute z-30 w-full mt-2 bg-slate-900 border border-white/10 rounded-2xl shadow-2xl max-h-60 overflow-y-auto">
+          {paradasUNERG.map((parada) => (
+            <button class="opcion-parada w-full p-4 text-left hover:bg-brand-lime/10 border-b border-white/5 text-slate-200 transition-colors">
+              {parada}
+            </button>
+          ))}
+        </div>
+      </div>
+
+<div class="relative group mt-4">
+  <div class="absolute -inset-1 from-brand-lime to-emerald-400 rounded-2xl blur opacity-25 group-hover:opacity-75 transition duration-1000 group-hover:duration-200"></div>
+  
+  <button 
+    id="btn-pagar" 
+    type="button"
+    class="relative w-full py-5 rounded-2xl font-black text-xl bg-brand-lime text-black flex items-center justify-center gap-3 shadow-[0_10px_20px_rgba(163,230,53,0.3)] hover:shadow-brand-lime/50 hover:-translate-y-1 active:translate-y-0.5 active:scale-95 transition-all duration-300 overflow-hidden"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
+    </svg>
+    
+    <span class="tracking-tight">GENERAR TICKET QR</span>
+
+    <div class="absolute top-0 -inset-full h-full w-1/2 z-5 block transform -skew-x-12 bg-linear-to-r from-transparent补充 via-white/40 to-transparent opacity-40 group-hover:animate-shine"></div>
+  </button>
+</div>
+
+<style>
+  @keyframes shine {
+    100% {
+      left: 125%;
+    }
+  }
+  .group-hover\:animate-shine:hover {
+    animation: shine 0.8s;
+  }
+</style>
+
+  <div id="modal-qr" class="hidden fixed inset-0 z-50 items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+  <div class="bg-brand-black border border-white/10 p-8 rounded-3xl max-w-sm w-full text-center shadow-2xl">
+    <h2 class="text-white text-xl font-bold mb-2">¡Ticket Generado!</h2>
+    <p class="text-slate-400 text-sm mb-6">Muestra este código al chofer del bus</p>
+    
+    <div class="bg-white p-4 rounded-2xl inline-block mb-6">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=CapyPay-Ticket-UNERG" alt="QR Ticket" class="w-48 h-48" />
+    </div>
+
+    <p id="info-ticket" class="text-brand-lime font-mono text-sm mb-6 italic"></p>
+
+    <button id="btn-cerrar-qr" class="w-full py-3 bg-white/10 text-white rounded-xl hover:bg-white/20 transition-all font-bold">
+      Cerrar
+    </button>
   </div>
+</div>
+
+<div class="relative w-full mt-4">
+  <button id="btn-recientes" class="animate-pulse hover:animate-none w-full flex justify-between items-center bg-brand-purple/10 p-4 rounded-2xl border border-brand-purple/20 hover:border-brand-purple/50 transition-all text-brand-purple font-medium text-sm">
+    <span class="flex items-center gap-2">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      Rutas Recientes (Acceso Rápido)
+    </span>
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+    </svg>
+  </button>
+
+  <div id="lista-recientes" class="hidden absolute z-20 w-full mt-2 bg-slate-900 border border-white/10 rounded-2xl shadow-2xl">
+    <button class="opcion-reciente w-full p-3 text-left hover:bg-white/5 border-b border-white/5 text-slate-300 text-sm italic">Área de Ingeniería</button>
+    <button class="opcion-reciente w-full p-3 text-left hover:bg-white/5 text-slate-300 text-sm italic">Terminal</button>
+  </div>
+</div>
+
 </MainLayout>
+
+<script>
+  // @ts-nocheck
+  import { userProfile, fetchUserProfile } from "../../store/userStore.js";
+
+  // 1. Función para restar saldo (Lógica de Luis)
+  function procesarPago(monto) {
+    const perfilActual = userProfile.get();
+    if (perfilActual.balance >= monto) {
+      userProfile.set({
+        ...perfilActual,
+        balance: perfilActual.balance - monto
+      });
+      return true;
+    }
+    return false;
+  }
+
+  // 2. Cargar datos del usuario apenas entre a la página
+  fetchUserProfile();
+
+  // 3. Suscribirse al saldo para que se vea en pantalla
+  userProfile.subscribe((profile) => {
+    const balanceEl = document.getElementById("ticketbus-balance");
+    if (balanceEl && !profile.isLoading) {
+      balanceEl.innerText = Number.isFinite(profile.balance) 
+        ? profile.balance.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) 
+        : "0.00";
+    }
+  });
+
+  // 4. Activar los botones cuando el navegador esté listo
+  document.addEventListener('DOMContentLoaded', () => {
+    const btnRutas = document.getElementById('btn-rutas');
+    const listaParadas = document.getElementById('lista-paradas');
+    const textoRuta = document.getElementById('ruta-seleccionada');
+    const opciones = document.querySelectorAll('.opcion-parada');
+    const btnPagar = document.getElementById('btn-pagar');
+    const modalQr = document.getElementById('modal-qr');
+    const btnCerrarQr = document.getElementById('btn-cerrar-qr');
+
+    // Abrir/Cerrar lista de paradas
+    btnRutas?.addEventListener('click', () => {
+      listaParadas?.classList.toggle('hidden');
+    });
+
+    // Seleccionar parada
+    opciones.forEach(opcion => {
+      opcion.addEventListener('click', () => {
+        if(textoRuta) textoRuta.innerText = opcion.innerText;
+        listaParadas?.classList.add('hidden');
+      });
+    });
+
+    // GENERAR TICKET Y RESTAR SALDO
+    btnPagar?.addEventListener('click', () => {
+      const ruta = textoRuta?.innerText;
+      
+      if (ruta === "Selecciona tu parada") {
+        alert("¡Paola, elige una parada primero! 😊");
+        return;
+      }
+      btnPagar?.addEventListener('click', () => {
+      // ... (lo que ya teníamos de la ruta)
+      
+      // EFECTO DE VIBRACIÓN (Si estás en móvil)
+      if (window.navigator.vibrate) {
+        window.navigator.vibrate(50); 
+      }
+      
+      // CAMBIO TEMPORAL DE TEXTO
+      const originalText = btnPagar.innerHTML;
+      btnPagar.innerText = "PROCESANDO...";
+      
+      setTimeout(() => {
+        btnPagar.innerHTML = originalText;
+        // Aquí es donde abres el QR después del pequeño retraso
+      }, 500);
+    });
+
+      // Intentamos cobrar los 5.00 BARAS
+      if (procesarPago(5.00)) {
+    // ... lo que ya tenías del QR
+     } else {
+    // Esto hará que el cuadro del saldo vibre en rojo si no hay dinero
+    const balanceCard = document.getElementById('ticketbus-balance').parentElement;
+    balanceCard.classList.add('animate-bounce', 'text-red-500');
+    setTimeout(() => balanceCard.classList.remove('animate-bounce', 'text-red-500'), 1000);
+    alert("¡Paola, te quedaste sin BARAS! 💸");
+    return;
+      }
+      
+      // Mostrar el modal QR si el pago fue exitoso
+      modalQr?.classList.remove('hidden');
+      // Puedes agregar aquí la lógica para actualizar el QR y la info del ticket si lo deseas
+    });
+
+    // Cerrar Modal
+    btnCerrarQr?.addEventListener('click', () => {
+      modalQr?.classList.add('hidden');
+    });
+  }); // <-- Cierra el DOMContentLoaded
+</script>
