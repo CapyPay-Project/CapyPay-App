@@ -1,3 +1,6 @@
+---
+const { hideOrders = false } = Astro.props;
+---
 <div
   class="fixed bottom-24 lg:bottom-12 right-6 lg:right-12 z-40 flex flex-col gap-4"
 >
@@ -27,6 +30,7 @@
   </button>
 
   <!-- Orders Button (Desktop/Mobile) - Replacement for QR -->
+  {!hideOrders && (
   <a
     href="/services/orders"
     id="floating-orders-btn"
@@ -45,4 +49,5 @@
       >Ver Pedidos</span
     >
   </a>
+  )}
 </div>

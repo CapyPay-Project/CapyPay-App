@@ -19,6 +19,7 @@ if (typeof window !== 'undefined') {
 
 export function addItemToCart(item) {
   const currentItems = cartItems.get();
+
   const existingItem = currentItems[item.id];
 
   if (existingItem) {
@@ -32,7 +33,7 @@ export function addItemToCart(item) {
       quantity: 1,
     });
   }
-  // isCartOpen.set(true); // Don't auto open
+  return { success: true };
 }
 
 export function removeItemFromCart(itemId) {
@@ -50,7 +51,26 @@ export function removeItemFromCart(itemId) {
   }
 }
 
-export function clearCart() {
-  cartItems.set({});
+export function clearCart(contextType) {
+  if (!contextType) {
+    cartItems.set({});
+    return;
+  }
+
+  const currentItems = cartItems.get();
+  const retainedItems = {};
+  
+  for (const key in currentItems) {
+    const item = currentItems[key];
+    const isCantinaItem = item.type === 'cantina' || (item.id.toString().includes('-') && item.id.toString().length > 10);
+    
+    if (contextType === 'cantina' && !isCantinaItem) {
+      retainedItems[key] = item; // Keep Comedor items
+    } else if (contextType === 'comedor' && isCantinaItem) {
+      retainedItems[key] = item; // Keep Cantina items
+    }
+  }
+  
+  cartItems.set(retainedItems);
 }
 

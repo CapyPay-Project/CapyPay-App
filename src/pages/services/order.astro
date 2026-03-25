@@ -101,7 +101,7 @@ import MainLayout from "../../layouts/MainLayout.astro";
 
   <script>
     // @ts-nocheck
-    import { comedorService } from "../../services/api";
+    import { comedorService, cantinaService } from "../../services/api";
 
     async function loadOrder() {
       const container = document.getElementById("receipt-container");
@@ -120,19 +120,27 @@ import MainLayout from "../../layouts/MainLayout.astro";
       try {
         if (!orderId) throw new Error("ID de orden inválido");
 
-        // Simular un pequeño delay para sensación de proceso si la respuesta es instantánea
+        // Simulate a small process delay
         const minTime = new Promise((resolve) => setTimeout(resolve, 800));
+        
+        // Try Comedor first, if fails try Cantina
+        let orderObj = null;
+        try {
+           const [comedorRes] = await Promise.all([comedorService.getOrder(orderId), minTime]);
+           if (comedorRes && comedorRes.order) orderObj = comedorRes.order;
+        } catch (e) {
+           // If error, ignore and try cantina
+        }
+        
+        if (!orderObj) {
+           const [cantinaRes] = await Promise.all([cantinaService.getOrder(orderId), minTime]);
+           if (cantinaRes && cantinaRes.order) orderObj = cantinaRes.order;
+        }
 
-        const [response] = await Promise.all([
-          comedorService.getOrder(orderId),
-          minTime,
-        ]);
+        if (!orderObj) throw new Error("Orden no encontrada");
 
-        if (!response || !response.order)
-          throw new Error("Orden no encontrada");
-
-        const { order } = response;
-        const items = order.order_items || [];
+        const order = orderObj;
+        const items = order.order_items || order.items || [];
 
         // Build Receipt HTML
         const date = new Date(order.created_at).toLocaleString("es-VE", {
@@ -145,13 +153,13 @@ import MainLayout from "../../layouts/MainLayout.astro";
 
         const itemsHtml = items
           .map((item) => {
-            const price = item.price_at_time || item.price || 0;
+            const price = item.price_at_time_capys || item.price_at_time || item.price || 0;
             return `
                 <div class="flex justify-between items-start text-sm mb-3 pb-3 border-b border-white/5 last:border-0 last:mb-0 last:pb-0">
                     <div class="flex gap-3">
                          <div class="font-bold text-white/40">x${item.quantity}</div>
                          <div class="text-white/90">
-                            ${item.menu_items?.name || "Item Desconocido"}
+                            ${item.menu_items?.name || item.product?.name || "Item Desconocido"}
                          </div>
                     </div>
                     <span class="text-white font-mono font-medium">${(price * item.quantity).toFixed(2)}</span>
@@ -161,12 +169,12 @@ import MainLayout from "../../layouts/MainLayout.astro";
           .join("");
 
         const subtotal = items.reduce((acc, i) => {
-          const price = i.price_at_time || i.price || 0;
+          const price = i.price_at_time_capys || i.price_at_time || i.price || 0;
           return acc + price * i.quantity;
         }, 0);
 
         // Use the SERVER stored total which includes commission
-        const totalPagado = parseFloat(order.total) || subtotal;
+        const totalPagado = parseFloat(order.total_capys) || parseFloat(order.total) || subtotal;
 
         // Calculate commission for display
         const comision = totalPagado - subtotal;
@@ -226,7 +234,7 @@ import MainLayout from "../../layouts/MainLayout.astro";
                     </div>
                      <div class="mt-6 bg-gradient-to-r from-brand-purple/20 to-brand-purple/10 border border-brand-purple/30 p-3 rounded-lg text-center transform hover:scale-[1.02] transition-transform cursor-default">
                         <p class="text-brand-purple-light text-sm font-bold flex items-center justify-center gap-2">
-                            <span>✨</span> +${order.xp_earned || items.length * 15} XP Ganada
+                            <span>✨</span> +${order.xp_earned || order.xp_gained || items.length * 15} XP Ganada
                         </p>
                     </div>
                 </div>

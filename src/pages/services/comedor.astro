@@ -75,10 +75,9 @@ import FloatingActions from "../../components/widgets/comedor/FloatingActions.as
       const cartBadge = document.getElementById("cart-badge-count");
 
       cartItems.subscribe((items) => {
-        const count = Object.values(items).reduce(
-          (acc, item) => acc + item.quantity,
-          0,
-        );
+        const count = Object.values(items)
+          .filter((i: any) => i.type === 'comedor' || !i.type)
+          .reduce((acc, item: any) => acc + item.quantity, 0);
         if (cartBadge) {
           cartBadge.textContent = count.toString();
           if (count > 0) {

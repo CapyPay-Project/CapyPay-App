@@ -436,9 +436,11 @@ function handleCartClick(e) {
         id: btn.dataset.id,
         name: btn.dataset.name,
         price: parseInt(btn.dataset.price || "0"),
-        image: btn.dataset.image
+        image: btn.dataset.image,
+        type: 'comedor'
     };
     addItemToCart(item);
+
     isCartOpen.set(true);
     showToast(`¡${item.name} agregado! 🍔`, "success");
 }
@@ -469,30 +471,50 @@ function startTipRotation() {
 // --- HELPER HTML GENERATORS (Moved from Astro file) ---
 
 function getCarouselCardHTML(item) {
+    const isOutOfStock = !item.is_available;
+    const stockOverlay = isOutOfStock ? `
+      <div class="absolute inset-0 bg-black/60 backdrop-blur-[2px] z-10 flex flex-col items-center justify-center">
+        <span class="text-red-500 font-black text-[10px] md:text-xs border-2 border-red-500 px-3 py-1 rounded-full uppercase tracking-widest bg-red-500/10 shadow-[0_0_15px_rgba(239,68,68,0.3)] transform -rotate-12">
+          Sin Stock
+        </span>
+      </div>
+    ` : '';
+
     return `
-      <div class="flex-none w-[80vw] sm:w-72 md:w-[calc(25%-1.125rem)] bg-white/5 border border-white/5 rounded-2xl md:rounded-3xl p-3 md:p-4 group transition-all hover:bg-white/8 snap-center hover:-translate-y-2 duration-500 ease-out flex flex-col text-center">
-        <div class="relative h-32 md:h-48 rounded-xl md:rounded-2xl overflow-hidden mb-2 md:mb-3 shadow-lg shrink-0">
-          <img alt="${item.name}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" src="${item.image_url || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c'}" />
-          <div class="absolute top-2 right-2 bg-black/60 backdrop-blur-md px-1.5 py-0.5 rounded-full border border-white/10">
+      <div class="flex-none w-[80vw] sm:w-72 md:w-[calc(25%-1.125rem)] bg-white/5 border border-white/5 rounded-2xl md:rounded-3xl p-3 md:p-4 group transition-all ${isOutOfStock ? 'opacity-70 grayscale-[0.5]' : 'hover:bg-white/8 hover:-translate-y-2'} snap-center duration-500 ease-out flex flex-col text-center">
+        <div class="relative h-32 md:h-48 rounded-xl md:rounded-2xl overflow-hidden mb-2 md:mb-3 shadow-lg shrink-0 ${isOutOfStock ? 'scale-[0.98]' : ''}">
+          ${stockOverlay}
+          <img alt="${item.name}" class="w-full h-full object-cover ${isOutOfStock ? '' : 'group-hover:scale-110'} transition-transform duration-700" src="${item.image_url || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c'}" />
+          <div class="absolute top-2 right-2 bg-black/60 backdrop-blur-md px-1.5 py-0.5 rounded-full border border-white/10 z-20">
             <span class="text-brand-lime font-black text-[9px] md:text-[10px]">${item.price} B</span>
           </div>
         </div>
-        <h4 class="font-bold text-xs md:text-base text-white leading-tight mb-1 truncate px-1">${item.name}</h4>
+        <h4 class="font-bold text-xs md:text-base text-white leading-tight mb-1 truncate px-1 ${isOutOfStock ? 'text-white/60' : ''}">${item.name}</h4>
         <div class="grow mb-2 md:mb-3 w-full">
             <p class="text-white/50 text-[9px] md:text-[10px] line-clamp-2 leading-tight px-1">${item.description}</p>
         </div>
-        <button class="add-to-cart-btn w-full py-1.5 md:py-2.5 rounded-lg md:rounded-xl border border-brand-lime/30 text-brand-lime font-bold text-[9px] md:text-[10px] uppercase hover:bg-brand-lime hover:text-black transition-all mt-auto flex items-center justify-center gap-1"
-          data-id="${item.id}" data-name="${item.name}" data-price="${item.price}" data-image="${item.image_url}">
-          <span>Agregar</span>
+        <button class="${isOutOfStock ? 'w-full py-1.5 md:py-2.5 rounded-lg md:rounded-xl border border-white/10 text-white/30 font-bold text-[9px] md:text-[10px] uppercase bg-white/5 cursor-not-allowed mt-auto flex items-center justify-center cursor-not-allowed' : 'add-to-cart-btn w-full py-1.5 md:py-2.5 rounded-lg md:rounded-xl border border-brand-lime/30 text-brand-lime font-bold text-[9px] md:text-[10px] uppercase hover:bg-brand-lime hover:text-black transition-all mt-auto flex items-center justify-center cursor-pointer'}"
+          data-id="${item.id}" data-name="${item.name}" data-price="${item.price}" data-image="${item.image_url}" ${isOutOfStock ? 'disabled' : ''}>
+          <span>${isOutOfStock ? 'AGOTADO' : 'AGREGAR'}</span>
         </button>
       </div>
     `;
 }
 
 function constructPlatoDiaHTML(container, item) {
+    const isOutOfStock = !item.is_available;
+    const stockOverlay = isOutOfStock ? `
+      <div class="absolute inset-0 bg-black/60 backdrop-blur-[2px] z-30 flex flex-col items-center justify-center">
+        <span class="text-red-500 font-black text-2xl border-4 border-red-500 px-6 py-2 rounded-full uppercase tracking-widest bg-red-500/10 shadow-[0_0_30px_rgba(239,68,68,0.3)] transform -rotate-12">
+          Sin Stock
+        </span>
+      </div>
+    ` : '';
+
     container.innerHTML = `
-    <div class="grid h-min w-full overflow-hidden rounded-3xl border border-white/10 bg-[#1c2210] shadow-2xl" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+    <div class="grid h-min w-full overflow-hidden rounded-3xl border border-white/10 bg-[#1c2210] shadow-2xl ${isOutOfStock ? 'opacity-80 grayscale-[0.3]' : ''}" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
             <div class="relative h-64 sm:h-auto min-h-70 w-full">
+                ${stockOverlay}
                 <div class="absolute inset-0 bg-linear-to-t md:bg-linear-to-r from-[#0a0a0a] via-transparent to-transparent z-10 opacity-70"></div>
                 <img alt="${item.name}" class="absolute inset-0 w-full h-full object-cover" style="width:100%; height:100%;" src="${item.image_url || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c"}" />
                 <div class="absolute top-4 left-4 z-20">
@@ -503,18 +525,18 @@ function constructPlatoDiaHTML(container, item) {
                 </div>
             </div>
             
-            <div class="p-6 md:p-8 flex flex-col justify-center bg-[#1c2210] w-full box-border">
-              <h3 class="text-2xl md:text-3xl font-extrabold mb-3 leading-tight text-white line-clamp-2">${item.name}</h3>
+            <div class="p-6 md:p-8 flex flex-col justify-center bg-[#1c2210] w-full box-border relative z-20">
+              <h3 class="text-2xl md:text-3xl font-extrabold mb-3 leading-tight text-white line-clamp-2 ${isOutOfStock ? 'text-white/60' : ''}">${item.name}</h3>
               <p class="text-white/70 text-sm md:text-base mb-6 font-medium line-clamp-3 leading-relaxed">${item.description}</p>
               
               <div class="flex items-center justify-between mt-auto gap-4 pt-4 border-t border-white/5">
                    <div class="flex flex-col">
                     <span class="text-[10px] text-white/40 font-bold uppercase tracking-wider">PRECIO</span>
-                    <p class="text-3xl font-black text-brand-lime whitespace-nowrap">${parseFloat(item.price) === 0 ? "GRATIS" : item.price + " BARAS"}</p>
+                    <p class="text-3xl font-black text-brand-lime whitespace-nowrap ${isOutOfStock ? 'opacity-50' : ''}">${parseFloat(item.price) === 0 ? "GRATIS" : item.price + " BARAS"}</p>
                    </div>
-                  <button class="add-to-cart-btn bg-white text-black hover:bg-brand-lime font-black px-6 py-3 rounded-xl shadow-lg flex items-center justify-center gap-2 text-xs uppercase tracking-widest hover:scale-105 active:scale-95 transition-all"
-                  data-id="${item.id}" data-name="${item.name}" data-price="${item.price}" data-image="${item.image_url}">
-                    <span>AÑADIR</span>
+                  <button class="${isOutOfStock ? 'w-full md:w-auto bg-white/5 border border-white/10 text-white/30 font-black px-6 py-3 rounded-xl shadow-lg flex items-center justify-center gap-2 text-xs uppercase tracking-widest cursor-not-allowed' : 'add-to-cart-btn bg-white text-black hover:bg-brand-lime font-black px-6 py-3 rounded-xl shadow-lg flex items-center justify-center gap-2 text-xs uppercase tracking-widest hover:scale-105 active:scale-95 transition-all cursor-pointer'}"
+                  data-id="${item.id}" data-name="${item.name}" data-price="${item.price}" data-image="${item.image_url}" ${isOutOfStock ? 'disabled' : ''}>
+                    <span>${isOutOfStock ? 'AGOTADO' : 'AÑADIR'}</span>
                   </button>
               </div>
             </div>
@@ -523,20 +545,30 @@ function constructPlatoDiaHTML(container, item) {
 }
 
 function constructPopularSlideHTML(slide, item, idx) {
-    slide.className = `absolute inset-0 w-full h-full transition-all duration-700 ease-in-out flex flex-col md:flex-row bg-[#1c2210] ${idx === 0 ? "opacity-100 translate-x-0 z-10 pointer-events-auto" : "opacity-0 translate-x-full z-0 pointer-events-none"}`;
+    const isOutOfStock = !item.is_available;
+    const stockOverlay = isOutOfStock ? `
+      <div class="absolute inset-0 bg-black/60 backdrop-blur-[2px] z-30 flex flex-col items-center justify-center">
+        <span class="text-red-500 font-black text-xl md:text-2xl border-4 border-red-500 px-6 py-2 rounded-full uppercase tracking-widest bg-red-500/10 shadow-[0_0_30px_rgba(239,68,68,0.3)] transform -rotate-12">
+          Sin Stock
+        </span>
+      </div>
+    ` : '';
+    
+    slide.className = `absolute inset-0 w-full h-full transition-all duration-700 ease-in-out flex flex-col md:flex-row bg-[#1c2210] ${idx === 0 ? "opacity-100 translate-x-0 z-10 pointer-events-auto" : "opacity-0 translate-x-full z-0 pointer-events-none"} ${isOutOfStock ? 'grayscale-[0.3]' : ''}`;
     slide.innerHTML = `
         <div class="relative w-full md:w-1/2 h-1/2 md:h-full overflow-hidden">
+            ${stockOverlay}
             <div class="absolute inset-0 bg-linear-to-t md:bg-linear-to-r from-[#0a0a0a] via-transparent to-transparent z-10 opacity-60"></div>
-             <img src="${item.image_url || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c"}" class="w-full h-full object-cover transform hover:scale-105 transition-transform duration-1000" alt="${item.name}">
+             <img src="${item.image_url || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c"}" class="w-full h-full object-cover ${isOutOfStock ? '' : 'transform hover:scale-105'} transition-transform duration-1000" alt="${item.name}">
         </div>
         <div class="w-full md:w-1/2 h-1/2 md:h-full p-6 md:p-10 flex flex-col justify-center relative">
-            <h3 class="text-2xl md:text-3xl font-black text-white mb-2 leading-tight line-clamp-2">${item.name}</h3>
+            <h3 class="text-2xl md:text-3xl font-black text-white mb-2 leading-tight line-clamp-2 ${isOutOfStock ? 'text-white/60' : ''}">${item.name}</h3>
             <p class="text-white/60 text-xs md:text-sm font-medium mb-6 line-clamp-3 leading-relaxed">${item.description || ""}</p>
             <div class="mt-auto flex items-center gap-4 relative z-20">
-                <span class="text-2xl font-bold text-white">${item.price} B</span>
-                <button class="pop-add-btn bg-white text-black hover:bg-orange-500 hover:text-white transition-colors duration-300 font-bold uppercase tracking-widest text-[10px] md:text-xs px-6 py-3 rounded-xl shadow-lg flex-1 md:flex-none flex items-center justify-center gap-2 group cursor-pointer" 
-                  data-id="${item.id}" data-name="${item.name}" data-price="${item.price}" data-image="${item.image_url || ""}">
-                    PEDIR
+                <span class="text-2xl font-bold text-white ${isOutOfStock ? 'opacity-50' : ''}">${item.price} B</span>
+                <button class="${isOutOfStock ? 'w-full md:w-auto bg-white/5 border border-white/10 text-white/30 font-bold uppercase tracking-widest text-[10px] md:text-xs px-6 py-3 rounded-xl shadow-lg flex items-center justify-center gap-2 cursor-not-allowed' : 'pop-add-btn bg-white text-black hover:bg-orange-500 hover:text-white transition-colors duration-300 font-bold uppercase tracking-widest text-[10px] md:text-xs px-6 py-3 rounded-xl shadow-lg flex-1 md:flex-none flex items-center justify-center gap-2 group cursor-pointer'}" 
+                  data-id="${item.id}" data-name="${item.name}" data-price="${item.price}" data-image="${item.image_url || ""}" ${isOutOfStock ? 'disabled' : ''}>
+                    ${isOutOfStock ? 'AGOTADO' : 'PEDIR'}
                 </button>
             </div>
         </div>

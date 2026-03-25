@@ -298,3 +298,34 @@ export const pinService = {
     });
   }
 };
+
+export const cantinaService = {
+  // Backend route: GET /api/cantinas/order/:id
+  getOrder: (orderId) => fetchAPI(`/cantinas/order/${orderId}`),
+
+  // Backend route: GET /api/cantinas/faculties
+  getAreas: () => fetchAPI('/cantinas/faculties'),
+  
+  // Backend route: GET /api/cantinas
+  getCantinas: () => fetchAPI('/cantinas'),
+  
+  purchaseProducts: (userId, cantinaId, products, totalBs, totalCapys, totalXp) => {
+    // Backend expects items as [{ product_id, quantity }]
+    const formattedItems = products.map(p => ({
+      product_id: p.product_id || p.id,
+      quantity: p.quantity || 1
+    }));
+    
+    return fetchAPI('/cantinas/order', {
+      method: 'POST',
+      body: JSON.stringify({
+        user_id: userId,
+        cantina_id: cantinaId,
+        items: formattedItems, 
+        total_bs: totalBs,
+        total_capys: totalCapys,
+        total_xp: totalXp
+      })
+    });
+  }
+};

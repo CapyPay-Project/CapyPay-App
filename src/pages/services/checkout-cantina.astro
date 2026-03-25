@@ -6,10 +6,10 @@ import { cartItems, clearCart } from "../../store/cartStore";
 // But we are using it inside <script> tag.
 ---
 
-<MainLayout title="Resumen de Pago | CapyPay" showSidebar={true}>
+<MainLayout title="Pago de Cantina | CapyPay" showSidebar={true}>
   <div class="max-w-2xl mx-auto p-4 md:p-8">
     <a
-      href="/services/comedor"
+      href="javascript:history.back()"
       class="inline-flex items-center gap-2 text-white/50 hover:text-white mb-6"
     >
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
@@ -123,7 +123,7 @@ import { cartItems, clearCart } from "../../store/cartStore";
   <script>
     // @ts-nocheck
     import { cartItems, clearCart } from "../../store/cartStore";
-    import { authService, comedorService, fetchAPI } from "../../services/api";
+    import { authService, cantinaService, fetchAPI } from "../../services/api";
     import { showToast } from "../../utils/toast";
 
     function initCheckoutLogic() {
@@ -138,97 +138,15 @@ import { cartItems, clearCart } from "../../store/cartStore";
       // 1. Logic for Price Sync & Rendering
       async function initCheckout() {
         let items = cartItems.get();
-        let itemsArray = Object.values(items).filter(i => i.type === 'comedor' || !i.type);
+        let itemsArray = Object.values(items).filter(i => i.type === 'cantina' || (i.id.toString().includes('-') && i.id.toString().length > 10));
 
         if (itemsArray.length === 0) {
           // If cart is empty, go back to previous page or a default
-          window.location.href = "/services/comedor";
+          window.location.href = "/services/cantina";
           return;
         }
 
-        // --- PRICE SYNC START ---
-        try {
-          const CACHE_KEY = "capypay_menu_cache_v3";
-          // 7 Days validation (Matches Comedor)
-          const CACHE_DURATION = 7 * 24 * 60 * 60 * 1000;
-          let menuData = null;
-
-          // 1. Try Cache
-          const cached = localStorage.getItem(CACHE_KEY);
-          if (cached) {
-            const parsed = JSON.parse(cached);
-            if (Date.now() - parsed.timestamp < CACHE_DURATION) {
-              menuData = parsed.data;
-              console.log("Checkout: Using cached prices");
-            }
-          }
-
-          // 2. Refresh Cache if needed (Once a week or initial load)
-          if (!menuData) {
-            console.log("Checkout: Refreshing prices from API...");
-            menuData = await fetchAPI("/comedor/menu");
-            if (menuData) {
-              localStorage.setItem(
-                CACHE_KEY,
-                JSON.stringify({
-                  timestamp: Date.now(),
-                  data: menuData,
-                }),
-              );
-            }
-          }
-
-          // 3. Update Cart Prices
-          if (menuData) {
-            const priceMap = new Map();
-            // Flatten all possible sources
-            if (menuData.platoDia)
-              priceMap.set(
-                String(menuData.platoDia.id),
-                parseFloat(menuData.platoDia.price),
-              );
-            if (menuData.popularItems)
-              menuData.popularItems.forEach((i) =>
-                priceMap.set(String(i.id), parseFloat(i.price)),
-              );
-            if (menuData.items)
-              menuData.items.forEach((i) =>
-                priceMap.set(String(i.id), parseFloat(i.price)),
-              );
-
-            let pricesUpdated = false;
-
-            itemsArray.forEach((item) => {
-              const freshPrice = priceMap.get(String(item.id));
-              // Only update if fresh price exists and is different
-              // If fresh price is missing (e.g. item removed from menu), we keep old price or warn?
-              // For now, keep old price to avoid breaking UI, user will get error on buy if actually invalid.
-              if (
-                freshPrice !== undefined &&
-                freshPrice !== parseFloat(item.price)
-              ) {
-                console.warn(
-                  `Updating price for ${item.name}: ${item.price} -> ${freshPrice}`,
-                );
-                item.price = freshPrice;
-                pricesUpdated = true;
-                // Persist to store logic
-                cartItems.setKey(item.id, { ...item, price: freshPrice });
-              }
-            });
-
-            if (pricesUpdated) {
-              items = cartItems.get(); // Refresh local reference
-              itemsArray = Object.values(items);
-              showToast("⚠️ Precios actualizados al valor actual", "info");
-            }
-          }
-        } catch (e) {
-          console.error("Price Sync Error:", e);
-          // Fail gracefully, use existing cart prices
-        }
-        // --- PRICE SYNC END ---
-
+        // We skip strict price sync here for simplicity and rely on the Backend to validate prices during checkout.
         renderItems(itemsArray);
       }
 
@@ -292,8 +210,15 @@ import { cartItems, clearCart } from "../../store/cartStore";
           if (!userId)
             throw new Error("ID de usuario no encontrado en sesión local");
 
+          // Filtrar unicamente items de cantina
+          const validItems = currentItems.filter(i => i.type === 'cantina' || (i.id.toString().includes('-') && i.id.toString().length > 10));
+
+          if (validItems.length === 0) {
+            throw new Error("No hay productos válidos de cantina en tu carrito.");
+          }
+
           // CALCULAR TOTAL LOCALMENTE PARA VALIDACIÓN PREVIA
-          const totalLocal = currentItems.reduce(
+          const totalLocal = validItems.reduce(
             (acc, item) => acc + parseFloat(item.price) * item.quantity,
             0,
           );
@@ -313,21 +238,40 @@ import { cartItems, clearCart } from "../../store/cartStore";
           // Since our current cart implementation doesn't store 'type', we'll check if the item has `priceCapys` (Cantina) or relies purely on `price`.
           // For a robust solution, we assume if ANY item is from a Cantina (we can check by checking the API error or by adding a flag).
           // Let's add a heuristic: Cantina items have UUIDs as IDs, Comedor items usually have INTEGER IDs.
-          const validItems = currentItems.filter(i => i.type === 'comedor' || !i.type);
-          const orderItems = validItems.map((item) => ({
-            id: item.id,
-            quantity: item.quantity,
-            price: item.price
+          // Temp workaround: Find cantina_id by scanning products
+          const productId = validItems[0].id;
+          const tempCantinaReq = await fetchAPI(`/cantinas`);
+          let cantinaId = null;
+          if (tempCantinaReq && tempCantinaReq.cantinas) {
+             tempCantinaReq.cantinas.forEach(c => {
+               const pMatch = c.products.find(p => String(p.id) === String(productId));
+               if (pMatch) cantinaId = c.id;
+             });
+          }
+
+          if (!cantinaId) throw new Error("No se pudo identificar a qué cantina pertenece el producto.");
+
+          // 4. Transformar items al formato del backend
+          const cantinaItems = validItems.map(item => ({
+            product_id: item.id,
+            quantity: item.quantity
           }));
 
-          const response = await comedorService.createOrder(userId, orderItems);
+          const response = await cantinaService.purchaseProducts(
+            userId, 
+            cantinaId, 
+            cantinaItems, 
+            totalLocal, // total_bs (dummy values if we only use capys)
+            grandTotal, // total_capys
+            Math.ceil(grandTotal * 0.1) // total_xp
+          );
 
-          if (!response) throw new Error("Error al crear la orden");
+          if (!response) throw new Error("Error al crear la orden de cantina");
 
           showToast(response.message || "¡Pago realizado con éxito!", "success");
 
           // Clear cart
-          clearCart("comedor");
+          clearCart("cantina");
 
           // Redirect to Receipt page
           // response usually contains { message, orderId, newBalance, xpGained }

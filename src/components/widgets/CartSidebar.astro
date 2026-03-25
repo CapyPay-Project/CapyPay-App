@@ -101,23 +101,15 @@
     addItemToCart,
   } from "../../store/cartStore";
 
-  const sidebar = document.getElementById("cart-sidebar");
-  const overlay = document.getElementById("cart-overlay");
-  const closeBtn = document.getElementById("close-cart-btn");
-  const itemsContainer = document.getElementById("cart-items-container");
-  const totalEl = document.getElementById("cart-total");
-  const checkoutBtn = document.getElementById(
-    "checkout-btn",
-  ) as HTMLButtonElement | null;
+  function initCartSidebar() {
+    const sidebar = document.getElementById("cart-sidebar");
+    const overlay = document.getElementById("cart-overlay");
+    const closeBtn = document.getElementById("close-cart-btn");
+    const itemsContainer = document.getElementById("cart-items-container");
+    const totalEl = document.getElementById("cart-total");
+    const checkoutBtn = document.getElementById("checkout-btn") as HTMLButtonElement | null;
 
-  if (
-    sidebar &&
-    overlay &&
-    closeBtn &&
-    itemsContainer &&
-    totalEl &&
-    checkoutBtn
-  ) {
+    if (!sidebar || !overlay || !closeBtn || !itemsContainer || !totalEl || !checkoutBtn) return;
     // Toggle Sidebar visibility
     isCartOpen.subscribe((isOpen) => {
       if (isOpen) {
@@ -135,6 +127,12 @@
     closeBtn.addEventListener("click", () => isCartOpen.set(false));
     // overlay.addEventListener("click", () => isCartOpen.set(false));
 
+    // Listen to floating manual cart button (if exists on page)
+    const localManualBtn = document.getElementById("manual-cart-btn");
+    if (localManualBtn) {
+      localManualBtn.addEventListener("click", () => isCartOpen.set(true));
+    }
+
     // Render items cart
     cartItems.subscribe((items) => {
       // Define types manually since we are in a script tag without full project context sometimes
@@ -144,9 +142,17 @@
         price: number;
         image: string;
         quantity: number;
+        type?: string;
       };
 
-      const itemsArray = Object.values(items) as CartItem[];
+      const allItemsArray = Object.values(items) as CartItem[];
+      
+      const isCantinaContext = window.location.pathname.includes('cantina');
+      
+      const itemsArray = allItemsArray.filter(i => {
+          if (isCantinaContext) return i.type === 'cantina' || (i.id.toString().includes('-') && i.id.toString().length > 10);
+          return i.type === 'comedor' || !i.type; // Fallback for old items
+      });
 
       if (itemsArray.length === 0) {
         itemsContainer.innerHTML = `
@@ -208,7 +214,19 @@
 
     // Checkout Logic
     checkoutBtn.addEventListener("click", () => {
-      window.location.href = "/services/checkout";
+      if (window.location.pathname.includes('cantina')) {
+        window.location.href = "/services/checkout-cantina";
+      } else {
+        window.location.href = "/services/checkout";
+      }
     });
+  }
+
+  // Initialize Page Logic
+  document.addEventListener("astro:page-load", initCartSidebar);
+
+  // Fallback for non-ViewTransitions
+  if (document.readyState === "complete" || document.readyState === "interactive") {
+    initCartSidebar();
   }
 </script>
