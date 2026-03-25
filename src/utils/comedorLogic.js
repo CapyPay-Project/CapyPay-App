@@ -18,8 +18,8 @@ let allCarouselItems = [];
 let orderCheckErrorShown = false;
 
 // Constants
-const CACHE_KEY = "capypay_menu_cache_v3";
-const CACHE_DURATION = 7 * 24 * 60 * 60 * 1000;
+const CACHE_KEY = "capypay_menu_cache_v5";
+const CACHE_DURATION = 1 * 60 * 1000; // 1 minute
 const TIPS = [
   "¡Agrega una malta bien fría para completar tu experiencia!",
   "La hora pico es a las 12:30 PM, ¡llega antes!",
@@ -470,7 +470,7 @@ function startTipRotation() {
 // --- HELPER HTML GENERATORS (Moved from Astro file) ---
 
 function getCarouselCardHTML(item) {
-    const isOutOfStock = !item.is_available;
+    const isOutOfStock = item.is_available === false || (item.stock !== undefined && item.stock !== null && item.stock <= 0);
     const stockOverlay = isOutOfStock ? `
       <div class="absolute inset-0 bg-black/60 backdrop-blur-[2px] z-10 flex flex-col items-center justify-center">
         <span class="text-red-500 font-black text-[10px] md:text-xs border-2 border-red-500 px-3 py-1 rounded-full uppercase tracking-widest bg-red-500/10 shadow-[0_0_15px_rgba(239,68,68,0.3)] transform -rotate-12">
@@ -501,7 +501,7 @@ function getCarouselCardHTML(item) {
 }
 
 function constructPlatoDiaHTML(container, item) {
-    const isOutOfStock = !item.is_available;
+    const isOutOfStock = item.is_available === false || (item.stock !== undefined && item.stock !== null && item.stock <= 0);
     const stockOverlay = isOutOfStock ? `
       <div class="absolute inset-0 bg-black/60 backdrop-blur-[2px] z-30 flex flex-col items-center justify-center">
         <span class="text-red-500 font-black text-2xl border-4 border-red-500 px-6 py-2 rounded-full uppercase tracking-widest bg-red-500/10 shadow-[0_0_30px_rgba(239,68,68,0.3)] transform -rotate-12">
@@ -544,7 +544,7 @@ function constructPlatoDiaHTML(container, item) {
 }
 
 function constructPopularSlideHTML(slide, item, idx) {
-    const isOutOfStock = !item.is_available;
+    const isOutOfStock = item.is_available === false || (item.stock !== undefined && item.stock !== null && item.stock <= 0);
     const stockOverlay = isOutOfStock ? `
       <div class="absolute inset-0 bg-black/60 backdrop-blur-[2px] z-30 flex flex-col items-center justify-center">
         <span class="text-red-500 font-black text-xl md:text-2xl border-4 border-red-500 px-6 py-2 rounded-full uppercase tracking-widest bg-red-500/10 shadow-[0_0_30px_rgba(239,68,68,0.3)] transform -rotate-12">
