@@ -215,9 +215,9 @@ function updateStatsUI(stats) {
   updateText("ocupacion-text", stats.ocupacion.count || "--");
   updateText("ocupacion-status", stats.ocupacion.nivel);
   updateText("ocupacion-detail", stats.ocupacion.detalle);
-  
+
   const bar = document.getElementById("ocupacion-bar");
-  if(bar) bar.style.width = `${stats.ocupacion.porcentaje}%`;
+  if(bar) { bar.style.width = '100%'; bar.style.transform = `scaleX(${stats.ocupacion.porcentaje / 100})`; }
 
   // Colors
   const nivel = stats.ocupacion.nivel;
@@ -238,7 +238,7 @@ function updateStatsUI(stats) {
   const statusEl = document.getElementById("ocupacion-status");
   if(statusEl) statusEl.className = statusEl.className.replace(/text-\S+/, `text-${colorClass.replace("bg-", "")}`);
 
-  if(bar) bar.className = `h-full transition-all duration-1000 ${colorClass}`;
+  if(bar) bar.className = `h-full w-full origin-left transition-transform duration-1000 ${colorClass}`;
 
   // Time Widget
   updateText("espera-text", stats.tiempoEspera);
@@ -293,25 +293,24 @@ function renderMenuCarousel(items) {
       scrollContainer.appendChild(card.firstElementChild);
   });
 
-  attachCartListeners(scrollContainer);
-  
   // Clone for infinite scroll if necessary
   if(items.length >= 3) {
       items.forEach(item => {
         const card = document.createElement("div");
         card.innerHTML = getCarouselCardHTML(item);
         scrollContainer.appendChild(card.firstElementChild);
-        attachCartListeners(card); // Re-attach listener for cloned items
       });
       // Clone set 2
       items.forEach(item => {
         const card = document.createElement("div");
         card.innerHTML = getCarouselCardHTML(item);
         scrollContainer.appendChild(card.firstElementChild);
-        attachCartListeners(card); // Re-attach listener for cloned items
       });
       initCarouselLogic(items.length); // Infinite scroll helper
   }
+
+  // Attach listeners to everything (originals + clones) all at once
+  attachCartListeners(scrollContainer);
 }
 
 function renderPopularRotator(items) {
@@ -639,23 +638,40 @@ function initRotatorLogic(container, indicators, count) {
     let currentIndex = 0;
     const slides = container.children;
     const dots = indicators ? indicators.children : [];
-    
+    let intervalId;
+
     const update = () => {
         for(let i=0; i<count; i++) {
              if (i === currentIndex) {
               slides[i].classList.remove("opacity-0", "translate-x-full", "pointer-events-none");
               slides[i].classList.add("opacity-100", "translate-x-0", "z-10", "pointer-events-auto");
-              if(dots[i]) dots[i].className = "h-1.5 rounded-full transition-all duration-300 bg-orange-500 w-6";
+              if(dots[i]) dots[i].className = "h-1.5 rounded-full transition-all duration-300 bg-orange-500 w-6 cursor-pointer";
              } else {
                  slides[i].classList.add("opacity-0", "translate-x-full", "z-0", "pointer-events-none");
-                 slides[i].classList.remove("opacity-100", "translate-x-0");
-                 if(dots[i]) dots[i].className = "h-1.5 rounded-full transition-all duration-300 bg-white/20 w-1.5";
+                 slides[i].classList.remove("opacity-100", "translate-x-0");    
+                 if(dots[i]) dots[i].className = "h-1.5 rounded-full transition-all duration-300 bg-white/20 w-1.5 cursor-pointer";
              }
         }
     };
-    
-    setInterval(() => {
-        currentIndex = (currentIndex + 1) % count;
-        update();
-    }, 5000);
+
+    const startTimer = () => {
+        clearInterval(intervalId);
+        intervalId = setInterval(() => {
+            currentIndex = (currentIndex + 1) % count;
+            update();
+        }, 5000);
+    };
+
+    if (indicators) {
+        Array.from(dots).forEach((dot, index) => {
+            dot.addEventListener("click", () => {
+                currentIndex = index;
+                update();
+                startTimer(); // Reset auto rotation
+            });
+        });
+    }
+
+    update();
+    startTimer();
 }

@@ -403,7 +403,7 @@ const currentPath = Astro.url.pathname;
     floatingContent.innerHTML = `
         <div class="px-3 py-2 border-b border-white/5 mb-1">
             <p class="text-xs font-bold text-white">${name}</p>
-            <p class="text-[10px] text-slate-500">${cedula}</p>
+            <p class="text-[11px] text-slate-500">${cedula}</p>
         </div>
         <button onclick="window.handleQuickTransfer('${cedula}')" class="w-full text-left px-3 py-2 text-xs font-medium text-white hover:bg-brand-lime hover:text-black rounded-lg transition-colors flex items-center gap-2">
             <span>⚡</span> Transferencia Rápida
@@ -518,7 +518,7 @@ const currentPath = Astro.url.pathname;
           let html = "";
           contactos.slice(0, 5).forEach((c) => {
             const star = c.is_favorite
-              ? '<span class="text-brand-lime text-[10px] ml-1">★</span>'
+              ? '<span class="text-brand-lime text-[11px] ml-1">★</span>'
               : "";
 
             html += `
