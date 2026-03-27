@@ -23,26 +23,21 @@ const {
 const Element = href ? "a" : "button";
 
 const baseStyles =
-  "inline-flex items-center justify-center font-bold rounded-xl transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none cursor-pointer border";
+  "inline-flex items-center justify-center font-black uppercase tracking-widest transition-all active:translate-y-0 disabled:opacity-50 disabled:pointer-events-none cursor-pointer border-4 border-black hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]";
 
 const variants: Record<string, string> = {
-  primary:
-    "bg-brand-lime hover:bg-[#c1e63e] text-black shadow-[0_0_15px_rgba(215,253,73,0.3)] hover:shadow-[0_0_25px_rgba(215,253,73,0.5)] border-transparent",
-  secondary: "bg-transparent border-white/20 text-white hover:bg-white/10",
-  ghost: "bg-transparent border-transparent text-slate-400 hover:text-white",
-  icon: "rounded-full flex items-center justify-center border-transparent hover:bg-white/10 text-slate-400 hover:text-white transition-colors",
+  primary: "bg-[#d7fd48] text-black",
+  secondary: "bg-white text-black",
+  ghost: "bg-transparent border-transparent text-black hover:bg-black hover:text-white",
+  icon: "bg-white text-black flex items-center justify-center aspect-square",
 };
 
 const sizes: Record<string, string> = {
-  sm: "text-xs py-1.5 px-3 gap-1",
-  md: "text-sm sm:text-base py-2.5 sm:py-3 px-4 gap-2",
-  lg: "text-base sm:text-lg py-3 sm:py-4 px-6 gap-3",
-  icon: "p-2 sm:p-2.5", // Special size for icon variant
+  sm: "text-xs py-2 px-4 gap-2",
+  md: "text-sm sm:text-base py-3 px-6 gap-3",
+  lg: "text-base sm:text-lg py-4 px-8 gap-4",
+  icon: "p-2 min-w-10 min-h-10",
 };
-
-// If variant is icon, force size to icon if no specific size is passed, or handle it in logic
-// Actually, user said 'icon' is a variant.
-// Let's adjust logic. typical buttons have x/y padding. icon buttons have equal padding.
 
 const sizeClasses = variant === "icon" ? sizes.icon : sizes[size];
 const variantClasses = variants[variant] || variants.primary;
@@ -59,3 +54,4 @@ const finalClass = `${baseStyles} ${variantClasses} ${sizeClasses} ${className}`
 >
   <slot />
 </Element>
+

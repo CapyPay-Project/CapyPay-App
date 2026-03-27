@@ -12,7 +12,7 @@
 
 <div
   id="widget-b-container"
-  class="glass-card flex flex-col justify-between h-48 col-span-1 border border-white/5 hover:border-brand-purple/40 transition duration-500 relative overflow-hidden rounded-4xl"
+  class="glass-card flex flex-col justify-between h-48 col-span-1 border-4 border-black hover:border-brand-purple/40 transition duration-500 relative overflow-hidden -4xl"
 >
   <!-- View: Browsing (Default Time) -->
   <div
@@ -20,7 +20,7 @@
     class="flex flex-col h-full p-5 relative z-10 box-border"
   >
     <div class="flex items-center gap-2">
-      <div class="p-1 rounded bg-blue-500/10 text-blue-400">
+      <div class="p-1  bg-blue-500/10 text-blue-400">
         <svg
           class="w-3.5 h-3.5"
           fill="none"
@@ -53,7 +53,7 @@
     </div>
 
     <div
-      class="mt-auto bg-blue-900/10 rounded-xl p-2.5 border border-blue-500/10 flex items-center justify-between group cursor-default hover:bg-blue-900/20 transition-colors"
+      class="mt-auto bg-blue-900/10 -xl p-2.5 border border-blue-500/10 flex items-center justify-between group cursor-default hover:bg-blue-900/20 transition-colors"
     >
       <div class="flex flex-col">
         <span class="text-[8px] text-blue-300 font-bold uppercase"
@@ -64,7 +64,7 @@
         >
       </div>
       <div
-        class="h-8 w-8 rounded-full bg-blue-500/10 flex items-center justify-center border border-blue-400/20"
+        class="h-8 w-8 -full bg-blue-500/10 flex items-center justify-center border border-blue-400/20"
       >
         <svg
           class="w-4 h-4 text-blue-400"
@@ -101,7 +101,7 @@
         </h3>
       </div>
       <span
-        class="text-[8px] font-black text-black bg-brand-white px-2 py-1 rounded-md animate-pulse"
+        class="text-[8px] font-black text-black bg-brand-white px-2 py-1  animate-pulse"
         >ACTIVO</span
       >
     </div>
@@ -114,7 +114,7 @@
 
     <div
       id="btn-confirm-presence"
-      class="mt-auto cursor-pointer relative overflow-hidden group bg-brand-purple hover:bg-white text-white hover:text-brand-purple rounded-xl p-3 flex items-center justify-center gap-3 transition duration-300 shadow-lg shadow-brand-purple/20 active:scale-95"
+      class="mt-auto cursor-pointer relative overflow-hidden group bg-brand-purple hover:bg-white text-white hover:text-brand-purple -xl p-3 flex items-center justify-center gap-3 transition duration-300 shadow-lg shadow-brand-purple/20 active:scale-95"
     >
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
         ><path
@@ -151,22 +151,22 @@
         >
         <div
           id="proximity-glow"
-          class="hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-40 bg-brand-lime/20 rounded-full blur-2xl animate-pulse"
+          class="hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-40 bg-brand-lime/20 -full blur-2xl animate-pulse"
         >
         </div>
         <div
           id="normal-glow"
-          class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-white/5 rounded-full blur-xl"
+          class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-white border-2 border-black -full blur-xl"
         >
         </div>
       </div>
 
       <div
         id="progress-container"
-        class="w-full bg-white/10 h-1.5 rounded-full overflow-hidden max-w-30 mx-auto transition-opacity duration-300"
+        class="w-full bg-white border-2 border-black h-1.5 -full overflow-hidden max-w-30 mx-auto transition-opacity duration-300"
       >
         <div
-          class="h-full bg-brand-white w-[50%] animate-pulse-slow rounded-full"
+          class="h-full bg-brand-white w-[50%] animate-pulse-slow -full"
         >
         </div>
       </div>
@@ -182,20 +182,20 @@
   <!-- View: Ready -->
   <div
     id="view-ready"
-    class="hidden flex-col h-full p-5 relative z-30 animate-fade-in w-full bg-[#0F1608] rounded-4xl overflow-hidden"
+    class="hidden flex-col h-full p-5 relative z-30 animate-fade-in w-full bg-[#0F1608] -4xl overflow-hidden"
   >
     <div
       class="absolute inset-0 bg-linear-to-br from-brand-lime/10 via-transparent to-black/50 opacity-100 z-0"
     >
     </div>
     <div
-      class="absolute -right-6 -top-6 w-32 h-32 bg-brand-lime/10 blur-3xl rounded-full pointer-events-none"
+      class="absolute -right-6 -top-6 w-32 h-32 bg-brand-lime/10 blur-3xl -full pointer-events-none"
     >
     </div>
 
     <div class="flex items-center gap-2.5 mb-2 relative z-10">
       <div
-        class="p-1.5 rounded-full bg-brand-lime/20 text-brand-lime border border-brand-lime/30 animate-pulse shadow-[0_0_10px_rgba(215,253,73,0.2)]"
+        class="p-1.5 -full bg-brand-lime/20 text-brand-lime border border-brand-lime/30 animate-pulse shadow-[0_0_10px_rgba(215,253,73,0.2)]"
       >
         <svg
           class="w-3.5 h-3.5"
@@ -233,7 +233,7 @@
     <div class="mt-auto relative z-10">
       <button
         id="btn-complete-order"
-        class="w-full bg-white hover:bg-brand-lime hover:text-black text-black font-black text-xs py-2.5 rounded-xl uppercase tracking-widest transition duration-300 hover:scale-[1.02] active:scale-95 shadow-lg shadow-black/50 flex items-center justify-center gap-2 group cursor-pointer border border-transparent hover:border-brand-lime/50 h-8.5"
+        class="w-full bg-white hover:bg-brand-lime hover:text-black text-black font-black text-xs py-2.5 -xl uppercase tracking-widest transition duration-300 hover:scale-[1.02] active:scale-95 shadow-lg  flex items-center justify-center gap-2 group cursor-pointer border border-transparent hover:border-brand-lime/50 h-8.5"
       >
         <span>¡YA LO TENGO!</span>
         <svg

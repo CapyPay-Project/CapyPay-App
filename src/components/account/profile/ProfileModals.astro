@@ -7,12 +7,12 @@
   class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4"
 >
   <div
-    class="bg-slate-800/95 border border-white/10 rounded-2xl w-full max-w-md p-6 shadow-2xl max-h-[90vh] overflow-y-auto"
+    class="bg-[#e5e5e5] border-2 border-black/95 border-4 border-black  w-full max-w-md p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] border-4 border-black max-h-[90vh] overflow-y-auto"
   >
     <div class="flex items-center justify-between mb-4">
-      <h3 class="text-xl font-bold text-white">Editar Perfil</h3>
+      <h3 class="text-xl font-bold text-black">Editar Perfil</h3>
       <button
-        class="text-slate-400 hover:text-white transition-colors"
+        class="text-black font-bold hover:text-black transition-colors"
         onclick="closeEditModal()"
       >
         <svg
@@ -38,7 +38,7 @@
         <input
           id="editNombre"
           type="text"
-          class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-lime/50 focus:border-brand-lime/50"
+          class="w-full px-4 py-3  bg-white border-2 border-black border-4 border-black text-black placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-lime/50 focus:border-brand-lime/50"
           placeholder="Tu nombre completo"
           required
         />
@@ -51,7 +51,7 @@
         <input
           id="editAlias"
           type="text"
-          class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-lime/50 focus:border-brand-lime/50"
+          class="w-full px-4 py-3  bg-white border-2 border-black border-4 border-black text-black placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-lime/50 focus:border-brand-lime/50"
           placeholder="@tu_alias"
           required
         />
@@ -64,7 +64,7 @@
         <input
           id="editEmail"
           type="email"
-          class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-lime/50 focus:border-brand-lime/50"
+          class="w-full px-4 py-3  bg-white border-2 border-black border-4 border-black text-black placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-lime/50 focus:border-brand-lime/50"
           placeholder="tu@email.com"
           required
         />
@@ -77,21 +77,21 @@
         <textarea
           id="editDescripcion"
           rows="3"
-          class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-lime/50 focus:border-brand-lime/50 resize-none"
+          class="w-full px-4 py-3  bg-white border-2 border-black border-4 border-black text-black placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-lime/50 focus:border-brand-lime/50 resize-none"
           placeholder="Cuéntanos sobre ti..."></textarea>
       </div>
 
       <div class="flex gap-3 pt-4">
         <button
           type="button"
-          class="flex-1 px-4 py-3 rounded-xl bg-white/10 text-white font-medium hover:bg-white/20 transition-colors"
+          class="flex-1 px-4 py-3  bg-white border-2 border-black text-black font-medium hover:bg-white/20 transition-colors"
           onclick="closeEditModal()"
         >
           Cancelar
         </button>
         <button
           type="submit"
-          class="flex-1 px-4 py-3 rounded-xl bg-brand-lime text-slate-900 font-bold hover:brightness-110 transition-all"
+          class="flex-1 px-4 py-3  bg-brand-lime text-slate-900 font-bold hover:brightness-110 transition-all"
         >
           Guardar
         </button>
@@ -105,12 +105,12 @@
   class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4"
 >
   <div
-    class="bg-slate-800/95 border border-white/10 rounded-2xl w-full max-w-md p-6 shadow-2xl max-h-[90vh] overflow-y-auto"
+    class="bg-[#e5e5e5] border-2 border-black/95 border-4 border-black  w-full max-w-md p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] border-4 border-black max-h-[90vh] overflow-y-auto"
   >
     <div class="flex items-center justify-between mb-4">
-      <h3 class="text-xl font-bold text-white">Seguridad de la Cuenta</h3>
+      <h3 class="text-xl font-bold text-black">Seguridad de la Cuenta</h3>
       <button
-        class="text-slate-400 hover:text-white transition-colors"
+        class="text-black font-bold hover:text-black transition-colors"
         onclick="closeSecurityModal()"
       >
         <svg
@@ -130,12 +130,12 @@
 
     <div class="space-y-4">
       <button
-        class="w-full flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/10 hover:border-brand-lime/30 transition-all"
+        class="w-full flex items-center justify-between p-4 bg-white border-2 border-black  border-4 border-black hover:border-brand-lime/30 transition-all"
         onclick="cambiarPin()"
       >
         <div class="flex items-center gap-3">
           <div
-            class="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center text-red-400"
+            class="w-10 h-10  bg-red-500/10 flex items-center justify-center text-red-400"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -152,13 +152,13 @@
             >
           </div>
           <div class="text-left">
-            <p class="text-white font-medium">Cambiar PIN</p>
-            <p class="text-slate-400 text-sm">Actualizar código de seguridad</p>
+            <p class="text-black font-medium">Cambiar PIN</p>
+            <p class="text-black font-bold text-sm">Actualizar código de seguridad</p>
           </div>
         </div>
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5 text-slate-500"
+          class="h-5 w-5 text-black font-semibold"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -171,12 +171,12 @@
       </button>
 
       <button
-        class="w-full flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/10 hover:border-brand-lime/30 transition-all"
+        class="w-full flex items-center justify-between p-4 bg-white border-2 border-black  border-4 border-black hover:border-brand-lime/30 transition-all"
         onclick="activarBiometria()"
       >
         <div class="flex items-center gap-3">
           <div
-            class="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-400"
+            class="w-10 h-10  bg-blue-500/10 flex items-center justify-center text-blue-400"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -197,26 +197,26 @@
             >
           </div>
           <div class="text-left">
-            <p class="text-white font-medium">Autenticación Biométrica</p>
-            <p class="text-slate-400 text-sm">Huella o reconocimiento facial</p>
+            <p class="text-black font-medium">Autenticación Biométrica</p>
+            <p class="text-black font-bold text-sm">Huella o reconocimiento facial</p>
           </div>
         </div>
         <label class="relative inline-flex items-center cursor-pointer">
           <input type="checkbox" class="sr-only peer" id="biometria-toggle" />
           <div
-            class="w-11 h-6 bg-slate-700 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-lime"
+            class="w-11 h-6 bg-slate-700  peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after: after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-lime"
           >
           </div>
         </label>
       </button>
 
       <button
-        class="w-full flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/10 hover:border-brand-lime/30 transition-all"
+        class="w-full flex items-center justify-between p-4 bg-white border-2 border-black  border-4 border-black hover:border-brand-lime/30 transition-all"
         onclick="verificarDispositivos()"
       >
         <div class="flex items-center gap-3">
           <div
-            class="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center text-green-400"
+            class="w-10 h-10  bg-green-500/10 flex items-center justify-center text-green-400"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -233,13 +233,13 @@
             >
           </div>
           <div class="text-left">
-            <p class="text-white font-medium">Dispositivos Conectados</p>
-            <p class="text-slate-400 text-sm">Gestionar sesiones activas</p>
+            <p class="text-black font-medium">Dispositivos Conectados</p>
+            <p class="text-black font-bold text-sm">Gestionar sesiones activas</p>
           </div>
         </div>
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5 text-slate-500"
+          class="h-5 w-5 text-black font-semibold"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -259,12 +259,12 @@
   class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4"
 >
   <div
-    class="bg-slate-800/95 border border-white/10 rounded-2xl w-full max-w-2xl p-6 shadow-2xl max-h-[90vh] overflow-y-auto"
+    class="bg-[#e5e5e5] border-2 border-black/95 border-4 border-black  w-full max-w-2xl p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] border-4 border-black max-h-[90vh] overflow-y-auto"
   >
     <div class="flex items-center justify-between mb-6">
-      <h3 class="text-xl font-bold text-white">Centro de Ayuda</h3>
+      <h3 class="text-xl font-bold text-black">Centro de Ayuda</h3>
       <button
-        class="text-slate-400 hover:text-white transition-colors"
+        class="text-black font-bold hover:text-black transition-colors"
         onclick="closeFAQModal()"
       >
         <svg
@@ -283,7 +283,7 @@
     </div>
 
     <div class="space-y-4">
-      <div class="bg-white/5 rounded-xl border border-white/10 p-4">
+      <div class="bg-white border-2 border-black  border-4 border-black p-4">
         <h4 class="text-brand-lime font-semibold mb-2">¿Cómo cambio mi PIN?</h4>
         <p class="text-slate-300 text-sm">
           Ve a Seguridad de la Cuenta y selecciona "Cambiar PIN". Recibirás un
@@ -291,7 +291,7 @@
         </p>
       </div>
 
-      <div class="bg-white/5 rounded-xl border border-white/10 p-4">
+      <div class="bg-white border-2 border-black  border-4 border-black p-4">
         <h4 class="text-brand-lime font-semibold mb-2">
           ¿Cómo recupero mi cuenta?
         </h4>
@@ -301,7 +301,7 @@
         </p>
       </div>
 
-      <div class="bg-white/5 rounded-xl border border-white/10 p-4">
+      <div class="bg-white border-2 border-black  border-4 border-black p-4">
         <h4 class="text-brand-lime font-semibold mb-2">
           ¿Las transferencias son instantáneas?
         </h4>
@@ -311,7 +311,7 @@
         </p>
       </div>
 
-      <div class="bg-white/5 rounded-xl border border-white/10 p-4">
+      <div class="bg-white border-2 border-black  border-4 border-black p-4">
         <h4 class="text-brand-lime font-semibold mb-2">¿Cómo gano XP?</h4>
         <p class="text-slate-300 text-sm">
           Realizando transacciones, recargas y usando los servicios de
@@ -327,11 +327,11 @@
   class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4"
 >
   <div
-    class="bg-slate-800/95 border border-white/10 rounded-2xl w-full max-w-md p-6 shadow-2xl"
+    class="bg-[#e5e5e5] border-2 border-black/95 border-4 border-black  w-full max-w-md p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] border-4 border-black"
   >
     <div class="text-center">
       <div
-        class="w-16 h-16 mx-auto mb-4 rounded-full bg-orange-500/20 flex items-center justify-center"
+        class="w-16 h-16 mx-auto mb-4  bg-orange-500/20 flex items-center justify-center"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -346,20 +346,20 @@
             d="M17 16l4-4m0 0l-4-4m4 4H7"></path></svg
         >
       </div>
-      <h3 class="text-xl font-bold text-white mb-2">¿Cerrar sesión?</h3>
+      <h3 class="text-xl font-bold text-black mb-2">¿Cerrar sesión?</h3>
       <p class="text-slate-300 mb-6">
         Tendrás que volver a iniciar sesión para acceder a tu cuenta.
       </p>
 
       <div class="flex gap-3">
         <button
-          class="flex-1 px-4 py-3 rounded-xl bg-white/10 text-white font-medium hover:bg-white/20 transition-colors"
+          class="flex-1 px-4 py-3  bg-white border-2 border-black text-black font-medium hover:bg-white/20 transition-colors"
           onclick="closeLogoutModal()"
         >
           Cancelar
         </button>
         <button
-          class="flex-1 px-4 py-3 rounded-xl bg-orange-500 text-white font-bold hover:bg-orange-600 transition-colors"
+          class="flex-1 px-4 py-3  bg-orange-500 text-black font-bold hover:bg-orange-600 transition-colors"
           onclick="confirmLogout()"
         >
           Cerrar Sesión

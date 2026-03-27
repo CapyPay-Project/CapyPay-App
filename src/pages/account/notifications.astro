@@ -16,7 +16,7 @@ import { Card, Button } from "../../components/ui";
           href="/dashboard"
           variant="secondary"
           size="icon"
-          class="shrink-0 text-slate-400 hover:text-white border-white/10"
+          class="shrink-0 text-black font-bold hover:text-black border-black"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -33,10 +33,10 @@ import { Card, Button } from "../../components/ui";
           </svg>
         </Button>
         <div class="min-w-0">
-          <h1 class="text-xl sm:text-2xl lg:text-3xl font-bold text-white">
+          <h1 class="text-xl sm:text-2xl lg:text-3xl font-bold text-black">
             Notificaciones
           </h1>
-          <p class="text-slate-400 text-xs sm:text-sm mt-0.5 lg:mt-1">
+          <p class="text-black font-bold text-xs sm:text-sm mt-0.5 lg:mt-1">
             Mantente al día con tus actividades
           </p>
         </div>
@@ -46,24 +46,25 @@ import { Card, Button } from "../../components/ui";
       <Button
         id="clear-notifications-btn"
         variant="ghost"
-        class="shrink-0 bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 border-red-500/20 group"
+        class="shrink-0 bg-[#ff4d4d] border-4 border-black text-white hover:translate-y-1 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-none transition-all group px-4 py-2"
       >
         <svg
           slot="icon-left"
           xmlns="http://www.w3.org/2000/svg"
-          class="h-4 w-4 group-hover:rotate-180 transition-transform duration-300"
+          class="h-5 w-5 group-hover:rotate-12 transition-transform duration-300"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
         >
           <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
+            stroke-linecap="square"
+            stroke-linejoin="miter"
+            stroke-width="3"
             d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
           ></path>
         </svg>
-        <span class="text-xs sm:text-sm font-medium hidden sm:inline"
+        <span
+          class="text-xs sm:text-sm font-black hidden sm:inline uppercase tracking-widest"
           >Limpiar</span
         >
       </Button>
@@ -72,18 +73,21 @@ import { Card, Button } from "../../components/ui";
     <!-- Contador de no leídas -->
     <div
       id="unread-counter"
-      class="flex bg-brand-lime/10 border border-brand-lime/30 text-brand-lime px-4 py-2.5 rounded-xl mb-4 items-center justify-between shadow-[0_0_10px_rgba(215,253,73,0.2)]"
+      class="flex bg-[#d7fd48] border-4 border-black text-black px-4 py-3 mb-4 items-center justify-between shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] uppercase"
       style="display: none;"
     >
-      <span class="text-sm font-medium flex items-center gap-2">
-        <span class="w-2 h-2 rounded-full bg-brand-lime animate-pulse"></span>
-        Tienes <span id="unread-count" class="font-bold text-base">0</span> sin leer
+      <span class="text-sm font-black flex items-center gap-3">
+        <span class="w-3 h-3 bg-[#ff4d4d] border-2 border-black animate-pulse"
+        ></span>
+        Tienes <span id="unread-count" class="font-black text-lg underline mx-1"
+          >0</span
+        > sin leer
       </span>
       <Button
         id="mark-all-read-btn"
         variant="primary"
         size="sm"
-        class="text-xs font-semibold hover:bg-white"
+        class="text-xs font-black bg-white hover:bg-gray-100 hover:translate-y-1 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-none transition-all"
       >
         Marcar todas
       </Button>
@@ -95,22 +99,16 @@ import { Card, Button } from "../../components/ui";
       class="space-y-3 pb-32 lg:pb-0 animate-fade-in-up"
     >
       <!-- Estado de carga -->
-      <Card
-        class="p-8 text-center animate-fade-in-up shadow-none isolate relative overflow-hidden"
+      <div
+        class="p-8 text-center animate-fade-in-up bg-white border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] relative overflow-hidden"
       >
-        <!-- Glow FX -->
-        <div
-          class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-brand-purple/10 rounded-full blur-[100px] pointer-events-none"
-        >
-        </div>
-
-        <div class="flex flex-col items-center gap-4 relative z-10">
+        <div class="flex flex-col items-center gap-4">
           <div
-            class="w-16 h-16 rounded-full bg-brand-purple/10 border border-brand-purple/30 flex items-center justify-center animate-pulse shadow-[0_0_20px_rgba(131,98,232,0.2)]"
+            class="w-16 h-16 bg-[#d7fd48] border-4 border-black flex items-center justify-center animate-pulse"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              class="h-8 w-8 text-brand-purple"
+              class="h-8 w-8 text-black"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -118,16 +116,16 @@ import { Card, Button } from "../../components/ui";
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                stroke-width="2"
+                stroke-width="3"
                 d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
               ></path>
             </svg>
           </div>
-          <p class="text-slate-400 text-base font-medium">
+          <p class="text-black font-black text-xl uppercase tracking-tighter">
             Cargando notificaciones...
           </p>
         </div>
-      </Card>
+      </div>
 
       <!-- Spacer para bottom nav en mobile -->
       <div class="lg:hidden h-20 w-full shrink-0"></div>
@@ -164,61 +162,6 @@ import { Card, Button } from "../../components/ui";
       animation: fadeInUp 0.5s ease-out forwards;
       opacity: 0;
       animation-delay: 0.1s;
-    }
-
-    /* Estilo para notificación no leída */
-    .notification-unread {
-      border-left: 3px solid #d7fd49;
-      background: linear-gradient(
-        to right,
-        rgba(215, 253, 73, 0.08),
-        transparent
-      );
-    }
-
-    .notification-read {
-      border-left: 3px solid transparent;
-      opacity: 0.6;
-    }
-
-    /* Asegurar que el contenido no desborde */
-    .notification-card {
-      overflow: hidden;
-    }
-
-    /* Mejorar efecto glow en hover */
-    .notification-card:hover::before {
-      content: "";
-      position: absolute;
-      inset: -2px;
-      border-radius: 1.5rem;
-      background: linear-gradient(
-        45deg,
-        rgba(215, 253, 73, 0.2),
-        rgba(215, 253, 73, 0.05),
-        rgba(215, 253, 73, 0.2)
-      );
-      filter: blur(15px);
-      z-index: -1;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    .notification-card:hover::after {
-      content: "";
-      position: absolute;
-      inset: -1px;
-      border-radius: 1.5rem;
-      background: linear-gradient(
-        45deg,
-        rgba(215, 253, 73, 0.3),
-        rgba(215, 253, 73, 0.1),
-        rgba(215, 253, 73, 0.3)
-      );
-      filter: blur(20px);
-      z-index: -1;
-      opacity: 1;
-      transition: opacity 0.3s ease;
     }
   </style>
 
@@ -277,21 +220,17 @@ import { Card, Button } from "../../components/ui";
       // Bandeja vacía
       if (notifications.length === 0) {
         container.innerHTML = `
-        <div class="bg-brand-black border border-white/10 rounded-3xl p-8 text-center animate-fade-in-up shadow-none isolate relative overflow-hidden">
-          <!-- Glow FX -->
-          <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-brand-purple/10 rounded-full blur-[100px] pointer-events-none"></div>
-          
-          <div class="relative z-10">
-            <div class="w-24 h-24 rounded-full bg-brand-purple/10 border border-brand-purple/30 mx-auto mb-6 flex items-center justify-center shadow-[0_0_30px_rgba(131,98,232,0.2)]">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-brand-purple" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+        <div class="bg-white border-4 border-black p-8 text-center animate-fade-in-up shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] relative overflow-hidden">
+          <div class="relative z-10 w-full flex flex-col items-center">
+            <div class="w-24 h-24 bg-[#ff4d4d] border-4 border-black mb-6 flex items-center justify-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
               </svg>
             </div>
-            <h3 class="text-2xl font-bold text-white mb-3">Bandeja vacía</h3>
-            <p class="text-slate-400 text-base">No tienes notificaciones nuevas</p>
+            <h3 class="text-3xl font-black text-black mb-3 uppercase tracking-tighter">Bandeja vacía</h3>   
+            <p class="text-black font-bold text-sm bg-[#e5e5e5] px-3 py-1 border-2 border-black inline-block uppercase">No tienes notificaciones nuevas</p>
           </div>
-        </div>
-      `;
+        </div>`;
         return;
       }
 
@@ -301,12 +240,11 @@ import { Card, Button } from "../../components/ui";
       notifications.forEach((notif, index) => {
         const icon = notif.type === "payment_received" ? "💰" : "📢";
         const isUnread = !notif.is_read;
-        const bgClass = isUnread ? "notification-unread" : "notification-read";
-        const iconBg = isUnread
-          ? "bg-brand-lime/10 border-brand-lime/30"
-          : "bg-slate-800/50 border-white/5";
-        const iconColor = isUnread ? "text-brand-lime" : "text-slate-400";
-        const textClass = isUnread ? "text-white" : "text-slate-300";
+
+        // Neo-Brutalist styling
+        const mainBg = isUnread ? "bg-[#d7fd48]" : "bg-white";
+        const iconBg = "bg-white border-2 border-black";
+
         const dateStr = new Date(notif.created_at).toLocaleString("es-VE", {
           day: "2-digit",
           month: "short",
@@ -316,34 +254,34 @@ import { Card, Button } from "../../components/ui";
         });
 
         html += `
-         <div class="notification-card bg-brand-black border border-white/10 rounded-3xl p-4 hover:border-brand-lime/30 hover:bg-white/5 transition-all cursor-pointer ${bgClass} group shadow-none isolate relative overflow-hidden"
+         <div class="border-4 border-black p-4 transition-all cursor-pointer group shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none ${mainBg}"
               style="animation-delay: ${index * 0.05}s"
               onclick="window.handleNotificationClick('${notif.id}', ${isUnread})">
-          <div class="flex gap-4 relative z-10">
+          <div class="flex gap-4">
             <!-- Icono -->
-            <div class="shrink-0 w-14 h-14 rounded-2xl ${iconBg} border flex items-center justify-center ${iconColor} text-2xl shadow-lg">
+            <div class="shrink-0 w-14 h-14 ${iconBg} flex items-center justify-center text-2xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
               ${icon}
             </div>
 
             <!-- Contenido -->
             <div class="flex-1 min-w-0 flex flex-col justify-center">
               <div class="flex items-start justify-between gap-2 mb-1">
-                <p class="text-sm sm:text-base font-medium ${textClass} line-clamp-2 leading-relaxed">
+                <p class="text-sm sm:text-base font-black text-black leading-tight uppercase relative">
                   ${notif.message}
+                  ${
+                    isUnread
+                      ? '<span class="inline-block shrink-0 w-3 h-3 bg-[#ff4d4d] border-2 border-black rounded-none ml-2"></span>'
+                      : ""
+                  }
                 </p>
-                ${
-                  isUnread
-                    ? '<span class="shrink-0 w-2.5 h-2.5 rounded-full bg-brand-lime shadow-[0_0_8px_rgba(215,253,73,0.6)]"></span>'
-                    : ""
-                }
               </div>
-              <p class="text-xs text-slate-500 font-medium">${dateStr}</p>
+              <p class="text-xs text-black font-bold uppercase tracking-widest mt-1">${dateStr}</p>
             </div>
 
-            <!-- Indicador de acciones al hacer hover -->
-            <div class="shrink-0 opacity-0 group-hover:opacity-100 transition-opacity flex items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-brand-lime" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            <!-- Flecha/Acción -->
+            <div class="shrink-0 flex items-center opacity-0 group-hover:opacity-100 transition-opacity">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="square" stroke-linejoin="miter" stroke-width="3" d="M9 5l7 7-7 7"></path>
               </svg>
             </div>
           </div>

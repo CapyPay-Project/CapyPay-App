@@ -1,51 +1,76 @@
 ---
 /**
-* Sidebar.astro (Neo-brutalist)
-*/
+ * Sidebar.astro (Neo-brutalist)
+ */
 const currentPath = Astro.url.pathname;
 
 const navItems = [
   { href: "/dashboard", label: "INICIO", icon: "dashboard" },
-  { href: "/finance/history", label: "BILLETERA", icon: "account_balance" },  
+  { href: "/finance/recarga", label: "BILLETERA", icon: "account_balance" },
   { href: "/finance/history", label: "ACTIVIDAD", icon: "history" },
   { href: "/services/comedor", label: "COMEDOR", icon: "restaurant" },
-  { href: "/services/ticketbus", label: "PASAJES", icon: "confirmation_number" },
+  {
+    href: "/services/ticketbus",
+    label: "PASAJES",
+    icon: "confirmation_number",
+  },
   { href: "/services/cantina", label: "CANTINA", icon: "storefront" },
 ];
 ---
 
-<aside class="hidden lg:flex sticky top-0 h-full flex-col p-8 z-40 bg-[#FFF9F0] border-r-4 border-black w-72">
+<aside
+  class="hidden lg:flex sticky top-0 h-full flex-col p-8 z-40 bg-[#FFF9F0] border-r-4 border-black w-72"
+>
   <!-- Logo -->
   <div class="flex flex-col mb-10 mt-2">
-    <div class="text-3xl font-black text-black uppercase tracking-tighter mix-blend-normal">
+    <div
+      class="text-3xl font-black text-black uppercase tracking-tighter mix-blend-normal"
+    >
       CAPYPAY
     </div>
-    <span class="text-[10px] font-black tracking-widest text-[#8b5cf6] mt-1 uppercase">University Edition</span>
+    <span
+      class="text-[10px] font-black tracking-widest text-[#8b5cf6] mt-1 uppercase"
+      >University Edition</span
+    >
   </div>
 
   <!-- Navigation -->
   <nav class="flex-1 space-y-3 overflow-y-auto pr-2 custom-scrollbar">
-    {navItems.map(item => {
-      const isActive = currentPath === item.href || (item.href !== "/dashboard" && item.href !== "#" && currentPath.startsWith(item.href));
-      return (
-        <a
-          href={item.href}
-          class={`flex items-center gap-4 px-5 py-4 font-black text-sm uppercase tracking-widest transition-all ${isActive ? "bg-[#d7fd48] text-black border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-1 hover:shadow-none" : "text-black border-4 border-transparent hover:border-black hover:bg-gray-100"}`}    
-        >
-          <span class="material-symbols-outlined font-black">{item.icon}</span>
-          {item.label}
-        </a>
-      );
-    })}
+    {
+      navItems.map((item) => {
+        const isActive =
+          currentPath === item.href ||
+          (item.href !== "/dashboard" &&
+            item.href !== "#" &&
+            currentPath.startsWith(item.href));
+        return (
+          <a
+            href={item.href}
+            class={`flex items-center gap-4 px-5 py-4 font-black text-sm uppercase tracking-widest transition-all ${isActive ? "bg-[#d7fd48] text-black border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-1 hover:shadow-none" : "text-black border-4 border-transparent hover:border-black hover:bg-gray-100"}`}
+          >
+            <span class="material-symbols-outlined font-black">
+              {item.icon}
+            </span>
+            {item.label}
+          </a>
+        );
+      })
+    }
   </nav>
 
   <!-- Bottom Actions -->
   <div class="mt-auto border-t-4 border-black pt-6">
     <div class="space-y-2">
-      <a href="/account/settings" class="flex items-center gap-4 px-5 py-3 text-black font-black text-xs uppercase tracking-widest border-4 border-transparent hover:border-black hover:bg-gray-100 transition-all">
-        <span class="material-symbols-outlined text-lg">settings</span> SETTINGS 
+      <a
+        href="/account/settings"
+        class="flex items-center gap-4 px-5 py-3 text-black font-black text-xs uppercase tracking-widest border-4 border-transparent hover:border-black hover:bg-gray-100 transition-all"
+      >
+        <span class="material-symbols-outlined text-lg">settings</span> SETTINGS
       </a>
-      <button class="w-full flex items-center gap-4 px-5 py-3 text-black font-black text-xs uppercase tracking-widest border-4 border-transparent hover:border-black hover:bg-red-100 transition-all text-left" onclick="localStorage.removeItem('capypay_token'); window.location.href='/login'">
+      <button
+        class="w-full flex items-center gap-4 px-5 py-3 text-black font-black text-xs uppercase tracking-widest border-4 border-transparent hover:border-black hover:bg-red-100 transition-all text-left"
+        onclick="window.openLogoutModal()"
+      >
         <span class="material-symbols-outlined text-lg">logout</span> LOGOUT
       </button>
     </div>

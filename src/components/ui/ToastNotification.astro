@@ -7,12 +7,12 @@
 
 <template id="toast-template">
   <div
-    class="pointer-events-auto min-w-75 bg-[#1a1a1a] border border-white/10 rounded-xl p-4 shadow-2xl flex items-start gap-3 transform transition-all duration-300 translate-x-10 opacity-0"
+    class="pointer-events-auto min-w-75 bg-[#1a1a1a] border-4 border-black -xl p-4 shadow-2xl flex items-start gap-3 transform transition-all duration-300 translate-x-10 opacity-0"
   >
     <!-- Icon -->
     <div class="shrink-0 pt-0.5">
       <div
-        class="w-5 h-5 rounded-full flex items-center justify-center icon-container"
+        class="w-5 h-5 -full flex items-center justify-center icon-container"
       >
         <!-- Icon SVG -->
       </div>
@@ -24,7 +24,7 @@
     </div>
     <!-- Close -->
     <button
-      class="text-slate-500 hover:text-white transition-colors shrink-0 close-btn"
+      class="text-black font-semibold hover:text-white transition-colors shrink-0 close-btn"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -95,7 +95,7 @@
     const iconContainer = toast.querySelector(".icon-container");
     if (iconContainer) {
       iconContainer.innerHTML = iconConfig.svg;
-      iconContainer.className = `w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${iconConfig.bg} ${iconConfig.text}`;
+      iconContainer.className = `w-5 h-5 -full flex items-center justify-center shrink-0 ${iconConfig.bg} ${iconConfig.text}`;
     }
 
     // Append

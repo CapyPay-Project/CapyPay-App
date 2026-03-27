@@ -9,7 +9,7 @@ import MainLayout from "../../layouts/MainLayout.astro";
     <!-- Receipt Card (Hidden initially) -->
     <div
       id="receipt-card"
-      class="bg-[#1a1a1a] border border-white/10 rounded-3xl p-8 relative overflow-hidden hidden shadow-2xl"
+      class="bg-[#1a1a1a] border-4 border-black -3xl p-8 relative overflow-hidden hidden shadow-2xl"
     >
       <!-- Content injected by JS -->
     </div>
@@ -20,10 +20,10 @@ import MainLayout from "../../layouts/MainLayout.astro";
       class="flex flex-col items-center justify-center py-20 space-y-6"
     >
       <div class="relative w-20 h-20">
-        <div class="absolute inset-0 rounded-full border-4 border-white/10">
+        <div class="absolute inset-0 -full border-4 border-black">
         </div>
         <div
-          class="absolute inset-0 rounded-full border-4 border-brand-lime border-t-transparent animate-spin"
+          class="absolute inset-0 -full border-4 border-brand-lime border-t-transparent animate-spin"
         >
         </div>
         <div class="absolute inset-0 flex items-center justify-center">
@@ -41,7 +41,7 @@ import MainLayout from "../../layouts/MainLayout.astro";
       class="hidden text-center py-10 scale-95 opacity-0 transition-all duration-500"
     >
       <div
-        class="text-red-400 mb-4 bg-red-500/10 w-20 h-20 rounded-full flex items-center justify-center mx-auto"
+        class="text-red-400 mb-4 bg-red-500/10 w-20 h-20 -full flex items-center justify-center mx-auto"
       >
         <svg
           class="w-10 h-10"
@@ -86,13 +86,13 @@ import MainLayout from "../../layouts/MainLayout.astro";
     >
       <a
         href="/services/comedor"
-        class="block w-full py-4 bg-brand-purple hover:bg-brand-purple/90 text-white text-center font-bold rounded-xl active:scale-95 transition-all shadow-lg shadow-brand-purple/20"
+        class="block w-full py-4 bg-brand-purple hover:bg-brand-purple/90 text-white text-center font-bold -xl active:scale-95 transition-all shadow-lg shadow-brand-purple/20"
       >
         Seguir Comprando
       </a>
       <a
         href="/finance/history"
-        class="block w-full py-4 bg-white/5 hover:bg-white/10 text-white/70 text-center font-bold rounded-xl active:scale-95 transition-all"
+        class="block w-full py-4 bg-white border-2 border-black hover:bg-white border-2 border-black text-white/70 text-center font-bold -xl active:scale-95 transition-all"
       >
         Ver Historial de Gastos
       </a>
@@ -155,7 +155,7 @@ import MainLayout from "../../layouts/MainLayout.astro";
           .map((item) => {
             const price = item.price_at_time_capys || item.price_at_time || item.price || 0;
             return `
-                <div class="flex justify-between items-start text-sm mb-3 pb-3 border-b border-white/5 last:border-0 last:mb-0 last:pb-0">
+                <div class="flex justify-between items-start text-sm mb-3 pb-3 border-b border-black last:border-0 last:mb-0 last:pb-0">
                     <div class="flex gap-3">
                          <div class="font-bold text-white/40">x${item.quantity}</div>
                          <div class="text-white/90">
@@ -183,14 +183,14 @@ import MainLayout from "../../layouts/MainLayout.astro";
                 <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-brand-lime via-white to-brand-purple"></div>
                 
                 <div class="text-center mb-8 pt-2">
-                    <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-brand-lime text-black mb-4 shadow-lg shadow-brand-lime/20 animate-bounce-short">
+                    <div class="inline-flex items-center justify-center w-20 h-20 -full bg-brand-lime text-black mb-4 shadow-lg shadow-brand-lime/20 animate-bounce-short">
                         <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
                     </div>
                     <h2 class="text-3xl font-black text-white tracking-tight">¡Orden Exitosa!</h2>
                     <p class="text-white/40 text-xs mt-2 font-mono uppercase tracking-widest">ID: ${String(order.id).split("-")[0]}</p>
                 </div>
 
-                <div class="bg-white/5 rounded-xl p-4 mb-6 ring-1 ring-white/10">
+                <div class="bg-white border-2 border-black -xl p-4 mb-6 ring-1 ring-white/10">
                     <div class="flex justify-between text-xs text-white/50 mb-2">
                         <span>Fecha de compra</span>
                         <span>${date}</span>
@@ -198,7 +198,7 @@ import MainLayout from "../../layouts/MainLayout.astro";
                     <div class="flex justify-between text-xs text-white/50">
                         <span>Estado del pedido</span>
                         <span class="text-brand-lime uppercase font-bold tracking-wider flex items-center gap-1">
-                            <span class="w-2 h-2 rounded-full bg-brand-lime animate-pulse"></span>
+                            <span class="w-2 h-2 -full bg-brand-lime animate-pulse"></span>
                             ${order.status}
                         </span>
                     </div>
@@ -214,7 +214,7 @@ import MainLayout from "../../layouts/MainLayout.astro";
                      ${
                        comision > 0
                          ? `
-                     <div class="pt-3 border-t border-white/5 flex justify-between text-xs text-white/50">
+                     <div class="pt-3 border-t border-black flex justify-between text-xs text-white/50">
                         <span>Subtotal</span>
                         <span>${subtotal.toFixed(2)}</span>
                      </div>
@@ -227,12 +227,12 @@ import MainLayout from "../../layouts/MainLayout.astro";
                      }
                 </div>
 
-                <div class="border-t-2 border-dashed border-white/10 pt-6">
+                <div class="border-t-2 border-dashed border-black pt-6">
                     <div class="flex justify-between items-end mb-1">
                         <span class="text-white/60 text-sm">Total Pagado</span>
                         <span class="text-4xl font-black text-brand-lime tracking-tighter">${totalPagado.toFixed(2)}<span class="text-lg text-brand-lime/50 ml-1">BARAS</span></span>
                     </div>
-                     <div class="mt-6 bg-gradient-to-r from-brand-purple/20 to-brand-purple/10 border border-brand-purple/30 p-3 rounded-lg text-center transform hover:scale-[1.02] transition-transform cursor-default">
+                     <div class="mt-6 bg-gradient-to-r from-brand-purple/20 to-brand-purple/10 border border-brand-purple/30 p-3  text-center transform hover:scale-[1.02] transition-transform cursor-default">
                         <p class="text-brand-purple-light text-sm font-bold flex items-center justify-center gap-2">
                             <span>✨</span> +${order.xp_earned || order.xp_gained || items.length * 15} XP Ganada
                         </p>

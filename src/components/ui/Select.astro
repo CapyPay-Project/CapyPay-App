@@ -33,7 +33,7 @@ const initialLabel =
 
   <button
     type="button"
-    class="w-full bg-black/30 border border-white/10 text-white rounded-xl py-3 px-4 flex justify-between items-center focus:outline-none focus:border-brand-lime transition-colors"
+    class="w-full bg-black/30 border-4 border-black text-white -xl py-3 px-4 flex justify-between items-center focus:outline-none focus:border-brand-lime transition-colors"
     aria-haspopup="listbox"
     aria-expanded="false"
     id={`trigger-${id}`}
@@ -57,7 +57,7 @@ const initialLabel =
   </button>
 
   <ul
-    class="absolute top-full left-0 w-full mt-1 bg-neutral-900 border border-white/10 rounded-xl overflow-hidden shadow-xl z-50 hidden opacity-0 translate-y-2 transition-all duration-200 max-h-60 overflow-y-auto"
+    class="absolute top-full left-0 w-full mt-1 bg-neutral-900 border-4 border-black -xl overflow-hidden shadow-xl z-50 hidden opacity-0 translate-y-2 transition-all duration-200 max-h-60 overflow-y-auto"
     role="listbox"
     id={`dropdown-${id}`}
   >
@@ -66,7 +66,7 @@ const initialLabel =
         <li role="option" aria-selected={option.value === value}>
           <button
             type="button"
-            class="w-full text-left px-4 py-3 hover:bg-white/5 transition-colors text-sm text-slate-300 flex items-center gap-2"
+            class="w-full text-left px-4 py-3 hover:bg-white border-2 border-black transition-colors text-sm text-slate-300 flex items-center gap-2"
             data-value={option.value}
             data-label={option.label}
           >
@@ -152,7 +152,7 @@ const initialLabel =
 
     if (!newOptions || newOptions.length === 0) {
       const emptyLi = document.createElement("li");
-      emptyLi.className = "p-4 text-center text-xs text-slate-500";
+      emptyLi.className = "p-4 text-center text-xs text-black font-semibold";
       emptyLi.textContent = "No hay opciones disponibles";
       dropdown.appendChild(emptyLi);
       return;
@@ -166,7 +166,7 @@ const initialLabel =
       const btn = document.createElement("button");
       btn.type = "button";
       btn.className =
-        "w-full text-left px-4 py-3 hover:bg-white/5 transition-colors text-sm text-slate-300 flex items-center gap-2 w-full block";
+        "w-full text-left px-4 py-3 hover:bg-white border-2 border-black transition-colors text-sm text-slate-300 flex items-center gap-2 w-full block";
       btn.dataset.value = opt.value;
       btn.dataset.label = opt.label;
 

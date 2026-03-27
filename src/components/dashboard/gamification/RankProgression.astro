@@ -33,13 +33,13 @@ const nivelInicial = calcularNivelServer(puntosActuales);
     <!-- Glow decorativo del nivel -->
     <div
       id="glow-nivel"
-      class="absolute top-0 right-0 w-40 h-40 rounded-full blur-[60px] pointer-events-none"
+      class="absolute top-0 right-0 w-40 h-40 -full blur-[60px] pointer-events-none"
       style="background: rgba(96, 165, 250, 0.2);"
     >
     </div>
     <!-- Shine effect diagonal en toda la tarjeta -->
     <div
-      class="shine-effect absolute inset-0 rounded-3xl pointer-events-none z-30"
+      class="shine-effect absolute inset-0 -3xl pointer-events-none z-30"
     >
     </div>
 
@@ -57,7 +57,7 @@ const nivelInicial = calcularNivelServer(puntosActuales);
           xp={puntosActuales}
           icono={nivelInicial.icono}
           showDetails={true}
-          extraClass="bg-[#60A5FA]/10 border-2 border-[#60A5FA] px-6 py-3 rounded-xl text-[#60A5FA] font-bold text-lg shadow-[0_0_25px_rgba(96,165,250,0.3)] transition-all duration-300 hover:scale-105"
+          extraClass="bg-[#60A5FA]/10 border-2 border-[#60A5FA] px-6 py-3 -xl text-[#60A5FA] font-bold text-lg shadow-[0_0_25px_rgba(96,165,250,0.3)] transition-all duration-300 hover:scale-105"
         />
       </div>
 
@@ -70,10 +70,10 @@ const nivelInicial = calcularNivelServer(puntosActuales);
             <span id="xp-porcentaje" class="text-white/80 font-bold">75%</span>
           </div>
         </div>
-        <div class="h-3 bg-slate-800 rounded-full overflow-hidden relative">
+        <div class="h-3 bg-[#e5e5e5] border-2 border-black -full overflow-hidden relative">
           <div
             id="progreso-bar"
-            class="h-full rounded-full transition-all duration-500 ease-out relative"
+            class="h-full -full transition-all duration-500 ease-out relative"
             style="width: 75%; background: linear-gradient(90deg, #60A5FA, #3B82F6);"
           >
             <div
@@ -82,19 +82,19 @@ const nivelInicial = calcularNivelServer(puntosActuales);
             </div>
           </div>
         </div>
-        <p id="xp-faltante" class="text-slate-500 text-xs mt-2 text-center">
+        <p id="xp-faltante" class="text-black font-semibold text-xs mt-2 text-center">
           Faltan 500 XP para el siguiente nivel
         </p>
       </div>
 
       <!-- Info de XP ganada hoy -->
       <div
-        class="flex items-center justify-between bg-white/5 rounded-xl py-2 px-4"
+        class="flex items-center justify-between bg-white border-2 border-black -xl py-2 px-4"
       >
         <div class="flex items-center gap-2">
           <span
             id="xp-indicator"
-            class="w-3 h-3 rounded-full bg-brand-lime animate-pulse shadow-[0_0_8px_rgba(215,253,73,0.6)]"
+            class="w-3 h-3 -full bg-brand-lime animate-pulse shadow-[0_0_8px_rgba(215,253,73,0.6)]"
           ></span>
           <span id="xp-hoy" class="text-slate-300 text-sm"
             >+0 XP obtenida hoy</span
@@ -126,7 +126,7 @@ const nivelInicial = calcularNivelServer(puntosActuales);
   <!-- Línea de Tiempo de Niveles -->
   <Card
     id="timeline-section"
-    class="timeline-section bg-brand-black/60 backdrop-blur-lg border-2 border-white/10 p-6 mb-6 transition-all duration-500"
+    class="timeline-section bg-black/60 backdrop-blur-lg border-2 border-black p-6 mb-6 transition-all duration-500"
   >
     <h3 class="text-white text-lg font-bold mb-6 flex items-center gap-2">
       <svg
@@ -153,7 +153,7 @@ const nivelInicial = calcularNivelServer(puntosActuales);
   <!-- Beneficios por Nivel -->
   <Card
     id="beneficios-section"
-    class="beneficios-section bg-brand-black/60 backdrop-blur-lg border-2 border-white/10 p-6 mb-6 transition-all duration-500"
+    class="beneficios-section bg-black/60 backdrop-blur-lg border-2 border-black p-6 mb-6 transition-all duration-500"
   >
     <h3 class="text-white text-lg font-bold mb-6 flex items-center gap-2">
       <svg
@@ -180,7 +180,7 @@ const nivelInicial = calcularNivelServer(puntosActuales);
   <!-- Lista de Tareas -->
   <Card
     id="como-ganar-xp"
-    class="tareas-section bg-brand-black/60 backdrop-blur-lg border-2 border-white/10 p-6 transition-all duration-500"
+    class="tareas-section bg-black/60 backdrop-blur-lg border-2 border-black p-6 transition-all duration-500"
   >
     <h3 class="text-white text-lg font-bold mb-4 flex items-center gap-2">
       <svg
@@ -486,10 +486,10 @@ const nivelInicial = calcularNivelServer(puntosActuales);
         }
 
         return `
-        <div class="nivel-timeline ${estadoClass} bg-slate-800/50 rounded-xl p-4 relative" style="--nivel-color: ${nivel.color}; --nivel-color-glow: ${nivel.colorGlow}">
+        <div class="nivel-timeline ${estadoClass} bg-[#e5e5e5] border-2 border-black/50 -xl p-4 relative" style="--nivel-color: ${nivel.color}; --nivel-color-glow: ${nivel.colorGlow}">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-3">
-              <div class="w-12 h-12 rounded-full flex items-center justify-center text-2xl" style="background: ${nivel.color}20;">
+              <div class="w-12 h-12 -full flex items-center justify-center text-2xl" style="background: ${nivel.color}20;">
                 ${nivel.icono}
               </div>
               <div>
@@ -498,10 +498,10 @@ const nivelInicial = calcularNivelServer(puntosActuales);
               </div>
             </div>
             <div class="flex items-center gap-2">
-              <span class="text-xs font-medium px-2 py-1 rounded-full" style="background: ${nivel.color}20; color: ${getContrastColor(nivel.color)};">
+              <span class="text-xs font-medium px-2 py-1 -full" style="background: ${nivel.color}20; color: ${getContrastColor(nivel.color)};">
                 ${estadoTexto}
               </span>
-              ${esBloqueado ? '<svg class="w-4 h-4 text-slate-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/></svg>' : ""}
+              ${esBloqueado ? '<svg class="w-4 h-4 text-black font-semibold" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/></svg>' : ""}
             </div>
           </div>
           ${
@@ -510,8 +510,8 @@ const nivelInicial = calcularNivelServer(puntosActuales);
             <div class="mt-3">
               <div class="flex items-center gap-3">
                 <div class="flex-1">
-                  <div class="h-2 bg-slate-700 rounded-full overflow-hidden" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(progresoNivel)}" aria-label="Progreso del nivel ${nivel.nombre}">
-                    <div class="h-full rounded-full transition-all duration-500" style="width: ${progresoNivel}%; background: ${nivel.color};"></div>
+                  <div class="h-2 bg-slate-700 -full overflow-hidden" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(progresoNivel)}" aria-label="Progreso del nivel ${nivel.nombre}">
+                    <div class="h-full -full transition-all duration-500" style="width: ${progresoNivel}%; background: ${nivel.color};"></div>
                   </div>
                 </div>
                 <div class="w-12 text-right text-xs font-bold text-white">${Math.round(progresoNivel)}%</div>
@@ -538,9 +538,9 @@ const nivelInicial = calcularNivelServer(puntosActuales);
         const esActual = nivel.id === nivelActual.id;
 
         return `
-        <div class="beneficio-card ${esBloqueado ? "bloqueado opacity-50" : ""} bg-slate-800/30 border border-white/10 rounded-xl p-4" style="--beneficio-color: ${nivel.color}">
+        <div class="beneficio-card ${esBloqueado ? "bloqueado opacity-50" : ""} bg-[#e5e5e5] border-2 border-black/30 border-4 border-black -xl p-4" style="--beneficio-color: ${nivel.color}">
           <div class="flex items-start gap-3">
-            <div class="w-10 h-10 rounded-lg flex items-center justify-center text-xl shrink-0" style="background: ${nivel.color}20;">
+            <div class="w-10 h-10  flex items-center justify-center text-xl shrink-0" style="background: ${nivel.color}20;">
               ${nivel.icono}
             </div>
             <div class="flex-1 min-w-0">
@@ -549,7 +549,7 @@ const nivelInicial = calcularNivelServer(puntosActuales);
                 ${nivel.beneficios.map((b) => `<li class="flex items-start gap-2"><span class="text-brand-lime mt-0.5">•</span>${b}</li>`).join("")}
               </ul>
             </div>
-            ${esBloqueado ? '<svg class="w-5 h-5 text-slate-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>' : ""}
+            ${esBloqueado ? '<svg class="w-5 h-5 text-black font-semibold shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>' : ""}
           </div>
         </div>
       `;
@@ -570,9 +570,9 @@ const nivelInicial = calcularNivelServer(puntosActuales);
         const completada = tareasCompletadas[index];
 
         return `
-        <div class="tarea-item ${completada ? "tarea-completada" : ""} bg-slate-800/30 border border-white/10 rounded-xl p-3 flex items-center justify-between transition-all hover:bg-slate-800/50">
+        <div class="tarea-item ${completada ? "tarea-completada" : ""} bg-[#e5e5e5] border-2 border-black/30 border-4 border-black -xl p-3 flex items-center justify-between transition-all hover:bg-[#e5e5e5] border-2 border-black/50">
           <div class="flex items-center gap-3">
-            <div class="w-8 h-8 rounded-full flex items-center justify-center ${completada ? "bg-brand-lime/20 text-brand-lime" : "bg-white/5 text-slate-500"}">
+            <div class="w-8 h-8 -full flex items-center justify-center ${completada ? "bg-brand-lime/20 text-brand-lime" : "bg-white border-2 border-black text-black font-semibold"}">
               ${
                 completada
                   ? '<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>'
@@ -581,7 +581,7 @@ const nivelInicial = calcularNivelServer(puntosActuales);
             </div>
             <span class="text-sm ${completada ? "text-brand-lime line-through" : "text-slate-300"}">${tarea.accion}</span>
           </div>
-          <span class="text-xs font-bold ${completada ? "text-slate-500" : "text-brand-lime"}">+${tarea.xp} XP</span>
+          <span class="text-xs font-bold ${completada ? "text-black font-semibold" : "text-brand-lime"}">+${tarea.xp} XP</span>
         </div>
       `;
       })

@@ -1,0 +1,153 @@
+---
+// Neo-brutalist ExchangeRateWidget
+---
+
+<div
+  class="h-full w-full bg-[#d7fd48] border-4 border-black hover:-translate-y-1 transition-all box-shadow-brutal p-4 sm:p-5 flex flex-col justify-between group cursor-default transition-all hover:bg-[#c2f01f]"
+  id="exchange-rate-widget"
+>
+  <div class="w-full flex justify-between items-start mb-2">
+    <p
+      class="font-black text-sm uppercase text-black tracking-widest leading-none"
+    >
+      TASA DEL DÍA
+    </p>
+    <span
+      class="bg-white border-2 border-black px-2 py-0.5 text-[10px] font-black uppercase animate-pulse flex items-center gap-1"
+    >
+      <div class="w-2 h-2 rounded-full bg-green-500"></div> EN VIVO
+    </span>
+  </div>
+
+  <div class="flex items-center justify-between mt-3">
+    <!-- Left SIDE -->
+    <div class="flex flex-col">
+      <span class="text-3xl font-black text-black tracking-tight leading-none"
+        >1 <span class="text-emerald-700">Capy</span></span
+      >
+      <span
+        class="text-[10px] uppercase font-black tracking-widest text-[#555] mt-1"
+        >Moneda Base</span
+      >
+    </div>
+
+    <!-- ARROW -->
+    <span
+      class="material-symbols-outlined text-black font-black text-2xl group-hover:translate-x-1 transition-transform"
+      >arrow_forward</span
+    >
+
+    <!-- Right SIDE -->
+    <div class="flex flex-col items-end">
+      <div class="flex items-baseline gap-1">
+        <span
+          class="text-3xl font-black text-black tracking-tight leading-none"
+          id="bcv-rate-value">--</span
+        >
+      </div>
+      <span
+        class="text-[10px] uppercase font-black tracking-widest text-[#555] mt-1"
+        >Bolívares</span
+      >
+    </div>
+  </div>
+
+  <!-- DATE & TIME -->
+  <div
+    class="flex justify-between items-center mt-5 pt-3 border-t-2 border-dashed border-black/30"
+  >
+    <div
+      class="flex items-center gap-1 bg-white border-2 border-black px-2 py-1 shadow-[2px_2px_0px_#000]"
+    >
+      <span class="material-symbols-outlined text-sm font-black"
+        >calendar_month</span
+      >
+      <span class="text-[10px] font-black uppercase" id="bcv-date">--</span>
+    </div>
+    <div
+      class="bg-white border-2 border-black px-2 py-1 shadow-[2px_2px_0px_#000]"
+    >
+      <span
+        class="text-[10px] font-black uppercase tracking-widest"
+        id="bcv-time">--</span
+      >
+    </div>
+  </div>
+</div>
+<style>
+  .box-shadow-brutal {
+    box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 1);
+  }
+</style>
+
+<script>
+  import { fetchAPI } from "../../../services/api.js";
+
+  async function updateRate() {
+    try {
+      const res = await fetchAPI("/tasa");
+      const rateEl = document.getElementById("bcv-rate-value");
+
+      if (rateEl && res) {
+        // En caso de que res.tasa sea un número directo ({ tasa: 100 })
+        // o si es un objeto anidado ({ tasa: { promedio: 100 } })
+        let valor = "50.00";
+        if (typeof res.tasa === "number" || typeof res.tasa === "string") {
+          valor = res.tasa;
+        } else if (res.tasa && typeof res.tasa === "object") {
+          valor =
+            res.tasa.promedio ||
+            res.tasa.precio ||
+            res.tasa.monto ||
+            res.tasa.rate ||
+            res.tasa.tasa ||
+            "50.00";
+        }
+
+        rateEl.innerText = parseFloat(valor).toFixed(2);
+      }
+    } catch (e) {
+      console.error("Error cargando tasa", e);
+      const rateEl = document.getElementById("bcv-rate-value");
+      if (rateEl) rateEl.innerText = "50.00";
+    }
+
+    // Set Date & Time
+    const dateEl = document.getElementById("bcv-date");
+    const timeEl = document.getElementById("bcv-time");
+    const now = new Date();
+
+    if (dateEl) {
+      const optionsDate: Intl.DateTimeFormatOptions = {
+        weekday: "short",
+        day: "numeric",
+        month: "short",
+      };
+      let dateString = now
+        .toLocaleDateString("es-ES", optionsDate)
+        .replace(/\./g, "");
+      // Capitalize first letter of each word to match 'Mar, 24 Mar' format
+      dateString = dateString
+        .split(" ")
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ");
+      dateEl.innerText = dateString;
+    }
+    if (timeEl) {
+      const optionsTime: Intl.DateTimeFormatOptions = {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      };
+      timeEl.innerText = now
+        .toLocaleTimeString("es-ES", optionsTime)
+        .toLowerCase();
+    }
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", updateRate);
+  } else {
+    updateRate();
+  }
+</script>

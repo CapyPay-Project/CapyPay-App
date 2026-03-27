@@ -20,7 +20,7 @@ const hasIcon = Astro.slots.has("icon");
     label && (
       <label
         for={id}
-        class="block text-sm font-medium text-slate-400 mb-1.5 ml-1"
+        class="block text-sm font-black text-black mb-1.5 ml-1 uppercase"
       >
         {label}
       </label>
@@ -29,7 +29,7 @@ const hasIcon = Astro.slots.has("icon");
   <div class="relative">
     {
       hasIcon && (
-        <div class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
+        <div class="absolute left-3 top-1/2 -translate-y-1/2 text-black pointer-events-none">
           <slot name="icon" />
         </div>
       )
@@ -42,10 +42,11 @@ const hasIcon = Astro.slots.has("icon");
       placeholder={placeholder}
       required={required}
       disabled={disabled}
-      class={`w-full bg-black/30 border border-white/10 text-white placeholder-slate-500 rounded-xl py-3 px-4 focus:outline-none focus:border-brand-lime transition-colors ${
+      class={`w-full bg-[#f4f4f5] border-4 border-black text-black placeholder-gray-500 font-bold py-3 px-4 focus:outline-none focus:bg-[#d7fd48] transition-colors ${
         hasIcon ? "pl-10" : ""
       }`}
       {...rest}
     />
   </div>
 </div>
+

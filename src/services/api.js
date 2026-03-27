@@ -127,7 +127,7 @@ export const authService = {
   logout: () => {
     localStorage.removeItem('capypay_token');
     localStorage.removeItem('capypay_user');
-    window.location.replace('/login'); // Replace para que no pueda volver atrás
+    window.location.replace('/auth/login'); // Replace para que no pueda volver atrás
   },
 
   // Helper para obtener el usuario guardado

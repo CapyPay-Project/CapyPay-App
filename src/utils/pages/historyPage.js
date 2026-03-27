@@ -90,11 +90,11 @@ function setupFilterEvents(dom, state) {
 
       document.querySelectorAll(".filter-btn").forEach((item) => {
         item.className =
-          "filter-btn flex-1 rounded-lg text-xs font-bold transition-all p-2 text-slate-400 hover:text-white";
+          "filter-btn flex-1 h-full text-xs font-bold transition-all text-gray-700 hover:text-black hover:bg-gray-200 border-none outline-none";
       });
 
       event.target.className =
-        "filter-btn flex-1 rounded-lg text-xs font-bold transition-all p-2 text-black bg-brand-lime shadow-lg";
+        "filter-btn flex-1 h-full text-xs font-bold transition-all text-black bg-brand-lime shadow-brutal border-2 border-black";
 
       applyFilters(dom, state);
     });
@@ -155,38 +155,52 @@ function renderTable(dom, state) {
   const html = pageData
     .map((movement) => {
       const isNegative = movement.es_negativo;
-      const amountColor = isNegative ? "text-purple-400" : "text-[#d7fd48]";
-      const iconBg = isNegative ? "bg-purple-500/10" : "bg-[#d7fd48]/10";
-      const iconColor = isNegative ? "text-purple-400" : "text-[#d7fd48]";
-      const sign = isNegative ? "-" : "+";
-      const date = new Date(movement.fecha).toLocaleDateString("es-ES", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-      });
-      const desc = movement.descripcion || movement.concept || "Transferencia";
-      const category = movement.tipo || "General";
+        const isPending = movement.estado === 'pendiente' || movement.estado === 'pending' || movement.status === 'pending';
+        let amountColor = isNegative ? "text-red-600" : "text-green-600";
+        let iconBg = isNegative ? "bg-red-100" : "bg-green-100";
+        let iconColor = isNegative ? "text-red-600" : "text-green-600";
+        
+        if (isPending) {
+          amountColor = "text-slate-500";
+          iconBg = "bg-slate-200";
+          iconColor = "text-slate-500";
+        }
+        
+        const sign = isNegative ? "-" : "+";
+        const date = new Date(movement.fecha).toLocaleDateString("es-ES", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+        });
+        const desc = movement.descripcion || movement.concept || "Transferencia";
+        const category = movement.tipo || "General";
+        const amountDisplayClass = isNegative ? "text-xl sm:text-2xl font-black" : "font-bold text-lg sm:text-xl";
 
-      return `
-      <div onclick="window.openModal('${movement.uniqueId}')" class="group flex items-center justify-between p-4! transition-all duration-300 cursor-pointer w-full mx-auto hover:bg-neutral-800 hover:border-[#d7fd48]/30 hover:scale-[1.01] overflow-hidden bg-black/40 border border-white/10 rounded-3xl backdrop-blur-sm shadow-xl mb-3">
-        <div class="flex items-center gap-4 min-w-0 flex-1">
-          <div class="w-12 h-12 rounded-full ${iconBg} flex items-center justify-center ${iconColor} transition-transform shrink-0 group-hover:scale-110 group-hover:rotate-12">
-            ${
-              isNegative
-                ? `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" /></svg>`
-                : `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" /></svg>`
-            }
+        return `
+        <div onclick="window.openModal('${movement.uniqueId}')" class="group flex items-center justify-between p-4! transition-all duration-300 cursor-pointer w-full mx-auto hover:bg-neutral-100 hover:scale-[1.01] overflow-hidden bg-white border-4 border-black box-shadow-brutal hover:-translate-y-1 rounded-none mb-3">
+          <div class="flex items-center gap-4 min-w-0 flex-1">
+            <div class="w-12 h-12 rounded-full ${iconBg} border-2 border-black flex items-center justify-center ${iconColor} transition-transform shrink-0 group-hover:scale-110 group-hover:rotate-12">
+              ${
+                isPending
+                  ? `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`
+                  : isNegative
+                  ? `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" /></svg>`
+                  : `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" /></svg>`
+              }
+            </div>
+            <div class="flex flex-col min-w-0">
+              <span class="text-black font-black uppercase transition-colors truncate text-sm sm:text-base">${desc}</span>
+              <div class="flex items-center gap-2">
+                <span class="text-xs text-slate-600 font-mono font-bold">${date}</span>
+                ${isPending ? `<span class="bg-slate-200 text-slate-800 text-[9px] px-1.5 py-0.5 rounded font-bold border border-slate-400">PENDIENTE</span>` : ""}
+              </div>
+            </div>
           </div>
-          <div class="flex flex-col min-w-0">
-            <span class="text-white font-bold group-hover:text-brand-lime transition-colors truncate text-sm sm:text-base">${desc}</span>
-            <span class="text-xs text-slate-500 font-mono">${date}</span>
+          <div class="text-right shrink-0">
+            <p class="${amountDisplayClass} font-mono ${amountColor} group-hover:scale-110 transition-transform origin-right">${sign}${movement.monto}</p>
+            <p class="text-[10px] text-slate-500 uppercase font-black tracking-wider">${category}</p>
           </div>
-        </div>
-        <div class="text-right shrink-0">
-          <p class="font-bold text-lg sm:text-xl font-mono ${amountColor} group-hover:scale-110 transition-transform origin-right">${sign}${movement.monto}</p>
-          <p class="text-[10px] text-slate-500 uppercase tracking-wider">${category}</p>
-        </div>
-      </div>`;
+        </div>`;
     })
     .join("");
 
@@ -236,25 +250,27 @@ function setupModalEvents(dom, state) {
     document.getElementById("modal-id").innerText = `ID: #${uniqueId}`;
 
     const isNegative = movement.es_negativo;
-    const sign = isNegative ? "-" : "+";
+      const isPending = movement.estado === 'pendiente' || movement.estado === 'pending' || movement.status === 'pending';
+      const sign = isNegative ? "-" : "+";
 
-    const amountEl = document.getElementById("modal-amount");
-    if (amountEl) {
-      amountEl.innerText = `${sign}${movement.monto}$`;
-      amountEl.className = `text-3xl font-bold flex justify-center items-center gap-2 ${isNegative ? "text-purple-400" : "text-[#d7fd48]"}`;
-    }
+      const amountEl = document.getElementById("modal-amount");
+      if (amountEl) {
+        amountEl.innerText = `${sign}${movement.monto}$`;
+        let modalAmountColor = isNegative ? "text-red-600" : "text-green-600";
+        if (isPending) modalAmountColor = "text-slate-500";
+        amountEl.className = `text-4xl font-black flex justify-center items-center gap-2 ${modalAmountColor}`;
+      }
 
-    const badgeEl = document.getElementById("modal-status-badge");
-    if (badgeEl) {
-      badgeEl.className = `inline-block mt-2 px-3 py-1 rounded-full text-[10px] font-bold uppercase ${isNegative ? "bg-purple-500/10 text-purple-400" : "bg-[#d7fd48]/10 text-[#d7fd48]"}`;
-    }
-
-    const dateObj = new Date(movement.fecha);
-    document.getElementById("modal-date").innerText = dateObj.toLocaleDateString();
-    document.getElementById("modal-time").innerText = dateObj.toLocaleTimeString();
-    document.getElementById("modal-desc").innerText =
-      movement.descripcion || movement.concept || "Sin descripción";
-    document.getElementById("modal-type").innerText = movement.tipo || "General";
+      const badgeEl = document.getElementById("modal-status-badge");
+      if (badgeEl) {
+        if (isPending) {
+          badgeEl.className = `inline-block mt-2 px-4 py-1.5 rounded text-[11px] border border-slate-400 font-black uppercase bg-slate-200 text-slate-800`;
+          badgeEl.innerText = "PENDIENTE";
+        } else {
+          badgeEl.className = `inline-block mt-2 px-4 py-1.5 rounded text-[11px] font-black uppercase border border-black ${isNegative ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"}`;
+          badgeEl.innerText = isNegative ? "GASTO" : "INGRESO";
+        }
+      }
 
     dom.modal.classList.remove("hidden");
     dom.modal.classList.add("flex");

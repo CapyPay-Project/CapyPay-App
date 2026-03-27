@@ -5,27 +5,27 @@
 ---
 
 <div
-  class="flex flex-col md:flex-row justify-between items-center gap-4 bg-white/5 p-2 rounded-2xl border border-white/10"
+  class="flex flex-col md:flex-row justify-between items-center gap-4 bg-white border-2 border-black p-2 -2xl border-4 border-black"
 >
   <!-- Filtro: Alcance -->
   <div
-    class="flex flex-wrap bg-black/40 rounded-xl p-1 gap-1"
+    class="flex flex-wrap bg-black/40 -xl p-1 gap-1"
     id="scope-filters"
   >
     <button
-      class="scope-btn px-4 py-2 rounded-lg text-sm font-bold bg-brand-lime text-black shadow-[0_0_10px_rgba(215,253,73,0.3)] transition-all"
+      class="scope-btn px-4 py-2  text-sm font-bold bg-brand-lime text-black shadow-[0_0_10px_rgba(215,253,73,0.3)] transition-all"
       data-value="global">Global</button
     >
     <button
-      class="scope-btn px-4 py-2 rounded-lg text-sm font-bold text-white/50 hover:text-white hover:bg-white/10 transition-all"
+      class="scope-btn px-4 py-2  text-sm font-bold text-white/50 hover:text-white hover:bg-white border-2 border-black transition-all"
       data-value="facultad">Facultad</button
     >
     <button
-      class="scope-btn px-4 py-2 rounded-lg text-sm font-bold text-white/50 hover:text-white hover:bg-white/10 transition-all"
+      class="scope-btn px-4 py-2  text-sm font-bold text-white/50 hover:text-white hover:bg-white border-2 border-black transition-all"
       data-value="carrera">Carrera</button
     >
     <button
-      class="scope-btn px-4 py-2 rounded-lg text-sm font-bold text-white/50 hover:text-white hover:bg-white/10 transition-all"
+      class="scope-btn px-4 py-2  text-sm font-bold text-white/50 hover:text-white hover:bg-white border-2 border-black transition-all"
       data-value="amigos">Amigos 🤝</button
     >
   </div>
@@ -34,7 +34,7 @@
   <div class="relative w-full md:w-48 z-20">
     <button
       id="time-filter-btn"
-      class="w-full bg-black/40 text-white text-sm font-bold rounded-xl border border-white/10 py-2.5 px-4 flex justify-between items-center hover:border-brand-lime/50 transition-all focus:outline-none focus:border-brand-lime/50 group"
+      class="w-full bg-black/40 text-white text-sm font-bold -xl border-4 border-black py-2.5 px-4 flex justify-between items-center hover:border-brand-lime/50 transition-all focus:outline-none focus:border-brand-lime/50 group"
       type="button"
     >
       <span class="text-white" id="time-filter-label">Esta Semana</span>
@@ -57,11 +57,11 @@
     <!-- Menú desplegable -->
     <div
       id="time-filter-menu"
-      class="absolute top-full right-0 w-full mt-2 bg-[#1a1b2e] border border-brand-lime/20 rounded-xl overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.5)] z-50 hidden"
+      class="absolute top-full right-0 w-full mt-2 bg-[#1a1b2e] border border-brand-lime/20 -xl overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.5)] z-50 hidden"
     >
       <div class="p-1 flex flex-col gap-1">
         <button
-          class="time-option w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium text-white hover:bg-white/10 transition-colors flex items-center justify-between group"
+          class="time-option w-full text-left px-4 py-2.5  text-sm font-medium text-white hover:bg-white border-2 border-black transition-colors flex items-center justify-between group"
           data-label="Esta Semana"
         >
           <span>Esta Semana</span>
@@ -71,7 +71,7 @@
           >
         </button>
         <button
-          class="time-option w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium text-white/70 hover:text-white hover:bg-white/10 transition-colors flex items-center justify-between group"
+          class="time-option w-full text-left px-4 py-2.5  text-sm font-medium text-white/70 hover:text-white hover:bg-white border-2 border-black transition-colors flex items-center justify-between group"
           data-label="Este Mes"
         >
           <span>Este Mes</span>
@@ -81,7 +81,7 @@
           >
         </button>
         <button
-          class="time-option w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium text-white/70 hover:text-white hover:bg-white/10 transition-colors flex items-center justify-between group"
+          class="time-option w-full text-left px-4 py-2.5  text-sm font-medium text-white/70 hover:text-white hover:bg-white border-2 border-black transition-colors flex items-center justify-between group"
           data-label="Histórico"
         >
           <span>Histórico</span>

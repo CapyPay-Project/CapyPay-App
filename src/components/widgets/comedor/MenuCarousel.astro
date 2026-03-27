@@ -19,7 +19,7 @@ bg-clip-text text-transparent font-black italic pr-1 pb-1"
 overflow-x-auto hide-scrollbar">
       <button
         class="filter-btn active bg-brand-white
-text-brand-black font-bold text-xs px-4 py-2 rounded-full border border-white/10
+text-brand-black font-bold text-xs px-4 py-2 -full border-4 border-black
 transition hover:scale-105"
         data-category="all"
       >
@@ -35,19 +35,19 @@ transition hover:scale-105"
     <div
       class="hidden md:block absolute
 inset-y-0 left-0 w-16 bg-linear-to-r from-[#0a0a0a] to-transparent z-10
-pointer-events-none rounded-l-3xl"
+pointer-events-none -l-3xl"
     >
     </div>
     <div
       class="hidden md:block absolute
 inset-y-0 right-0 w-16 bg-linear-to-l from-[#0a0a0a] to-transparent z-10
-pointer-events-none rounded-r-3xl"
+pointer-events-none -r-3xl"
     >
     </div>
     <button
       id="scroll-left" aria-label="Anterior"
       class="absolute top-1/2 -translate-y-1/2 scale-0 md:scale-100 md:-left-6 z-20
-w-12 h-12 rounded-full bg-black/50 backdrop-blur-xl border border-white/10 flex
+w-12 h-12 -full bg-black/50 backdrop-blur-xl border-4 border-black flex
 items-center justify-center text-white hover:bg-brand-lime hover:text-black
 hover:scale-110 transition duration-300 opacity-0 group-hover:opacity-100
 translate-x-4 group-hover:translate-x-0 shadow-xl"
@@ -64,8 +64,8 @@ translate-x-4 group-hover:translate-x-0 shadow-xl"
     <button
       id="scroll-right" aria-label="Siguiente"
       class="absolute top-1/2
--translate-y-1/2 scale-0 md:scale-100 md:-right-6 z-20 w-12 h-12 rounded-full
-bg-black/50 backdrop-blur-xl border border-white/10 flex items-center
+-translate-y-1/2 scale-0 md:scale-100 md:-right-6 z-20 w-12 h-12 -full
+bg-black/50 backdrop-blur-xl border-4 border-black flex items-center
 justify-center text-white hover:bg-brand-lime hover:text-black hover:scale-110
 transition duration-300 opacity-0 group-hover:opacity-100 -translate-x-4
 group-hover:translate-x-0 shadow-xl"

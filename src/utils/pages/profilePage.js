@@ -266,7 +266,13 @@ function setupGlobalActions(dom) {
   window.showFAQModal = () => openModal(dom.faqModal);
   window.closeFAQModal = () => closeModal(dom.faqModal);
 
-  window.showLogoutModal = () => openModal(dom.logoutModal);
+  window.showLogoutModal = () => {
+    if (typeof window.openLogoutModal === "function") {
+      window.openLogoutModal();
+    } else {
+      openModal(dom.logoutModal);
+    }
+  };
   window.closeLogoutModal = () => closeModal(dom.logoutModal);
 
   window.confirmLogout = () => {

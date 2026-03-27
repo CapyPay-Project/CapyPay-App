@@ -2,17 +2,19 @@
 import { Card } from "../../ui";
 ---
 
-<Card class="p-6! relative overflow-hidden shadow-2xl shadow-black/50">
+<Card
+  class="p-6! relative overflow-hidden shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] border-4 border-black"
+>
   <div
-    class="absolute -bottom-16 -left-16 w-40 h-40 bg-purple-500/5 rounded-full blur-3xl pointer-events-none"
+    class="absolute -bottom-16 -left-16 w-40 h-40 bg-purple-500/5 blur-3xl pointer-events-none"
   >
   </div>
 
   <div class="relative z-10 space-y-6">
-    <h3 class="text-lg font-bold text-white flex items-center gap-2">
+    <h3 class="text-xl font-bold text-black flex items-center gap-2">
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        class="h-5 w-5 text-purple-400"
+        class="h-6 w-6 text-brand-lime"
         fill="none"
         viewBox="0 0 24 24"
         stroke="currentColor"
@@ -30,19 +32,19 @@ import { Card } from "../../ui";
       Configuración
     </h3>
 
-    <div class="space-y-1">
+    <div class="space-y-4">
       <p
-        class="text-xs text-slate-500 uppercase tracking-wider font-medium px-1 mb-2"
+        class="text-sm text-black font-black uppercase tracking-wider px-1 border-b-4 border-brand-lime inline-block mb-2"
       >
         General
       </p>
 
       <div
-        class="flex items-center justify-between p-3 bg-white/5 rounded-xl border border-white/5 hover:border-brand-lime/30 transition-all"
+        class="flex items-center justify-between p-5 bg-white border-4 border-black hover:-translate-y-1 shadow-[4px_4px_0_0_#000] hover:shadow-none transition-all"
       >
         <div class="flex items-center gap-3">
           <div
-            class="w-9 h-9 rounded-lg bg-brand-lime/10 flex items-center justify-center text-brand-lime shrink-0"
+            class="w-9 h-9 bg-brand-lime/10 flex items-center justify-center text-brand-lime shrink-0"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -58,7 +60,7 @@ import { Card } from "../../ui";
               ></path></svg
             >
           </div>
-          <span class="text-white text-sm font-medium">Notificaciones</span>
+          <span class="text-black text-sm font-medium">Notificaciones</span>
         </div>
         <label class="relative inline-flex items-center cursor-pointer">
           <input
@@ -68,19 +70,19 @@ import { Card } from "../../ui";
             id="notificaciones-toggle"
           />
           <div
-            class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-lime"
+            class="w-11 h-6 bg-slate-700 peer-focus:outline-none peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after: after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-lime"
           >
           </div>
         </label>
       </div>
 
       <button
-        class="w-full flex items-center justify-between p-3 bg-white/5 rounded-xl border border-white/5 hover:border-brand-lime/30 transition-all group"
+        class="w-full flex items-center justify-between p-5 bg-white border-4 border-black hover:-translate-y-1 shadow-[4px_4px_0_0_#000] hover:shadow-none transition-all group mt-4 h-auto"
         onclick="alert('Función de cambiar tema próximamente disponible')"
       >
         <div class="flex items-center gap-3">
           <div
-            class="w-9 h-9 rounded-lg bg-indigo-500/10 flex items-center justify-center text-indigo-400 group-hover:text-brand-lime transition-colors shrink-0"
+            class="w-9 h-9 bg-indigo-500/10 flex items-center justify-center text-indigo-400 group-hover:text-brand-lime transition-colors shrink-0"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -96,13 +98,15 @@ import { Card } from "../../ui";
               ></path></svg
             >
           </div>
-          <span class="text-white text-sm font-medium">Apariencia</span>
+          <span class="text-black text-sm font-medium">Apariencia</span>
         </div>
         <div class="flex items-center gap-2">
-          <span class="text-slate-500 text-xs">Modo Oscuro - Activado</span>
+          <span class="text-black font-semibold text-xs"
+            >Modo Oscuro - Activado</span
+          >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            class="h-4 w-4 text-slate-500 group-hover:text-brand-lime transition-colors shrink-0"
+            class="h-4 w-4 text-black font-semibold group-hover:text-brand-lime transition-colors shrink-0"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -116,20 +120,20 @@ import { Card } from "../../ui";
       </button>
     </div>
 
-    <div class="space-y-1">
+    <div class="space-y-4 pt-4 border-t-4 border-black">
       <p
-        class="text-xs text-slate-500 uppercase tracking-wider font-medium px-1 mb-2"
+        class="text-sm text-black font-black uppercase tracking-wider px-1 border-b-4 border-brand-lime inline-block mb-2"
       >
         Soporte y Legal
       </p>
 
       <button
-        class="w-full flex items-center justify-between p-3 bg-white/5 rounded-xl border border-white/5 hover:border-brand-lime/30 transition-all group"
+        class="w-full flex items-center justify-between p-5 bg-white border-4 border-black hover:-translate-y-1 shadow-[4px_4px_0_0_#000] hover:shadow-none transition-all group"
         onclick="showFAQModal()"
       >
         <div class="flex items-center gap-3">
           <div
-            class="w-9 h-9 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-400 group-hover:text-brand-lime transition-colors shrink-0"
+            class="w-9 h-9 bg-blue-500/10 flex items-center justify-center text-blue-400 group-hover:text-brand-lime transition-colors shrink-0"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -145,11 +149,11 @@ import { Card } from "../../ui";
               ></path></svg
             >
           </div>
-          <span class="text-white text-sm font-medium">Centro de Ayuda</span>
+          <span class="text-black text-sm font-medium">Centro de Ayuda</span>
         </div>
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-4 w-4 text-slate-500 group-hover:text-brand-lime transition-colors shrink-0"
+          class="h-4 w-4 text-black font-semibold group-hover:text-brand-lime transition-colors shrink-0"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -162,12 +166,12 @@ import { Card } from "../../ui";
       </button>
 
       <button
-        class="w-full flex items-center justify-between p-3 bg-white/5 rounded-xl border border-white/5 hover:border-brand-lime/30 transition-all group"
+        class="w-full flex items-center justify-between p-5 bg-white border-4 border-black hover:-translate-y-1 shadow-[4px_4px_0_0_#000] hover:shadow-none transition-all group mt-4 h-auto"
         onclick="alert('Abriendo Términos y Condiciones...')"
       >
         <div class="flex items-center gap-3">
           <div
-            class="w-9 h-9 rounded-lg bg-purple-500/10 flex items-center justify-center text-purple-400 group-hover:text-brand-lime transition-colors shrink-0"
+            class="w-9 h-9 bg-purple-500/10 flex items-center justify-center text-purple-400 group-hover:text-brand-lime transition-colors shrink-0"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -183,13 +187,13 @@ import { Card } from "../../ui";
               ></path></svg
             >
           </div>
-          <span class="text-white text-sm font-medium"
+          <span class="text-black text-sm font-medium"
             >Términos y Condiciones</span
           >
         </div>
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-4 w-4 text-slate-500 group-hover:text-brand-lime transition-colors shrink-0"
+          class="h-4 w-4 text-black font-semibold group-hover:text-brand-lime transition-colors shrink-0"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -202,12 +206,12 @@ import { Card } from "../../ui";
       </button>
 
       <button
-        class="w-full flex items-center justify-between p-3 bg-white/5 rounded-xl border border-white/5 hover:border-brand-lime/30 transition-all group"
+        class="w-full flex items-center justify-between p-5 bg-white border-4 border-black hover:-translate-y-1 shadow-[4px_4px_0_0_#000] hover:shadow-none transition-all group mt-4 h-auto"
         onclick="alert('Abriendo Políticas de Privacidad...')"
       >
         <div class="flex items-center gap-3">
           <div
-            class="w-9 h-9 rounded-lg bg-green-500/10 flex items-center justify-center text-green-400 group-hover:text-brand-lime transition-colors shrink-0"
+            class="w-9 h-9 bg-green-500/10 flex items-center justify-center text-green-400 group-hover:text-brand-lime transition-colors shrink-0"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -223,13 +227,13 @@ import { Card } from "../../ui";
               ></path></svg
             >
           </div>
-          <span class="text-white text-sm font-medium"
+          <span class="text-black text-sm font-medium"
             >Políticas de Privacidad</span
           >
         </div>
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-4 w-4 text-slate-500 group-hover:text-brand-lime transition-colors shrink-0"
+          class="h-4 w-4 text-black font-semibold group-hover:text-brand-lime transition-colors shrink-0"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -242,20 +246,20 @@ import { Card } from "../../ui";
       </button>
     </div>
 
-    <div class="space-y-1">
+    <div class="space-y-4 pt-4 border-t-4 border-black">
       <p
-        class="text-xs text-slate-500 uppercase tracking-wider font-medium px-1 mb-2"
+        class="text-sm text-black font-black uppercase tracking-wider px-1 border-b-4 border-brand-lime inline-block mb-2"
       >
         Seguridad de la Cuenta
       </p>
 
       <button
-        class="w-full flex items-center justify-between p-3 bg-white/5 rounded-xl border border-white/5 hover:border-brand-lime/30 transition-all group"
+        class="w-full flex items-center justify-between p-5 bg-white border-4 border-black hover:-translate-y-1 shadow-[4px_4px_0_0_#000] hover:shadow-none transition-all group"
         onclick="showSecurityModal()"
       >
         <div class="flex items-center gap-3">
           <div
-            class="w-9 h-9 rounded-lg bg-red-500/10 flex items-center justify-center text-red-400 group-hover:text-brand-lime transition-colors shrink-0"
+            class="w-9 h-9 bg-red-500/10 flex items-center justify-center text-red-400 group-hover:text-brand-lime transition-colors shrink-0"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -272,13 +276,13 @@ import { Card } from "../../ui";
             >
           </div>
           <div class="flex-1 text-left">
-            <span class="text-white text-sm font-medium">Seguridad</span>
-            <p class="text-slate-500 text-xs">Gestión de cuenta</p>
+            <span class="text-black text-sm font-medium">Seguridad</span>
+            <p class="text-black font-semibold text-xs">Gestión de cuenta</p>
           </div>
         </div>
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-4 w-4 text-slate-500 group-hover:text-brand-lime transition-colors shrink-0"
+          class="h-4 w-4 text-black font-semibold group-hover:text-brand-lime transition-colors shrink-0"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -291,20 +295,20 @@ import { Card } from "../../ui";
       </button>
     </div>
 
-    <div class="space-y-2 pt-4 border-t border-white/10">
+    <div class="space-y-4 pt-4 border-t-4 border-black">
       <p
-        class="text-xs text-slate-500 uppercase tracking-wider font-medium px-1 mb-2"
+        class="text-sm text-black font-black uppercase tracking-wider px-1 border-b-4 border-brand-lime inline-block mb-2"
       >
         Sesión
       </p>
 
       <button
-        class="w-full flex items-center justify-center gap-2 p-3 bg-white/5 rounded-xl border border-white/5 hover:bg-white/10 hover:border-brand-lime/30 transition-all group"
+        class="w-full flex items-center justify-center gap-2 p-5 bg-white border-4 border-black hover:-translate-y-1 shadow-[4px_4px_0_0_#000] hover:shadow-none transition-all group"
         onclick="showLogoutModal()"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5 text-slate-400 group-hover:text-brand-lime transition-colors"
+          class="h-5 w-5 text-black font-bold group-hover:text-brand-lime transition-colors"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -316,13 +320,13 @@ import { Card } from "../../ui";
           ></path></svg
         >
         <span
-          class="text-slate-400 text-sm font-medium group-hover:text-brand-lime transition-colors"
+          class="text-black font-bold text-sm font-medium group-hover:text-brand-lime transition-colors"
           >Cerrar Sesión</span
         >
       </button>
 
       <button
-        class="w-full flex items-center justify-center gap-2 p-3 bg-red-500/10 rounded-xl border border-red-500/20 hover:bg-red-500/20 hover:border-red-500/40 transition-all group"
+        class="w-full flex items-center justify-center gap-2 p-3 bg-red-500/10 border border-red-500/20 hover:bg-red-500/20 hover:border-red-500/40 transition-all group"
         onclick="confirmarEliminacionCuenta()"
       >
         <svg

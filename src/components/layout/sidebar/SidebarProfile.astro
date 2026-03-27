@@ -16,19 +16,19 @@
 ---
 
 <div
-  class="flex flex-col items-center p-2 py-4 border-b border-white/5 overflow-hidden whitespace-nowrap transition-all duration-300 origin-top"
+  class="flex flex-col items-center p-2 py-4 border-b border-black overflow-hidden whitespace-nowrap transition-all duration-300 origin-top"
 >
   <!-- Foto de perfil (enlaza a la página de perfil) -->
   <a
     href="/account/profile"
     id="sidebar-profile-photo"
-    class="w-9 h-9 rounded-full p-1 bg-transparent mb-2 transition-all duration-300 sidebar-photo border-2 hover:scale-105"
+    class="w-9 h-9 -full p-1 bg-transparent mb-2 transition-all duration-300 sidebar-photo border-2 hover:scale-105"
     title="Ver mi perfil"
   >
     <img
       src="https://api.dicebear.com/9.x/lorelei/svg?seed=Aneka"
       alt="Foto de perfil"
-      class="w-full h-full rounded-full bg-black object-cover"
+      class="w-full h-full -full bg-black object-cover"
     />
   </a>
 
@@ -52,15 +52,15 @@
         </span>
       </div>
       <div
-        class="flex justify-between items-center text-[11px] text-slate-500 mb-1"
+        class="flex justify-between items-center text-[11px] text-black font-semibold mb-1"
       >
         <span id="sidebar-level-xp">0 XP</span>
         <span id="sidebar-level-max">0 XP</span>
       </div>
-      <div class="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
+      <div class="w-full bg-[#e5e5e5] border-2 border-black -full h-1.5 overflow-hidden">
         <div
           id="sidebar-level-bar"
-          class="bg-brand-lime h-full rounded-full w-[0%] shadow-[0_0_10px_rgba(215,253,72,0.5)]"
+          class="bg-brand-lime h-full -full w-[0%] shadow-[0_0_10px_rgba(215,253,72,0.5)]"
         >
         </div>
       </div>

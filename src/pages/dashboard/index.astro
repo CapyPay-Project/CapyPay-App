@@ -1,17 +1,17 @@
 ---
 import CapyPay from "../../layouts/MainLayout.astro";
 import { NivelBadge } from "../../components/ui/index";
-import BalanceCard from "../../components/widgets/dashboard/BalanceCard.astro";
-import QuickPay from "../../components/widgets/dashboard/QuickPay.astro";
-import FinanceChart from "../../components/widgets/dashboard/FinanceChart.astro";
-import ExchangeRateWidget from "../../components/widgets/dashboard/ExchangeRateWidget.astro";
+import UserWalletBalance from "../../components/dashboard/finance/UserWalletBalance.astro";
+import QuickActionsPanel from "../../components/dashboard/actions/QuickActionsPanel.astro";
+import CashFlowAnalytics from "../../components/dashboard/analytics/CashFlowAnalytics.astro";
+import BcvTickerPanel from "../../components/dashboard/finance/BcvTickerPanel.astro";
 ---
 
 <CapyPay title="Dashboard | CapyPay" showSidebar={true}>
   <div class="flex flex-col lg:h-full w-full pb-20 lg:pb-0">
     <!-- HEADER ESCRITORIO -->
     <header
-      class="hidden lg:flex justify-between items-end mb-8 animate-fade-in-down"
+      class="hidden lg:flex justify-between items-end mb-8 animate-fade-in-down relative z-50"
     >
       <div>
         <h1
@@ -124,23 +124,23 @@ import ExchangeRateWidget from "../../components/widgets/dashboard/ExchangeRateW
       >
         <!-- Balance Row -->
         <div class="w-full">
-          <BalanceCard amount="0.00" />
+          <UserWalletBalance amount="0.00" />
         </div>
 
         <!-- Middle Row (Chart + QuickPay) -->
         <div class="grid lg:grid-cols-3 gap-6">
           <div class="lg:col-span-2">
-            <FinanceChart />
+            <CashFlowAnalytics />
           </div>
           <div class="lg:col-span-1">
-            <QuickPay />
+            <QuickActionsPanel />
           </div>
         </div>
 
         <!-- Bottom Row (Exchange, Tasks, Level) -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
           <div class="h-32 sm:h-auto">
-            <ExchangeRateWidget />
+            <BcvTickerPanel />
           </div>
 
           <!-- Daily Tasks Widget -->
@@ -161,7 +161,7 @@ import ExchangeRateWidget from "../../components/widgets/dashboard/ExchangeRateW
                 TAREAS DIARIAS
               </p>
               <div
-                class="w-full h-3 border-2 border-black bg-white rounded-full overflow-hidden"
+                class="w-full h-3 border-2 border-black bg-white -full overflow-hidden"
               >
                 <div class="h-full bg-[#8b5cf6] w-3/5 border-r-2 border-black">
                 </div>
@@ -201,14 +201,25 @@ import ExchangeRateWidget from "../../components/widgets/dashboard/ExchangeRateW
       >
         <!-- Header -->
         <div
-          class="p-5 border-b-4 border-black flex justify-between items-center shrink-0 bg-white z-10 w-full text-center lg:text-left"
+          class="p-5 border-b-4 border-black flex flex-col sm:flex-row justify-between items-center shrink-0 bg-white z-10 w-full text-center lg:text-left gap-2"
         >
           <h2 class="text-xl font-black text-black uppercase tracking-widest">
-            FLUJO RECIENTE
+            HISTORIAL
           </h2>
-          <button class="hover:bg-gray-200 p-1 transition-colors">
-            <span class="material-symbols-outlined font-black">sort</span>
-          </button>
+          <div
+            class="flex border-2 border-black text-[10px] font-black uppercase"
+          >
+            <button
+              id="btn-hist-expenses"
+              class="px-2 py-1 bg-white text-black hover:bg-gray-200 transition-colors"
+              >Egresos</button
+            >
+            <button
+              id="btn-hist-income"
+              class="px-2 py-1 bg-white text-black hover:bg-gray-200 transition-colors"
+              >Ingresos</button
+            >
+          </div>
         </div>
 
         <!-- List container -->
@@ -323,12 +334,19 @@ import ExchangeRateWidget from "../../components/widgets/dashboard/ExchangeRateW
     } from "../../services/api.js";
 
     let cachedMovements = [];
+    let currentFilter = "all";
 
     function renderHistoryList() {
       const container = document.getElementById("history-list-container");
       if (!container) return;
 
-      const moves = cachedMovements.slice(0, 7);
+      let filteredMoves = cachedMovements;
+      if (currentFilter === "expenses") {
+        filteredMoves = cachedMovements.filter((m) => m.es_negativo);
+      } else if (currentFilter === "income") {
+        filteredMoves = cachedMovements.filter((m) => !m.es_negativo);
+      }
+      const moves = filteredMoves.slice(0, 7);
 
       if (moves.length === 0) {
         container.innerHTML =
@@ -417,6 +435,38 @@ import ExchangeRateWidget from "../../components/widgets/dashboard/ExchangeRateW
     }
 
     async function initDashboard() {
+      const btnExpenses = document.getElementById("btn-hist-expenses");
+      const btnIncome = document.getElementById("btn-hist-income");
+      if (btnExpenses && btnIncome) {
+        btnExpenses.onclick = () => {
+          if (currentFilter === "expenses") {
+            currentFilter = "all";
+            btnExpenses.classList.replace("bg-black", "bg-white");
+            btnExpenses.classList.replace("text-white", "text-black");
+          } else {
+            currentFilter = "expenses";
+            btnExpenses.classList.replace("bg-white", "bg-black");
+            btnExpenses.classList.replace("text-black", "text-white");
+            btnIncome.classList.replace("bg-black", "bg-white");
+            btnIncome.classList.replace("text-white", "text-black");
+          }
+          renderHistoryList();
+        };
+        btnIncome.onclick = () => {
+          if (currentFilter === "income") {
+            currentFilter = "all";
+            btnIncome.classList.replace("bg-black", "bg-white");
+            btnIncome.classList.replace("text-white", "text-black");
+          } else {
+            currentFilter = "income";
+            btnIncome.classList.replace("bg-white", "bg-black");
+            btnIncome.classList.replace("text-black", "text-white");
+            btnExpenses.classList.replace("bg-black", "bg-white");
+            btnExpenses.classList.replace("text-white", "text-black");
+          }
+          renderHistoryList();
+        };
+      }
       const user = authService.getCurrentUser();
       if (!user) {
         return;
@@ -440,7 +490,10 @@ import ExchangeRateWidget from "../../components/widgets/dashboard/ExchangeRateW
       const cancelLogoutBtn = document.getElementById("cancel-logout");
 
       window.showLogoutModal = () => {
-        if (!logoutModal) return;
+        if (typeof window.openLogoutModal === "function") {
+          window.openLogoutModal();
+          return;
+        }
         logoutModal.classList.remove("hidden");
         logoutModal.classList.add("flex");
         requestAnimationFrame(() => {
@@ -504,7 +557,7 @@ import ExchangeRateWidget from "../../components/widgets/dashboard/ExchangeRateW
               .map(
                 (n) => `
               <div class="border-2 border-black p-2 hover:bg-gray-100 transition-colors ${!n.leida && !n.read ? "bg-[#d7fd48]/20" : "bg-white"}">
-                <p class="text-[10px] font-black uppercase line-clamp-2 leading-tight">${n.titulo || n.title || "Alerta"}</p>
+                <p class="text-[10px] font-black uppercase line-clamp-2 leading-tight">${n.message || "Nueva notificación"}</p>
                 <p class="text-[9px] text-gray-600 mt-1 uppercase">${new Date(n.created_at || n.fecha || Date.now()).toLocaleDateString()}</p>
               </div>
             `,

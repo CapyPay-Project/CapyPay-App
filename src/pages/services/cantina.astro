@@ -179,15 +179,15 @@ import FloatingActions from "../../components/widgets/comedor/FloatingActions.as
 
         const card = document.createElement("div");
         card.className =
-          "bg-white/5 border border-white/5 rounded-3xl overflow-hidden cursor-pointer transition-all hover:bg-white/8 hover:-translate-y-2 duration-500 ease-out group min-w-0";
+          "bg-white border-2 border-black border-4 border-black -3xl overflow-hidden cursor-pointer transition-all hover:bg-white/8 hover:-translate-y-2 duration-500 ease-out group min-w-0";
         card.innerHTML = `
-          <div class="relative h-48 rounded-2xl overflow-hidden mb-3 shadow-lg">
+          <div class="relative h-48 -2xl overflow-hidden mb-3 shadow-lg">
             <img
               src="${area.image}"
               alt="${area.name}"
               class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
             />
-            <div class="absolute top-2 right-2 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10">
+            <div class="absolute top-2 right-2 bg-black/60 backdrop-blur-md px-3 py-1.5 -full border-4 border-black">
               <span class="text-brand-lime font-black text-xs">${activeCantinas}/${totalCantinas} cantinas</span>
             </div>
           </div>
@@ -196,7 +196,7 @@ import FloatingActions from "../../components/widgets/comedor/FloatingActions.as
             <p class="text-white/50 text-[10px] mb-3 line-clamp-2">${area.description}</p>
             <div class="flex items-center justify-between">
               <span class="text-[10px] text-brand-lime font-medium flex items-center gap-1.5 truncate">
-                <div class="w-1.5 h-1.5 rounded-full bg-brand-lime animate-pulse shrink-0"></div>
+                <div class="w-1.5 h-1.5 -full bg-brand-lime animate-pulse shrink-0"></div>
                 ${activeCantinas} abiertas
               </span>
               <svg
@@ -229,7 +229,7 @@ import FloatingActions from "../../components/widgets/comedor/FloatingActions.as
 
       // Actualizar encabezado
       document.getElementById("area-title").textContent = area.name;
-      document.getElementById("area-stats").innerHTML = `<span class="w-2 h-2 rounded-full bg-brand-lime animate-pulse shrink-0"></span> ${activeCantinas} de ${areaCantinas.length} cantinas activas`;
+      document.getElementById("area-stats").innerHTML = `<span class="w-2 h-2 -full bg-brand-lime animate-pulse shrink-0"></span> ${activeCantinas} de ${areaCantinas.length} cantinas activas`;
 
       // Limpiar contenedor de manera suave
       cantinasList.style.opacity = '0';
@@ -240,22 +240,22 @@ import FloatingActions from "../../components/widgets/comedor/FloatingActions.as
 
       areaCantinas.forEach((cantina, index) => {
         const statusBadge = cantina.isOpen
-          ? `<span class="absolute top-2 left-2 inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-brand-lime/20 border border-brand-lime/50 text-brand-lime text-xs font-bold uppercase tracking-wider backdrop-blur-md">
-               <span class="w-1.5 h-1.5 rounded-full bg-brand-lime animate-pulse"></span>
+          ? `<span class="absolute top-2 left-2 inline-flex items-center gap-1 px-3 py-1.5 -full bg-brand-lime/20 border border-brand-lime/50 text-brand-lime text-xs font-bold uppercase tracking-wider backdrop-blur-md">
+               <span class="w-1.5 h-1.5 -full bg-brand-lime animate-pulse"></span>
                Abierto
              </span>`
-          : `<span class="absolute top-2 left-2 inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-red-500/20 border border-red-500/50 text-red-400 text-xs font-bold uppercase tracking-wider backdrop-blur-md">
-               <span class="w-1.5 h-1.5 rounded-full bg-red-400"></span>
+          : `<span class="absolute top-2 left-2 inline-flex items-center gap-1 px-3 py-1.5 -full bg-red-500/20 border border-red-500/50 text-red-400 text-xs font-bold uppercase tracking-wider backdrop-blur-md">
+               <span class="w-1.5 h-1.5 -full bg-red-400"></span>
                Cerrado
              </span>`;
 
         const card = document.createElement("div");
         card.className =
-          "bg-white/5 border border-white/5 rounded-3xl p-4 group transition-all hover:bg-white/8 hover:-translate-y-2 duration-500 ease-out cursor-pointer min-w-0";
+          "bg-white border-2 border-black border-4 border-black -3xl p-4 group transition-all hover:bg-white/8 hover:-translate-y-2 duration-500 ease-out cursor-pointer min-w-0";
         card.style.opacity = '0';
         card.style.transform = 'translateY(10px)';
         card.innerHTML = `
-          <div class="relative h-48 rounded-2xl overflow-hidden mb-3 shadow-lg">
+          <div class="relative h-48 -2xl overflow-hidden mb-3 shadow-lg">
             <img
               src="${cantina.image}"
               alt="${cantina.name}"
@@ -318,29 +318,29 @@ import FloatingActions from "../../components/widgets/comedor/FloatingActions.as
         const isOutOfStock = !product.isAvailable || product.stock <= 0;
         
         const card = document.createElement("div");
-        card.className = `bg-white/5 border border-white/5 rounded-3xl p-4 group transition-all ${isOutOfStock ? 'opacity-70 grayscale-[0.5]' : 'hover:bg-white/8 hover:-translate-y-2'} duration-500 ease-out min-w-0`;
+        card.className = `bg-white border-2 border-black border-4 border-black -3xl p-4 group transition-all ${isOutOfStock ? 'opacity-70 grayscale-[0.5]' : 'hover:bg-white/8 hover:-translate-y-2'} duration-500 ease-out min-w-0`;
         
         const stockOverlay = isOutOfStock ? `
           <div class="absolute inset-0 bg-black/60 backdrop-blur-[2px] z-10 flex flex-col items-center justify-center">
-            <span class="text-red-500 font-black text-[10px] sm:text-xs border-2 border-red-500 px-3 py-1 rounded-full uppercase tracking-widest bg-red-500/10 shadow-[0_0_15px_rgba(239,68,68,0.3)] transform -rotate-12">
+            <span class="text-red-500 font-black text-[10px] sm:text-xs border-2 border-red-500 px-3 py-1 -full uppercase tracking-widest bg-red-500/10 shadow-[0_0_15px_rgba(239,68,68,0.3)] transform -rotate-12">
               Sin Stock
             </span>
           </div>
         ` : '';
         
         const buttonClasses = isOutOfStock 
-            ? 'w-full py-2.5 rounded-xl border border-white/10 text-white/30 font-bold text-[10px] uppercase bg-white/5 cursor-not-allowed'
-            : 'buy-btn w-full py-2.5 rounded-xl border border-brand-lime/30 text-brand-lime font-bold text-[10px] uppercase hover:bg-brand-lime hover:text-black transition-all cursor-pointer';
+            ? 'w-full py-2.5 -xl border-4 border-black text-white/30 font-bold text-[10px] uppercase bg-white border-2 border-black cursor-not-allowed'
+            : 'buy-btn w-full py-2.5 -xl border border-brand-lime/30 text-brand-lime font-bold text-[10px] uppercase hover:bg-brand-lime hover:text-black transition-all cursor-pointer';
 
         card.innerHTML = `
-          <div class="relative h-48 rounded-2xl overflow-hidden mb-3 shadow-lg ${isOutOfStock ? 'scale-[0.98]' : ''}">
+          <div class="relative h-48 -2xl overflow-hidden mb-3 shadow-lg ${isOutOfStock ? 'scale-[0.98]' : ''}">
             ${stockOverlay}
             <img
               src="${product.image}"
               alt="${product.name}"
               class="w-full h-full object-cover ${isOutOfStock ? '' : 'group-hover:scale-110'} transition-transform duration-700"
             />
-            <div class="absolute top-2 right-2 bg-black/60 backdrop-blur-md px-2 py-0.5 rounded-full border border-white/10 z-20">
+            <div class="absolute top-2 right-2 bg-black/60 backdrop-blur-md px-2 py-0.5 -full border-4 border-black z-20">
               <span class="text-brand-lime font-black text-[10px]">+${product.xpReward} XP</span>
             </div>
           </div>
@@ -425,12 +425,12 @@ import FloatingActions from "../../components/widgets/comedor/FloatingActions.as
       const statusBadge = document.getElementById("cantina-status");
       if (cantina.isOpen) {
         statusBadge.className =
-          "px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-wider bg-brand-lime/20 border border-brand-lime/50 text-brand-lime";
-        statusBadge.innerHTML = `<span class="inline-flex items-center gap-1 sm:gap-1.5"><span class="w-1 sm:w-1.5 h-1 sm:h-1.5 rounded-full bg-brand-lime animate-pulse"></span>Abierto</span>`;
+          "px-2 sm:px-3 py-1 -full text-[10px] sm:text-xs font-bold uppercase tracking-wider bg-brand-lime/20 border border-brand-lime/50 text-brand-lime";
+        statusBadge.innerHTML = `<span class="inline-flex items-center gap-1 sm:gap-1.5"><span class="w-1 sm:w-1.5 h-1 sm:h-1.5 -full bg-brand-lime animate-pulse"></span>Abierto</span>`;
       } else {
         statusBadge.className =
-          "px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-wider bg-red-500/20 border border-red-500/50 text-red-400";
-        statusBadge.innerHTML = `<span class="inline-flex items-center gap-1 sm:gap-1.5"><span class="w-1 sm:w-1.5 h-1 sm:h-1.5 rounded-full bg-red-400"></span>Cerrado</span>`;
+          "px-2 sm:px-3 py-1 -full text-[10px] sm:text-xs font-bold uppercase tracking-wider bg-red-500/20 border border-red-500/50 text-red-400";
+        statusBadge.innerHTML = `<span class="inline-flex items-center gap-1 sm:gap-1.5"><span class="w-1 sm:w-1.5 h-1 sm:h-1.5 -full bg-red-400"></span>Cerrado</span>`;
       }
 
       // Renderizar productos o mensaje de cerrado
@@ -444,7 +444,7 @@ import FloatingActions from "../../components/widgets/comedor/FloatingActions.as
         productsTitle.classList.add("hidden");
         productsGrid.innerHTML = `
           <div class="col-span-full flex flex-col items-center justify-center py-16 text-center">
-            <div class="w-24 h-24 rounded-full bg-red-500/10 flex items-center justify-center mb-6">
+            <div class="w-24 h-24 -full bg-red-500/10 flex items-center justify-center mb-6">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 class="h-12 w-12 text-red-400"
@@ -467,7 +467,7 @@ import FloatingActions from "../../components/widgets/comedor/FloatingActions.as
             </p>
             <button
               onclick="showCantinasList(currentArea)"
-              class="mt-8 px-6 py-3 rounded-xl bg-brand-lime hover:bg-brand-lime/90 text-black font-bold text-sm uppercase tracking-wider transition-all hover:scale-105 active:scale-95"
+              class="mt-8 px-6 py-3 -xl bg-brand-lime hover:bg-brand-lime/90 text-black font-bold text-sm uppercase tracking-wider transition-all hover:scale-105 active:scale-95"
             >
               Volver a cantinas
             </button>

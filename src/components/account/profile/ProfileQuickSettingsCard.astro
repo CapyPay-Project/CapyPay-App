@@ -2,14 +2,14 @@
 import { Card, Button } from "../../ui";
 ---
 
-<Card class="p-6! relative overflow-hidden shadow-2xl shadow-black/50">
+<Card class="p-6! relative overflow-hidden shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] border-4 border-black ">
   <div
-    class="absolute -bottom-16 -right-16 w-40 h-40 bg-green-500/5 rounded-full blur-3xl pointer-events-none"
+    class="absolute -bottom-16 -right-16 w-40 h-40 bg-green-500/5  blur-3xl pointer-events-none"
   >
   </div>
 
   <div class="relative z-10">
-    <h3 class="text-lg font-bold text-white mb-6 flex items-center gap-2">
+    <h3 class="text-lg font-bold text-black mb-6 flex items-center gap-2">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         class="h-5 w-5 text-brand-lime"
@@ -28,11 +28,11 @@ import { Card, Button } from "../../ui";
 
     <div class="space-y-4">
       <div
-        class="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/5 hover:border-brand-lime/30 transition-all"
+        class="flex items-center justify-between p-4 bg-white border-2 border-black  border-4 border-black hover:border-brand-lime/30 transition-all"
       >
         <div class="flex items-center gap-3">
           <div
-            class="w-10 h-10 rounded-lg bg-brand-lime/10 flex items-center justify-center text-brand-lime"
+            class="w-10 h-10  bg-brand-lime/10 flex items-center justify-center text-brand-lime"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -49,8 +49,8 @@ import { Card, Button } from "../../ui";
             >
           </div>
           <div>
-            <p class="text-white font-medium text-sm">Editar Username</p>
-            <p id="alias-settings" class="text-slate-500 text-xs">
+            <p class="text-black font-medium text-sm">Editar Username</p>
+            <p id="alias-settings" class="text-black font-semibold text-xs">
               @angel.capy
             </p>
           </div>
@@ -61,11 +61,11 @@ import { Card, Button } from "../../ui";
       </div>
 
       <div
-        class="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/5 hover:border-brand-lime/30 transition-all"
+        class="flex items-center justify-between p-4 bg-white border-2 border-black  border-4 border-black hover:border-brand-lime/30 transition-all"
       >
         <div class="flex items-center gap-3">
           <div
-            class="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center text-purple-400"
+            class="w-10 h-10  bg-purple-500/10 flex items-center justify-center text-purple-400"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -82,27 +82,27 @@ import { Card, Button } from "../../ui";
             >
           </div>
           <div>
-            <p class="text-white font-medium text-sm">
+            <p class="text-black font-medium text-sm">
               Notificaciones de Gastos
             </p>
-            <p class="text-slate-500 text-xs">Alertas en cada transacción</p>
+            <p class="text-black font-semibold text-xs">Alertas en cada transacción</p>
           </div>
         </div>
         <label class="relative inline-flex items-center cursor-pointer">
           <input type="checkbox" checked class="sr-only peer" />
           <div
-            class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-lime"
+            class="w-11 h-6 bg-slate-700 peer-focus:outline-none  peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after: after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-lime"
           >
           </div>
         </label>
       </div>
 
       <div
-        class="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/5 hover:border-brand-lime/30 transition-all"
+        class="flex items-center justify-between p-4 bg-white border-2 border-black  border-4 border-black hover:border-brand-lime/30 transition-all"
       >
         <div class="flex items-center gap-3">
           <div
-            class="w-10 h-10 rounded-lg bg-slate-700 flex items-center justify-center text-slate-400"
+            class="w-10 h-10  bg-slate-700 flex items-center justify-center text-black font-bold"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -119,14 +119,14 @@ import { Card, Button } from "../../ui";
             >
           </div>
           <div>
-            <p class="text-white font-medium text-sm">Visibilidad de Perfil</p>
-            <p class="text-slate-500 text-xs">Perfil privado</p>
+            <p class="text-black font-medium text-sm">Visibilidad de Perfil</p>
+            <p class="text-black font-semibold text-xs">Perfil privado</p>
           </div>
         </div>
         <label class="relative inline-flex items-center cursor-pointer">
           <input type="checkbox" class="sr-only peer" />
           <div
-            class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-lime"
+            class="w-11 h-6 bg-slate-700 peer-focus:outline-none  peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after: after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-lime"
           >
           </div>
         </label>

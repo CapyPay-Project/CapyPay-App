@@ -47,7 +47,7 @@ const iconClass = isActive
   ? "bg-brand-lime text-black"
   : highlight
     ? "bg-brand-lime/20 text-brand-lime group-hover/nav:bg-brand-lime group-hover/nav:text-black"
-    : "bg-slate-800 group-hover/nav:text-brand-lime";
+    : "bg-[#e5e5e5] border-2 border-black group-hover/nav:text-brand-lime";
 ---
 
 <Button
@@ -55,15 +55,15 @@ const iconClass = isActive
   variant="ghost"
   class={`flex! w-full! items-center! justify-start! p-2! gap-0! relative group/nav text-left ${
     isActive
-      ? "bg-white/5 text-white"
-      : "text-slate-400 hover:text-white hover:bg-white/5"
+      ? "bg-white border-2 border-black text-white"
+      : "text-slate-400 hover:text-white hover:bg-white border-2 border-black"
   }`}
   title={title}
 >
   <!-- Contenedor circular del ícono -->
   <div class="relative shrink-0 flex items-center justify-center w-9 h-9">
     <div
-      class={`w-9 h-9 rounded-full flex items-center justify-center transition-colors absolute inset-0 ${iconClass}`}
+      class={`w-9 h-9 -full flex items-center justify-center transition-colors absolute inset-0 ${iconClass}`}
     >
       <!-- Ícono SVG pasado como slot -->
       <slot />
@@ -74,7 +74,7 @@ const iconClass = isActive
       badgeIconId && (
         <span
           id={badgeIconId}
-          class="hidden absolute -top-0.5 -right-0.5 min-w-4 h-4 px-0.5 bg-brand-lime text-black text-xs font-black rounded-full items-center justify-center leading-none shadow-[0_0_8px_rgba(215,253,73,0.6)]"
+          class="hidden absolute -top-0.5 -right-0.5 min-w-4 h-4 px-0.5 bg-brand-lime text-black text-xs font-black -full items-center justify-center leading-none shadow-[0_0_8px_rgba(215,253,73,0.6)]"
         />
       )
     }
@@ -91,7 +91,7 @@ const iconClass = isActive
       badgeTextId && (
         <span
           id={badgeTextId}
-          class="hidden bg-brand-lime text-black text-xs font-black min-w-4 h-4 px-1 rounded-full items-center justify-center leading-none"
+          class="hidden bg-brand-lime text-black text-xs font-black min-w-4 h-4 px-1 -full items-center justify-center leading-none"
         />
       )
     }

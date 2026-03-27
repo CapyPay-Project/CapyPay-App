@@ -4,54 +4,56 @@ import Button from "../ui/Button.astro";
 
 <nav class="sticky top-0 z-50 transition-all duration-300 isolate">
   <div
-    class="bg-[#0f101f]/80 backdrop-blur-md border-b border-white/10 relative z-50"
+    class="bg-white border-b-4 border-black relative z-50"
   >
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between h-16 items-center">
         <!-- Logo -->
-        <div class="shrink-0 flex items-center gap-2">
+        <a href="/dashboard" class="shrink-0 flex items-center gap-2 cursor-pointer group">
           <div
-            class="w-8 h-8 bg-linear-to-tr from-indigo-600 to-violet-600 rounded-lg flex items-center justify-center text-white font-bold shadow-lg shadow-indigo-500/30"
+            class="w-10 h-10 bg-[#d7fd48] border-4 border-black flex items-center justify-center text-black font-black box-shadow-brutal group-hover:translate-y-1 group-hover:shadow-none transition-all" 
           >
             C
           </div>
           <span
-            class="text-xl font-bold bg-clip-text text-transparent bg-linear-to-r from-indigo-700 to-violet-700"
+            class="text-2xl font-black text-black uppercase tracking-tighter"
             >CapyPay</span
           >
-        </div>
+        </a>
 
         <!-- Links -->
-        <div class="hidden md:flex space-x-2">
-          <Button href="/" variant="ghost">Inicio</Button>
+        <div class="hidden md:flex space-x-4">
+          <Button href="/dashboard" variant="ghost">Dashboard</Button>
           <Button href="/services" variant="ghost">Servicios</Button>
           <Button href="/support" variant="ghost">Soporte</Button>
         </div>
 
         <!-- User Profile -->
-        <div class="flex items-center gap-3">
-          <Button variant="icon" aria-label="Notificaciones">
+        <div class="flex items-center gap-4">
+          <Button href="/account/notifications" variant="icon" aria-label="Notificaciones">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               class="h-6 w-6"
               fill="none"
               viewBox="0 0 24 24"
-              stroke="currentColor"
+              stroke="black"
             >
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                stroke-width="2"
+                stroke-width="3"
                 d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
               ></path>
             </svg>
           </Button>
-          <div
-            class="h-8 w-8 rounded-full bg-linear-to-br from-indigo-500 to-purple-600 ring-2 ring-white cursor-pointer"
+          <a href="/account/profile"
+            class="h-10 w-10 bg-[#8b5cf6] border-4 border-black box-shadow-brutal hover:translate-y-1 hover:shadow-none transition-all cursor-pointer flex items-center justify-center text-white font-black"
           >
-          </div>
+            U
+          </a>
         </div>
       </div>
     </div>
   </div>
 </nav>
+
