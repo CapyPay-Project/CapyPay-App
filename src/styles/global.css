@@ -125,3 +125,11 @@ input:-webkit-autofill::placeholder {
     color: #475569;
     -webkit-text-fill-color: #475569;
 }
+@layer utilities {
+  .material-symbols-outlined { font-variation-settings:'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+  .neo-shadow { box-shadow: 4px 4px 0px 0px rgba(0,0,0,1); }
+  .neo-shadow-lg { box-shadow: 8px 8px 0px 0px rgba(0,0,0,1); }
+  .neo-shadow-secondary { box-shadow: 4px 4px 0px 0px #8362E8; }
+  .bg-primary-fixed { background-color: var(--color-brand-lime); }
+  .bg-secondary { background-color: var(--color-brand-purple); }
+}

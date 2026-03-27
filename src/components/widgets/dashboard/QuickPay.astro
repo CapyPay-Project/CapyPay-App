@@ -1,96 +1,537 @@
 ---
-import Card from "../../ui/Card.astro";
+// Neo-brutalist QuickPay Widget with Predictive Contacts & PIN
 ---
 
-<Card class="shadow-none isolate overflow-hidden h-full">
-  <div class="flex items-center justify-between mb-3 sm:mb-4">
-    <h3 class="text-white text-base sm:text-lg font-semibold">Pagos Rápidos</h3>
-    
+<div class="flex flex-col gap-4 h-full" id="quickpay-widget">
+  <button
+    onclick="window.openModal('modal-enviar')"
+    class="w-full flex-1 bg-[#8b5cf6] border-4 border-black p-4 font-black uppercase text-white tracking-widest box-shadow-brutal flex justify-center items-center gap-2 hover:-translate-y-1 hover:bg-[#7c3aed] transition-all relative overflow-hidden group"
+  >
+    <span
+      class="material-symbols-outlined transition-transform group-hover:translate-x-1"
+      >send</span
+    >
+    <span>ENVIAR</span>
+  </button>
+
+  <button
+    onclick="window.openModal('modal-recibir')"
+    class="w-full flex-1 bg-[#d7fd48] border-4 border-black p-4 font-black uppercase text-black tracking-widest box-shadow-brutal flex justify-center items-center gap-2 hover:-translate-y-1 transition-all group"
+  >
+    <span
+      class="material-symbols-outlined transition-transform group-hover:-translate-y-1"
+      >south_west</span
+    >
+    <span>RECIBIR</span>
+  </button>
+
+  <button
+    onclick="window.openModal('modal-recargar')"
+    class="w-full flex-1 bg-white border-4 border-black p-4 font-black uppercase text-black tracking-widest box-shadow-brutal flex justify-center items-center gap-2 hover:-translate-y-1 transition-all group"
+  >
+    <span
+      class="material-symbols-outlined transition-transform group-hover:rotate-180"
+      >add_circle</span
+    >
+    <span>RECARGAR</span>
+  </button>
+</div>
+
+<!-- CAPA DIFUMINADO GLOBAL PARA MODALES -->
+<div
+  id="qp-overlay"
+  class="fixed inset-0 z-9998 hidden bg-black/60 backdrop-blur-md opacity-0 transition-opacity duration-300 pointer-events-none"
+>
+</div>
+
+<!-- MODAL ENVIAR -->
+<div
+  id="modal-enviar"
+  class="fixed inset-0 z-9999 hidden items-center justify-center m-0 p-4 pointer-events-none"
+>
+  <div
+    class="bg-white border-4 border-black box-shadow-brutal w-full max-w-sm p-6 transform scale-95 opacity-0 transition-all duration-300 relative pointer-events-auto flex flex-col"
+    id="modal-enviar-content"
+  >
+    <button
+      onclick="window.closeModal('modal-enviar')"
+      class="absolute top-2 right-2 hover:bg-gray-200 p-1"
+    >
+      <span class="material-symbols-outlined font-black text-xl">close</span>
+    </button>
+    <div class="flex items-center gap-2 mb-4 text-[#8b5cf6]">
+      <span class="material-symbols-outlined">send</span>
+      <h3 class="text-xl font-black uppercase">ENVIAR</h3>
+    </div>
+
+    <!-- STEP 1: FORMULARIO -->
+    <div id="enviar-step-1" class="flex-1">
+      <div class="mb-4 relative">
+        <label class="block text-xs font-black uppercase mb-1"
+          >USUARIO DESTINO (C.I.)</label
+        >
+        <div class="relative">
+          <input
+            type="text"
+            id="qp-enviar-cedula"
+            class="w-full border-4 border-black p-3 font-bold uppercase focus:outline-none focus:bg-gray-50"
+            placeholder="Ej: 30123456"
+            autocomplete="off"
+          />
+
+          <!-- Dropdown Autocomplete -->
+          <div
+            id="qp-autocomplete"
+            class="absolute left-0 right-0 top-full mt-1 bg-white border-4 border-black box-shadow-brutal hidden flex-col max-h-40 overflow-y-auto z-[10000]"
+          >
+          </div>
+        </div>
+        <p
+          id="enviar-selected-name"
+          class="text-xs font-bold text-green-600 mt-2 hidden uppercase tracking-wide"
+        >
+        </p>
+      </div>
+
+      <div class="mb-6">
+        <label class="block text-xs font-black uppercase mb-1"
+          >MONTO A ENVIAR</label
+        >
+        <div class="flex items-center border-4 border-black p-2 bg-white">
+          <span class="font-black text-xl ml-2 mr-2">$</span>
+          <input
+            type="number"
+            id="qp-enviar-monto"
+            class="w-full text-xl font-black focus:outline-none"
+            placeholder="0.00"
+          />
+        </div>
+      </div>
+      <div class="mb-6">
+        <label class="block text-xs font-black uppercase mb-1"
+          >CONCEPTO (OPCIONAL)</label
+        >
+        <input
+          type="text"
+          id="qp-enviar-concepto"
+          class="w-full border-4 border-black p-3 font-bold uppercase focus:outline-none focus:bg-gray-50 bg-white"
+          placeholder="Ej: PAGO COMEDOR"
+        />
+      </div>
+
+      <button
+        id="btn-pre-enviar"
+        class="w-full bg-black text-white font-black uppercase p-4 border-4 border-black hover:bg-gray-800 transition-colors"
+      >
+        SIGUIENTE
+      </button>
+    </div>
+
+    <!-- STEP 2: CONFIRMAR CON PIN -->
+    <div id="enviar-step-2" class="hidden flex-col items-center flex-1">
+      <p class="font-bold text-center text-sm uppercase mb-4 text-black">
+        INGRESA TU PIN DE SEGURIDAD
+      </p>
+      <input
+        type="password"
+        id="qp-enviar-pin"
+        maxlength="6"
+        class="w-32 border-4 border-black p-3 font-black text-2xl tracking-widest text-center focus:outline-none bg-gray-50 mb-6"
+        placeholder="****"
+      />
+      <button
+        id="btn-confirm-enviar"
+        class="w-full bg-[#8b5cf6] text-white font-black uppercase p-4 border-4 border-black hover:bg-[#7c3aed] transition-colors relative flex items-center justify-center"
+      >
+        <span id="btn-confirm-text">CONFIRMAR ENVÍO</span>
+        <span
+          id="btn-confirm-spinner"
+          class="hidden material-symbols-outlined animate-spin absolute right-4"
+          >refresh</span
+        >
+      </button>
+      <button
+        onclick="window.qpEnviargotoStep1()"
+        class="mt-4 text-xs font-black text-gray-500 uppercase hover:text-black"
+        >CANCELAR Y VOLVER</button
+      >
+    </div>
   </div>
+</div>
 
-  <div class="grid grid-cols-3 gap-2 sm:gap-3">
-    <!-- Ticket (Bus) -->
-    <a
-      href="/services/ticketbus"
-      class="flex flex-col items-center gap-2 sm:gap-3 p-2 sm:p-3 rounded-2xl bg-white/5 hover:bg-brand-purple/20 border border-white/5 hover:border-brand-purple transition-all group"
+<!-- MODAL RECIBIR -->
+<div
+  id="modal-recibir"
+  class="fixed inset-0 z-9999 hidden items-center justify-center m-0 p-4 pointer-events-none"
+>
+  <div
+    class="bg-white border-4 border-black box-shadow-brutal w-full max-w-sm p-8 transform scale-95 opacity-0 transition-all duration-300 relative pointer-events-auto flex flex-col items-center"
+    id="modal-recibir-content"
+  >
+    <button
+      onclick="window.closeModal('modal-recibir')"
+      class="absolute top-2 right-2 hover:bg-gray-200 p-1"
+    >
+      <span class="material-symbols-outlined font-black text-xl">close</span>
+    </button>
+    <div class="flex items-center gap-2 mb-6 text-[#10b981]">
+      <span class="material-symbols-outlined font-black">qr_code_2</span>
+      <h3 class="text-xl font-black uppercase">RECIBIR</h3>
+    </div>
+
+    <div
+      class="w-48 h-48 bg-gray-200 border-4 border-black flex items-center justify-center mb-4 relative overflow-hidden group"
     >
       <div
-        class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-brand-purple/10 text-brand-purple flex items-center justify-center group-hover:scale-110 transition-transform group-hover:bg-brand-purple group-hover:text-white shadow-lg shadow-brand-purple/10"
+        class="absolute inset-0 bg-[url('https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg')] bg-cover bg-center mix-blend-multiply opacity-80"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5 sm:h-6 sm:w-6"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
-        </svg>
       </div>
-      <span
-        class="text-[11px] sm:text-xs font-medium text-slate-300 group-hover:text-white"
-        >Ticket Bus</span
-      >
-    </a>
-
-    <!-- Cantina -->
-    <a
-      href="/services/cantina"
-      class="flex flex-col items-center gap-2 sm:gap-3 p-2 sm:p-3 rounded-2xl bg-white/5 hover:bg-brand-purple/20 border border-white/5 hover:border-brand-purple transition-all group"
-    >
       <div
-        class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-brand-purple/10 text-brand-purple flex items-center justify-center group-hover:scale-110 transition-transform group-hover:bg-brand-purple group-hover:text-white shadow-lg shadow-brand-purple/10"
+        class="bg-white border-2 border-black p-2 z-10 font-black text-xs uppercase group-hover:scale-110 transition-transform"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5 sm:h-6 sm:w-6"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
-          ></path>
-        </svg>
+        ESCANEAR
       </div>
-      <span
-        class="text-[11px] sm:text-xs font-medium text-slate-300 group-hover:text-white"
-        >Cantina</span
-      >
-    </a>
+    </div>
 
-    <!-- Comedor -->
-    <a
-      href="/services/comedor"
-      class="flex flex-col items-center gap-2 sm:gap-3 p-2 sm:p-3 rounded-2xl bg-white/5 hover:bg-brand-purple/20 border border-white/5 hover:border-brand-purple transition-all group"
+    <p
+      class="text-xs font-black uppercase tracking-widest text-center text-gray-600 mb-2"
     >
-      <div
-        class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-brand-purple/10 text-brand-purple flex items-center justify-center group-hover:scale-110 transition-transform group-hover:bg-brand-purple group-hover:text-white shadow-lg shadow-brand-purple/10"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          height="24px"
-          viewBox="0 -960 960 960"
-          width="24px"
-          fill="currentColor"
-          class="h-5 w-5 sm:h-6 sm:w-6"
-        >
-          <path
-            d="M280-80v-366q-51-14-85.5-56T160-600v-280h80v280h40v-280h80v280h40v-280h80v280q0 56-34.5 98T360-446v366h-80Zm400 0v-320H560v-280q0-83 58.5-141.5T760-880v800h-80Z"
-          ></path>
-        </svg>
-      </div>
-      <span
-        class="text-[11px] sm:text-xs font-medium text-slate-300 group-hover:text-white"
-        >Comedor</span
-      >
-    </a>
+      TU CÉDULA:
+    </p>
+    <div
+      class="border-4 border-black px-4 py-2 bg-[#d7fd48] font-black text-xl tracking-widest"
+      id="recibir-cedula-display"
+    >
+      ------
+    </div>
   </div>
-</Card>
+</div>
+
+<!-- MODAL RECARGAR -->
+<div
+  id="modal-recargar"
+  class="fixed inset-0 z-9999 hidden items-center justify-center m-0 p-4 pointer-events-none"
+>
+  <div
+    class="bg-white border-4 border-black box-shadow-brutal w-full max-w-sm p-6 transform scale-95 opacity-0 transition-all duration-300 relative pointer-events-auto"
+    id="modal-recargar-content"
+  >
+    <button
+      onclick="window.closeModal('modal-recargar')"
+      class="absolute top-2 right-2 hover:bg-gray-200 p-1"
+    >
+      <span class="material-symbols-outlined font-black text-xl">close</span>
+    </button>
+    <div class="flex items-center gap-2 mb-4">
+      <span class="material-symbols-outlined font-black">add_circle</span>
+      <h3 class="text-xl font-black uppercase">RECARGAR FONDOS</h3>
+    </div>
+
+    <div class="mb-6">
+      <label class="block text-xs font-black uppercase mb-1"
+        >MÉTODO DE PAGO</label
+      >
+      <select
+        class="w-full border-4 border-black p-3 font-bold uppercase focus:outline-none bg-white appearance-none cursor-pointer"
+        id="qp-recargar-metodo"
+      >
+        <option value="pago_movil">PAGO MÓVIL</option>
+        <option value="zelle">ZELLE</option>
+        <option value="efectivo">EFECTIVO (CAJA)</option>
+      </select>
+    </div>
+
+    <div class="mb-6">
+      <label class="block text-xs font-black uppercase mb-1"
+        >REFERENCIA / RECIBO</label
+      >
+      <input
+        type="text"
+        id="qp-recargar-ref"
+        class="w-full border-4 border-black p-3 font-bold uppercase focus:outline-none focus:bg-gray-50 bg-white"
+        placeholder="#1234567"
+      />
+    </div>
+
+    <div class="mb-6">
+      <label class="block text-xs font-black uppercase mb-1">MONTO ($)</label>
+      <div class="flex items-center border-4 border-black p-2 bg-white">
+        <span class="font-black text-xl ml-2 mr-2">$</span>
+        <input
+          type="number"
+          id="qp-recargar-monto"
+          class="w-full text-xl font-black focus:outline-none"
+          placeholder="0.00"
+        />
+      </div>
+    </div>
+
+    <button
+      id="btn-confirm-recargar"
+      class="w-full bg-[#d7fd48] text-black font-black uppercase p-4 border-4 border-black hover:bg-[#c4ec31] transition-colors relative flex items-center justify-center"
+    >
+      <span id="btn-recargar-text">NOTIFICAR RECARGA</span>
+      <span
+        id="btn-recargar-spinner"
+        class="hidden material-symbols-outlined animate-spin absolute right-4"
+        >refresh</span
+      >
+    </button>
+  </div>
+</div>
+
+<style>
+  .box-shadow-brutal {
+    box-shadow: 6px 6px 0px 0px rgba(0, 0, 0, 1);
+  }
+</style>
+
+<script>
+  // @ts-nocheck
+  import {
+    authService,
+    userService,
+    transactionService,
+    pinService,
+  } from "../../../services/api.js";
+
+  let searchTimeout = null;
+
+  // Global functions for modals
+  window.openModal = (id) => {
+    const m = document.getElementById(id);
+    const content = document.getElementById(id + "-content");
+    const overlay = document.getElementById("qp-overlay");
+
+    if (!m || !content || !overlay) return;
+
+    m.classList.remove("hidden");
+    m.classList.add("flex");
+    overlay.classList.remove("hidden");
+
+    if (id === "modal-recibir") {
+      const u = authService.getCurrentUser();
+      if (u && u.cedula) {
+        document.getElementById("recibir-cedula-display").innerText = u.cedula;
+      }
+    }
+
+    requestAnimationFrame(() => {
+      overlay.classList.remove("opacity-0");
+      content.classList.remove("opacity-0", "scale-95");
+      content.classList.add("opacity-100", "scale-100");
+    });
+  };
+
+  window.closeModal = (id) => {
+    const m = document.getElementById(id);
+    const content = document.getElementById(id + "-content");
+    const overlay = document.getElementById("qp-overlay");
+    if (!m || !content || !overlay) return;
+
+    overlay.classList.add("opacity-0");
+    content.classList.remove("opacity-100", "scale-100");
+    content.classList.add("opacity-0", "scale-95");
+
+    if (id === "modal-enviar") {
+      window.qpEnviargotoStep1();
+      const c = document.getElementById("qp-enviar-cedula");
+      const mm = document.getElementById("qp-enviar-monto");
+      const n = document.getElementById("enviar-selected-name");
+      if (c) c.value = "";
+      if (mm) mm.value = "";
+      if (n) n.classList.add("hidden");
+    }
+
+    setTimeout(() => {
+      m.classList.add("hidden");
+      m.classList.remove("flex");
+      overlay.classList.add("hidden");
+    }, 300);
+  };
+
+  window.qpEnviargotoStep2 = () => {
+    document.getElementById("enviar-step-1").classList.add("hidden");
+    document.getElementById("enviar-step-2").classList.remove("hidden");
+    document.getElementById("enviar-step-2").classList.add("flex");
+    document.getElementById("qp-enviar-pin").value = "";
+  };
+
+  window.qpEnviargotoStep1 = () => {
+    document.getElementById("enviar-step-2").classList.add("hidden");
+    document.getElementById("enviar-step-2").classList.remove("flex");
+    document.getElementById("enviar-step-1").classList.remove("hidden");
+  };
+
+  document.addEventListener("DOMContentLoaded", () => {
+    // MOVE MODALS TO BODY FOR FULL PAGE BLUR AND POSITIONING
+    const modals = [
+      "qp-overlay",
+      "modal-enviar",
+      "modal-recibir",
+      "modal-recargar",
+    ];
+    modals.forEach((m) => {
+      const el = document.getElementById(m);
+      if (el) document.body.appendChild(el);
+    });
+
+    const cInput = document.getElementById("qp-enviar-cedula");
+    const autoBox = document.getElementById("qp-autocomplete");
+    const nameBox = document.getElementById("enviar-selected-name");
+
+    if (cInput) {
+      cInput.addEventListener("input", (e) => {
+        const val = e.target.value.trim();
+        nameBox.classList.add("hidden");
+
+        if (val.length < 2) {
+          autoBox.classList.add("hidden");
+          return;
+        }
+
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(async () => {
+          try {
+            const results = await userService.searchUsers(val);
+            autoBox.innerHTML = "";
+            if (results && results.length > 0) {
+              results.forEach((u) => {
+                const div = document.createElement("div");
+                div.className =
+                  "p-3 border-b-2 border-black hover:bg-gray-100 cursor-pointer flex flex-col";
+                div.innerHTML = `<span class="font-black">${u.cedula}</span><span class="text-[10px] text-gray-500 uppercase tracking-widest">${u.nombre || u.name || "Usuario"}</span>`;
+                div.onclick = () => {
+                  cInput.value = u.cedula;
+                  autoBox.classList.add("hidden");
+                  nameBox.innerText = `DESTINATARIO: ${u.nombre || u.name || "Usuario"}`;
+                  nameBox.classList.remove("hidden");
+                };
+                autoBox.appendChild(div);
+              });
+              autoBox.classList.remove("hidden");
+              autoBox.classList.add("flex");
+            } else {
+              autoBox.classList.add("hidden");
+            }
+          } catch (err) {
+            console.error(err);
+          }
+        }, 300);
+      });
+
+      document.addEventListener("click", (e) => {
+        if (!cInput.contains(e.target) && !autoBox.contains(e.target)) {
+          autoBox.classList.add("hidden");
+        }
+      });
+    }
+
+    const preBtn = document.getElementById("btn-pre-enviar");
+    if (preBtn) {
+      preBtn.addEventListener("click", () => {
+        const c = document.getElementById("qp-enviar-cedula").value.trim();
+        const m = parseFloat(document.getElementById("qp-enviar-monto").value);
+        if (!c || isNaN(m) || m <= 0) {
+          alert("Por favor ingrese cédula y un monto válido");
+          return;
+        }
+        window.qpEnviargotoStep2();
+      });
+    }
+
+    const confBtn = document.getElementById("btn-confirm-enviar");
+    if (confBtn) {
+      confBtn.addEventListener("click", async () => {
+        const c = document.getElementById("qp-enviar-cedula").value.trim();
+        const m = parseFloat(document.getElementById("qp-enviar-monto").value);
+        const pin = document.getElementById("qp-enviar-pin").value.trim();
+        const refText = document
+          .getElementById("qp-enviar-concepto")
+          .value.trim();
+
+        if (pin.length < 4 || pin.length > 6) {
+          alert("Ingrese un PIN válido de 4 a 6 dígitos");
+          return;
+        }
+
+        const btnText = document.getElementById("btn-confirm-text");
+        const btnSpin = document.getElementById("btn-confirm-spinner");
+        btnText.innerText = "PROCESANDO...";
+        btnSpin.classList.remove("hidden");
+        confBtn.disabled = true;
+
+        try {
+          const pinRes = await pinService.verify(pin);
+          if (pinRes && !pinRes.success && pinRes.success === false) {
+            throw new Error(pinRes.message || "PIN Incorrecto");
+          }
+
+          await transactionService.transfer({
+            receptor_cedula: c,
+            monto: m,
+            concepto: refText || "TRANSFERENCIA RAPIDA",
+          });
+
+          alert("¡Dinero enviado con éxito!");
+          window.location.reload();
+        } catch (error) {
+          alert(error.message || "Error al procesar transferencia");
+        } finally {
+          btnText.innerText = "CONFIRMAR ENVÍO";
+          btnSpin.classList.add("hidden");
+          confBtn.disabled = false;
+          document.getElementById("qp-enviar-pin").value = "";
+        }
+      });
+    }
+
+    const recBtn = document.getElementById("btn-confirm-recargar");
+    if (recBtn) {
+      recBtn.addEventListener("click", async () => {
+        const metodo = document.getElementById("qp-recargar-metodo").value;
+        const refer = document.getElementById("qp-recargar-ref").value;
+        const monto = parseFloat(
+          document.getElementById("qp-recargar-monto").value,
+        );
+
+        if (!metodo || !refer || isNaN(monto) || monto <= 0) {
+          alert("Complete todos los campos para notificar.");
+          return;
+        }
+
+        const btnText = document.getElementById("btn-recargar-text");
+        const btnSpin = document.getElementById("btn-recargar-spinner");
+
+        try {
+          btnText.innerText = "NOTIFICANDO...";
+          btnSpin.classList.remove("hidden");
+          recBtn.disabled = true;
+          await transactionService.recharge({
+            metodo_pago: metodo,
+            monto_bs: monto,
+            referencia: refer,
+          });
+          alert("¡Recarga notificada correctamente!");
+          window.closeModal("modal-recargar");
+        } catch (e) {
+          alert(e.message || "Error al notificar recarga");
+        } finally {
+          btnText.innerText = "NOTIFICAR RECARGA";
+          btnSpin.classList.add("hidden");
+          recBtn.disabled = false;
+          document.getElementById("qp-recargar-ref").value = "";
+          document.getElementById("qp-recargar-monto").value = "";
+        }
+      });
+    }
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      ["modal-enviar", "modal-recibir", "modal-recargar"].forEach((id) => {
+        window.closeModal(id);
+      });
+    }
+  });
+</script>

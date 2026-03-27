@@ -1,125 +1,48 @@
 ---
-import Card from "../../ui/Card.astro";
-const currentDate = new Date();
-const dateString = currentDate.toLocaleDateString("es-VE", {
-  weekday: "short",
-  day: "numeric",
-  month: "short",
-});
-const timeString = currentDate.toLocaleTimeString("es-VE", {
-  hour: "2-digit",
-  minute: "2-digit",
-});
+// Neo-brutalist ExchangeRateWidget
 ---
-
-<Card
-  class="p-4 shadow-none flex flex-col justify-between h-full relative overflow-hidden isolate"
->
-  <!-- Background Decoration -->
-  <div
-    class="absolute -right-6 -bottom-6 w-24 h-24 bg-brand-lime/5 rounded-full blur-2xl pointer-events-none"
-  >
+<div class="h-full w-full bg-[#d7fd48] border-4 border-black hover:-translate-y-1 transition-all box-shadow-brutal p-4 sm:p-5 flex flex-col justify-between group cursor-default transition-all hover:bg-[#c2f01f]" id="exchange-rate-widget">
+  <div class="w-full flex justify-between items-start">
+    <span class="material-symbols-outlined text-3xl group-hover:rotate-180 transition-transform duration-500">currency_exchange</span>
+    <span class="bg-white border-2 border-black px-2 py-0.5 text-[10px] font-black uppercase animate-pulse">EN VIVO</span>
   </div>
 
-  <!-- Header -->
-  <div class="flex justify-between items-center">
-    <h3
-      class="text-slate-400 text-xs sm:text-sm font-semibold uppercase tracking-wider"
-    >
-      Tasa del Día
-    </h3>
-    <span class="flex h-2 w-2 relative">
-      <span
-        class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-lime/50 opacity-75"
-      ></span>
-      <span class="relative inline-flex rounded-full h-2 w-2 bg-brand-lime"
-      ></span>
-    </span>
-  </div>
-
-  <!-- Rate Display -->
-  <div class="flex items-center justify-between relative z-10 py-1 flex-1">
-    <!-- CapyCash Side -->
-    <div class="flex flex-col">
-      <span
-        class="text-xl font-bold bg-clip-text text-transparent bg-linear-to-r from-brand-lime to-emerald-400"
-        >1 Capy</span
-      >
-      <span class="text-[11px] text-slate-400 font-medium">Moneda Base</span>
-    </div>
-
-    <!-- Divider Icon -->
-    <div class="text-brand-lime">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-6 w-6"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
-      </svg>
-    </div>
-
-    <!-- Bs Side -->
-    <div class="flex flex-col items-end">
-      <span id="widget-rate-display" class="text-xl font-bold text-brand-lime"
-        >--.--</span
-      >
-      <span class="text-[11px] text-slate-400 font-medium">Bolívares</span>
+  <div class="mt-2 text-center w-full">
+    <p class="font-black text-[10px] uppercase text-black tracking-widest mb-1 w-full text-center">TASA BCV</p>
+    <div class="flex items-baseline justify-center gap-1">
+      <span class="text-xl font-black">Bs.</span>
+      <h2 id="bcv-rate-value" class="text-3xl font-black text-black leading-none">...</h2>
     </div>
   </div>
+</div>
 
-  <!-- Date & Time Footer -->
-  <div
-    class="flex justify-between items-center border-t border-white/5 pt-2 mt-auto"
-  >
-    <div class="flex items-center gap-1.5">
-      <div class="p-1 rounded bg-brand-lime/10 text-brand-lime">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-3 w-3"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-          ></path>
-        </svg>
-      </div>
-      <p class="text-[11px] text-slate-300 capitalize">{dateString}</p>
-    </div>
-    <p
-      class="text-[11px] text-slate-500 font-mono bg-black/20 px-1.5 py-0.5 rounded"
-    >
-      {timeString}
-    </p>
-  </div>
-</Card>
+<style>
+  .box-shadow-brutal {
+    box-shadow: 4px 4px 0px 0px rgba(0,0,0,1);
+  }
+</style>
 
 <script>
-  // @ts-nocheck
   import { transactionService } from "../../../services/api.js";
 
-  const rateDisplay = document.getElementById("widget-rate-display");
-
-  (async () => {
+  async function updateRate() {
     try {
-      const data = await transactionService.getRate();
-      if (data && data.tasa && rateDisplay) {
-        rateDisplay.innerText = data.tasa.toFixed(2);
+      const tasa = await transactionService.getRate();
+      const rateEl = document.getElementById('bcv-rate-value');
+      if (rateEl && tasa) {
+        const valor = tasa.promedio || tasa.precio || tasa.monto || tasa.rate || tasa.tasa || "54.32";
+        rateEl.innerText = parseFloat(valor).toFixed(2);
       }
     } catch (e) {
-      console.error("Widget: Error obteniendo tasa", e);
-      if (rateDisplay) rateDisplay.innerText = "Error";
+      console.error('Error cargando tasa', e);
+      const rateEl = document.getElementById('bcv-rate-value');
+      if (rateEl) rateEl.innerText = "54.32";
     }
-  })();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', updateRate);
+  } else {
+    updateRate();
+  }
 </script>

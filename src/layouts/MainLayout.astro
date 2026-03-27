@@ -61,14 +61,26 @@ const { title = "CapyPay", showSidebar = false } = Astro.props;
         rel="stylesheet"
       />
     </noscript>
+    
     <style>
       body {
         font-family: "Outfit", sans-serif;
+        background-color: #FFF9F0;
+        background-image: linear-gradient(rgba(0,0,0,0.05) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0,0,0,0.05) 1px, transparent 1px);
+        background-size: 20px 20px;
+        background-position: center center;
       }
     </style>
+
+    <!-- Google Material Symbols -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body
-    class="flex h-screen overflow-hidden bg-[#0a0a0a] text-brand-white safe-area-all"
+    class="flex h-screen overflow-hidden bg-[#FFF9F0] text-black safe-area-all"
   >
     <!-- 
       FONDO AMBIENTAL
@@ -76,14 +88,7 @@ const { title = "CapyPay", showSidebar = false } = Astro.props;
       Si molestan o dan lag, se pueden borrar, pero le dan el toque "glow".
     -->
     <div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-      <div
-        class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-900/20 rounded-full blur-[120px] mix-blend-screen"
-      >
-      </div>
-      <div
-        class="absolute bottom-[-15%] right-[-15%] w-[35%] h-[35%] bg-purple-900/20 rounded-full blur-[110px] pointer-events-none -z-20"
-      >
-      </div>
+      <!-- Background removed for Brutalist theme -->
     </div>
 
     <!-- Sidebar (Desktop) -->
