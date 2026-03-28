@@ -5,6 +5,8 @@ import UserWalletBalance from "../../components/dashboard/finance/UserWalletBala
 import QuickActionsPanel from "../../components/dashboard/actions/QuickActionsPanel.astro";
 import CashFlowAnalytics from "../../components/dashboard/analytics/CashFlowAnalytics.astro";
 import BcvTickerPanel from "../../components/dashboard/finance/BcvTickerPanel.astro";
+import MissionsWidget from "../../components/dashboard/gamification/MissionsWidget.astro";
+import MissionsModal from "../../components/dashboard/gamification/MissionsModal.astro";
 ---
 
 <CapyPay title="Dashboard | CapyPay" showSidebar={true}>
@@ -29,7 +31,7 @@ import BcvTickerPanel from "../../components/dashboard/finance/BcvTickerPanel.as
         <!-- Notificaciones Popover -->
         <div class="relative" id="notif-dropdown-container">
           <button
-            onclick="document.getElementById('notif-menu').classList.toggle('hidden')"
+            onclick="const nm=document.getElementById('notif-menu'); nm.classList.toggle('hidden'); nm.classList.toggle('flex');"
             class="w-12 h-12 bg-white border-4 border-black box-shadow-brutal flex items-center justify-center hover:translate-y-1 hover:shadow-none transition-all relative focus:outline-none"
           >
             <span class="material-symbols-outlined font-black text-xl"
@@ -45,7 +47,7 @@ import BcvTickerPanel from "../../components/dashboard/finance/BcvTickerPanel.as
           <!-- Dropdown Menu -->
           <div
             id="notif-menu"
-            class="hidden absolute right-0 top-full mt-2 w-72 bg-white border-4 border-black box-shadow-brutal z-50 flex flex-col"
+            class="hidden absolute right-0 top-full mt-2 w-72 bg-white border-4 border-black box-shadow-brutal z-50 flex-col"
           >
             <div
               class="border-b-4 border-black p-3 font-black uppercase text-sm bg-[#d7fd48]"
@@ -144,30 +146,7 @@ import BcvTickerPanel from "../../components/dashboard/finance/BcvTickerPanel.as
           </div>
 
           <!-- Daily Tasks Widget -->
-          <div
-            class="hover:-translate-y-1 transition-all bg-white border-4 border-black box-shadow-brutal p-4 sm:p-5 flex flex-col justify-between h-32 sm:h-full"
-          >
-            <div class="flex justify-between items-start">
-              <span class="material-symbols-outlined text-2xl">checklist</span>
-              <span
-                class="bg-white border-2 border-black px-2 py-0.5 text-[10px] font-black"
-                >3/5 LISTO</span
-              >
-            </div>
-            <div>
-              <p
-                class="font-black text-xs uppercase mb-2 text-black tracking-widest"
-              >
-                TAREAS DIARIAS
-              </p>
-              <div
-                class="w-full h-3 border-2 border-black bg-white -full overflow-hidden"
-              >
-                <div class="h-full bg-[#8b5cf6] w-3/5 border-r-2 border-black">
-                </div>
-              </div>
-            </div>
-          </div>
+          <MissionsWidget />
 
           <!-- User Level Widget -->
           <div
@@ -233,6 +212,36 @@ import BcvTickerPanel from "../../components/dashboard/finance/BcvTickerPanel.as
             Cargando...
           </p>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <MissionsModal />
+
+  <!-- MODAL XP GANADO -->
+  <div
+    id="xp-modal"
+    class="fixed inset-0 z-60 hidden items-center justify-center bg-black/30 backdrop-blur-sm p-4 opacity-0 transition-opacity duration-300"
+    aria-hidden="true"
+  >
+    <div
+      class="bg-[#d7fd48] border-4 border-black w-full max-w-xs rounded-lg p-6 relative text-center transform scale-95 transition-all duration-300"
+      role="dialog"
+      aria-modal="true"
+      aria-label="XP Ganado"
+    >
+      <div class="flex flex-col items-center">
+        <div class="w-16 h-16 bg-black border-4 border-[#d7fd48] rounded-full flex items-center justify-center mb-4 animate-bounce">
+          <span class="text-2xl font-black text-[#d7fd48]">⭐</span>
+        </div>
+        <h3 class="text-xl font-black uppercase tracking-wider text-black mb-2">¡XP Ganado!</h3>
+        <p id="xp-amount" class="text-3xl font-black text-black mb-4">+10 XP</p>
+        <button
+          onclick="window.closeXpModal()"
+          class="bg-black text-[#d7fd48] border-2 border-black px-4 py-2 font-black uppercase hover:bg-gray-800 transition"
+        >
+          ¡Genial!
+        </button>
       </div>
     </div>
   </div>
@@ -346,6 +355,7 @@ import BcvTickerPanel from "../../components/dashboard/finance/BcvTickerPanel.as
       } else if (currentFilter === "income") {
         filteredMoves = cachedMovements.filter((m) => !m.es_negativo);
       }
+
       const moves = filteredMoves.slice(0, 7);
 
       if (moves.length === 0) {
@@ -362,13 +372,7 @@ import BcvTickerPanel from "../../components/dashboard/finance/BcvTickerPanel.as
         const displayAmount = isNegative ? `-$${amount}` : `+$${amount}`;
         const amountColor = isNegative ? "text-red-500" : "text-[#10b981]";
 
-        // Colors mapping based on generic mocked types or descriptions
-        const descString = (
-          mov.descripcion ||
-          mov.concept ||
-          mov.tipo ||
-          ""
-        ).toLowerCase();
+        const descString = (mov.descripcion || mov.concept || mov.tipo || "").toLowerCase();
         let iconBg = "bg-white";
         let iconSvg =
           '<span class="material-symbols-outlined font-black">receipt_long</span>';
@@ -378,14 +382,14 @@ import BcvTickerPanel from "../../components/dashboard/finance/BcvTickerPanel.as
           descString.includes("canteen") ||
           descString.includes("bite")
         ) {
-          iconBg = "bg-[#8b5cf6]"; // Purple
+          iconBg = "bg-[#8b5cf6]";
           iconSvg =
             '<span class="material-symbols-outlined font-black text-white">lunch_dining</span>';
         } else if (
           descString.includes("scholarship") ||
           (!isNegative && descString.includes("deposit"))
         ) {
-          iconBg = "bg-[#d7fd48]"; // Lime
+          iconBg = "bg-[#d7fd48]";
           iconSvg =
             '<span class="material-symbols-outlined font-black text-black">payments</span>';
         } else if (
@@ -433,6 +437,70 @@ import BcvTickerPanel from "../../components/dashboard/finance/BcvTickerPanel.as
 
       container.innerHTML = html + "</div>";
     }
+
+    function renderNotificationBar(notifications) {
+      const badge = document.getElementById('mobile-notif-badge');
+      const notifMenuList = document.getElementById('notif-menu-list');
+      const unread = notifications.filter((n) => !n.leida && !n.read && !n.is_read).length;
+
+      if (badge) {
+        if (unread > 0) {
+          badge.innerText = unread > 9 ? '+9' : String(unread);
+          badge.style.display = 'flex';
+        } else {
+          badge.style.display = 'none';
+        }
+      }
+
+      if (!notifMenuList) return;
+
+      if (notifications.length === 0) {
+        notifMenuList.innerHTML = '<p class="text-xs text-center font-bold uppercase py-2">Sin notificaciones</p>';
+        return;
+      }
+
+      notifMenuList.innerHTML = notifications
+        .slice(0, 5)
+        .map((n) => {
+          const isUnread = !n.leida && !n.read && !n.is_read;
+          const dateStr = new Date(n.created_at || n.fecha || Date.now()).toLocaleDateString('es-VE');
+          return `
+            <div class="border-2 border-black p-2 hover:bg-gray-100 transition-colors cursor-pointer ${isUnread ? 'bg-[#d7fd48]/20' : 'bg-white'}"
+                 onclick="window.handleNotificationClick('${n.id || n._id}', ${isUnread})">
+              <p class="text-[10px] font-black uppercase line-clamp-2 leading-tight">${n.message || 'Nueva notificación'}</p>
+              <p class="text-[9px] text-gray-600 mt-1 uppercase">${dateStr}</p>
+            </div>`;
+        })
+        .join('');
+    }
+
+    // Manejador para click en notificación del dropdown
+    window.handleNotificationClick = async (notifId, isUnread) => {
+      if (isUnread) {
+        try {
+          await notificationService.markAsRead(notifId);
+          // Actualizar estado local y refrescar
+          await refreshNotifications();
+        } catch (e) {
+          console.error("Error marcando notificación como leída:", e);
+        }
+      }
+    };
+
+    async function refreshNotifications() {
+      try {
+        const notifsRes = await notificationService.getNotifications();
+        let notifs = [];
+        if (Array.isArray(notifsRes)) notifs = notifsRes;
+        else if (notifsRes && Array.isArray(notifsRes.notifications)) notifs = notifsRes.notifications;
+        else if (notifsRes && Array.isArray(notifsRes.data)) notifs = notifsRes.data;
+        renderNotificationBar(notifs);
+      } catch (err) {
+        console.error('Error actualizando notificaciones:', err);
+      }
+    }
+
+    // end added notification helpers
 
     async function initDashboard() {
       const btnExpenses = document.getElementById("btn-hist-expenses");
@@ -514,6 +582,152 @@ import BcvTickerPanel from "../../components/dashboard/finance/BcvTickerPanel.as
         }, 300);
       };
 
+      const missionsModal = document.getElementById("missions-modal");
+      const missionsList = document.getElementById("missions-list");
+      const missionsCounter = document.getElementById("missions-counter");
+      const missionsProgress = document.getElementById("missions-progress");
+
+      window.showMissionsModal = async () => {
+        console.log('showMissionsModal called');
+        if (!missionsModal) {
+          console.log('missionsModal not found');
+          return;
+        }
+        const currentUser = authService.getCurrentUser();
+        if (!currentUser?.id) {
+          console.warn('Usuario no autenticado para misiones');
+          return;
+        }
+
+        console.log('Fetching missions for user:', currentUser.id);
+        try {
+          const res = await fetch(`/api/missions/user/${currentUser.id}`);
+          console.log('Fetch response status:', res.status);
+          const body = await res.json();
+          console.log('Fetch response body:', body);
+          const { missions = [] } = body;
+          console.log('Missions array:', missions);
+          console.log('First mission item:', missions[0]);
+
+          if (missionsList) {
+            if (missions.length === 0) {
+              missionsList.innerHTML = '<p class="text-sm text-center">No hay misiones disponibles.</p>';
+            } else {
+              let completed = 0;
+              missionsList.innerHTML = missions.map((item) => {
+                const target = item.missions?.target_count ?? item.target_count ?? 1;
+                const progress = item.progress ?? 0;
+                const percent = Math.min(100, Math.round((progress / target) * 100));
+                if (item.completed) completed += 1;
+
+                return `
+                <div class="border-2 border-black bg-white p-3 rounded-lg">
+                  <div class="flex justify-between items-center">
+                    <p class="font-black text-xs uppercase tracking-wider">${item.missions?.title || 'Misión'}</p>
+                    <span class="text-[10px] font-black ${item.completed ? 'text-green-700' : 'text-gray-600'}">${item.completed ? 'COMPLETADA' : 'EN PROCESO'}</span>
+                  </div>
+                  <p class="text-[10px] text-gray-600 mt-1">${item.missions?.description || 'Descripción no disponible'}</p>
+                  <div class="w-full bg-black/10 h-2 rounded-full mt-2 overflow-hidden border-2 border-black">
+                    <div class="h-full bg-[#8b5cf6]" style="width: ${percent}%"></div>
+                  </div>
+                  <p class="text-[10px] font-black mt-1">${progress} / ${target} · +${item.missions?.xp_reward ?? item.xp_reward ?? 0} XP</p>
+                  <div class="mt-2 flex justify-end">
+                    ${item.completed
+                      ? '<span class="inline-block px-2 py-1 text-[10px] font-black uppercase text-white bg-green-700 rounded">Completada</span>'
+                      : `<button class="px-2 py-1 text-[10px] font-black uppercase bg-[#d7fd48] border-2 border-black rounded hover:bg-[#cde439] transition" onclick="window.completeMission('${item.missions?.code ?? item.code}')">Avanzar misión</button>`
+                    }
+                  </div>
+                </div>`;
+              }).join('');
+
+              if (missionsCounter) {
+                missionsCounter.textContent = `${completed}/${missions.length} Completadas`;
+              }
+              if (missionsProgress) {
+                missionsProgress.style.width = `${missions.length > 0 ? Math.round((completed / missions.length) * 100) : 0}%`;
+              }
+            }
+          }
+        } catch (err) {
+          console.error('Error cargando misiones:', err);
+          // Mock data for testing
+          const missions = [
+            { mission: { title: 'Recargar tu saldo', description: 'Realiza una recarga en tu saldo Capy.', target_count: 1, xp_reward: 10 }, progress: 0, completed: false },
+            { mission: { title: 'Enviar saldo a otro usuario', description: 'Envía saldo a otro usuario CapyPay.', target_count: 1, xp_reward: 5 }, progress: 0, completed: false },
+            { mission: { title: 'Comprar en el comedor', description: 'Realiza una compra en el comedor.', target_count: 1, xp_reward: 10 }, progress: 0, completed: false }
+          ];
+        }
+
+        console.log('Showing modal');
+        missionsModal.classList.remove('hidden');
+        missionsModal.classList.add('flex');
+        requestAnimationFrame(() => {
+          missionsModal.classList.remove('opacity-0');
+          const modalBox = missionsModal.querySelector('div');
+          console.log('modalBox:', modalBox);
+          if (modalBox) {
+            modalBox.classList.remove('scale-95');
+            modalBox.classList.add('scale-100');
+            modalBox.classList.remove('opacity-0');
+          }
+        });
+      };
+
+      window.completeMission = async (missionCode) => {
+        const user = authService.getCurrentUser();
+        if (!user?.id || !missionCode) return;
+
+        try {
+          const response = await fetch('/api/missions/complete', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId: user.id, missionCode })
+          });
+
+          if (!response.ok) {
+            const err = await response.json();
+            console.error('Error completando misión:', err);
+            return;
+          }
+
+          const result = await response.json();
+          console.log('Misión actualizada:', result);
+          if (window.showToast) {
+            window.showToast(`Misión '${missionCode}' actualizada`, 'success', 'Misión completada');
+          }
+          await refreshNotifications();
+          await window.showMissionsModal();
+        } catch (error) {
+          console.error('Error en completeMission:', error);
+          if (window.showToast) {
+            window.showToast('Error al completar misión', 'error');
+          }
+        }
+      };
+
+      window.closeMissionsModal = () => {
+        if (!missionsModal) return;
+        missionsModal.classList.add('opacity-0');
+        const modalBox = missionsModal.querySelector('div');
+        if (modalBox) {
+          modalBox.classList.add('scale-95');
+          modalBox.classList.remove('scale-100');
+          modalBox.classList.add('opacity-0');
+        }
+        setTimeout(() => {
+          missionsModal.classList.add('hidden');
+          missionsModal.classList.remove('flex');
+        }, 300);
+      };
+
+      if (missionsModal) {
+        missionsModal.addEventListener('click', (e) => {
+          if (e.target === missionsModal) {
+            window.closeMissionsModal();
+          }
+        });
+      }
+
       if (mobileLogout) mobileLogout.onclick = window.showLogoutModal;
       if (cancelLogoutBtn) cancelLogoutBtn.onclick = window.closeLogoutModal;
       if (confirmLogoutBtn) {
@@ -529,48 +743,14 @@ import BcvTickerPanel from "../../components/dashboard/finance/BcvTickerPanel.as
       try {
         const userInfo = await userService.getProfile();
 
-        let notifs = [];
-        try {
-          const notifsRes = await notificationService.getNotifications();
-          if (Array.isArray(notifsRes)) notifs = notifsRes;
-          else if (notifsRes && Array.isArray(notifsRes.notifications))
-            notifs = notifsRes.notifications;
-          else if (notifsRes && Array.isArray(notifsRes.data))
-            notifs = notifsRes.data;
-        } catch (e) {}
-
-        const unread = notifs.filter((n) => !n.leida && !n.read).length;
-        const badge = document.getElementById("mobile-notif-badge");
-        if (badge && unread > 0) {
-          badge.innerText = unread > 9 ? "+9" : unread;
-          badge.style.display = "flex";
-        }
-
-        const notifMenuList = document.getElementById("notif-menu-list");
-        if (notifMenuList) {
-          if (notifs.length === 0) {
-            notifMenuList.innerHTML =
-              '<p class="text-xs text-center font-bold uppercase py-2">Sin notificaciones</p>';
-          } else {
-            notifMenuList.innerHTML = notifs
-              .slice(0, 5)
-              .map(
-                (n) => `
-              <div class="border-2 border-black p-2 hover:bg-gray-100 transition-colors ${!n.leida && !n.read ? "bg-[#d7fd48]/20" : "bg-white"}">
-                <p class="text-[10px] font-black uppercase line-clamp-2 leading-tight">${n.message || "Nueva notificación"}</p>
-                <p class="text-[9px] text-gray-600 mt-1 uppercase">${new Date(n.created_at || n.fecha || Date.now()).toLocaleDateString()}</p>
-              </div>
-            `,
-              )
-              .join("");
-          }
-        }
+        await refreshNotifications();
 
         document.addEventListener("click", (e) => {
           const container = document.getElementById("notif-dropdown-container");
           const menu = document.getElementById("notif-menu");
           if (container && menu && !container.contains(e.target)) {
             menu.classList.add("hidden");
+            menu.classList.remove("flex");
           }
         });
 
