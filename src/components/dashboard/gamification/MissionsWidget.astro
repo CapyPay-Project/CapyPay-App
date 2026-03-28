@@ -1,15 +1,22 @@
 ---
 ---
 
-<div class="bg-brand-lime border-4 border-black p-4 sm:p-6 neo-shadow flex flex-col justify-between hover:-translate-y-1 hover:neo-shadow-lg transition-all group -[2rem] h-full">
+<div
+  onclick="window.showMissionsModal && window.showMissionsModal()"
+  class="cursor-pointer bg-brand-lime border-4 border-black p-4 sm:p-6 neo-shadow flex flex-col justify-between hover:-translate-y-1 hover:neo-shadow-lg transition-all group h-full"
+  role="button"
+  aria-label="Abrir misiones"
+  tabindex="0"
+  onkeydown="if(event.key==='Enter'||event.key===' ') window.showMissionsModal && window.showMissionsModal()"
+>
   <div class="flex justify-between items-start mb-4">
     <span class="material-symbols-outlined text-4xl text-black">checklist</span>
-    <span class="font-headline font-bold text-xs uppercase border-2 border-black px-3 py-1 bg-white text-black ">3/5 Done</span>
+    <span id="missions-counter" class="font-headline font-bold text-xs uppercase border-2 border-black px-3 py-1 bg-white text-black">0/0 Completadas</span>
   </div>
   <div>
-    <h4 class="font-headline font-bold uppercase tracking-widest text-sm mt-4 text-black">Daily Tasks</h4>
-    <div class="w-full bg-white h-3 mt-2 border-2 border-black -full overflow-hidden">
-      <div class="bg-brand-purple h-full border-r-2 border-black" style="width: 60%"></div>
+    <h4 class="font-headline font-bold uppercase tracking-widest text-sm mt-4 text-black">Misiones</h4>
+    <div class="w-full bg-white h-3 mt-2 border-2 border-black rounded-full overflow-hidden">
+      <div id="missions-progress" class="bg-brand-purple h-full border-r-2 border-black" style="width: 0%"></div>
     </div>
   </div>
 </div>

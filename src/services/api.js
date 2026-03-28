@@ -280,6 +280,15 @@ export const notificationService = {
   }
 };
 
+export const missionService = {
+  getAllMissions: async () => fetchAPI('/missions'),
+  getUserMissions: async (userId) => fetchAPI(`/missions/user/${userId}`),
+  completeMission: async (missionCode, userId) => fetchAPI('/missions/complete', {
+    method: 'POST',
+    body: JSON.stringify({ missionCode, userId })
+  })
+};
+
 // Servicio de PIN para validación
 export const pinService = {
   verify: async (pin) => {
@@ -298,6 +307,7 @@ export const pinService = {
     });
   }
 };
+
 
 export const cantinaService = {
   // Backend route: GET /api/cantinas/order/:id
