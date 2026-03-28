@@ -6,7 +6,7 @@ import MainLayout from "../../layouts/MainLayout.astro";
   <!-- Volver -->
   <a
     href="/dashboard"
-    class="inline-flex items-center gap-2 text-black hover:text-[#d7fd48] transition-colors mb-6 group font-black uppercase tracking-wider text-sm border-2 border-transparent hover:border-black p-1 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] bg-white"
+    class="inline-flex w-max items-center gap-2 text-black bg-white hover:bg-[#d7fd48] transition-colors mb-4 group font-black uppercase tracking-wider text-sm border-2 border-black px-3 py-2 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-0.5"
   >
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -26,183 +26,239 @@ import MainLayout from "../../layouts/MainLayout.astro";
 
   <!-- Header & Prize Banner -->
   <div
-    class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-12 border-b-4 border-black pb-8"
+    class="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6 mb-10 border-b-[6px] border-black pb-8"
   >
-    <div>
+    <div class="relative">
       <h1
-        class="flex flex-col items-start gap-0 text-4xl sm:text-5xl lg:text-7xl font-black text-black uppercase tracking-tight relative"
+        class="flex flex-col items-start gap-1 text-5xl sm:text-6xl lg:text-7xl font-black text-black uppercase tracking-tighter relative z-30"
         style="font-family: 'Space Grotesk', sans-serif;"
       >
-        <span class="relative z-10 drop-shadow-[2px_2px_0px_white]"
+        <span class="relative z-30 drop-shadow-[4px_4px_0px_white]"
           >RANKING DE</span
         >
         <span
-          class="bg-[#d7fd48] px-3 py-1 border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] relative z-0 -mt-2 sm:-mt-4"
+          class="bg-[#d7fd48] px-4 py-1 border-[4px] border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] relative z-20 -mt-1 sm:-mt-2 transform -rotate-1"
           >INFLUENCIA</span
         >
       </h1>
     </div>
 
     <div
-      class="bg-black text-white border-4 border-black shadow-[6px_6px_0px_0px_rgba(215,253,73,1)] p-6 rotate-1 hover:rotate-0 transition-transform"
+      class="bg-black text-white border-4 border-black shadow-[8px_8px_0px_0px_rgba(215,253,73,1)] p-5 transform -rotate-1 hover:rotate-1 transition-transform"
     >
       <p
-        class="text-sm font-bold uppercase tracking-widest text-[#8CFFE1] mb-2"
+        class="text-sm font-black uppercase tracking-widest text-[#8CFFE1] mb-1 flex items-center gap-2"
       >
-        PREMIO SEMANAL <span
+        <span class="animate-pulse">🔥</span> PREMIO SEMANAL
+        <span
           id="countdown-timer"
-          class="ml-2 font-black text-[#d7fd48]">--d --h --m</span
+          class="ml-auto font-black text-[#d7fd48] bg-white/10 px-2 py-0.5 border-2 border-[#d7fd48]"
+          >--d --h --m</span
         >
       </p>
       <p
-        class="text-3xl font-black uppercase"
+        class="text-3xl lg:text-4xl font-black uppercase tracking-tight"
         style="font-family: 'Space Grotesk', sans-serif;"
       >
         10,000 BARAS + MERCH
       </p>
+      <button
+        class="mt-4 bg-white text-black font-black uppercase text-xs px-3 py-1 border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-y-0.5 hover:shadow-none transition-all"
+        onclick="alert('1er Lugar: 5000 BARAS + T-Shirt Oficial\n2do Lugar: 3000 BARAS\n3er Lugar: 2000 BARAS');"
+        >VER PREMIOS</button
+      >
     </div>
   </div>
 
-  <!-- Toggle Switch -->
   <div
-    class="flex flex-col sm:flex-row gap-0 mb-12 border-4 border-black max-w-2xl mx-auto overflow-hidden shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] font-black"
-  >
-    <button
-      id="tab-users"
-      class="flex-1 py-4 sm:py-6 text-xl sm:text-2xl bg-[#d7fd48] text-black border-b-4 sm:border-b-0 sm:border-r-4 border-black uppercase active:translate-y-1 active:shadow-none transition-all"
-      >ESTUDIANTES</button
-    >
-    <button
-      id="tab-faculties"
-      class="flex-1 py-4 sm:py-6 text-xl sm:text-2xl bg-white text-black/50 uppercase hover:bg-gray-100 transition-all"
-      >FACULTADES</button
-    >
-  </div>
-
-  <div
-    class="grid grid-cols-1 xl:grid-cols-3 gap-8 mb-16"
+    class="grid grid-cols-1 xl:grid-cols-3 gap-10 mb-16"
     style="font-family: 'Space Grotesk', sans-serif;"
   >
     <!-- Main Content (Podium + Leaderboard) -->
-    <div class="xl:col-span-2 space-y-12">
+    <div class="xl:col-span-2 space-y-10">
+      <!-- Central Control Toggle -->
+      <div
+        class="flex flex-col sm:flex-row mb-2 border-[4px] border-black max-w-lg mx-auto overflow-hidden shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] font-black"
+      >
+        <button
+          id="tab-users"
+          class="flex-1 py-3 text-xl bg-[#d7fd48] text-black sm:border-r-[4px] border-black uppercase active:bg-[#c4ec32]"
+          >ESTUDIANTES</button
+        >
+        <button
+          id="tab-faculties"
+          class="flex-1 py-3 text-xl bg-white text-black/50 uppercase hover:bg-gray-100 hover:text-black transition-colors"
+          >FACULTADES</button
+        >
+      </div>
+
       <!-- Podium -->
-      <div>
-        <h2 class="text-4xl font-black uppercase tracking-tighter mb-8">
+      <div
+        class="bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjgiPjxyZWN0IHdpZHRoPSI4IiBoZWlnaHQ9IjgiIGZpbGw9IiNmZmYiLz48Y2lyY2xlIGN4PSIxIiBjeT0iMSIgcj0iMSIgZmlsbD0iI2QxZDVkYiIvPjwvc3ZnPg==')] border-[4px] border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] p-6 sm:px-12 pt-20 pb-8 sm:pb-8 sm:pt-24 relative overflow-visible mt-12 mb-12 sm:mb-16"
+      >
+        <h2
+          class="absolute -top-5 left-6 bg-white border-[4px] border-black px-4 py-1 text-3xl font-black uppercase tracking-tighter shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] z-20"
+        >
           EL PODIO
         </h2>
+
         <div
           id="podium-container"
-          class="flex flex-col md:flex-row items-end justify-center gap-4 h-auto md:h-[450px] transition-opacity duration-300"
+          class="flex flex-col md:flex-row items-end justify-center gap-8 md:gap-8 pt-10 pb-4 transition-opacity duration-300 relative z-10 sm:mt-6"
         >
           <!-- #2 -->
           <div
-            class="w-full md:w-1/3 bg-[#8CFFE1] border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] flex flex-col items-center p-6 h-[320px] md:h-[350px] relative order-2 md:order-1 hover:-translate-y-2 transition-transform"
+            class="w-full md:w-[30%] bg-[#8CFFE1] border-[4px] border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] flex flex-col items-center p-4 relative order-2 md:order-1 hover:-translate-y-2 transition-transform h-auto md:h-[300px]"
           >
             <div
-              class="absolute -top-6 bg-black text-white px-4 py-1 text-2xl font-black"
+              class="absolute -top-8 bg-black text-white px-4 py-1 text-2xl font-black border-[3px] border-black shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] transform -rotate-2 z-20"
             >
               #2
             </div>
-            <div id="rank2-icon" class="hidden text-5xl mb-4"></div>
+            <div
+              id="rank2-icon"
+              class="hidden w-20 h-20 border-[4px] border-black mb-4 mt-2 bg-white flex items-center justify-center text-4xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+            >
+              🏛️
+            </div>
             <img
               id="rank2-avatar"
               alt="Avatar"
-              class="w-24 h-24 border-4 border-black mb-4 bg-white object-cover"
+              class="w-20 h-20 border-[4px] border-black mb-4 mt-2 bg-white object-cover rounded-none shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
               src="https://ui-avatars.com/api/?name=2&background=random"
             />
-            <span
-              id="rank2-name"
-              class="font-black text-2xl uppercase text-center mt-auto truncate w-full"
-              >...</span
+            <div
+              class="flex flex-col items-center justify-end flex-1 w-full bg-white/40 border-[3px] border-black p-2 mt-auto"
             >
-            <span id="rank2-points" class="font-bold text-4xl mt-2">0 XP</span>
+              <span
+                id="rank2-name"
+                class="font-black text-xl uppercase text-center truncate w-full"
+                >...</span
+              >
+              <div
+                class="bg-black text-[#8CFFE1] w-full text-center py-1 mt-2 border-2 border-black"
+              >
+                <span id="rank2-points" class="font-black text-2xl">0 XP</span>
+              </div>
+            </div>
           </div>
 
           <!-- #1 -->
           <div
-            class="w-full md:w-1/3 bg-[#d7fd48] border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] flex flex-col items-center p-6 h-[380px] md:h-[420px] relative z-10 order-1 md:order-2 hover:-translate-y-4 transition-transform"
+            class="w-full md:w-[40%] bg-[#d7fd48] border-[4px] border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] flex flex-col items-center p-4 relative z-10 order-1 md:order-2 hover:-translate-y-4 transition-transform h-auto md:h-[380px] transform md:scale-105"
           >
             <div
-              class="absolute -top-8 bg-black text-[#d7fd48] px-6 py-2 text-4xl font-black"
+              class="absolute -top-10 bg-black text-[#d7fd48] px-6 py-2 text-4xl font-black border-[4px] border-black shadow-[6px_6px_0px_0px_rgba(255,255,255,1)] transform rotate-1 z-20"
             >
               #1
             </div>
             <span
-              class="material-symbols-outlined text-6xl text-black mb-2 absolute -top-16"
+              class="material-symbols-outlined text-6xl text-black mb-2 absolute -top-16 block drop-shadow-[2px_2px_0px_white]"
               style="font-variation-settings: 'FILL' 1;">&#x1f451;</span
             >
-            <div id="rank1-icon" class="hidden text-6xl mb-4"></div>
+            <div
+              id="rank1-icon"
+              class="hidden w-24 h-24 border-[4px] border-black mb-4 mt-4 bg-white flex items-center justify-center text-5xl shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]"
+            >
+              🏛️
+            </div>
             <img
               id="rank1-avatar"
               alt="Avatar"
-              class="w-32 h-32 border-4 border-black mb-4 bg-white object-cover shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+              class="w-28 h-28 border-[4px] border-black mb-4 mt-4 bg-white object-cover shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]"
               src="https://ui-avatars.com/api/?name=1&background=random"
             />
-            <span
-              id="rank1-name"
-              class="font-black text-3xl uppercase text-center mt-auto truncate w-full"
-              >...</span
+            <div
+              class="flex flex-col items-center justify-end flex-1 w-full bg-white/50 border-[4px] border-black p-3 mt-auto"
             >
-            <span id="rank1-points" class="font-bold text-5xl mt-2">0 XP</span>
+              <span
+                id="rank1-name"
+                class="font-black text-2xl uppercase text-center truncate w-full"
+                >...</span
+              >
+              <div
+                class="bg-black text-[#d7fd48] w-full text-center py-2 mt-2 border-[3px] border-black shadow-[4px_4px_0px_0px_rgba(255,255,255,0.3)]"
+              >
+                <span id="rank1-points" class="font-black text-3xl sm:text-4xl"
+                  >0 XP</span
+                >
+              </div>
+            </div>
           </div>
 
           <!-- #3 -->
           <div
-            class="w-full md:w-1/3 bg-[#8b5cf6] border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] flex flex-col items-center p-6 h-[280px] md:h-[300px] relative order-3 md:order-3 hover:-translate-y-2 transition-transform"
+            class="w-full md:w-[30%] bg-[#8b5cf6] border-[4px] border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] flex flex-col items-center p-4 relative order-3 md:order-3 hover:-translate-y-2 transition-transform h-auto md:h-[260px]"
           >
             <div
-              class="absolute -top-6 bg-black text-white px-4 py-1 text-2xl font-black"
+              class="absolute -top-6 bg-black text-white px-4 py-1 text-2xl font-black border-[3px] border-black shadow-[4px_4px_0px_0px_rgba(215,253,73,1)] transform rotate-2 z-20"
             >
               #3
             </div>
-            <div id="rank3-icon" class="hidden text-5xl mb-4"></div>
+            <div
+              id="rank3-icon"
+              class="hidden w-16 h-16 border-[4px] border-black mb-4 mt-2 bg-white flex items-center justify-center text-3xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+            >
+              🏛️
+            </div>
             <img
               id="rank3-avatar"
               alt="Avatar"
-              class="w-20 h-20 border-4 border-black mb-4 bg-white object-cover"
+              class="w-16 h-16 border-[4px] border-black mb-4 mt-2 bg-white object-cover shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
               src="https://ui-avatars.com/api/?name=3&background=random"
             />
-            <span
-              id="rank3-name"
-              class="font-black text-2xl uppercase text-white text-center mt-auto truncate w-full"
-              >...</span
+            <div
+              class="flex flex-col items-center justify-end flex-1 w-full bg-black/20 border-[3px] border-black p-2 mt-auto"
             >
-            <span id="rank3-points" class="font-bold text-4xl mt-2 text-white"
-              >0 XP</span
-            >
+              <span
+                id="rank3-name"
+                class="font-black text-lg sm:text-xl uppercase text-white text-center truncate w-full"
+                >...</span
+              >
+              <div
+                class="bg-white text-black w-full text-center py-1 mt-1 border-[3px] border-black"
+              >
+                <span id="rank3-points" class="font-black text-xl">0 XP</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
       <!-- Leaderboard Table -->
       <div
-        class="border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] overflow-hidden bg-white mt-12 md:mt-0"
+        class="border-[4px] border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] overflow-hidden bg-white mt-12 md:mt-0"
       >
         <div
           id="ranking-list-title"
-          class="bg-black text-white p-4 font-black text-xl uppercase tracking-widest border-b-4 border-black"
+          class="bg-black text-[#8CFFE1] p-4 sm:p-5 font-black text-xl sm:text-2xl uppercase tracking-widest border-b-[4px] border-black flex justify-between items-center"
         >
-          RANKING GENERAL
+          <span>RANKING GLOBAL</span>
+          <span class="text-sm text-white bg-white/20 px-2 py-1">TOP 100</span>
         </div>
         <div
           id="ranking-list-container"
-          class="divide-y-4 divide-black min-h-[300px]"
+          class="divide-y-[3px] divide-black min-h-[300px] bg-[#fdfdfd]"
         >
           <!-- JS WILL INJECT ROWS HERE -->
         </div>
         <div
           id="ranking-pagination"
-          class="hidden p-4 bg-white flex justify-between items-center border-t-4 border-black"
+          class="hidden p-4 bg-gray-100 flex justify-between items-center border-t-[4px] border-black"
         >
           <button
             id="pag-prev"
-            class="border-4 border-black bg-white px-4 py-2 font-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-1 hover:shadow-none transition-all disabled:opacity-50 disabled:pointer-events-none"
+            class="border-[3px] border-black bg-white px-3 sm:px-5 py-2 font-black uppercase text-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-1 hover:shadow-none transition-all disabled:opacity-50 disabled:pointer-events-none"
             >&lt; ANT</button
           >
-          <span id="pag-info" class="font-bold text-xl">1/1</span>
+          <span
+            id="pag-info"
+            class="font-black text-xl bg-white border-[3px] border-black px-4 py-1 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
+            >1/1</span
+          >
           <button
             id="pag-next"
-            class="border-4 border-black bg-[#d7fd48] px-4 py-2 font-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-1 hover:shadow-none transition-all disabled:opacity-50 disabled:pointer-events-none"
+            class="border-[3px] border-black bg-[#d7fd48] px-3 sm:px-5 py-2 font-black uppercase text-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-1 hover:shadow-none transition-all disabled:opacity-50 disabled:pointer-events-none"
             >SIG &gt;</button
           >
         </div>
@@ -210,83 +266,106 @@ import MainLayout from "../../layouts/MainLayout.astro";
     </div>
 
     <!-- Sidebars -->
-    <div class="space-y-8">
+    <div class="space-y-10">
       <!-- Faculty Battle Card -->
       <div
         id="faculty-battle-summary"
-        class="bg-white border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] p-6 -rotate-1 hover:rotate-0 transition-transform"
+        class="bg-white border-[4px] border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] p-6 -rotate-1 hover:rotate-1 transition-transform relative"
       >
-        <h3 class="font-black text-3xl uppercase mb-6 tracking-tighter italic">
-          FACULTY <span class="text-[#8b5cf6]">BATTLE</span>
+        <!-- Decorator -->
+        <div
+          class="absolute -top-4 -right-4 bg-[#FF6B6B] border-[3px] border-black p-2 font-black text-white transform rotate-12 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] z-10 w-28 text-center text-sm"
+        >
+          EN CURSO
+        </div>
+
+        <h3
+          class="font-black text-3xl sm:text-4xl uppercase mb-6 tracking-tighter leading-none pr-8"
+        >
+          FACULTY <br /><span class="text-[#8b5cf6]">BATTLE</span>
         </h3>
+
         <div class="space-y-6">
           <div
             id="battle-details-text"
-            class="flex justify-between font-black text-sm sm:text-lg mb-2"
+            class="flex items-center justify-center font-black text-sm sm:text-base border-[3px] border-black bg-gray-100 p-3 text-center"
           >
-            Batalla de Facultades
+            Calculando dominio...
           </div>
-          <div class="hidden justify-between font-black text-sm sm:text-lg">
-            <span
-              class="bg-[#d7fd48] px-2 py-1 border-4 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
-              >INGENIERIA</span
-            >
-            <span
-              class="bg-[#8b5cf6] text-white px-2 py-1 border-4 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
-              >ARTES</span
-            >
-          </div>
-          <!-- Progress Bar -->
+
+          <!-- Progress Bar Wrapper -->
           <div
-            id="battle-bar-container"
-            class="h-12 border-4 border-black bg-[#8b5cf6] flex relative shadow-[inset_0px_4px_0px_rgba(0,0,0,0.2)]"
+            class="bg-black p-2 border-[4px] border-black shadow-[4px_4px_0px_0px_rgba(215,253,73,1)]"
           >
+            <div
+              id="battle-bar-container"
+              class="h-14 border-[3px] border-white flex relative overflow-hidden"
+            >
+              <!-- JS Injects Bar Here -->
+            </div>
           </div>
           <button
-            class="w-full bg-black text-white py-4 font-black uppercase text-2xl border-4 border-black hover:bg-[#d7fd48] hover:text-black hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-y-1 transition-all"
-            >VOTAR AHORA</button
+            class="w-full bg-[#8b5cf6] text-white py-4 font-black uppercase text-xl sm:text-2xl border-[4px] border-black hover:bg-[#d7fd48] hover:text-black hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] active:translate-y-1 transition-all"
+            onclick="alert('Participar en minijuegos de Faculty Battle en desarrollo. ¡Pronto disponible!')"
           >
+            VER BATALLA
+          </button>
+          <div class="flex justify-center mt-2">
+            <span
+              class="text-center font-bold text-sm underline cursor-pointer hover:text-purple-500"
+              onclick="alert('Cada facultad compite semanalmente ganando XP colectiva. El ganador obtiene beneficios y descuentos.');"
+              >Ver Detalles de la Batalla</span
+            >
+          </div>
         </div>
       </div>
 
       <!-- How to earn XP -->
       <div
-        class="bg-white border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] p-6 rotate-1 hover:rotate-0 transition-transform"
+        class="bg-white border-[4px] border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] p-6 rotate-1 hover:rotate-0 transition-transform bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjgiPjxyZWN0IHdpZHRoPSI4IiBoZWlnaHQ9IjgiIGZpbGw9IiNmZmYiLz48cmVjdCB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjZTVlN2ViIi8+PC9zdmc+')]"
       >
         <h3
-          class="font-black text-2xl uppercase mb-6 border-b-4 border-black pb-4"
+          class="font-black text-2xl sm:text-3xl uppercase mb-6 border-b-[4px] border-black pb-4 flex items-center gap-3"
         >
-          COMO GANAR <span class="bg-[#d7fd48] px-1 border-2 border-black"
+          COMO GANAR <span
+            class="bg-[#d7fd48] px-2 py-1 border-[4px] border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] inline-block transform -rotate-3 text-xl"
             >XP</span
           >
         </h3>
-        <ul class="space-y-4 font-bold text-lg">
+
+        <ul class="space-y-4 font-bold text-lg sm:text-xl">
           <li
-            class="flex items-center gap-4 p-2 hover:bg-gray-100 border-2 border-transparent hover:border-black transition-colors"
+            class="flex items-center gap-4 p-3 bg-white border-[3px] border-black hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all"
           >
             <span
-              class="bg-[#d7fd48] text-black w-8 h-8 flex items-center justify-center border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
+              class="bg-[#d7fd48] text-black w-10 h-10 flex items-center justify-center border-[3px] border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] text-2xl shrink-0"
               >1</span
             >
-            <span class="uppercase">MISIONES SEMANALES</span>
+            <span class="uppercase leading-tight"
+              >COMPLETA<br /><span class="text-sm">MISIONES</span></span
+            >
           </li>
           <li
-            class="flex items-center gap-4 p-2 hover:bg-gray-100 border-2 border-transparent hover:border-black transition-colors"
+            class="flex items-center gap-4 p-3 bg-white border-[3px] border-black hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all"
           >
             <span
-              class="bg-[#8CFFE1] text-black w-8 h-8 flex items-center justify-center border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
+              class="bg-[#8CFFE1] text-black w-10 h-10 flex items-center justify-center border-[3px] border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] text-2xl shrink-0"
               >2</span
             >
-            <span class="uppercase">COMPRAR EN CANTINAS</span>
+            <span class="uppercase leading-tight"
+              >USA EL<br /><span class="text-sm">COMEDOR</span></span
+            >
           </li>
           <li
-            class="flex items-center gap-4 p-2 hover:bg-gray-100 border-2 border-transparent hover:border-black transition-colors"
+            class="flex items-center gap-4 p-3 bg-white border-[3px] border-black hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all"
           >
             <span
-              class="bg-[#8b5cf6] text-white w-8 h-8 flex items-center justify-center border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
+              class="bg-[#8b5cf6] text-white w-10 h-10 flex items-center justify-center border-[3px] border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] text-2xl shrink-0"
               >3</span
             >
-            <span class="uppercase">VOTAR EN RETOS</span>
+            <span class="uppercase leading-tight"
+              >PARTICIPA EN<br /><span class="text-sm">RETOS</span></span
+            >
           </li>
         </ul>
       </div>
@@ -295,49 +374,53 @@ import MainLayout from "../../layouts/MainLayout.astro";
 
   <!-- Sticky Bottom Card: TU POSICIÓN -->
   <div
-    class="fixed bottom-20 md:bottom-6 right-4 md:right-8 z-30 transform hover:-translate-y-2 transition-transform"
+    class="fixed bottom-20 md:bottom-8 right-4 md:right-8 z-50 transform hover:-translate-y-2 transition-transform"
   >
     <div
-      class="bg-[#8b5cf6] border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] p-4 sm:p-6 flex items-center gap-4 sm:gap-6 active:translate-y-1 active:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all cursor-pointer"
+      class="bg-black border-[4px] border-white shadow-[8px_8px_0px_0px_rgba(139,92,246,1)] p-4 sm:p-6 flex items-center gap-4 sm:gap-6 active:translate-y-1 transition-all cursor-pointer hover:shadow-[4px_4px_0px_0px_rgba(139,92,246,1)]"
     >
       <div class="text-white">
         <p
-          class="font-black text-xs uppercase tracking-widest leading-none mb-1 text-[#d7fd48]"
+          class="font-black text-xs uppercase tracking-widest leading-none mb-2 text-[#d7fd48]"
         >
-          TU POSICIÓN
+          TU POSICIÓN GLOBAL
         </p>
-        <p id="user-rank" class="font-black text-4xl sm:text-5xl leading-none">
+        <p
+          id="user-rank"
+          class="font-black text-5xl sm:text-6xl leading-none drop-shadow-[2px_2px_0px_rgba(139,92,246,1)]"
+        >
           #--
         </p>
       </div>
-      <div class="h-16 w-1 bg-black"></div>
+      <div class="h-16 sm:h-20 w-[4px] bg-[#d7fd48]"></div>
       <div class="text-white hidden sm:flex flex-col">
         <p
-          class="font-black text-xs uppercase tracking-widest leading-none mb-1"
+          class="font-black text-xs uppercase tracking-widest leading-none mb-2 text-[#8CFFE1]"
         >
           XP ACUMULADA
         </p>
         <p
           id="user-points-footer"
-          class="font-black text-2xl sm:text-3xl leading-none"
+          class="font-black text-3xl sm:text-4xl leading-none"
         >
           0
         </p>
       </div>
-      <div class="flex-col items-center justify-center ml-2 hidden sm:flex">
-        <img
-          id="user-avatar-footer"
-          class="w-10 h-10 border-2 border-black bg-white object-cover shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
-          src="https://ui-avatars.com/api/?name=U&background=random"
-        />
-      </div>
     </div>
   </div>
-</MainLayout>
 
-<script>
-  import { initRanking } from "../../utils/rankingLogic.js";
-  document.addEventListener("DOMContentLoaded", () => {
-    initRanking();
-  });
-</script>
+  <script>
+    import { initRanking } from "../../utils/rankingLogic.js";
+
+    document.addEventListener("astro:page-load", () => {
+      initRanking();
+    });
+
+    if (
+      document.readyState === "complete" ||
+      document.readyState === "interactive"
+    ) {
+      initRanking();
+    }
+  </script>
+</MainLayout>

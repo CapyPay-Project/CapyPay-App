@@ -2,6 +2,8 @@
 /**
  * Sidebar.astro (Neo-brutalist)
  */
+import { Trophy } from "lucide-astro";
+
 const currentPath = Astro.url.pathname;
 
 const navItems = [
@@ -15,6 +17,7 @@ const navItems = [
     icon: "confirmation_number",
   },
   { href: "/services/cantina", label: "CANTINA", icon: "storefront" },
+  { href: "/account/ranking", label: "RANKING", isLucide: true, icon: Trophy },
 ];
 ---
 
@@ -48,9 +51,13 @@ const navItems = [
             href={item.href}
             class={`flex items-center gap-4 px-5 py-4 font-black text-sm uppercase tracking-widest transition-all ${isActive ? "bg-[#d7fd48] text-black border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-1 hover:shadow-none" : "text-black border-4 border-transparent hover:border-black hover:bg-gray-100"}`}
           >
-            <span class="material-symbols-outlined font-black">
-              {item.icon}
-            </span>
+            {item.isLucide ? (
+              <item.icon class="w-6 h-6 stroke-[3]" />
+            ) : (
+              <span class="material-symbols-outlined font-black">
+                {item.icon}
+              </span>
+            )}
             {item.label}
           </a>
         );

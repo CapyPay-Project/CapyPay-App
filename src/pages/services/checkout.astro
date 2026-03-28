@@ -3,118 +3,203 @@ import MainLayout from "../../layouts/MainLayout.astro";
 import { cartItems, clearCart } from "../../store/cartStore";
 // Import transaction service if strictly needed server side?
 // Actually, transactionService is likely a client-side module if it uses fetch globally or similar.
-// But we are using it inside <script> tag.
+// But we are using it inside the script tag.
 ---
 
 <MainLayout title="Resumen de Pago | CapyPay" showSidebar={true}>
-  <div class="max-w-2xl mx-auto p-4 md:p-8">
+  <div
+    class="max-w-2xl mx-auto p-4 md:p-8"
+    style="font-family: 'Space Grotesk', sans-serif;"
+  >
     <a
       href="/services/comedor"
-      class="inline-flex items-center gap-2 text-white/50 hover:text-white mb-6"
+      class="inline-flex w-max items-center gap-2 text-black bg-white hover:bg-[#d7fd48] transition-colors mb-6 group font-black uppercase tracking-wider text-sm border-[3px] border-black px-4 py-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 hover:shadow-none"
     >
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+      <svg
+        class="w-5 h-5 group-hover:-translate-x-1 transition-transform"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
         ><path
           stroke-linecap="round"
           stroke-linejoin="round"
-          stroke-width="2"
+          stroke-width="3"
           d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg
       >
-      Volver al menú
+      VOLVER AL MENÚ
     </a>
 
-    <h1 class="text-3xl font-extrabold text-white mb-8">Resumen del Pedido</h1>
+    <h1
+      class="text-4xl md:text-6xl font-black text-black uppercase tracking-tighter mb-8 drop-shadow-[2px_2px_0px_white]"
+    >
+      RESUMEN DEL PEDIDO
+    </h1>
 
     <div class="grid gap-8">
       <!-- Order Items -->
-      <div class="bg-[#1a1a1a] border-4 border-black -3xl p-6">
-        <h2 class="text-lg font-bold text-white mb-4">Detalle de items</h2>
-        <div
-          id="checkout-items"
-          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4"
+      <div
+        class="bg-white border-[4px] border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] p-6 md:p-8 relative"
+      >
+        <h2
+          class="absolute -top-4 left-6 bg-[#8CFFE1] border-[3px] border-black px-4 py-1 text-xl font-black uppercase shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transform -rotate-2"
         >
+          Detalle de items
+        </h2>
+        <div id="checkout-items" class="grid grid-cols-1 gap-4 mb-8 mt-6">
           <!-- Fallback content, will be replaced by JS -->
-          <div class="animate-pulse flex items-center gap-4">
-            <div class="w-16 h-16 bg-white border-2 border-black -xl"></div>
+          <div
+            class="animate-pulse flex items-center gap-4 border-[3px] border-black p-3"
+          >
+            <div class="w-16 h-16 bg-gray-200 border-[3px] border-black"></div>
             <div class="flex-1 space-y-2">
-              <div class="h-4 bg-white border-2 border-black  w-1/2"></div>
-              <div class="h-3 bg-white border-2 border-black  w-1/4"></div>
+              <div class="h-4 bg-gray-200 border-2 border-black w-1/2"></div>
+              <div class="h-3 bg-gray-200 border-2 border-black w-1/4"></div>
             </div>
           </div>
         </div>
 
         <!-- Summary Lines -->
-        <div class="border-t border-black pt-4 space-y-2 mb-4">
-          <div class="flex justify-between text-sm">
-            <span class="text-white/60">Subtotal</span>
-            <span id="checkout-subtotal" class="text-white font-bold"
-              >0.00 BARAS</span
-            >
+        <div
+          class="border-t-[4px] border-black pt-6 space-y-3 mb-6 bg-gray-50 p-4"
+        >
+          <div
+            class="flex justify-between text-lg font-bold uppercase tracking-wide text-black"
+          >
+            <span>Subtotal</span>
+            <span id="checkout-subtotal">0 BARAS</span>
           </div>
-          <div class="flex justify-between text-sm">
-            <span class="text-white/60">Comisión (5%)</span>
-            <span id="checkout-fee" class="text-white/80">0.00 BARAS</span>
+          <div
+            class="flex justify-between text-lg font-bold uppercase tracking-wide text-black"
+          >
+            <span>Comisión (5%)</span>
+            <span id="checkout-fee">0 BARAS</span>
           </div>
         </div>
 
         <div
-          class="border-t border-dashed border-black pt-4 flex justify-between items-end"
+          class="bg-black text-white p-4 border-[4px] border-black shadow-[6px_6px_0px_0px_rgba(215,253,73,1)] flex justify-between items-center transform rotate-1"
         >
-          <span class="text-white/60">Total a pagar</span>
-          <span id="checkout-total" class="text-3xl font-black text-brand-lime"
-            >0.00 BARAS</span
+          <span class="font-black text-xl uppercase">Total a pagar</span>
+          <span id="checkout-total" class="text-3xl font-black text-[#d7fd48]"
+            >0 BARAS</span
           >
         </div>
       </div>
 
       <!-- Payment Action -->
-      <div class="bg-white border-4 border-black -3xl p-6">
-        <h2 class="text-lg font-bold text-white mb-2">Método de Pago</h2>
-        <div
-          class="flex items-center gap-4 bg-white border-2 border-black p-4 -xl border-4 border-black mb-6"
+      <div
+        class="bg-white border-[4px] border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] p-6 md:p-8 relative mt-4"
+      >
+        <h2
+          class="absolute -top-4 right-6 bg-[#d7fd48] border-[3px] border-black px-4 py-1 text-xl font-black uppercase shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transform rotate-2"
         >
-          <div
-            class="w-10 h-10 -full bg-brand-lime flex items-center justify-center text-black"
-          >
-            <svg
-              class="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              ><path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg
+          Método de Pago
+        </h2>
+
+        <!-- Opciones de Pago Interactivos -->
+        <div class="flex flex-col gap-4 mt-6 mb-8 payment-methods-container">
+          <label class="cursor-pointer group">
+            <input
+              type="radio"
+              name="payment_method"
+              value="wallet"
+              class="peer sr-only payment-radio"
+            />
+            <div
+              class="flex items-center justify-between gap-4 bg-white peer-checked:bg-black peer-checked:text-white border-[3px] border-black p-4 transition-all duration-300 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 group-hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] peer-checked:shadow-[6px_6px_0px_0px_rgba(215,253,73,1)]"
             >
-          </div>
-          <div>
-            <h4 class="text-white font-bold">Saldo CapyPay</h4>
-            <p class="text-white/50 text-xs">Pago instantáneo sin comisiones</p>
-          </div>
+              <div class="flex items-center gap-4">
+                <!-- Radio dot -->
+                <div
+                  class="w-6 h-6 rounded-none border-[3px] border-black bg-white flex items-center justify-center shrink-0"
+                >
+                  <div
+                    class="w-3 h-3 bg-[#d7fd48] border-[3px] border-black rounded-none scale-0 peer-checked:scale-100 transition-transform duration-200"
+                  >
+                  </div>
+                </div>
+                <div
+                  class="w-12 h-12 bg-[#8CFFE1] flex items-center justify-center text-black border-[3px] border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transform -rotate-6 shrink-0 group-hover:rotate-0 transition-transform"
+                >
+                  <span class="material-symbols-outlined font-black"
+                    >wallet</span
+                  >
+                </div>
+                <div>
+                  <h4 class="font-black text-xl uppercase tracking-tighter">
+                    Saldo CapyPay
+                  </h4>
+                  <p
+                    class="font-bold text-gray-500 peer-checked:text-gray-300 uppercase text-[10px]"
+                  >
+                    Pago instantáneo
+                  </p>
+                </div>
+              </div>
+            </div>
+          </label>
+
+          <label class="cursor-pointer group">
+            <input
+              type="radio"
+              name="payment_method"
+              value="card"
+              class="peer sr-only payment-radio"
+            />
+            <div
+              class="flex items-center justify-between gap-4 bg-white peer-checked:bg-black peer-checked:text-white border-[3px] border-black p-4 transition-all duration-300 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 group-hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] peer-checked:shadow-[6px_6px_0px_0px_rgba(215,253,73,1)]"
+            >
+              <div class="flex items-center gap-4">
+                <!-- Radio dot -->
+                <div
+                  class="w-6 h-6 rounded-none border-[3px] border-black bg-white flex items-center justify-center shrink-0"
+                >
+                  <div
+                    class="w-3 h-3 bg-[#d7fd48] border-[3px] border-black rounded-none scale-0 peer-checked:scale-100 transition-transform duration-200"
+                  >
+                  </div>
+                </div>
+                <div
+                  class="w-12 h-12 bg-[#E4C1F9] flex items-center justify-center text-black border-[3px] border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transform rotate-3 shrink-0 group-hover:rotate-0 transition-transform"
+                >
+                  <span class="material-symbols-outlined font-black"
+                    >point_of_sale</span
+                  >
+                </div>
+                <div>
+                  <h4 class="font-black text-xl uppercase tracking-tighter">
+                    Tarjeta / Pago Móvil
+                  </h4>
+                  <p
+                    class="font-bold text-gray-500 peer-checked:text-gray-300 uppercase text-[10px]"
+                  >
+                    Paga en caja
+                  </p>
+                </div>
+              </div>
+            </div>
+          </label>
         </div>
 
         <button
           id="do-payment-btn"
-          class="w-full py-4 bg-brand-purple hover:bg-brand-purple/90 text-white font-extrabold -xl transition-all active:scale-95 flex items-center justify-center gap-2 relative overflow-hidden group"
+          disabled
+          class="w-full py-4 bg-gray-300 text-gray-500 pointer-events-none font-black uppercase text-2xl border-[4px] border-black transition-all shadow-none flex items-center justify-center gap-3 relative overflow-hidden group data-[active=true]:bg-[#8b5cf6] data-[active=true]:hover:bg-[#d7fd48] data-[active=true]:hover:text-black data-[active=true]:text-white data-[active=true]:pointer-events-auto data-[active=true]:active:translate-y-1 data-[active=true]:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] data-[active=true]:hover:shadow-none"
         >
           <span class="relative z-10 flex items-center gap-2">
             Confirmar Pago
             <svg
-              class="w-5 h-5"
+              class="w-6 h-6 group-hover:translate-x-1 transition-transform"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
+              stroke-width="3"
               ><path
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                stroke-width="2"
                 d="M5 13l4 4L19 7"></path></svg
             >
           </span>
-          <div
-            class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"
-          >
-          </div>
         </button>
       </div>
     </div>
@@ -135,10 +220,28 @@ import { cartItems, clearCart } from "../../store/cartStore";
 
       if (!itemsContainer || !totalEl || !payBtn) return;
 
+      const radios = document.querySelectorAll(".payment-radio");
+      radios.forEach((r) => {
+        r.addEventListener("change", () => {
+          if (r.checked) {
+            payBtn.removeAttribute("disabled");
+            payBtn.setAttribute("data-active", "true");
+            payBtn.classList.remove(
+              "bg-gray-300",
+              "text-gray-500",
+              "pointer-events-none",
+              "shadow-none",
+            );
+          }
+        });
+      });
+
       // 1. Logic for Price Sync & Rendering
       async function initCheckout() {
         let items = cartItems.get();
-        let itemsArray = Object.values(items).filter(i => i.type === 'comedor' || !i.type);
+        let itemsArray = Object.values(items).filter(
+          (i) => i.type === "comedor" || !i.type,
+        );
 
         if (itemsArray.length === 0) {
           // If cart is empty, go back to previous page or a default
@@ -241,17 +344,17 @@ import { cartItems, clearCart } from "../../store/cartStore";
             const itemTotal = item.price * item.quantity;
             subtotal += itemTotal;
             return `
-                    <div class="flex justify-between items-center bg-white border-2 border-black p-3 -xl border-4 border-black">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10  bg-black/20 flex items-center justify-center text-white/50 font-bold text-xs border-4 border-black">
+                    <div class="flex justify-between items-center bg-gray-50 border-[3px] border-black p-4 mb-2">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-[#d7fd48] flex items-center justify-center text-black font-black text-sm border-[3px] border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
                                 x${item.quantity}
                             </div>
                             <div class="flex flex-col">
-                                <h4 class="text-white font-bold text-sm text-balance">${item.name}</h4>
-                                <span class="text-[10px] text-white/40">Unitario: $${item.price}</span>
+                                <h4 class="text-black font-black uppercase text-sm md:text-base text-balance leading-tight">${item.name}</h4>
+                                <span class="text-[10px] md:text-xs text-black/60 font-bold uppercase tracking-wider mt-1">Unitario: ${item.price} BARAS</span>
                             </div>
                         </div>
-                        <span class="text-white font-bold text-sm text-brand-lime">${itemTotal.toLocaleString()} BARAS</span>
+                        <span class="text-black font-black text-sm md:text-lg">${itemTotal.toLocaleString()} BARAS</span>
                     </div>
                 `;
           })
@@ -313,18 +416,23 @@ import { cartItems, clearCart } from "../../store/cartStore";
           // Since our current cart implementation doesn't store 'type', we'll check if the item has `priceCapys` (Cantina) or relies purely on `price`.
           // For a robust solution, we assume if ANY item is from a Cantina (we can check by checking the API error or by adding a flag).
           // Let's add a heuristic: Cantina items have UUIDs as IDs, Comedor items usually have INTEGER IDs.
-          const validItems = currentItems.filter(i => i.type === 'comedor' || !i.type);
+          const validItems = currentItems.filter(
+            (i) => i.type === "comedor" || !i.type,
+          );
           const orderItems = validItems.map((item) => ({
             id: item.id,
             quantity: item.quantity,
-            price: item.price
+            price: item.price,
           }));
 
           const response = await comedorService.createOrder(userId, orderItems);
 
           if (!response) throw new Error("Error al crear la orden");
 
-          showToast(response.message || "¡Pago realizado con éxito!", "success");
+          showToast(
+            response.message || "¡Pago realizado con éxito!",
+            "success",
+          );
 
           // Clear cart
           clearCart("comedor");
@@ -350,7 +458,10 @@ import { cartItems, clearCart } from "../../store/cartStore";
     document.addEventListener("astro:page-load", initCheckoutLogic);
 
     // Fallback for non-ViewTransitions
-    if (document.readyState === "complete" || document.readyState === "interactive") {
+    if (
+      document.readyState === "complete" ||
+      document.readyState === "interactive"
+    ) {
       initCheckoutLogic();
     }
   </script>

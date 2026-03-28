@@ -19,6 +19,7 @@
     "astro": "^5.16.11",
     "canvas-confetti": "^1.9.4",
     "embla-carousel": "^8.6.0",
+    "embla-carousel-autoplay": "^8.6.0",
     "embla-carousel-svelte": "^8.6.0",
     "lucide-astro": "^0.556.0",
     "lucide-svelte": "^1.0.1",

@@ -1,15 +1,14 @@
 ---
 import MainLayout from "../../layouts/MainLayout.astro";
-
 // No params needed, client-side only
 ---
 
 <MainLayout title="Recibo de Orden | CapyPay" showSidebar={true}>
-  <div class="max-w-md mx-auto p-4 pt-10" id="receipt-container">
+  <div class="max-w-md mx-auto p-4 md:p-8 pt-10" id="receipt-container" style="font-family: 'Space Grotesk', sans-serif;">
     <!-- Receipt Card (Hidden initially) -->
     <div
       id="receipt-card"
-      class="bg-[#1a1a1a] border-4 border-black -3xl p-8 relative overflow-hidden hidden shadow-2xl"
+      class="bg-white border-[4px] border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] p-6 md:p-8 relative hidden transform rotate-1 transition-all"
     >
       <!-- Content injected by JS -->
     </div>
@@ -19,82 +18,55 @@ import MainLayout from "../../layouts/MainLayout.astro";
       id="loader"
       class="flex flex-col items-center justify-center py-20 space-y-6"
     >
-      <div class="relative w-20 h-20">
-        <div class="absolute inset-0 -full border-4 border-black">
-        </div>
-        <div
-          class="absolute inset-0 -full border-4 border-brand-lime border-t-transparent animate-spin"
-        >
-        </div>
-        <div class="absolute inset-0 flex items-center justify-center">
-          <span class="text-2xl">🧾</span>
-        </div>
+      <div class="relative w-24 h-24">
+        <div class="absolute inset-0 border-[4px] border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] bg-white animate-spin"></div>
+        <div class="absolute inset-0 flex items-center justify-center font-black text-3xl">🧾</div>
       </div>
-      <p class="text-white/50 animate-pulse font-medium">
-        Generando tu recibo...
+      <p class="text-black font-black uppercase tracking-widest animate-pulse">
+        Generando recibo...
       </p>
     </div>
 
     <!-- Error State -->
     <div
       id="error-state"
-      class="hidden text-center py-10 scale-95 opacity-0 transition-all duration-500"
+      class="hidden text-center py-10 scale-95 opacity-0 transition-all duration-500 bg-white border-[4px] border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] p-8"
     >
       <div
-        class="text-red-400 mb-4 bg-red-500/10 w-20 h-20 -full flex items-center justify-center mx-auto"
+        class="text-black mb-6 bg-red-400 w-20 h-20 border-[3px] border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex items-center justify-center mx-auto transform -rotate-6"
       >
-        <svg
-          class="w-10 h-10"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          ><path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg
-        >
+        <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
       </div>
-      <h3 class="text-white text-2xl font-bold mb-2">
-        No encontramos esa orden
+      <h3 class="text-black text-2xl font-black uppercase tracking-tight mb-2">
+        ¡Ticket Perdido!
       </h3>
-      <p class="text-white/50 mb-6">
-        Puede que el ID sea incorrecto o la orden no exista.
+      <p class="text-black/70 font-bold px-2 mb-6">
+        No encontramos esa orden. Quizás la conexión falló.
       </p>
       <a
         href="/services/comedor"
-        class="inline-flex items-center gap-2 text-brand-lime font-bold hover:underline"
+        class="inline-flex items-center justify-center w-full gap-2 text-black bg-[#d7fd48] border-[3px] border-black py-3 font-black uppercase shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 hover:shadow-none transition-all"
       >
-        <svg
-          class="w-4 h-4"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          ><path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg
-        >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
         Volver al menú
       </a>
     </div>
 
     <div
       id="actions"
-      class="mt-8 space-y-3 hidden opacity-0 translate-y-4 transition-all duration-700 delay-300"
+      class="mt-10 space-y-4 hidden opacity-0 translate-y-4 transition-all duration-700 delay-300"
     >
       <a
         href="/services/comedor"
-        class="block w-full py-4 bg-brand-purple hover:bg-brand-purple/90 text-white text-center font-bold -xl active:scale-95 transition-all shadow-lg shadow-brand-purple/20"
+        class="block w-full py-4 bg-[#8b5cf6] text-white text-center font-black uppercase tracking-widest text-lg border-[4px] border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 hover:shadow-none transition-all"
       >
         Seguir Comprando
       </a>
       <a
         href="/finance/history"
-        class="block w-full py-4 bg-white border-2 border-black hover:bg-white border-2 border-black text-white/70 text-center font-bold -xl active:scale-95 transition-all"
+        class="block w-full py-4 bg-white text-black text-center font-black uppercase tracking-widest text-lg border-[4px] border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 hover:shadow-none transition-all"
       >
-        Ver Historial de Gastos
+        Historial de Gastos
       </a>
     </div>
   </div>
@@ -110,27 +82,21 @@ import MainLayout from "../../layouts/MainLayout.astro";
       const errorState = document.getElementById("error-state");
       const actions = document.getElementById("actions");
 
-      if (!container || !receiptCard || !loader || !errorState || !actions)
-        return;
+      if (!container || !receiptCard || !loader || !errorState || !actions) return;
 
-      // Fetch ID from URL search params
       const urlParams = new URLSearchParams(window.location.search);
       const orderId = urlParams.get("id");
 
       try {
         if (!orderId) throw new Error("ID de orden inválido");
 
-        // Simulate a small process delay
         const minTime = new Promise((resolve) => setTimeout(resolve, 800));
         
-        // Try Comedor first, if fails try Cantina
         let orderObj = null;
         try {
            const [comedorRes] = await Promise.all([comedorService.getOrder(orderId), minTime]);
            if (comedorRes && comedorRes.order) orderObj = comedorRes.order;
-        } catch (e) {
-           // If error, ignore and try cantina
-        }
+        } catch (e) {}
         
         if (!orderObj) {
            const [cantinaRes] = await Promise.all([cantinaService.getOrder(orderId), minTime]);
@@ -142,138 +108,106 @@ import MainLayout from "../../layouts/MainLayout.astro";
         const order = orderObj;
         const items = order.order_items || order.items || [];
 
-        // Build Receipt HTML
         const date = new Date(order.created_at).toLocaleString("es-VE", {
-          day: "numeric",
-          month: "short",
-          year: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
+          day: "numeric", month: "short", year: "numeric",
+          hour: "2-digit", minute: "2-digit",
         });
 
-        const itemsHtml = items
-          .map((item) => {
+        const itemsHtml = items.map((item) => {
             const price = item.price_at_time_capys || item.price_at_time || item.price || 0;
             return `
-                <div class="flex justify-between items-start text-sm mb-3 pb-3 border-b border-black last:border-0 last:mb-0 last:pb-0">
-                    <div class="flex gap-3">
-                         <div class="font-bold text-white/40">x${item.quantity}</div>
-                         <div class="text-white/90">
+                <div class="flex justify-between items-start mb-4 pb-4 border-b-[3px] border-black last:border-0 last:mb-0 last:pb-0">
+                    <div class="flex gap-4">
+                         <div class="font-black text-black bg-[#d7fd48] border-[2px] border-black px-2 py-1 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transform -rotate-2">x${item.quantity}</div>
+                         <div class="text-black font-bold uppercase tracking-tight max-w-[150px] leading-tight mt-1">
                             ${item.menu_items?.name || item.product?.name || "Item Desconocido"}
                          </div>
                     </div>
-                    <span class="text-white font-mono font-medium">${(price * item.quantity).toFixed(2)}</span>
+                    <span class="text-black font-black text-lg mt-1">${(price * item.quantity).toFixed(2)}</span>
                 </div>
             `;
-          })
-          .join("");
+        }).join("");
 
         const subtotal = items.reduce((acc, i) => {
           const price = i.price_at_time_capys || i.price_at_time || i.price || 0;
           return acc + price * i.quantity;
         }, 0);
-
-        // Use the SERVER stored total which includes commission
         const totalPagado = parseFloat(order.total_capys) || parseFloat(order.total) || subtotal;
-
-        // Calculate commission for display
         const comision = totalPagado - subtotal;
+        
+        const ticketNum = String(order.id).replace(/\D/g, '').slice(-3) || '000';
 
         receiptCard.innerHTML = `
-                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-brand-lime via-white to-brand-purple"></div>
+                <h1 class="absolute -top-4 left-6 bg-[#8CFFE1] border-[3px] border-black px-6 py-2 text-2xl font-black uppercase tracking-tighter shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transform -rotate-3 z-10">RECIBO OFICIAL</h1>
                 
-                <div class="text-center mb-8 pt-2">
-                    <div class="inline-flex items-center justify-center w-20 h-20 -full bg-brand-lime text-black mb-4 shadow-lg shadow-brand-lime/20 animate-bounce-short">
-                        <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+                <div class="text-center mt-8 mb-8">
+                    <div class="inline-flex items-center justify-center w-24 h-24 bg-[#d7fd48] border-[4px] border-black text-black mb-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transform rotate-3">
+                        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
                     </div>
-                    <h2 class="text-3xl font-black text-white tracking-tight">¡Orden Exitosa!</h2>
-                    <p class="text-white/40 text-xs mt-2 font-mono uppercase tracking-widest">ID: ${String(order.id).split("-")[0]}</p>
+                    <h2 class="text-4xl md:text-5xl font-black text-black uppercase tracking-tighter mt-2">¡PAGADO!</h2>
                 </div>
 
-                <div class="bg-white border-2 border-black -xl p-4 mb-6 ring-1 ring-white/10">
-                    <div class="flex justify-between text-xs text-white/50 mb-2">
-                        <span>Fecha de compra</span>
+                <div class="bg-gray-100 border-[3px] border-black p-4 mb-8 transform -rotate-1 ring-2 ring-black ring-offset-2 ring-offset-transparent">
+                    <div class="flex justify-between text-sm md:text-base text-black font-bold uppercase mb-2">
+                        <span>Fecha</span>
                         <span>${date}</span>
                     </div>
-                    <div class="flex justify-between text-xs text-white/50">
-                        <span>Estado del pedido</span>
-                        <span class="text-brand-lime uppercase font-bold tracking-wider flex items-center gap-1">
-                            <span class="w-2 h-2 -full bg-brand-lime animate-pulse"></span>
-                            ${order.status}
+                    <div class="flex justify-between text-sm md:text-base text-black font-bold uppercase mb-2 border-t-[2px] border-black pt-2">
+                        <span>Ticket</span>
+                        <span class="text-[#8b5cf6] font-black text-xl">#${ticketNum}</span>
+                    </div>
+                    <div class="flex justify-between text-sm md:text-base text-black font-bold uppercase border-t-[2px] border-black pt-2 items-center">
+                        <span>Estado</span>
+                        <span class="bg-black text-[#d7fd48] px-3 py-1 font-black tracking-widest text-xs">
+                            ${order.status === 'pre arrival' || order.status === 'preparing' || order.status === 'pending' ? 'PRE-ARRIVAL' : order.status === 'completed' ? 'COMPLETADO' : order.status}
                         </span>
                     </div>
                 </div>
 
-                <div class="mb-4">
-                     <h3 class="text-[10px] font-bold text-white/30 uppercase tracking-widest mb-4">Detalle del consumo</h3>
-                     <div class="space-y-3 mb-4">
+                <div class="mb-6">
+                     <h3 class="text-lg font-black text-black uppercase tracking-tighter mb-4 border-b-[4px] border-black pb-2 inline-block">Detalles</h3>
+                     <div class="space-y-2 mt-4">
                         ${itemsHtml}
                      </div>
-                     
-                     <!-- Subtotal & Commission Breakdown -->
-                     ${
-                       comision > 0
-                         ? `
-                     <div class="pt-3 border-t border-black flex justify-between text-xs text-white/50">
+
+                     ${comision > 0 ? `
+                     <div class="mt-6 pt-4 border-t-[4px] border-black flex justify-between text-sm md:text-base font-bold uppercase text-black/70">
                         <span>Subtotal</span>
                         <span>${subtotal.toFixed(2)}</span>
                      </div>
-                     <div class="pt-1 flex justify-between text-xs text-white/50">
-                        <span>Tasa de Servicio (5%)</span>
+                     <div class="pt-2 flex justify-between text-sm md:text-base font-bold uppercase text-black/70 text-[#8b5cf6]">
+                        <span>Comisión (5%)</span>
                         <span>${comision.toFixed(2)}</span>
                      </div>
-                     `
-                         : ""
-                     }
+                     ` : ''}
                 </div>
 
-                <div class="border-t-2 border-dashed border-black pt-6">
-                    <div class="flex justify-between items-end mb-1">
-                        <span class="text-white/60 text-sm">Total Pagado</span>
-                        <span class="text-4xl font-black text-brand-lime tracking-tighter">${totalPagado.toFixed(2)}<span class="text-lg text-brand-lime/50 ml-1">BARAS</span></span>
-                    </div>
-                     <div class="mt-6 bg-gradient-to-r from-brand-purple/20 to-brand-purple/10 border border-brand-purple/30 p-3  text-center transform hover:scale-[1.02] transition-transform cursor-default">
-                        <p class="text-brand-purple-light text-sm font-bold flex items-center justify-center gap-2">
-                            <span>✨</span> +${order.xp_earned || order.xp_gained || items.length * 15} XP Ganada
-                        </p>
-                    </div>
+                <div class="border-t-[6px] border-black pt-6 flex justify-between items-center transform rotate-1 bg-[#8CFFE1] p-4 text-black border-[3px] shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                    <span class="text-xl font-black uppercase">Total</span>
+                    <span class="text-4xl font-black tracking-tighter">${totalPagado.toFixed(2)} <span class="text-lg">B</span></span>
                 </div>
-            `;
+        `;
 
-        // Reveal
         loader.classList.add("hidden");
-
         receiptCard.classList.remove("hidden");
-        receiptCard.classList.add("animate-fade-in-up"); // Ensure you have this class or similar, or standard simple transition
-
         actions.classList.remove("hidden");
-        actions.classList.remove("opacity-0", "translate-y-4"); // Trigger CSS transition
-      } catch (e) {
-        console.error(e);
+        setTimeout(() => {
+          actions.classList.remove("opacity-0", "translate-y-4");
+        }, 50);
+
+      } catch (error) {
+        console.error("Order Fetch Error:", error);
         loader.classList.add("hidden");
         errorState.classList.remove("hidden");
         setTimeout(() => {
-          errorState.classList.remove("scale-95", "opacity-0");
+          errorState.classList.remove("opacity-0", "scale-95");
         }, 50);
       }
     }
 
-    // Init
-    loadOrder();
+    document.addEventListener("astro:page-load", loadOrder);
+    if (document.readyState === "complete" || document.readyState === "interactive") {
+      loadOrder();
+    }
   </script>
-
-  <style>
-    @keyframes bounce-short {
-      0%,
-      100% {
-        transform: translateY(0);
-      }
-      50% {
-        transform: translateY(-10px);
-      }
-    }
-    .animate-bounce-short {
-      animation: bounce-short 1s ease-in-out infinite;
-    }
-  </style>
 </MainLayout>

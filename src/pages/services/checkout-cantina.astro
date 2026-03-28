@@ -3,7 +3,7 @@ import MainLayout from "../../layouts/MainLayout.astro";
 import { cartItems, clearCart } from "../../store/cartStore";
 // Import transaction service if strictly needed server side?
 // Actually, transactionService is likely a client-side module if it uses fetch globally or similar.
-// But we are using it inside <script> tag.
+// But we are using it inside the script tag.
 ---
 
 <MainLayout title="Pago de Cantina | CapyPay" showSidebar={true}>
@@ -36,8 +36,8 @@ import { cartItems, clearCart } from "../../store/cartStore";
           <div class="animate-pulse flex items-center gap-4">
             <div class="w-16 h-16 bg-white border-2 border-black -xl"></div>
             <div class="flex-1 space-y-2">
-              <div class="h-4 bg-white border-2 border-black  w-1/2"></div>
-              <div class="h-3 bg-white border-2 border-black  w-1/4"></div>
+              <div class="h-4 bg-white border-2 border-black w-1/2"></div>
+              <div class="h-3 bg-white border-2 border-black w-1/4"></div>
             </div>
           </div>
         </div>
@@ -138,7 +138,11 @@ import { cartItems, clearCart } from "../../store/cartStore";
       // 1. Logic for Price Sync & Rendering
       async function initCheckout() {
         let items = cartItems.get();
-        let itemsArray = Object.values(items).filter(i => i.type === 'cantina' || (i.id.toString().includes('-') && i.id.toString().length > 10));
+        let itemsArray = Object.values(items).filter(
+          (i) =>
+            i.type === "cantina" ||
+            (i.id.toString().includes("-") && i.id.toString().length > 10),
+        );
 
         if (itemsArray.length === 0) {
           // If cart is empty, go back to previous page or a default
@@ -211,10 +215,16 @@ import { cartItems, clearCart } from "../../store/cartStore";
             throw new Error("ID de usuario no encontrado en sesión local");
 
           // Filtrar unicamente items de cantina
-          const validItems = currentItems.filter(i => i.type === 'cantina' || (i.id.toString().includes('-') && i.id.toString().length > 10));
+          const validItems = currentItems.filter(
+            (i) =>
+              i.type === "cantina" ||
+              (i.id.toString().includes("-") && i.id.toString().length > 10),
+          );
 
           if (validItems.length === 0) {
-            throw new Error("No hay productos válidos de cantina en tu carrito.");
+            throw new Error(
+              "No hay productos válidos de cantina en tu carrito.",
+            );
           }
 
           // CALCULAR TOTAL LOCALMENTE PARA VALIDACIÓN PREVIA
@@ -243,32 +253,40 @@ import { cartItems, clearCart } from "../../store/cartStore";
           const tempCantinaReq = await fetchAPI(`/cantinas`);
           let cantinaId = null;
           if (tempCantinaReq && tempCantinaReq.cantinas) {
-             tempCantinaReq.cantinas.forEach(c => {
-               const pMatch = c.products.find(p => String(p.id) === String(productId));
-               if (pMatch) cantinaId = c.id;
-             });
+            tempCantinaReq.cantinas.forEach((c) => {
+              const pMatch = c.products.find(
+                (p) => String(p.id) === String(productId),
+              );
+              if (pMatch) cantinaId = c.id;
+            });
           }
 
-          if (!cantinaId) throw new Error("No se pudo identificar a qué cantina pertenece el producto.");
+          if (!cantinaId)
+            throw new Error(
+              "No se pudo identificar a qué cantina pertenece el producto.",
+            );
 
           // 4. Transformar items al formato del backend
-          const cantinaItems = validItems.map(item => ({
+          const cantinaItems = validItems.map((item) => ({
             product_id: item.id,
-            quantity: item.quantity
+            quantity: item.quantity,
           }));
 
           const response = await cantinaService.purchaseProducts(
-            userId, 
-            cantinaId, 
-            cantinaItems, 
+            userId,
+            cantinaId,
+            cantinaItems,
             totalLocal, // total_bs (dummy values if we only use capys)
             grandTotal, // total_capys
-            Math.ceil(grandTotal * 0.1) // total_xp
+            Math.ceil(grandTotal * 0.1), // total_xp
           );
 
           if (!response) throw new Error("Error al crear la orden de cantina");
 
-          showToast(response.message || "¡Pago realizado con éxito!", "success");
+          showToast(
+            response.message || "¡Pago realizado con éxito!",
+            "success",
+          );
 
           // Clear cart
           clearCart("cantina");
@@ -294,7 +312,10 @@ import { cartItems, clearCart } from "../../store/cartStore";
     document.addEventListener("astro:page-load", initCheckoutLogic);
 
     // Fallback for non-ViewTransitions
-    if (document.readyState === "complete" || document.readyState === "interactive") {
+    if (
+      document.readyState === "complete" ||
+      document.readyState === "interactive"
+    ) {
       initCheckoutLogic();
     }
   </script>

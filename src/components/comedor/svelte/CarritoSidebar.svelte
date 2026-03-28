@@ -25,40 +25,13 @@
     $isCartOpen = false;
   }
 
-  async function handleCheckout() {
+  function handleCheckout() {
     if (itemsArray.length === 0) return;
     isCheckingOut = true;
 
-    try {
-      // Map formatting for backend: [{ id, quantity }]
-      const payloadItems = itemsArray.map((i) => ({
-        id: i.id,
-        quantity: i.quantity,
-      }));
-
-      const response = await fetchAPI("/comedor/order", {
-        method: "POST",
-        body: JSON.stringify({ items: payloadItems }),
-      });
-
-      if (response && response.order) {
-        showToast("¡COMPRA EXITOSA!", "Tu orden ha sido procesada.", "success");
-        clearCart();
-        closeCart();
-        // Dispatch to ComedorApp so it updates the state
-        dispatch("checkout_success", { order: response.order });
-      } else {
-        throw new Error("Respuesta inválida del servidor");
-      }
-    } catch (err) {
-      showToast(
-        "ERROR EN LA COMPRA",
-        err.message || "Revisa tu conexión o saldo.",
-        "error",
-      );
-    } finally {
-      isCheckingOut = false;
-    }
+    // Redirigir al checkout para confirmar todo
+    closeCart();
+    window.location.href = "/services/checkout";
   }
 </script>
 
