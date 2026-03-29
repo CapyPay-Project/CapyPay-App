@@ -153,6 +153,18 @@ export const userService = {
     return fetchAPI(`/usuario/${userId}`);
   },
   
+  // Backend route: GET /api/usuario/:id/level
+  getUserLevel: async (id) => {
+    let userId = id;
+    if (!userId) {
+       const storedUser = authService.getCurrentUser();
+       userId = storedUser?.id || storedUser?.user_id;
+    }
+    if (!userId) throw new Error("ID de usuario no encontrado");
+    
+    return fetchAPI(`/usuario/${userId}/level`);
+  },
+  
   // Backend route: GET /api/historial
   getHistory: async (cedula) => {
     if (!cedula) {

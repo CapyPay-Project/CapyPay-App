@@ -159,7 +159,7 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
               >
               <span
                 class="bg-white border-2 border-black px-2 py-0.5 text-[10px] font-black"
-                >GOLD</span
+                >NIVEL</span
               >
             </div>
             <div class="mt-2 text-center w-full">
@@ -168,7 +168,10 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
               >
                 NIVEL
               </p>
-              <h3 class="font-black text-3xl uppercase leading-none">LVL 42</h3>
+              <h3 class="font-black text-3xl uppercase leading-none" id="user-level">1</h3>
+              <div class="w-full bg-white border-2 border-black h-2 mt-1">
+                <div class="bg-[#8b5cf6] h-full transition-all duration-300" id="level-progress" style="width: 0%"></div>
+              </div>
             </div>
           </div>
         </div>
@@ -341,6 +344,7 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
       userService,
       notificationService,
     } from "../../services/api.js";
+    import { userProfile } from "../../store/userStore.js";
 
     let cachedMovements = [];
     let currentFilter = "all";
@@ -786,5 +790,13 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
     } else {
       initDashboard();
     }
+
+    // Suscribirse al store de usuario para actualizar nivel
+    userProfile.subscribe((profile) => {
+      const levelEl = document.getElementById("user-level");
+      const progressEl = document.getElementById("level-progress");
+      if (levelEl) levelEl.textContent = profile.level || 1;
+      if (progressEl) progressEl.style.width = `${profile.progress || 0}%`;
+    });
   </script>
 </CapyPay>

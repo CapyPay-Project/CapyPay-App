@@ -7,6 +7,10 @@ export const userProfile = atom({
   xp: 0,
   cedula: '',
   name: '',
+  level: 1,
+  progress: 0,
+  nextXp: 100,
+  benefits: [],
   isLoading: true
 });
 
@@ -17,6 +21,7 @@ export async function fetchUserProfile() {
     
     // Call API using the service
     const profile = await userService.getProfile();
+    const levelData = await userService.getUserLevel();
     
     if (profile) {
       userProfile.set({
@@ -24,6 +29,10 @@ export async function fetchUserProfile() {
         xp: Number(profile.xp ?? profile.puntos ?? 0),
         cedula: profile.cedula || '',
         name: profile.nombre || profile.name || '',
+        level: levelData?.level || 1,
+        progress: levelData?.progress || 0,
+        nextXp: levelData?.nextXp || 100,
+        benefits: levelData?.benefits || [],
         isLoading: false
       });
       
@@ -50,7 +59,21 @@ export async function fetchUserProfile() {
   }
 }
 
-// Auto-refresh when a transaction is completed across the app
-if (typeof window !== 'undefined') {
-  window.addEventListener("transaction-completed", fetchUserProfile);
+// Function to update only the level data (useful after XP changes)
+export async function updateUserLevel() {
+  try {
+    const levelData = await userService.getUserLevel();
+    if (levelData) {
+      const currentProfile = userProfile.get();
+      userProfile.set({
+        ...currentProfile,
+        level: levelData.level || 1,
+        progress: levelData.progress || 0,
+        nextXp: levelData.nextXp || 100,
+        benefits: levelData.benefits || []
+      });
+    }
+  } catch (error) {
+    console.error("Error updating user level:", error);
+  }
 }

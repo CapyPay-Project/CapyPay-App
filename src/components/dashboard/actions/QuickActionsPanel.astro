@@ -294,6 +294,7 @@
     transactionService,
     pinService,
   } from "../../../services/api.js";
+  import { updateUserLevel } from "../../../store/userStore.js";
 
   let searchTimeout = null;
 
@@ -474,6 +475,10 @@
           });
 
           alert("¡Dinero enviado con éxito!");
+          
+          // Actualizar nivel después de transferencia
+          updateUserLevel();
+          
           window.location.reload();
         } catch (error) {
           alert(error.message || "Error al procesar transferencia");

@@ -10,6 +10,7 @@
   import { showToast } from "../../../utils/toast.js";
   import { fetchAPI } from "../../../services/api.js";
   import { createEventDispatcher } from "svelte";
+  import { updateUserLevel } from "../../../store/userStore.js";
 
   const dispatch = createEventDispatcher();
 
@@ -47,6 +48,9 @@
         closeCart();
         // Dispatch to ComedorApp so it updates the state
         dispatch("checkout_success", { order: response.order });
+        
+        // Actualizar nivel después de compra
+        updateUserLevel();
       } else {
         throw new Error("Respuesta inválida del servidor");
       }
