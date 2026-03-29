@@ -1,56 +1,6 @@
 // @ts-nocheck
 import { authService, userService } from "../../services/api.js";
-
-const nivelesConfig = [
-  {
-    id: "novato",
-    nombre: "Novato (Cachorro)",
-    puntosMin: 0,
-    puntosMax: 500,
-    color: "#9CA3AF",
-    colorGlow: "#6B7280",
-  },
-  {
-    id: "bachiller",
-    nombre: "Bachiller",
-    puntosMin: 501,
-    puntosMax: 2000,
-    color: "#60A5FA",
-    colorGlow: "#3B82F6",
-  },
-  {
-    id: "licenciado",
-    nombre: "Licenciado",
-    puntosMin: 2001,
-    puntosMax: 5000,
-    color: "#A78BFA",
-    colorGlow: "#8B5CF6",
-  },
-  {
-    id: "magister",
-    nombre: "Magister",
-    puntosMin: 5001,
-    puntosMax: 10000,
-    color: "#34D399",
-    colorGlow: "#10B981",
-  },
-  {
-    id: "doctor",
-    nombre: "Doctor",
-    puntosMin: 10001,
-    puntosMax: 20000,
-    color: "#F59E0B",
-    colorGlow: "#D97706",
-  },
-  {
-    id: "capy-legend",
-    nombre: "Capy Legend",
-    puntosMin: 20001,
-    puntosMax: Number.POSITIVE_INFINITY,
-    color: "#F472B6",
-    colorGlow: "#EC4899",
-  },
-];
+import { calculateLevel } from "../levelsConfig.js";
 
 export function initProfilePage() {
   const dom = getDomRefs();
@@ -156,61 +106,72 @@ function renderProfile(dom, user) {
 
 function updateLevelUI(dom, xpValue) {
   const xp = Number.isFinite(Number(xpValue)) ? Number(xpValue) : 0;
-  const nivelActual =
-    nivelesConfig.find((nivel) => xp >= nivel.puntosMin && xp <= nivel.puntosMax) ||
-    nivelesConfig[0];
+  const levelData = calculateLevel(xp);
 
-  const siguienteNivel = nivelesConfig.find((nivel) => nivel.puntosMin > xp);
-  const xpMaxNivel = Number.isFinite(nivelActual.puntosMax)
-    ? nivelActual.puntosMax
-    : xp + 1000;
-  const xpMinNivel = nivelActual.puntosMin;
-  const rangoNivel = Math.max(xpMaxNivel - xpMinNivel, 1);
-  const progresoRaw = ((xp - xpMinNivel) / rangoNivel) * 100;
-  const progreso = Math.min(Math.max(progresoRaw, 0), 100);
-
-  if (dom.nivelText) dom.nivelText.textContent = nivelActual.nombre;
-  if (dom.xpActual) dom.xpActual.textContent = xp.toLocaleString("es-VE");
-  if (dom.xpSiguiente) {
-    dom.xpSiguiente.textContent = siguienteNivel
-      ? siguienteNivel.puntosMin.toLocaleString("es-VE")
-      : "MAX";
+  if (!levelData) {
+    // XP insuficiente, usar nivel mínimo
+    const minLevel = { nombre: "Novato (Cachorro)", color: "#9CA3AF", colorGlow: "#6B7280", progress: 0 };
+    if (dom.nivelText) dom.nivelText.textContent = minLevel.nombre;
+    if (dom.xpActual) dom.xpActual.textContent = xp.toLocaleString("es-VE");
+    if (dom.xpSiguiente) dom.xpSiguiente.textContent = "500";
+    if (dom.xpFaltante) dom.xpFaltante.textContent = `${(500 - xp).toLocaleString("es-VE")} XP para el siguiente nivel`;
+    if (dom.porcentaje) dom.porcentaje.textContent = "0% completado";
+    if (dom.progresoBar) {
+      dom.progresoBar.style.width = "0%";
+      dom.progresoBar.style.background = `linear-gradient(90deg, ${minLevel.color}, ${minLevel.colorGlow})`;
+    }
+    // Aplicar estilos con minLevel
+    applyLevelStyles(dom, minLevel);
+    return;
   }
 
-  const faltante = siguienteNivel ? Math.max(siguienteNivel.puntosMin - xp, 0) : 0;
+  const { nombre, progress, nextXp, isMaxLevel, color, colorGlow } = levelData;
+
+  if (dom.nivelText) dom.nivelText.textContent = nombre;
+  if (dom.xpActual) dom.xpActual.textContent = xp.toLocaleString("es-VE");
+  if (dom.xpSiguiente) {
+    dom.xpSiguiente.textContent = isMaxLevel ? "MAX" : (xp + nextXp).toLocaleString("es-VE");
+  }
+
   if (dom.xpFaltante) {
-    dom.xpFaltante.textContent = siguienteNivel
-      ? `${faltante.toLocaleString("es-VE")} XP para el siguiente nivel`
-      : "Nivel máximo alcanzado";
+    dom.xpFaltante.textContent = isMaxLevel
+      ? "Nivel máximo alcanzado"
+      : `${nextXp.toLocaleString("es-VE")} XP para el siguiente nivel`;
   }
 
   if (dom.porcentaje) {
-    dom.porcentaje.textContent = `${Math.round(progreso)}% completado`;
+    dom.porcentaje.textContent = `${progress}% completado`;
   }
 
   if (dom.progresoBar) {
-    dom.progresoBar.style.width = `${progreso}%`;
-    dom.progresoBar.style.background = `linear-gradient(90deg, ${nivelActual.color}, ${nivelActual.colorGlow})`;
+    dom.progresoBar.style.width = `${progress}%`;
+    dom.progresoBar.style.background = `linear-gradient(90deg, ${color}, ${colorGlow})`;
   }
 
+  applyLevelStyles(dom, levelData);
+}
+
+function applyLevelStyles(dom, levelData) {
+  const { color, colorGlow } = levelData;
+
   if (dom.nivelBadge) {
-    dom.nivelBadge.style.border = `2px solid ${nivelActual.color}`;
-    dom.nivelBadge.style.color = nivelActual.color;
-    dom.nivelBadge.style.background = `${hexToRgba(nivelActual.color, 0.1)}`;
-    dom.nivelBadge.style.boxShadow = `0 0 15px ${hexToRgba(nivelActual.color, 0.3)}`;
+    dom.nivelBadge.style.border = `2px solid ${color}`;
+    dom.nivelBadge.style.color = color;
+    dom.nivelBadge.style.background = `${hexToRgba(color, 0.1)}`;
+    dom.nivelBadge.style.boxShadow = `0 0 15px ${hexToRgba(color, 0.3)}`;
   }
 
   if (dom.glowNivel) {
-    dom.glowNivel.style.background = hexToRgba(nivelActual.color, 0.2);
+    dom.glowNivel.style.background = hexToRgba(color, 0.2);
   }
 
   if (dom.perfilCard) {
-    dom.perfilCard.style.borderColor = `${hexToRgba(nivelActual.color, 0.4)}`;
+    dom.perfilCard.style.borderColor = `${hexToRgba(color, 0.4)}`;
   }
 
   if (dom.profilePhotoBorder) {
-    dom.profilePhotoBorder.style.background = `linear-gradient(to bottom right, ${nivelActual.color}, ${nivelActual.colorGlow})`;
-    dom.profilePhotoBorder.style.boxShadow = `0 0 30px ${hexToRgba(nivelActual.color, 0.3)}`;
+    dom.profilePhotoBorder.style.background = `linear-gradient(to bottom right, ${color}, ${colorGlow})`;
+    dom.profilePhotoBorder.style.boxShadow = `0 0 30px ${hexToRgba(color, 0.3)}`;
   }
 }
 

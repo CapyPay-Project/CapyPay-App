@@ -156,7 +156,9 @@ const mostrarDemo = import.meta.env.DEV || url.searchParams.get("demo") === "1";
         "text-brand-lime",
         "text-amber-300",
         "text-red-300",
-        "bg-white border-2 border-black",
+        "bg-white",
+        "border-2",
+        "border-black",
         "bg-brand-lime/10",
         "bg-amber-400/10",
         "bg-red-400/10",
@@ -169,7 +171,7 @@ const mostrarDemo = import.meta.env.DEV || url.searchParams.get("demo") === "1";
       } else if (tone === "error") {
         badge.classList.add("text-red-300", "bg-red-400/10");
       } else {
-        badge.classList.add("text-slate-300", "bg-white border-2 border-black");
+        badge.classList.add("text-slate-300", "bg-white", "border-2", "border-black");
       }
     }
 
