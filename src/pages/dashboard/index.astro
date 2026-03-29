@@ -149,8 +149,10 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
           <MissionsWidget />
 
           <!-- User Level Widget -->
-          <div
-            class="bg-[#deb2ff] border-4 border-black box-shadow-brutal p-4 sm:p-5 flex flex-col justify-between items-center text-center h-32 sm:h-full group hover:-translate-y-1 transition-transform"
+          <a
+            href="/account/niveles?from=dashboard"
+            aria-label="Ir a niveles"
+            class="bg-[#deb2ff] border-4 border-black box-shadow-brutal p-4 sm:p-5 flex flex-col justify-between items-center text-center h-32 sm:h-full group hover:-translate-y-1 transition-transform focus:outline-none focus:ring-2 focus:ring-black"
           >
             <div class="w-full flex justify-between items-start">
               <span
@@ -173,7 +175,7 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
                 <div class="bg-[#8b5cf6] h-full transition-all duration-300" id="level-progress" style="width: 0%"></div>
               </div>
             </div>
-          </div>
+          </a>
         </div>
       </div>
 
@@ -216,6 +218,35 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
           </p>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- MODAL LEVEL UP -->
+  <div
+    id="level-up-modal"
+    class="fixed inset-0 z-[70] hidden items-center justify-center bg-black/40 backdrop-blur-sm p-4 opacity-0 transition-opacity duration-300"
+    aria-hidden="true"
+  >
+    <div
+      class="bg-white border-4 border-black w-full max-w-sm p-6 text-center transform scale-95 transition-all duration-300 box-shadow-brutal"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Subida de nivel"
+    >
+      <div class="w-16 h-16 mx-auto mb-3 bg-[#8b5cf6] border-4 border-black flex items-center justify-center text-white text-3xl">
+        🏆
+      </div>
+      <h3 class="text-2xl font-black uppercase mb-2">¡Subiste de Nivel!</h3>
+      <p id="level-up-title" class="text-sm font-bold uppercase mb-3">Nuevo nivel desbloqueado</p>
+      <p id="level-up-benefits" class="text-xs font-black uppercase bg-[#d7fd48] border-2 border-black px-3 py-2 mb-4">
+        Beneficios activos
+      </p>
+      <button
+        id="level-up-close-btn"
+        class="bg-black text-white border-2 border-black px-4 py-2 font-black uppercase hover:bg-[#222] transition"
+      >
+        Continuar
+      </button>
     </div>
   </div>
 
@@ -344,7 +375,7 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
       userService,
       notificationService,
     } from "../../services/api.js";
-    import { userProfile } from "../../store/userStore.js";
+    import { userProfile, fetchUserProfile } from "../../store/userStore.js";
 
     let cachedMovements = [];
     let currentFilter = "all";
@@ -468,10 +499,18 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
         .map((n) => {
           const isUnread = !n.leida && !n.read && !n.is_read;
           const dateStr = new Date(n.created_at || n.fecha || Date.now()).toLocaleDateString('es-VE');
+          const typeTag = n.type === 'level_up'
+            ? '<span class="inline-block text-[8px] px-1 py-0.5 border border-black bg-[#8b5cf6] text-white font-black uppercase">LEVEL UP</span>'
+            : n.type === 'payment_received'
+              ? '<span class="inline-block text-[8px] px-1 py-0.5 border border-black bg-[#d7fd48] text-black font-black uppercase">PAGO</span>'
+              : '';
           return `
             <div class="border-2 border-black p-2 hover:bg-gray-100 transition-colors cursor-pointer ${isUnread ? 'bg-[#d7fd48]/20' : 'bg-white'}"
                  onclick="window.handleNotificationClick('${n.id || n._id}', ${isUnread})">
-              <p class="text-[10px] font-black uppercase line-clamp-2 leading-tight">${n.message || 'Nueva notificación'}</p>
+              <div class="flex items-start justify-between gap-2">
+                <p class="text-[10px] font-black uppercase line-clamp-2 leading-tight">${n.message || 'Nueva notificación'}</p>
+                ${typeTag}
+              </div>
               <p class="text-[9px] text-gray-600 mt-1 uppercase">${dateStr}</p>
             </div>`;
         })
@@ -503,6 +542,8 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
         console.error('Error actualizando notificaciones:', err);
       }
     }
+
+    let notificationsPollingId = null;
 
     // end added notification helpers
 
@@ -590,39 +631,62 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
       const missionsList = document.getElementById("missions-list");
       const missionsCounter = document.getElementById("missions-counter");
       const missionsProgress = document.getElementById("missions-progress");
+      const levelUpModal = document.getElementById("level-up-modal");
+      const levelUpTitle = document.getElementById("level-up-title");
+      const levelUpBenefits = document.getElementById("level-up-benefits");
+      const levelUpCloseBtn = document.getElementById("level-up-close-btn");
 
-      window.showMissionsModal = async () => {
-        console.log('showMissionsModal called');
-        if (!missionsModal) {
-          console.log('missionsModal not found');
-          return;
+      const closeLevelUpModal = () => {
+        if (!levelUpModal) return;
+        levelUpModal.classList.add("opacity-0");
+        const box = levelUpModal.querySelector("div");
+        if (box) {
+          box.classList.add("scale-95");
+          box.classList.remove("scale-100");
         }
+        setTimeout(() => {
+          levelUpModal.classList.add("hidden");
+          levelUpModal.classList.remove("flex");
+        }, 250);
+      };
+
+      if (levelUpCloseBtn) {
+        levelUpCloseBtn.addEventListener("click", closeLevelUpModal);
+      }
+
+      async function fetchAndRenderMissions({ renderModal = false } = {}) {
         const currentUser = authService.getCurrentUser();
         if (!currentUser?.id) {
           console.warn('Usuario no autenticado para misiones');
-          return;
+          return [];
         }
 
-        console.log('Fetching missions for user:', currentUser.id);
         try {
           const res = await fetch(`/api/missions/user/${currentUser.id}`);
-          console.log('Fetch response status:', res.status);
           const body = await res.json();
-          console.log('Fetch response body:', body);
-          const { missions = [] } = body;
-          console.log('Missions array:', missions);
-          console.log('First mission item:', missions[0]);
+          const missions = body?.missions || [];
 
-          if (missionsList) {
+          let completed = 0;
+          missions.forEach((item) => {
+            if (item.completed) completed += 1;
+          });
+
+          if (missionsCounter) {
+            missionsCounter.textContent = `${completed}/${missions.length} Completadas`;
+          }
+
+          if (missionsProgress) {
+            missionsProgress.style.width = `${missions.length > 0 ? Math.round((completed / missions.length) * 100) : 0}%`;
+          }
+
+          if (renderModal && missionsList) {
             if (missions.length === 0) {
               missionsList.innerHTML = '<p class="text-sm text-center">No hay misiones disponibles.</p>';
             } else {
-              let completed = 0;
               missionsList.innerHTML = missions.map((item) => {
                 const target = item.missions?.target_count ?? item.target_count ?? 1;
                 const progress = item.progress ?? 0;
                 const percent = Math.min(100, Math.round((progress / target) * 100));
-                if (item.completed) completed += 1;
 
                 return `
                 <div class="border-2 border-black bg-white p-3 rounded-lg">
@@ -643,24 +707,26 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
                   </div>
                 </div>`;
               }).join('');
-
-              if (missionsCounter) {
-                missionsCounter.textContent = `${completed}/${missions.length} Completadas`;
-              }
-              if (missionsProgress) {
-                missionsProgress.style.width = `${missions.length > 0 ? Math.round((completed / missions.length) * 100) : 0}%`;
-              }
             }
           }
+
+          return missions;
         } catch (err) {
           console.error('Error cargando misiones:', err);
-          // Mock data for testing
-          const missions = [
-            { mission: { title: 'Recargar tu saldo', description: 'Realiza una recarga en tu saldo Capy.', target_count: 1, xp_reward: 10 }, progress: 0, completed: false },
-            { mission: { title: 'Enviar saldo a otro usuario', description: 'Envía saldo a otro usuario CapyPay.', target_count: 1, xp_reward: 5 }, progress: 0, completed: false },
-            { mission: { title: 'Comprar en el comedor', description: 'Realiza una compra en el comedor.', target_count: 1, xp_reward: 10 }, progress: 0, completed: false }
-          ];
+          if (renderModal && missionsList) {
+            missionsList.innerHTML = '<p class="text-sm text-center">No se pudieron cargar las misiones.</p>';
+          }
+          return [];
         }
+      }
+
+      window.showMissionsModal = async () => {
+        console.log('showMissionsModal called');
+        if (!missionsModal) {
+          console.log('missionsModal not found');
+          return;
+        }
+        await fetchAndRenderMissions({ renderModal: true });
 
         console.log('Showing modal');
         missionsModal.classList.remove('hidden');
@@ -700,7 +766,7 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
             window.showToast(`Misión '${missionCode}' actualizada`, 'success', 'Misión completada');
           }
           await refreshNotifications();
-          await window.showMissionsModal();
+          await fetchAndRenderMissions({ renderModal: true });
         } catch (error) {
           console.error('Error en completeMission:', error);
           if (window.showToast) {
@@ -743,11 +809,54 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
 
       window.addEventListener("logout-requested", window.showLogoutModal);
 
-      // Fetch
-      try {
-        const userInfo = await userService.getProfile();
+      window.addEventListener("capypay-level-up", async (event) => {
+        const detail = event?.detail || {};
+        const profile = userProfile.get();
+        const discountPct = Math.round((profile?.benefits?.descuento || 0) * 100);
+        const vipLabel = profile?.benefits?.accesoVIP ? " + VIP" : "";
+
+        if (typeof window.showToast === "function") {
+          window.showToast(
+            `Subiste a nivel ${detail.newLevel || "nuevo"}`,
+            "success",
+            detail.levelName || "¡Nuevo nivel desbloqueado!",
+          );
+        }
+
+        if (levelUpModal) {
+          if (levelUpTitle) {
+            levelUpTitle.textContent = `${detail.levelName || "Nivel"} (LV ${detail.newLevel || "?"})`;
+          }
+          if (levelUpBenefits) {
+            levelUpBenefits.textContent = `Beneficios: ${discountPct}% descuento${vipLabel}`;
+          }
+
+          levelUpModal.classList.remove("hidden");
+          levelUpModal.classList.add("flex");
+          requestAnimationFrame(() => {
+            levelUpModal.classList.remove("opacity-0");
+            const box = levelUpModal.querySelector("div");
+            if (box) {
+              box.classList.remove("scale-95");
+              box.classList.add("scale-100");
+            }
+          });
+        }
 
         await refreshNotifications();
+      });
+
+      // Fetch
+      try {
+        await fetchUserProfile();
+        const userInfo = await userService.getProfile();
+        await fetchAndRenderMissions();
+
+        await refreshNotifications();
+
+        if (!notificationsPollingId) {
+          notificationsPollingId = window.setInterval(refreshNotifications, 30000);
+        }
 
         document.addEventListener("click", (e) => {
           const container = document.getElementById("notif-dropdown-container");
@@ -795,8 +904,20 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
     userProfile.subscribe((profile) => {
       const levelEl = document.getElementById("user-level");
       const progressEl = document.getElementById("level-progress");
+      const benefitChip = document.getElementById("level-benefit-chip");
+      const vipChip = document.getElementById("vip-chip");
+      const discountPct = Math.round((profile?.benefits?.descuento || 0) * 100);
+
       if (levelEl) levelEl.textContent = profile.level || 1;
       if (progressEl) progressEl.style.width = `${profile.progress || 0}%`;
+      if (benefitChip) benefitChip.textContent = `Beneficio: ${discountPct}%`;
+      if (vipChip) {
+        if (profile?.benefits?.accesoVIP) {
+          vipChip.classList.remove("hidden");
+        } else {
+          vipChip.classList.add("hidden");
+        }
+      }
     });
   </script>
 </CapyPay>

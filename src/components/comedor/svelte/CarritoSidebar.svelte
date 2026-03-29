@@ -11,14 +11,20 @@
   import { fetchAPI } from "../../../services/api.js";
   import { createEventDispatcher } from "svelte";
   import { updateUserLevel } from "../../../store/userStore.js";
+  import { userProfile } from "../../../store/userStore.js";
 
   const dispatch = createEventDispatcher();
 
   $: itemsArray = Object.values($cartItems);
-  $: total = itemsArray.reduce(
+  $: subtotal = itemsArray.reduce(
     (sum, item) => sum + Number(item.price) * item.quantity,
     0,
   );
+  $: levelDiscountRate = Number($userProfile?.benefits?.descuento || 0);
+  $: discountAmount = Number((subtotal * levelDiscountRate).toFixed(2));
+  $: discountedSubtotal = Number(Math.max(0, subtotal - discountAmount).toFixed(2));
+  $: serviceFee = Math.round(discountedSubtotal * 0.05);
+  $: total = Number((discountedSubtotal + serviceFee).toFixed(2));
 
   let isCheckingOut = false;
 
@@ -42,12 +48,14 @@
         body: JSON.stringify({ items: payloadItems }),
       });
 
-      if (response && response.order) {
+      if (response && (response.order || response.orderId)) {
         showToast("¡COMPRA EXITOSA!", "Tu orden ha sido procesada.", "success");
         clearCart();
         closeCart();
         // Dispatch to ComedorApp so it updates the state
-        dispatch("checkout_success", { order: response.order });
+        dispatch("checkout_success", {
+          order: response.order || { id: response.orderId },
+        });
         
         // Actualizar nivel después de compra
         updateUserLevel();
@@ -138,11 +146,25 @@
 
     <!-- Footer checkout -->
     <div class="p-6 border-t-8 border-black bg-white">
-      <div class="flex justify-between items-end mb-4">
-        <span class="font-bold uppercase text-lg">Total</span>
-        <span class="font-black text-4xl tracking-tighter"
-          >${total.toFixed(2)}</span
-        >
+      <div class="flex flex-col gap-2 mb-4">
+        <div class="flex justify-between items-end">
+          <span class="font-bold uppercase text-sm">Subtotal</span>
+          <span class="font-black text-lg">${subtotal.toFixed(2)}</span>
+        </div>
+        <div class="flex justify-between items-end text-[#10b981]">
+          <span class="font-bold uppercase text-sm">Descuento nivel ({Math.round(levelDiscountRate * 100)}%)</span>
+          <span class="font-black text-lg">-${discountAmount.toFixed(2)}</span>
+        </div>
+        <div class="flex justify-between items-end">
+          <span class="font-bold uppercase text-sm">Servicio (5%)</span>
+          <span class="font-black text-lg">${serviceFee.toFixed(2)}</span>
+        </div>
+        <div class="flex justify-between items-end pt-2 border-t-4 border-black">
+          <span class="font-bold uppercase text-lg">Total</span>
+          <span class="font-black text-4xl tracking-tighter"
+            >${total.toFixed(2)}</span
+          >
+        </div>
       </div>
       <button
         on:click={handleCheckout}

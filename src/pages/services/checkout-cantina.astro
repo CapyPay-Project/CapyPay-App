@@ -125,6 +125,7 @@ import { cartItems, clearCart } from "../../store/cartStore";
     import { cartItems, clearCart } from "../../store/cartStore";
     import { authService, cantinaService, fetchAPI } from "../../services/api";
     import { showToast } from "../../utils/toast";
+    import { userProfile, updateUserLevel } from "../../store/userStore";
 
     function initCheckoutLogic() {
       const itemsContainer = document.getElementById("checkout-items");
@@ -132,6 +133,12 @@ import { cartItems, clearCart } from "../../store/cartStore";
       const feeEl = document.getElementById("checkout-fee");
       const totalEl = document.getElementById("checkout-total");
       const payBtn = document.getElementById("do-payment-btn"); // Removed TS casting
+
+      let currentSubtotal = 0;
+      let currentDiscountRate = 0;
+      let currentDiscountAmount = 0;
+      let currentServiceFee = 0;
+      let currentGrandTotal = 0;
 
       if (!itemsContainer || !totalEl || !payBtn) return;
 
@@ -152,6 +159,7 @@ import { cartItems, clearCart } from "../../store/cartStore";
 
       function renderItems(itemsArray) {
         let subtotal = 0;
+        const levelDiscountRate = Number(userProfile.get()?.benefits?.descuento || 0);
 
         // Render items
         itemsContainer.innerHTML = itemsArray
@@ -176,13 +184,23 @@ import { cartItems, clearCart } from "../../store/cartStore";
           .join("");
 
         // Calculate totals
-        const commission = Math.round(subtotal * 0.05); // 5% Simulation
-        const totalAmount = subtotal + commission;
+        const discountAmount = Number((subtotal * levelDiscountRate).toFixed(2));
+        const discountedSubtotal = Number(Math.max(0, subtotal - discountAmount).toFixed(2));
+        const commission = Number((discountedSubtotal * 0.05).toFixed(2));
+        const totalAmount = Number((discountedSubtotal + commission).toFixed(2));
+
+        currentSubtotal = subtotal;
+        currentDiscountRate = levelDiscountRate;
+        currentDiscountAmount = discountAmount;
+        currentServiceFee = commission;
+        currentGrandTotal = totalAmount;
 
         if (subtotalEl)
-          subtotalEl.textContent = `${subtotal.toLocaleString()} BARAS`;
-        if (feeEl) feeEl.textContent = `${commission.toLocaleString()} BARAS`;
-        totalEl.textContent = `${totalAmount.toLocaleString()} BARAS`;
+          subtotalEl.textContent = `${subtotal.toFixed(2)} BARAS`;
+        if (feeEl) {
+          feeEl.textContent = `Desc. ${Math.round(levelDiscountRate * 100)}%: -${discountAmount.toFixed(2)} | Servicio (5%): ${commission.toFixed(2)} BARAS`;
+        }
+        totalEl.textContent = `${totalAmount.toFixed(2)} BARAS`;
 
         // Store total in memory for logic usage? No need, recalculated on backend.
       }
@@ -222,8 +240,13 @@ import { cartItems, clearCart } from "../../store/cartStore";
             (acc, item) => acc + parseFloat(item.price) * item.quantity,
             0,
           );
-          const commissionLocal = Math.round(totalLocal * 0.05);
-          const grandTotal = totalLocal + commissionLocal;
+
+          // Mantener sincronía con visual de checkout (descuento por nivel + servicio)
+          const levelDiscountRate = Number(userProfile.get()?.benefits?.descuento || 0);
+          const discountLocal = Number((totalLocal * levelDiscountRate).toFixed(2));
+          const discountedSubtotalLocal = Number(Math.max(0, totalLocal - discountLocal).toFixed(2));
+          const commissionLocal = Number((discountedSubtotalLocal * 0.05).toFixed(2));
+          const grandTotal = Number((discountedSubtotalLocal + commissionLocal).toFixed(2));
 
           const userBalance = parseFloat(user.balance || 0);
 
@@ -269,6 +292,27 @@ import { cartItems, clearCart } from "../../store/cartStore";
           if (!response) throw new Error("Error al crear la orden de cantina");
 
           showToast(response.message || "¡Pago realizado con éxito!", "success");
+
+          if (response?.pricing?.discountAmount > 0) {
+            showToast(
+              `Descuento aplicado: -${Number(response.pricing.discountAmount).toFixed(2)} BARAS`,
+              "success",
+            );
+          }
+
+          const userRaw = localStorage.getItem("capypay_user");
+          if (userRaw) {
+            try {
+              const parsedUser = JSON.parse(userRaw);
+              if (response?.newBalance !== undefined) parsedUser.balance = response.newBalance;
+              if (response?.xpGained !== undefined) parsedUser.xp = Number(parsedUser.xp || 0) + Number(response.xpGained);
+              localStorage.setItem("capypay_user", JSON.stringify(parsedUser));
+            } catch (syncErr) {
+              console.warn("No se pudo sincronizar capypay_user tras compra de cantina", syncErr);
+            }
+          }
+
+          await updateUserLevel();
 
           // Clear cart
           clearCart("cantina");

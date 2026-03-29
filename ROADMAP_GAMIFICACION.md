@@ -19,3 +19,18 @@
 - **Mobile First / Responsive**: Adaptar toda la UI Neo-Brutalista a móvil sin perder rendimiento.
 - **Widgets de Dashboard**: Reincorporar las estadísticas resumidas (Ranking, Nivel y próximos logros) directamente en el inicio del Dashboard PC.
 - **Tienda de Recompensas**: Opción de canjear _Baras_ por recompensas físicas o merch.
+
+## ✅ Fase 3 (Widgets + Notificaciones) - Implementada
+
+- **Notificación de subida de nivel** en backend para eventos de XP:
+	- Recarga
+	- Transferencia
+	- Compra en comedor
+	- Recompensa por misión completada
+- **Widget de Misiones mejorado** con beneficios activos:
+	- Chip de descuento aplicado por nivel
+	- Chip de estado VIP activo
+- **Dashboard reactivo de nivel**:
+	- Actualización de nivel y barra de progreso desde el store
+	- Refresco automático de notificaciones al subir de nivel
+	- Polling ligero de notificaciones cada 30 segundos

@@ -238,7 +238,16 @@ import { Card, Button } from "../../components/ui";
       let html = '<div class="space-y-3">';
 
       notifications.forEach((notif, index) => {
-        const icon = notif.type === "payment_received" ? "💰" : "📢";
+        const icon = notif.type === "payment_received"
+          ? "💰"
+          : notif.type === "level_up"
+            ? "🏆"
+            : "📢";
+        const typeBadge = notif.type === "level_up"
+          ? '<span class="inline-block px-2 py-1 text-[10px] font-black uppercase border-2 border-black bg-[#8b5cf6] text-white">LEVEL UP</span>'
+          : notif.type === "payment_received"
+            ? '<span class="inline-block px-2 py-1 text-[10px] font-black uppercase border-2 border-black bg-[#d7fd48] text-black">PAGO</span>'
+            : '<span class="inline-block px-2 py-1 text-[10px] font-black uppercase border-2 border-black bg-white text-black">INFO</span>';
         const isUnread = !notif.is_read;
 
         // Neo-Brutalist styling
@@ -274,6 +283,7 @@ import { Card, Button } from "../../components/ui";
                       : ""
                   }
                 </p>
+                ${typeBadge}
               </div>
               <p class="text-xs text-black font-bold uppercase tracking-widest mt-1">${dateStr}</p>
             </div>

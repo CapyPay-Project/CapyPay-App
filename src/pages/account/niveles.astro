@@ -3,14 +3,16 @@ import CapyPay from "../../layouts/MainLayout.astro";
 import RankProgression from "../../components/dashboard/gamification/RankProgression.astro";
 const url = new URL(Astro.request.url);
 const xpParam = url.searchParams.get("xp");
+const fromParam = url.searchParams.get("from");
 const xpParsed = Number.parseInt(xpParam ?? "", 10);
 const puntosActuales =
   Number.isFinite(xpParsed) && xpParsed >= 0 ? xpParsed : 1500;
 const mostrarDemo = import.meta.env.DEV || url.searchParams.get("demo") === "1";
+const fromDashboard = fromParam === "dashboard";
 ---
 
 <CapyPay title="Niveles | CapyPay" showSidebar={true}>
-  <div class="w-full max-w-2xl mx-auto">
+  <div class="w-full max-w-6xl mx-auto px-2 sm:px-4 lg:px-2">
     <!-- Header -->
     <header
       class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 lg:gap-4 shrink-0 mb-6"
@@ -48,12 +50,23 @@ const mostrarDemo = import.meta.env.DEV || url.searchParams.get("demo") === "1";
 
       <div
         id="xp-sync-badge"
-        class="text-[11px] md:text-xs px-3 py-1  border-4 border-black text-slate-300 bg-white border-2 border-black"
+        class="text-[11px] md:text-xs px-3 py-1  border-4 border-black text-slate-700 bg-white border-2 border-black"
         aria-live="polite"
       >
         Sincronizando XP...
       </div>
     </header>
+
+    {
+      fromDashboard && (
+        <div
+          id="from-dashboard-banner"
+          class="mb-4 bg-[#d7fd48] border-4 border-black px-4 py-3 text-black font-black uppercase text-xs sm:text-sm shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] opacity-0 translate-y-1 transition-all duration-500"
+        >
+          Llegaste desde dashboard: aquí puedes ver tu progreso y beneficios por nivel.
+        </div>
+      )
+    }
 
     {
       mostrarDemo && (
@@ -152,7 +165,7 @@ const mostrarDemo = import.meta.env.DEV || url.searchParams.get("demo") === "1";
       badge.textContent = text;
 
       badge.classList.remove(
-        "text-slate-300",
+        "text-slate-700",
         "text-brand-lime",
         "text-amber-300",
         "text-red-300",
@@ -171,7 +184,7 @@ const mostrarDemo = import.meta.env.DEV || url.searchParams.get("demo") === "1";
       } else if (tone === "error") {
         badge.classList.add("text-red-300", "bg-red-400/10");
       } else {
-        badge.classList.add("text-slate-300", "bg-white", "border-2", "border-black");
+        badge.classList.add("text-slate-700", "bg-white", "border-2", "border-black");
       }
     }
 
@@ -216,6 +229,34 @@ const mostrarDemo = import.meta.env.DEV || url.searchParams.get("demo") === "1";
     }
 
     document.addEventListener("DOMContentLoaded", async () => {
+      const params = new URLSearchParams(window.location.search);
+      const fromDashboard = params.get("from") === "dashboard";
+      const fromDashboardBanner = document.getElementById("from-dashboard-banner");
+
+      if (fromDashboardBanner) {
+        requestAnimationFrame(() => {
+          fromDashboardBanner.classList.remove("opacity-0", "translate-y-1");
+        });
+
+        setTimeout(() => {
+          fromDashboardBanner.classList.add("opacity-0", "-translate-y-1");
+        }, 2400);
+
+        setTimeout(() => {
+          fromDashboardBanner.remove();
+        }, 3000);
+      }
+
+      if (fromDashboard && container) {
+        container.style.boxShadow = "0 0 0 4px #000, 0 0 0 8px #d7fd48";
+        container.style.transform = "translateY(-2px)";
+
+        setTimeout(() => {
+          container.style.boxShadow = "none";
+          container.style.transform = "translateY(0)";
+        }, 1800);
+      }
+
       updateSyncBadge("Cargando XP local...");
 
       // 1) Carga inmediata desde caché (SWR)

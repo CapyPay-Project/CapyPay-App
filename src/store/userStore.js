@@ -8,9 +8,10 @@ export const userProfile = atom({
   cedula: '',
   name: '',
   level: 1,
+  levelName: 'Novato (Cachorro)',
   progress: 0,
   nextXp: 100,
-  benefits: [],
+  benefits: { descuento: 0, accesoVIP: false },
   isLoading: true
 });
 
@@ -29,10 +30,11 @@ export async function fetchUserProfile() {
         xp: Number(profile.xp ?? profile.puntos ?? 0),
         cedula: profile.cedula || '',
         name: profile.nombre || profile.name || '',
-        level: levelData?.level || 1,
+        level: Number(levelData?.level?.id || 1),
+        levelName: levelData?.level?.nombre || 'Novato (Cachorro)',
         progress: levelData?.progress || 0,
         nextXp: levelData?.nextXp || 100,
-        benefits: levelData?.benefits || [],
+        benefits: levelData?.benefits || { descuento: 0, accesoVIP: false },
         isLoading: false
       });
       
@@ -65,13 +67,25 @@ export async function updateUserLevel() {
     const levelData = await userService.getUserLevel();
     if (levelData) {
       const currentProfile = userProfile.get();
+      const newLevel = Number(levelData?.level?.id || 1);
       userProfile.set({
         ...currentProfile,
-        level: levelData.level || 1,
+        level: newLevel,
+        levelName: levelData?.level?.nombre || currentProfile.levelName || 'Novato (Cachorro)',
         progress: levelData.progress || 0,
         nextXp: levelData.nextXp || 100,
-        benefits: levelData.benefits || []
+        benefits: levelData.benefits || { descuento: 0, accesoVIP: false }
       });
+
+      if (typeof window !== 'undefined' && newLevel > Number(currentProfile.level || 1)) {
+        window.dispatchEvent(new CustomEvent('capypay-level-up', {
+          detail: {
+            previousLevel: Number(currentProfile.level || 1),
+            newLevel,
+            levelName: levelData?.level?.nombre || 'Nuevo nivel'
+          }
+        }));
+      }
     }
   } catch (error) {
     console.error("Error updating user level:", error);
