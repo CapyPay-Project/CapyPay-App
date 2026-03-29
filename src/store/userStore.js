@@ -1,5 +1,5 @@
 import { atom } from 'nanostores';
-import { userService } from '../services/api.js';
+import { userService, gamificationService } from '../services/api.js';
 
 // Atom to store the user profile (balance, xp, level, etc.)
 export const userProfile = atom({
@@ -12,6 +12,15 @@ export const userProfile = atom({
   progress: 0,
   nextXp: 100,
   benefits: { descuento: 0, accesoVIP: false },
+  weeklyMissions: [],
+  streakStatus: {
+    currentDaily: 0,
+    bestDaily: 0,
+    currentWeekly: 0,
+    weeklyShieldAvailable: 1,
+    lastQualifiedAt: null
+  },
+  gamificationConfig: {},
   isLoading: true
 });
 
@@ -89,5 +98,26 @@ export async function updateUserLevel() {
     }
   } catch (error) {
     console.error("Error updating user level:", error);
+  }
+}
+
+// Preload de snapshot Fase 4 para consumo en widgets/dashboard.
+export async function fetchGamificationSnapshot() {
+  try {
+    const [weeklyData, streakData, configData] = await Promise.all([
+      gamificationService.getWeeklyMissions(),
+      gamificationService.getStreak(),
+      gamificationService.getPublicConfig()
+    ]);
+
+    const current = userProfile.get();
+    userProfile.set({
+      ...current,
+      weeklyMissions: weeklyData?.missions || [],
+      streakStatus: streakData?.streak || current.streakStatus,
+      gamificationConfig: configData?.config || {}
+    });
+  } catch (error) {
+    console.error('Error preloading gamification snapshot:', error);
   }
 }

@@ -141,7 +141,7 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
 
         <!-- Bottom Row (Exchange, Tasks, Level) -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-          <div class="h-32 sm:h-auto">
+          <div class="min-h-42.5 sm:h-auto">
             <BcvTickerPanel />
           </div>
 
@@ -152,28 +152,36 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
           <a
             href="/account/niveles?from=dashboard"
             aria-label="Ir a niveles"
-            class="bg-[#deb2ff] border-4 border-black box-shadow-brutal p-4 sm:p-5 flex flex-col justify-between items-center text-center h-32 sm:h-full group hover:-translate-y-1 transition-transform focus:outline-none focus:ring-2 focus:ring-black"
+            class="bg-[#deb2ff] border-4 border-black box-shadow-brutal p-3 sm:p-5 flex flex-col justify-between items-center text-center h-auto min-h-42.5 sm:h-full group hover:-translate-y-1 transition-transform focus:outline-none focus:ring-2 focus:ring-black"
           >
             <div class="w-full flex justify-between items-start">
               <span
-                class="material-symbols-outlined text-3xl transition-transform group-hover:scale-110"
+                class="material-symbols-outlined text-2xl sm:text-3xl transition-transform group-hover:scale-110"
                 >military_tech</span
               >
-              <span
-                class="bg-white border-2 border-black px-2 py-0.5 text-[10px] font-black"
-                >NIVEL</span
-              >
+              <div class="flex items-center gap-1">
+                <span class="bg-white border-2 border-black px-1.5 py-0.5 text-[9px] sm:text-[10px] font-black">NIVEL</span>
+                <span class="bg-[#d7fd48] border-2 border-black px-1.5 py-0.5 text-[9px] sm:text-[10px] font-black">RACHA</span>
+              </div>
             </div>
-            <div class="mt-2 text-center w-full">
+            <div class="mt-1 sm:mt-2 text-center w-full">
               <p
-                class="font-black text-[10px] uppercase text-black tracking-widest mb-1 text-center w-full"
+                class="font-black text-[9px] sm:text-[10px] uppercase text-black tracking-widest mb-1 text-center w-full"
               >
                 NIVEL
               </p>
-              <h3 class="font-black text-3xl uppercase leading-none" id="user-level">1</h3>
+              <h3 class="font-black text-2xl sm:text-3xl uppercase leading-none" id="user-level">1</h3>
               <div class="w-full bg-white border-2 border-black h-2 mt-1">
                 <div class="bg-[#8b5cf6] h-full transition-all duration-300" id="level-progress" style="width: 0%"></div>
               </div>
+              <div class="mt-2 grid grid-cols-3 gap-1 text-[9px] sm:text-[10px] font-black uppercase text-black">
+                <span class="border-2 border-black bg-white py-1 leading-none">🔥 <span id="streak-daily">0</span></span>
+                <span class="border-2 border-black bg-white py-1 leading-none" id="streak-weekly">Sem: 0</span>
+                <span class="border-2 border-black bg-white py-1 leading-none" id="streak-shield">Esc: 1</span>
+              </div>
+              <p id="streak-warning" class="hidden mt-1 text-[9px] sm:text-[10px] font-black uppercase text-[#b91c1c]">
+                Racha en riesgo hoy
+              </p>
             </div>
           </a>
         </div>
@@ -224,7 +232,7 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
   <!-- MODAL LEVEL UP -->
   <div
     id="level-up-modal"
-    class="fixed inset-0 z-[70] hidden items-center justify-center bg-black/40 backdrop-blur-sm p-4 opacity-0 transition-opacity duration-300"
+    class="fixed inset-0 z-70 hidden items-center justify-center bg-black/40 backdrop-blur-sm p-4 opacity-0 transition-opacity duration-300"
     aria-hidden="true"
   >
     <div
@@ -374,8 +382,10 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
       authService,
       userService,
       notificationService,
+      gamificationService,
+      missionService,
     } from "../../services/api.js";
-    import { userProfile, fetchUserProfile } from "../../store/userStore.js";
+    import { userProfile, fetchUserProfile, fetchGamificationSnapshot } from "../../store/userStore.js";
 
     let cachedMovements = [];
     let currentFilter = "all";
@@ -503,6 +513,10 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
             ? '<span class="inline-block text-[8px] px-1 py-0.5 border border-black bg-[#8b5cf6] text-white font-black uppercase">LEVEL UP</span>'
             : n.type === 'payment_received'
               ? '<span class="inline-block text-[8px] px-1 py-0.5 border border-black bg-[#d7fd48] text-black font-black uppercase">PAGO</span>'
+              : n.type === 'reward_ready'
+                ? '<span class="inline-block text-[8px] px-1 py-0.5 border border-black bg-black text-[#d7fd48] font-black uppercase">REWARD</span>'
+                : n.type === 'streak_warning'
+                  ? '<span class="inline-block text-[8px] px-1 py-0.5 border border-black bg-[#f59e0b] text-black font-black uppercase">RACHA</span>'
               : '';
           return `
             <div class="border-2 border-black p-2 hover:bg-gray-100 transition-colors cursor-pointer ${isUnread ? 'bg-[#d7fd48]/20' : 'bg-white'}"
@@ -631,6 +645,7 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
       const missionsList = document.getElementById("missions-list");
       const missionsCounter = document.getElementById("missions-counter");
       const missionsProgress = document.getElementById("missions-progress");
+      let lastMissionTrigger = null;
       const levelUpModal = document.getElementById("level-up-modal");
       const levelUpTitle = document.getElementById("level-up-title");
       const levelUpBenefits = document.getElementById("level-up-benefits");
@@ -662,9 +677,23 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
         }
 
         try {
-          const res = await fetch(`/api/missions/user/${currentUser.id}`);
-          const body = await res.json();
-          const missions = body?.missions || [];
+          const weeklyData = await gamificationService.getWeeklyMissions(currentUser.id);
+          const missions = (weeklyData?.missions || []).map((item) => ({
+            id: item.id,
+            progress: item.progress,
+            completed: Boolean(item.completed),
+            claimed: Boolean(item.claimed),
+            segment: item.segment,
+            missions: {
+              code: item.code,
+              title: item.title,
+              description: item.description,
+              target_count: item.target,
+              xp_reward: item.xpReward
+            },
+            expiresAt: item.expiresAt,
+            status: item.status
+          }));
 
           let completed = 0;
           missions.forEach((item) => {
@@ -700,9 +729,11 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
                   </div>
                   <p class="text-[10px] font-black mt-1">${progress} / ${target} · +${item.missions?.xp_reward ?? item.xp_reward ?? 0} XP</p>
                   <div class="mt-2 flex justify-end">
-                    ${item.completed
-                      ? '<span class="inline-block px-2 py-1 text-[10px] font-black uppercase text-white bg-green-700 rounded">Completada</span>'
-                      : `<button class="px-2 py-1 text-[10px] font-black uppercase bg-[#d7fd48] border-2 border-black rounded hover:bg-[#cde439] transition" onclick="window.completeMission('${item.missions?.code ?? item.code}')">Avanzar misión</button>`
+                    ${item.claimed
+                      ? '<span class="inline-block px-2 py-1 text-[10px] font-black uppercase text-white bg-black rounded">Reclamada</span>'
+                      : item.completed
+                      ? `<button class="px-2 py-1 text-[10px] font-black uppercase text-white bg-green-700 border-2 border-black rounded hover:bg-green-800 transition" onclick="window.claimMissionReward('${item.id}')">Reclamar +XP</button>`
+                      : `<button class="px-2 py-1 text-[10px] font-black uppercase bg-[#d7fd48] border-2 border-black rounded hover:bg-[#cde439] transition" onclick="window.completeMission('${item.id}', '${item.missions?.code ?? item.code}', '${item.segment || ''}')">Avanzar misión</button>`
                     }
                   </div>
                 </div>`;
@@ -721,50 +752,46 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
       }
 
       window.showMissionsModal = async () => {
-        console.log('showMissionsModal called');
         if (!missionsModal) {
-          console.log('missionsModal not found');
           return;
         }
+        lastMissionTrigger = document.activeElement;
         await fetchAndRenderMissions({ renderModal: true });
 
-        console.log('Showing modal');
+        missionsModal.setAttribute('aria-hidden', 'false');
         missionsModal.classList.remove('hidden');
         missionsModal.classList.add('flex');
         requestAnimationFrame(() => {
           missionsModal.classList.remove('opacity-0');
           const modalBox = missionsModal.querySelector('div');
-          console.log('modalBox:', modalBox);
           if (modalBox) {
             modalBox.classList.remove('scale-95');
             modalBox.classList.add('scale-100');
             modalBox.classList.remove('opacity-0');
           }
+
+          const closeBtn = missionsModal.querySelector('button[aria-label="Cerrar misión"]');
+          if (closeBtn && typeof closeBtn.focus === 'function') {
+            closeBtn.focus();
+          }
         });
       };
 
-      window.completeMission = async (missionCode) => {
+      window.completeMission = async (missionId, missionCode, missionSegment = '') => {
         const user = authService.getCurrentUser();
-        if (!user?.id || !missionCode) return;
+        if (!user?.id) return;
 
         try {
-          const response = await fetch('/api/missions/complete', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ userId: user.id, missionCode })
-          });
-
-          if (!response.ok) {
-            const err = await response.json();
-            console.error('Error completando misión:', err);
-            return;
+          if (missionSegment === 'legacy') {
+            await missionService.completeMission(missionCode, user.id);
+          } else {
+            await gamificationService.progressMission(missionId, user.id, 1);
           }
 
-          const result = await response.json();
-          console.log('Misión actualizada:', result);
           if (window.showToast) {
-            window.showToast(`Misión '${missionCode}' actualizada`, 'success', 'Misión completada');
+            window.showToast(`Misión actualizada`, 'success', 'Progreso guardado');
           }
+          await fetchGamificationSnapshot();
           await refreshNotifications();
           await fetchAndRenderMissions({ renderModal: true });
         } catch (error) {
@@ -775,8 +802,34 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
         }
       };
 
+      window.claimMissionReward = async (missionId) => {
+        const user = authService.getCurrentUser();
+        if (!user?.id || !missionId) return;
+
+        try {
+          await gamificationService.claimMission(missionId, user.id);
+          await fetchUserProfile();
+          await fetchGamificationSnapshot();
+          await refreshNotifications();
+          await fetchAndRenderMissions({ renderModal: true });
+          if (window.showToast) {
+            window.showToast('Recompensa reclamada', 'success', 'XP acreditada');
+          }
+        } catch (error) {
+          console.error('Error en claimMissionReward:', error);
+          if (window.showToast) {
+            window.showToast(error?.message || 'No se pudo reclamar', 'error');
+          }
+        }
+      };
+
       window.closeMissionsModal = () => {
         if (!missionsModal) return;
+        const active = document.activeElement;
+        if (active && missionsModal.contains(active) && typeof active.blur === 'function') {
+          active.blur();
+        }
+
         missionsModal.classList.add('opacity-0');
         const modalBox = missionsModal.querySelector('div');
         if (modalBox) {
@@ -787,6 +840,11 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
         setTimeout(() => {
           missionsModal.classList.add('hidden');
           missionsModal.classList.remove('flex');
+          missionsModal.setAttribute('aria-hidden', 'true');
+
+          if (lastMissionTrigger && typeof lastMissionTrigger.focus === 'function') {
+            lastMissionTrigger.focus();
+          }
         }, 300);
       };
 
@@ -849,6 +907,7 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
       // Fetch
       try {
         await fetchUserProfile();
+        await fetchGamificationSnapshot();
         const userInfo = await userService.getProfile();
         await fetchAndRenderMissions();
 
@@ -907,6 +966,7 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
       const benefitChip = document.getElementById("level-benefit-chip");
       const vipChip = document.getElementById("vip-chip");
       const discountPct = Math.round((profile?.benefits?.descuento || 0) * 100);
+      const streak = profile?.streakStatus || {};
 
       if (levelEl) levelEl.textContent = profile.level || 1;
       if (progressEl) progressEl.style.width = `${profile.progress || 0}%`;
@@ -916,6 +976,25 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
           vipChip.classList.remove("hidden");
         } else {
           vipChip.classList.add("hidden");
+        }
+      }
+
+      const streakDailyEl = document.getElementById('streak-daily');
+      const streakWeeklyEl = document.getElementById('streak-weekly');
+      const streakShieldEl = document.getElementById('streak-shield');
+      const streakWarningEl = document.getElementById('streak-warning');
+
+      if (streakDailyEl) streakDailyEl.textContent = Number(streak.currentDaily || 0);
+      if (streakWeeklyEl) streakWeeklyEl.textContent = `Sem: ${Number(streak.currentWeekly || 0)}`;
+      if (streakShieldEl) streakShieldEl.textContent = `Esc: ${Number(streak.weeklyShieldAvailable || 0)}`;
+
+      if (streakWarningEl) {
+        const lastQualifiedAt = streak.lastQualifiedAt ? new Date(streak.lastQualifiedAt).getTime() : null;
+        const hoursSince = lastQualifiedAt ? (Date.now() - lastQualifiedAt) / (1000 * 60 * 60) : 0;
+        if (Number(streak.currentDaily || 0) > 0 && hoursSince >= 20 && hoursSince <= 48) {
+          streakWarningEl.classList.remove('hidden');
+        } else {
+          streakWarningEl.classList.add('hidden');
         }
       }
     });

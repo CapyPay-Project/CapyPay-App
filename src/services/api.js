@@ -301,6 +301,75 @@ export const missionService = {
   })
 };
 
+export const gamificationService = {
+  getWeeklyMissions: async (userId) => {
+    if (!userId) {
+      const u = authService.getCurrentUser();
+      userId = u?.id;
+    }
+    if (!userId) throw new Error('ID de usuario no encontrado');
+    return fetchAPI(`/gamification/missions/weekly?userId=${userId}`);
+  },
+
+  getStreak: async (userId) => {
+    if (!userId) {
+      const u = authService.getCurrentUser();
+      userId = u?.id;
+    }
+    if (!userId) throw new Error('ID de usuario no encontrado');
+    return fetchAPI(`/gamification/streak?userId=${userId}`);
+  },
+
+  claimMission: async (missionId, userId) => {
+    if (!userId) {
+      const u = authService.getCurrentUser();
+      userId = u?.id;
+    }
+    if (!userId) throw new Error('ID de usuario no encontrado');
+    return fetchAPI(`/gamification/missions/${missionId}/claim`, {
+      method: 'POST',
+      body: JSON.stringify({ userId })
+    });
+  },
+
+  progressMission: async (missionId, userId, increment = 1) => {
+    if (!userId) {
+      const u = authService.getCurrentUser();
+      userId = u?.id;
+    }
+    if (!userId) throw new Error('ID de usuario no encontrado');
+    return fetchAPI(`/gamification/missions/${missionId}/progress`, {
+      method: 'POST',
+      body: JSON.stringify({ userId, increment })
+    });
+  },
+
+  getRewards: async (userId, status) => {
+    if (!userId) {
+      const u = authService.getCurrentUser();
+      userId = u?.id;
+    }
+    if (!userId) throw new Error('ID de usuario no encontrado');
+    const statusParam = status ? `&status=${encodeURIComponent(status)}` : '';
+    return fetchAPI(`/gamification/rewards?userId=${userId}${statusParam}`);
+  },
+
+  claimReward: async (rewardId, userId) => {
+    if (!userId) {
+      const u = authService.getCurrentUser();
+      userId = u?.id;
+    }
+    if (!userId) throw new Error('ID de usuario no encontrado');
+    return fetchAPI(`/gamification/rewards/${rewardId}/claim`, {
+      method: 'POST',
+      body: JSON.stringify({ userId })
+    });
+  },
+
+  getPublicConfig: async () => fetchAPI('/gamification/config/public'),
+  getMetricsSummary: async () => fetchAPI('/gamification/metrics/summary')
+};
+
 // Servicio de PIN para validación
 export const pinService = {
   verify: async (pin) => {

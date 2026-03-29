@@ -34,3 +34,14 @@
 	- Actualización de nivel y barra de progreso desde el store
 	- Refresco automático de notificaciones al subir de nivel
 	- Polling ligero de notificaciones cada 30 segundos
+
+## 🧭 Fase 4 (Progresión Activa) - Definida
+
+- Especificación funcional y técnica cerrada en:
+	- `FASE4_SISTEMA_NIVELES_ESPECIFICACION.md`
+- Incluye:
+	- Misiones semanales dinámicas por segmento
+	- Rachas con multiplicador y escudo semanal
+	- Recompensas reclamables (claim) idempotentes
+	- Control de economía XP (topes + anti-abuso)
+	- Métricas de retención y conversión
