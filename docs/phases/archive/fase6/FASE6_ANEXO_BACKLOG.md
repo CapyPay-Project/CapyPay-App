@@ -1,5 +1,8 @@
 # Fase 6 - Backlog operativo (tablero ejecutable)
 
+> Documento maestro vigente de la fase: `FASE6.md`.
+> Este archivo se mantiene como anexo historico.
+
 Backlog listo para crear issues/tickets de ejecucion inmediata.
 
 ## Convencion de IDs
@@ -110,7 +113,7 @@ Optimizar conversion y cerrar fase con decision basada en datos.
 | F6-S64-002 | Implementar asignacion de variante y tracking | P0 | L | F6-S64-001 | Instrumentacion de experimentos | DONE |
 | F6-S64-003 | Mejorar UX de resumen semanal en niveles/notificaciones | P1 | M | F6-S64-001 | Bloque de progreso semanal claro | DONE |
 | F6-S64-004 | Ejecutar regresion completa de release | P0 | M | F6-S64-002, F6-S64-003 | Build/test/smoke en verde | DONE |
-| F6-S64-005 | Publicar informe final y decision de fase | P0 | S | F6-S64-004 | FASE6_RESULTADOS_Y_DECISION.md | DONE |
+| F6-S64-005 | Publicar informe final y decision de fase | P0 | S | F6-S64-004 | FASE6_ANEXO_RESULTADOS.md | DONE |
 
 Checklist de cierre Sprint 6.4:
 

@@ -175,9 +175,9 @@ Estos puntos están registrados en el backlog de Fase 7.
 ## 11) Referencias fuente
 
 - docs/phases/FASE4_SISTEMA_NIVELES_ESPECIFICACION.md (base histórica)
-- docs/phases/FASE6_NIVELES_2_0_PLAN_EJECUTABLE.md
-- docs/phases/FASE6_BACKLOG_OPERATIVO.md
-- docs/phases/FASE6_RESULTADOS_Y_DECISION.md
+- docs/phases/archive/fase6/FASE6_ANEXO_PLAN_EJECUTABLE.md
+- docs/phases/archive/fase6/FASE6_ANEXO_BACKLOG.md
+- docs/phases/archive/fase6/FASE6_ANEXO_RESULTADOS.md
 - docs/product/BALANCE_NIVELES_V1.md
 - docs/product/SEGMENTACION_MISIONES_V1.md
 - ../capypay-backend/README.md (API/operación)

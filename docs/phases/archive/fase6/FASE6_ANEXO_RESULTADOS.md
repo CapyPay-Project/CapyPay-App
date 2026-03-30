@@ -1,5 +1,8 @@
 # Fase 6 - Resultados y decision
 
+> Documento maestro vigente de la fase: `FASE6.md`.
+> Este archivo se mantiene como anexo historico.
+
 ## Estado de cierre
 
 Fase 6 completada con entregables funcionales en backend, frontend y operacion.

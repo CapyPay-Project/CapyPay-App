@@ -150,6 +150,7 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
 
           <!-- User Level Widget -->
           <a
+            id="dashboard-level-link"
             href="/account/niveles?from=dashboard"
             aria-label="Ir a niveles"
             class="bg-[#deb2ff] border-4 border-black box-shadow-brutal p-3 sm:p-5 flex flex-col justify-between items-center text-center h-auto min-h-42.5 sm:h-full group hover:-translate-y-1 transition-transform focus:outline-none focus:ring-2 focus:ring-black"
@@ -385,7 +386,10 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
       gamificationService,
       missionService,
     } from "../../services/api.js";
+    import { setupPageWebVitals } from "../../utils/webVitals.js";
     import { userProfile, fetchUserProfile, fetchGamificationSnapshot } from "../../store/userStore.js";
+
+    setupPageWebVitals("dashboard");
 
     let cachedMovements = [];
     let currentFilter = "all";
@@ -692,7 +696,8 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
           }
 
           if (missionsSegmentContext) {
-            missionsSegmentContext.textContent = `Segmento activo: ${userSegment} · Reglas ${rulesVersion}`;
+            const staleLabel = weeklyData?.clientCache?.stale ? " · modo cache" : "";
+            missionsSegmentContext.textContent = `Segmento activo: ${userSegment} · Reglas ${rulesVersion}${staleLabel}`;
           }
 
           const missions = (weeklyData?.missions || []).map((item) => ({
@@ -949,11 +954,35 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
         await refreshNotifications();
       });
 
+      function registerNivelesPrefetch(userId) {
+        if (!userId) return;
+        const levelLink = document.getElementById('dashboard-level-link');
+        if (!levelLink || levelLink.dataset.prefetchBound === '1') return;
+
+        let prefetchStarted = false;
+        const prefetch = () => {
+          if (prefetchStarted) return;
+          prefetchStarted = true;
+
+          Promise.allSettled([
+            gamificationService.getWeeklySummary(userId),
+            gamificationService.getWeeklyMissions(userId),
+            gamificationService.getRewards(userId, 'pending')
+          ]).catch(() => {});
+        };
+
+        levelLink.addEventListener('mouseenter', prefetch, { passive: true });
+        levelLink.addEventListener('focus', prefetch, { passive: true });
+        levelLink.addEventListener('touchstart', prefetch, { passive: true });
+        levelLink.dataset.prefetchBound = '1';
+      }
+
       // Fetch
       try {
         await fetchUserProfile();
         await fetchGamificationSnapshot();
         const userInfo = await userService.getProfile();
+        registerNivelesPrefetch(userInfo?.id);
         await initMissionsExperiment(userInfo?.id);
         await fetchAndRenderMissions();
 

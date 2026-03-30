@@ -3,8 +3,8 @@
 > Estado documental: BORRADOR INICIAL / REFERENCIA HISTÓRICA.
 >
 > La planificación activa de Fase 7 continúa en:
-> - `FASE7_NIVELES_3_0_PLAN_EJECUTABLE.md`
-> - `FASE7_BACKLOG_OPERATIVO.md`
+> - `FASE7_ANEXO_PLAN_EJECUTABLE.md`
+> - `FASE7_ANEXO_BACKLOG.md`
 
 Cambios propuestos para evolución del sistema de niveles después del cierre de Fase 6.
 

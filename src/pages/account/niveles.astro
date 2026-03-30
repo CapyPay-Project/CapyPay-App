@@ -161,6 +161,16 @@ const fromDashboard = fromParam === "dashboard";
         <div class="border-2 border-black bg-white px-2 py-1.5">Racha: <span id="weekly-summary-streak">0</span></div>
         <div class="border-2 border-black bg-white px-2 py-1.5">Cierre: <span id="weekly-summary-remaining">--</span></div>
       </div>
+      <div class="mt-2 flex items-center gap-2">
+        <button
+          id="reload-context-btn"
+          type="button"
+          class="px-2 py-1 text-[10px] font-black uppercase bg-white border-2 border-black hover:-translate-y-0.5 transition"
+        >
+          Reintentar datos
+        </button>
+        <span id="levels-data-state" class="text-[10px] font-black uppercase text-slate-700">estado: inicializando</span>
+      </div>
     </div>
     <div class="flex items-center justify-between gap-3 mb-3">
       <h2 class="text-sm sm:text-base font-black uppercase tracking-widest text-black">
@@ -174,13 +184,16 @@ const fromDashboard = fromParam === "dashboard";
         Actualizar
       </button>
     </div>
-    <div id="rewards-list" class="space-y-2">
+    <div id="rewards-list" class="space-y-2" aria-live="polite">
+      <div class="border-2 border-black bg-white p-3 animate-pulse h-14"></div>
+      <div class="border-2 border-black bg-white p-3 animate-pulse h-14"></div>
       <p class="text-xs font-bold text-slate-700 uppercase">Cargando recompensas...</p>
     </div>
   </section>
 
   <script>
     import { authService, gamificationService } from "../../services/api";
+    import { setupPageWebVitals } from "../../utils/webVitals.js";
 
     declare global {
       interface Window {
@@ -204,6 +217,8 @@ const fromDashboard = fromParam === "dashboard";
     };
 
     type ToastType = "success" | "error" | "info";
+
+    setupPageWebVitals("niveles");
 
     function showToastSafe(message: string, type: ToastType = "info", title?: string) {
       const toastFn = (
@@ -303,6 +318,18 @@ const fromDashboard = fromParam === "dashboard";
     }
 
     document.addEventListener("DOMContentLoaded", async () => {
+            const levelsDataState = document.getElementById("levels-data-state");
+
+            function setDataState(label: string, tone: "ok" | "warn" | "error" | "neutral" = "neutral") {
+              if (!levelsDataState) return;
+              levelsDataState.textContent = `estado: ${label}`;
+              levelsDataState.classList.remove("text-slate-700", "text-green-700", "text-amber-700", "text-red-700");
+              if (tone === "ok") levelsDataState.classList.add("text-green-700");
+              else if (tone === "warn") levelsDataState.classList.add("text-amber-700");
+              else if (tone === "error") levelsDataState.classList.add("text-red-700");
+              else levelsDataState.classList.add("text-slate-700");
+            }
+
       const params = new URLSearchParams(window.location.search);
       const fromDashboard = params.get("from") === "dashboard";
       const fromDashboardBanner = document.getElementById("from-dashboard-banner");
@@ -398,6 +425,8 @@ const fromDashboard = fromParam === "dashboard";
         const list = document.getElementById("rewards-list");
         if (!list) return;
 
+        list.innerHTML = '<div class="border-2 border-black bg-white p-3 animate-pulse h-14"></div><div class="border-2 border-black bg-white p-3 animate-pulse h-14"></div>';
+
         const user = authService.getCurrentUser();
         if (!user?.id) {
           list.innerHTML = '<p class="text-xs font-black text-red-700 uppercase">No hay sesión activa</p>';
@@ -457,9 +486,13 @@ const fromDashboard = fromParam === "dashboard";
             .join("");
 
           list.innerHTML = `${pendingHtml}${claimedHtml}`;
+          setDataState("datos sincronizados", "ok");
         } catch (error) {
           console.error("Error cargando recompensas:", error);
-          list.innerHTML = '<p class="text-xs font-black text-red-700 uppercase">No se pudieron cargar recompensas</p>';
+          list.innerHTML = '<p class="text-xs font-black text-red-700 uppercase">No se pudieron cargar recompensas</p><button id="retry-rewards-btn" class="mt-2 px-2 py-1 text-[10px] font-black uppercase border-2 border-black bg-white">Reintentar</button>';
+          const retryRewardsBtn = document.getElementById("retry-rewards-btn");
+          if (retryRewardsBtn) retryRewardsBtn.addEventListener("click", loadRewards, { once: true });
+          setDataState("degradado por red", "warn");
         }
       }
 
@@ -478,10 +511,12 @@ const fromDashboard = fromParam === "dashboard";
           const segmentation = weeklyRes?.segmentation || {};
           const userSegment = String(segmentation.userSegment || "global").toUpperCase();
           const rulesVersion = String(segmentation.rulesVersion || "v1");
-          contextText.textContent = `Segmento de misiones: ${userSegment} · Reglas ${rulesVersion}`;
+          const stale = weeklyRes?.clientCache?.stale ? " · CACHE" : "";
+          contextText.textContent = `Segmento de misiones: ${userSegment} · Reglas ${rulesVersion}${stale}`;
         } catch (error) {
           console.error("Error cargando contexto de segmentación:", error);
           contextText.textContent = "Segmento de misiones: No disponible";
+          setDataState("segmentación degradada", "warn");
         }
       }
 
@@ -511,9 +546,15 @@ const fromDashboard = fromParam === "dashboard";
           if (claims) claims.textContent = String(Number(m.pendingClaim || 0));
           if (streak) streak.textContent = String(Number(s.currentDaily || 0));
           if (remaining) remaining.textContent = formatRemainingTime(Number(week.remainingMs || 0));
+          if (summary?.clientCache?.stale) {
+            setDataState("cache local (SWR)", "warn");
+          } else {
+            setDataState("datos sincronizados", "ok");
+          }
         } catch (error) {
           console.error("Error cargando resumen semanal:", error);
           if (line) line.textContent = "No se pudo cargar el resumen semanal.";
+          setDataState("resumen degradado", "error");
         }
       }
 
@@ -538,6 +579,16 @@ const fromDashboard = fromParam === "dashboard";
       const refreshRewardsBtn = document.getElementById("refresh-rewards-btn");
       if (refreshRewardsBtn) {
         refreshRewardsBtn.addEventListener("click", loadRewards);
+      }
+
+      const reloadContextBtn = document.getElementById("reload-context-btn");
+      if (reloadContextBtn) {
+        reloadContextBtn.addEventListener("click", async () => {
+          setDataState("reintentando", "neutral");
+          await loadSegmentationContext();
+          await loadWeeklySummary();
+          await loadRewards();
+        });
       }
 
       await loadRewards();

@@ -1,5 +1,8 @@
 # Fase 6 - Niveles 2.0 (Plan ejecutable)
 
+> Documento maestro vigente de la fase: `FASE6.md`.
+> Este archivo se mantiene como anexo historico.
+
 ## Objetivo
 
 Escalar el sistema de niveles de un estado funcional a un estado optimizado para retencion, balance economico y control de abuso.
@@ -43,7 +46,7 @@ Estado actual de ejecucion:
 
 Backlog operativo del plan (IDs de ejecucion):
 
-- FASE6_BACKLOG_OPERATIVO.md
+- FASE6_ANEXO_BACKLOG.md
 
 Documento unificado vigente del sistema:
 
@@ -51,8 +54,8 @@ Documento unificado vigente del sistema:
 
 Evolucion propuesta posterior (Fase 7):
 
-- FASE7_NIVELES_3_0_PLAN_EJECUTABLE.md
-- FASE7_BACKLOG_OPERATIVO.md
+- FASE7_ANEXO_PLAN_EJECUTABLE.md
+- FASE7_ANEXO_BACKLOG.md
 
 ---
 
@@ -192,7 +195,7 @@ Optimizar engagement con experimentos controlados y cerrar fase con evidencia.
 
 - Experimentos A/B v1 instrumentados.
 - Resumen semanal en UI.
-- Documento: FASE6_RESULTADOS_Y_DECISION.md.
+- Documento: FASE6_ANEXO_RESULTADOS.md.
 
 ---
 

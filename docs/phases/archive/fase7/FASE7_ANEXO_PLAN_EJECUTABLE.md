@@ -1,5 +1,8 @@
 # Fase 7 - Niveles 3.0 (Plan ejecutable de optimización)
 
+> Documento maestro vigente de la fase: `FASE7.md`.
+> Este archivo se mantiene como anexo historico.
+
 ## Objetivo
 
 Optimizar integralmente el sistema de niveles (frontend, backend y base de datos) para operar con baja latencia, alta estabilidad y resistencia a picos de carga sin degradar la UX ni la trazabilidad operativa.
@@ -40,14 +43,14 @@ Duración sugerida: 4 sprints (2 semanas por sprint).
 
 Estado actual de ejecución:
 
-- Sprint 7.1: planificado.
-- Sprint 7.2: planificado.
-- Sprint 7.3: planificado.
-- Sprint 7.4: planificado.
+- Sprint 7.1: completado (migración + agregados + benchmark ejecutado sin errores).
+- Sprint 7.2: completado (cache + invalidación + concurrency budget + rate-limit por capacidad + circuit breaker + runbook + pruebas intermedias en verde).
+- Sprint 7.3: completado (deduplicación + SWR + prefetch + estados degradados + web-vitals + reporte before/after).
+- Sprint 7.4: completado (suite spike/soak/write-heavy + calibración de alertas + validación rollback/fallback + consolidación final publicadas).
 
 Backlog operativo del plan:
 
-- `FASE7_BACKLOG_OPERATIVO.md`
+- `FASE7_ANEXO_BACKLOG.md`
 
 ---
 
@@ -76,6 +79,7 @@ Reducir latencia y costo de lectura de métricas/resúmenes sin depender de scan
 - Migraciones SQL de índices y tablas de agregados.
 - Documento de tuning DB para gamificación.
 - Métricas comparativas before/after por endpoint crítico.
+- Reporte de baseline y comparativo: `FASE7_ANEXO_S71_BASELINE_DB.md`.
 
 ---
 
@@ -103,7 +107,7 @@ Fortalecer la capa de servicio para responder rápido bajo carga y degradar de f
 
 - Módulo de cache + invalidación.
 - Políticas anti-saturación documentadas.
-- Runbook operativo de degradación controlada.
+- Runbook operativo de degradación controlada: `docs/pilot/FASE7_S72_RUNBOOK_SATURACION.md`.
 
 ---
 
@@ -159,7 +163,7 @@ Validar robustez final con pruebas de carga, cierre de riesgos y plan de continu
 
 - Paquete de pruebas de carga y resultados.
 - Ajuste final de alertas operativas.
-- Documento: `FASE7_RESULTADOS_Y_DECISION.md`.
+- Documento: `FASE7_ANEXO_RESULTADOS.md`.
 
 ---
 

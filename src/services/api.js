@@ -2,6 +2,109 @@
 
 const API_URL = import.meta.env.PUBLIC_API_URL || 'http://localhost:3000/api';
 
+const gmClientCache = new Map();
+const gmClientInflight = new Map();
+
+const GM_CACHE_TTL_MS = {
+  weeklyMissions: 15_000,
+  weeklySummary: 15_000,
+  streak: 20_000,
+  publicConfig: 60_000,
+  metricsSummary: 30_000
+};
+
+function gmGetCache(key) {
+  const row = gmClientCache.get(key);
+  if (!row) return null;
+  return row;
+}
+
+function gmSetCache(key, value, ttlMs) {
+  const safeTtl = Math.max(1, Number(ttlMs || 1));
+  gmClientCache.set(key, {
+    value,
+    freshUntil: Date.now() + safeTtl,
+    updatedAt: Date.now()
+  });
+}
+
+function buildGmCacheKey(route, userId = 'global') {
+  return `gm:${route}:${String(userId || 'global')}`;
+}
+
+function withClientCacheMeta(payload, meta = {}) {
+  if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
+    return payload;
+  }
+  return {
+    ...payload,
+    clientCache: {
+      hit: Boolean(meta.hit),
+      stale: Boolean(meta.stale),
+      key: meta.key || null,
+      at: new Date().toISOString()
+    }
+  };
+}
+
+function notifyGmCacheUpdated(key, value) {
+  if (typeof window === 'undefined') return;
+  window.dispatchEvent(new CustomEvent('capypay-gm-cache-updated', {
+    detail: {
+      key,
+      updatedAt: new Date().toISOString(),
+      value
+    }
+  }));
+}
+
+async function gmFetchSWR(key, fetcher, ttlMs) {
+  const cached = gmGetCache(key);
+  const now = Date.now();
+
+  if (cached && cached.freshUntil > now) {
+    return withClientCacheMeta(cached.value, { hit: true, stale: false, key });
+  }
+
+  const inflight = gmClientInflight.get(key);
+  if (inflight) {
+    return inflight;
+  }
+
+  const requestPromise = (async () => {
+    const fresh = await fetcher();
+    gmSetCache(key, fresh, ttlMs);
+    notifyGmCacheUpdated(key, fresh);
+    return withClientCacheMeta(fresh, { hit: false, stale: false, key });
+  })().finally(() => {
+    gmClientInflight.delete(key);
+  });
+
+  gmClientInflight.set(key, requestPromise);
+
+  if (cached) {
+    // SWR: entrega stale rápido y revalida en segundo plano.
+    requestPromise.catch(() => {});
+    return withClientCacheMeta(cached.value, { hit: true, stale: true, key });
+  }
+
+  return requestPromise;
+}
+
+function invalidateGamificationClientCache(userId) {
+  const safeUserId = String(userId || 'global');
+  const keys = [
+    buildGmCacheKey('weekly_missions', safeUserId),
+    buildGmCacheKey('weekly_summary', safeUserId),
+    buildGmCacheKey('streak', safeUserId),
+    buildGmCacheKey('metrics_summary', 'global')
+  ];
+  keys.forEach((key) => {
+    gmClientCache.delete(key);
+    gmClientInflight.delete(key);
+  });
+}
+
 /**
  * Función genérica para hacer peticiones al backend
  * Maneja automáticamente el token de autenticación si existe
@@ -308,7 +411,12 @@ export const gamificationService = {
       userId = u?.id;
     }
     if (!userId) throw new Error('ID de usuario no encontrado');
-    return fetchAPI(`/gamification/missions/weekly?userId=${userId}`);
+    const key = buildGmCacheKey('weekly_missions', userId);
+    return gmFetchSWR(
+      key,
+      () => fetchAPI(`/gamification/missions/weekly?userId=${userId}`),
+      GM_CACHE_TTL_MS.weeklyMissions
+    );
   },
 
   getWeeklySummary: async (userId) => {
@@ -317,7 +425,12 @@ export const gamificationService = {
       userId = u?.id;
     }
     if (!userId) throw new Error('ID de usuario no encontrado');
-    return fetchAPI(`/gamification/summary/weekly?userId=${userId}`);
+    const key = buildGmCacheKey('weekly_summary', userId);
+    return gmFetchSWR(
+      key,
+      () => fetchAPI(`/gamification/summary/weekly?userId=${userId}`),
+      GM_CACHE_TTL_MS.weeklySummary
+    );
   },
 
   getStreak: async (userId) => {
@@ -326,7 +439,12 @@ export const gamificationService = {
       userId = u?.id;
     }
     if (!userId) throw new Error('ID de usuario no encontrado');
-    return fetchAPI(`/gamification/streak?userId=${userId}`);
+    const key = buildGmCacheKey('streak', userId);
+    return gmFetchSWR(
+      key,
+      () => fetchAPI(`/gamification/streak?userId=${userId}`),
+      GM_CACHE_TTL_MS.streak
+    );
   },
 
   claimMission: async (missionId, userId) => {
@@ -335,10 +453,12 @@ export const gamificationService = {
       userId = u?.id;
     }
     if (!userId) throw new Error('ID de usuario no encontrado');
-    return fetchAPI(`/gamification/missions/${missionId}/claim`, {
+    const result = await fetchAPI(`/gamification/missions/${missionId}/claim`, {
       method: 'POST',
       body: JSON.stringify({ userId })
     });
+    invalidateGamificationClientCache(userId);
+    return result;
   },
 
   progressMission: async (missionId, userId, increment = 1) => {
@@ -347,10 +467,12 @@ export const gamificationService = {
       userId = u?.id;
     }
     if (!userId) throw new Error('ID de usuario no encontrado');
-    return fetchAPI(`/gamification/missions/${missionId}/progress`, {
+    const result = await fetchAPI(`/gamification/missions/${missionId}/progress`, {
       method: 'POST',
       body: JSON.stringify({ userId, increment })
     });
+    invalidateGamificationClientCache(userId);
+    return result;
   },
 
   getRewards: async (userId, status) => {
@@ -369,14 +491,41 @@ export const gamificationService = {
       userId = u?.id;
     }
     if (!userId) throw new Error('ID de usuario no encontrado');
-    return fetchAPI(`/gamification/rewards/${rewardId}/claim`, {
+    const result = await fetchAPI(`/gamification/rewards/${rewardId}/claim`, {
       method: 'POST',
       body: JSON.stringify({ userId })
     });
+    invalidateGamificationClientCache(userId);
+    return result;
   },
 
-  getPublicConfig: async () => fetchAPI('/gamification/config/public'),
-  getMetricsSummary: async () => fetchAPI('/gamification/metrics/summary'),
+  getPublicConfig: async () => {
+    const key = buildGmCacheKey('public_config', 'global');
+    return gmFetchSWR(
+      key,
+      () => fetchAPI('/gamification/config/public'),
+      GM_CACHE_TTL_MS.publicConfig
+    );
+  },
+
+  getMetricsSummary: async () => {
+    const key = buildGmCacheKey('metrics_summary', 'global');
+    return gmFetchSWR(
+      key,
+      () => fetchAPI('/gamification/metrics/summary'),
+      GM_CACHE_TTL_MS.metricsSummary
+    );
+  },
+
+  invalidateClientCache: (userId) => {
+    invalidateGamificationClientCache(userId);
+    return { invalidated: true };
+  },
+
+  getClientCacheStats: () => ({
+    cacheKeys: gmClientCache.size,
+    inflightKeys: gmClientInflight.size
+  }),
 
   assignExperimentVariant: async (experimentKey, userId) => {
     if (!userId) {

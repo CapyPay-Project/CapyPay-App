@@ -114,6 +114,7 @@ import { Card, Button } from "../../components/ui";
         <span class="border-2 border-black px-2 py-1 bg-slate-100">Pendientes: <span id="weekly-summary-notification-claims">0</span></span>
         <span class="border-2 border-black px-2 py-1 bg-slate-100">Alertas racha: <span id="weekly-summary-notification-warnings">0</span></span>
       </div>
+      <p id="notifications-data-state" class="mt-2 text-[10px] font-black uppercase text-slate-700">estado: inicializando</p>
     </section>
 
     <!-- Lista de Notificaciones -->
@@ -191,8 +192,21 @@ import { Card, Button } from "../../components/ui";
   <script>
     // @ts-nocheck
     import { authService, gamificationService, notificationService } from "../../services/api.js";
+    import { setupPageWebVitals } from "../../utils/webVitals.js";
 
     let notifications = [];
+    setupPageWebVitals("notifications");
+
+    function setNotificationsState(label, tone = "neutral") {
+      const stateEl = document.getElementById("notifications-data-state");
+      if (!stateEl) return;
+      stateEl.textContent = `estado: ${label}`;
+      stateEl.classList.remove("text-slate-700", "text-green-700", "text-amber-700", "text-red-700");
+      if (tone === "ok") stateEl.classList.add("text-green-700");
+      else if (tone === "warn") stateEl.classList.add("text-amber-700");
+      else if (tone === "error") stateEl.classList.add("text-red-700");
+      else stateEl.classList.add("text-slate-700");
+    }
 
     async function loadWeeklySummaryCard() {
       const user = authService.getCurrentUser();
@@ -218,9 +232,15 @@ import { Card, Button } from "../../components/ui";
         if (missions) missions.textContent = `${Number(m.completed || 0)}/${Number(m.total || 0)}`;
         if (claims) claims.textContent = String(Number(m.pendingClaim || 0));
         if (warnings) warnings.textContent = String(Number(n.streakWarningsUnread || 0));
+        if (summary?.clientCache?.stale) {
+          setNotificationsState("cache local (SWR)", "warn");
+        } else {
+          setNotificationsState("resumen sincronizado", "ok");
+        }
       } catch (e) {
         console.error("Error cargando resumen semanal de notificaciones:", e);
         if (line) line.textContent = "No se pudo cargar el resumen semanal.";
+        setNotificationsState("resumen degradado", "warn");
       }
     }
 
@@ -228,9 +248,14 @@ import { Card, Button } from "../../components/ui";
       const container = document.getElementById("notifications-container");
       const user = authService.getCurrentUser();
 
+      if (container) {
+        container.innerHTML = '<div class="p-6 bg-white border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] animate-pulse"><div class="h-5 bg-slate-200 border-2 border-black"></div><div class="h-5 mt-2 bg-slate-200 border-2 border-black"></div><div class="h-5 mt-2 bg-slate-200 border-2 border-black"></div></div>';
+      }
+
       if (!user || (!user.id && !user.usuarioId && !user._id)) {
         container.innerHTML =
           '<div class="bg-white border-4 border-black p-6 text-center shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]"><p class="text-sm font-black uppercase text-red-700">No hay sesión activa</p><p class="text-xs font-bold uppercase text-slate-700 mt-2">Inicia sesión para revisar tu bandeja.</p></div>';
+        setNotificationsState("sin sesión", "warn");
         return;
       }
 
@@ -241,6 +266,7 @@ import { Card, Button } from "../../components/ui";
 
         notifications = notifs || [];
         renderNotifications();
+        setNotificationsState("notificaciones sincronizadas", "ok");
       } catch (e) {
         console.error("Error cargando notificaciones:", e);
         container.innerHTML =
@@ -250,6 +276,7 @@ import { Card, Button } from "../../components/ui";
         if (retryBtn) {
           retryBtn.addEventListener("click", loadNotifications);
         }
+        setNotificationsState("modo degradado", "error");
       }
     }
 
