@@ -1,5 +1,5 @@
 import { atom } from 'nanostores';
-import { userService } from '../services/api.js';
+import { userService, gamificationService } from '../services/api.js';
 
 // Atom to store the user profile (balance, xp, level, etc.)
 export const userProfile = atom({
@@ -7,6 +7,25 @@ export const userProfile = atom({
   xp: 0,
   cedula: '',
   name: '',
+  level: 1,
+  levelName: 'Novato (Cachorro)',
+  progress: 0,
+  nextXp: 100,
+  benefits: { descuento: 0, accesoVIP: false },
+  weeklyMissions: [],
+  missionSegmentation: {
+    userSegment: 'global',
+    rulesVersion: 'v1',
+    profile: 'weekly_global_v1'
+  },
+  streakStatus: {
+    currentDaily: 0,
+    bestDaily: 0,
+    currentWeekly: 0,
+    weeklyShieldAvailable: 1,
+    lastQualifiedAt: null
+  },
+  gamificationConfig: {},
   isLoading: true
 });
 
@@ -17,6 +36,7 @@ export async function fetchUserProfile() {
     
     // Call API using the service
     const profile = await userService.getProfile();
+    const levelData = await userService.getUserLevel();
     
     if (profile) {
       userProfile.set({
@@ -24,6 +44,11 @@ export async function fetchUserProfile() {
         xp: Number(profile.xp ?? profile.puntos ?? 0),
         cedula: profile.cedula || '',
         name: profile.nombre || profile.name || '',
+        level: Number(levelData?.level?.id || 1),
+        levelName: levelData?.level?.nombre || 'Novato (Cachorro)',
+        progress: levelData?.progress || 0,
+        nextXp: levelData?.nextXp || 100,
+        benefits: levelData?.benefits || { descuento: 0, accesoVIP: false },
         isLoading: false
       });
       
@@ -50,7 +75,55 @@ export async function fetchUserProfile() {
   }
 }
 
-// Auto-refresh when a transaction is completed across the app
-if (typeof window !== 'undefined') {
-  window.addEventListener("transaction-completed", fetchUserProfile);
+// Function to update only the level data (useful after XP changes)
+export async function updateUserLevel() {
+  try {
+    const levelData = await userService.getUserLevel();
+    if (levelData) {
+      const currentProfile = userProfile.get();
+      const newLevel = Number(levelData?.level?.id || 1);
+      userProfile.set({
+        ...currentProfile,
+        level: newLevel,
+        levelName: levelData?.level?.nombre || currentProfile.levelName || 'Novato (Cachorro)',
+        progress: levelData.progress || 0,
+        nextXp: levelData.nextXp || 100,
+        benefits: levelData.benefits || { descuento: 0, accesoVIP: false }
+      });
+
+      if (typeof window !== 'undefined' && newLevel > Number(currentProfile.level || 1)) {
+        window.dispatchEvent(new CustomEvent('capypay-level-up', {
+          detail: {
+            previousLevel: Number(currentProfile.level || 1),
+            newLevel,
+            levelName: levelData?.level?.nombre || 'Nuevo nivel'
+          }
+        }));
+      }
+    }
+  } catch (error) {
+    console.error("Error updating user level:", error);
+  }
+}
+
+// Preload de snapshot Fase 4 para consumo en widgets/dashboard.
+export async function fetchGamificationSnapshot() {
+  try {
+    const [weeklyData, streakData, configData] = await Promise.all([
+      gamificationService.getWeeklyMissions(),
+      gamificationService.getStreak(),
+      gamificationService.getPublicConfig()
+    ]);
+
+    const current = userProfile.get();
+    userProfile.set({
+      ...current,
+      weeklyMissions: weeklyData?.missions || [],
+      missionSegmentation: weeklyData?.segmentation || current.missionSegmentation,
+      streakStatus: streakData?.streak || current.streakStatus,
+      gamificationConfig: configData?.config || {}
+    });
+  } catch (error) {
+    console.error('Error preloading gamification snapshot:', error);
+  }
 }

@@ -141,7 +141,7 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
 
         <!-- Bottom Row (Exchange, Tasks, Level) -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-          <div class="h-32 sm:h-auto">
+          <div class="min-h-42.5 sm:h-auto">
             <BcvTickerPanel />
           </div>
 
@@ -149,28 +149,31 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
           <MissionsWidget />
 
           <!-- User Level Widget -->
-          <div
-            class="bg-[#deb2ff] border-4 border-black box-shadow-brutal p-4 sm:p-5 flex flex-col justify-between items-center text-center h-32 sm:h-full group hover:-translate-y-1 transition-transform"
+          <a
+            id="dashboard-level-link"
+            href="/account/niveles?from=dashboard"
+            aria-label="Ir a niveles"
+            class="bg-[#deb2ff] border-4 border-black box-shadow-brutal p-3 sm:p-5 flex flex-col justify-between items-center text-center h-auto min-h-42.5 sm:h-full group hover:-translate-y-1 transition-transform focus:outline-none focus:ring-2 focus:ring-black"
           >
             <div class="w-full flex justify-between items-start">
               <span
-                class="material-symbols-outlined text-3xl transition-transform group-hover:scale-110"
+                class="material-symbols-outlined text-2xl sm:text-3xl transition-transform group-hover:scale-110"
                 >military_tech</span
               >
-              <span
-                class="bg-white border-2 border-black px-2 py-0.5 text-[10px] font-black"
-                >GOLD</span
-              >
+              <span class="bg-white border-2 border-black px-1.5 py-0.5 text-[9px] sm:text-[10px] font-black uppercase">NIVELES</span>
             </div>
-            <div class="mt-2 text-center w-full">
-              <p
-                class="font-black text-[10px] uppercase text-black tracking-widest mb-1 text-center w-full"
-              >
-                NIVEL
-              </p>
-              <h3 class="font-black text-3xl uppercase leading-none">LVL 42</h3>
+            <div class="mt-1 sm:mt-2 text-center w-full">
+              <h3 class="font-black text-3xl sm:text-4xl uppercase leading-none" id="user-level">1</h3>
+              <div class="w-full bg-white border-2 border-black h-2 mt-1">
+                <div class="bg-[#8b5cf6] h-full transition-all duration-300" id="level-progress" style="width: 0%"></div>
+              </div>
+              <div class="mt-2 flex items-center justify-center gap-2 text-[9px] sm:text-[10px] font-black uppercase text-black">
+                <span class="border-2 border-black bg-white px-2 py-1 leading-none">🔥 <span id="streak-daily">0</span>d</span>
+                <span id="streak-warning" class="hidden border-2 border-black bg-[#fef08a] px-2 py-1 leading-none">Hoy</span>
+              </div>
+              <p id="level-streak-summary" class="mt-1 text-[9px] sm:text-[10px] font-black uppercase text-black/80">Empieza tu racha</p>
             </div>
-          </div>
+          </a>
         </div>
       </div>
 
@@ -213,6 +216,35 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
           </p>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- MODAL LEVEL UP -->
+  <div
+    id="level-up-modal"
+    class="fixed inset-0 z-70 hidden items-center justify-center bg-black/40 backdrop-blur-sm p-4 opacity-0 transition-opacity duration-300"
+    aria-hidden="true"
+  >
+    <div
+      class="bg-white border-4 border-black w-full max-w-sm p-6 text-center transform scale-95 transition-all duration-300 box-shadow-brutal"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Subida de nivel"
+    >
+      <div class="w-16 h-16 mx-auto mb-3 bg-[#8b5cf6] border-4 border-black flex items-center justify-center text-white text-3xl">
+        🏆
+      </div>
+      <h3 class="text-2xl font-black uppercase mb-2">¡Subiste de Nivel!</h3>
+      <p id="level-up-title" class="text-sm font-bold uppercase mb-3">Nuevo nivel desbloqueado</p>
+      <p id="level-up-benefits" class="text-xs font-black uppercase bg-[#d7fd48] border-2 border-black px-3 py-2 mb-4">
+        Beneficios activos
+      </p>
+      <button
+        id="level-up-close-btn"
+        class="bg-black text-white border-2 border-black px-4 py-2 font-black uppercase hover:bg-[#222] transition"
+      >
+        Continuar
+      </button>
     </div>
   </div>
 
@@ -340,7 +372,23 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
       authService,
       userService,
       notificationService,
+      gamificationService,
     } from "../../services/api.js";
+    import { setupPageWebVitals } from "../../utils/webVitals.js";
+    import { userProfile, fetchUserProfile, fetchGamificationSnapshot } from "../../store/userStore.js";
+
+    setupPageWebVitals("dashboard");
+    const debugMode = new URLSearchParams(window.location.search).get("debug") === "1";
+
+    function debugWarn(...args) {
+      if (!debugMode) return;
+      console.warn(...args);
+    }
+
+    function debugError(...args) {
+      if (!debugMode) return;
+      console.error(...args);
+    }
 
     let cachedMovements = [];
     let currentFilter = "all";
@@ -464,10 +512,24 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
         .map((n) => {
           const isUnread = !n.leida && !n.read && !n.is_read;
           const dateStr = new Date(n.created_at || n.fecha || Date.now()).toLocaleDateString('es-VE');
+          const typeTag = n.type === 'level_up'
+            ? '<span class="inline-block text-[8px] px-1 py-0.5 border border-black bg-[#8b5cf6] text-white font-black uppercase">LEVEL UP</span>'
+            : n.type === 'payment_received'
+              ? '<span class="inline-block text-[8px] px-1 py-0.5 border border-black bg-[#d7fd48] text-black font-black uppercase">PAGO</span>'
+              : n.type === 'mission_complete'
+                ? '<span class="inline-block text-[8px] px-1 py-0.5 border border-black bg-[#16a34a] text-white font-black uppercase">MISION</span>'
+              : n.type === 'reward_ready'
+                ? '<span class="inline-block text-[8px] px-1 py-0.5 border border-black bg-black text-[#d7fd48] font-black uppercase">REWARD</span>'
+                : n.type === 'streak_warning'
+                  ? '<span class="inline-block text-[8px] px-1 py-0.5 border border-black bg-[#f59e0b] text-black font-black uppercase">RACHA</span>'
+              : '';
           return `
             <div class="border-2 border-black p-2 hover:bg-gray-100 transition-colors cursor-pointer ${isUnread ? 'bg-[#d7fd48]/20' : 'bg-white'}"
                  onclick="window.handleNotificationClick('${n.id || n._id}', ${isUnread})">
-              <p class="text-[10px] font-black uppercase line-clamp-2 leading-tight">${n.message || 'Nueva notificación'}</p>
+              <div class="flex items-start justify-between gap-2">
+                <p class="text-[10px] font-black uppercase line-clamp-2 leading-tight">${n.message || 'Nueva notificación'}</p>
+                ${typeTag}
+              </div>
               <p class="text-[9px] text-gray-600 mt-1 uppercase">${dateStr}</p>
             </div>`;
         })
@@ -482,7 +544,7 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
           // Actualizar estado local y refrescar
           await refreshNotifications();
         } catch (e) {
-          console.error("Error marcando notificación como leída:", e);
+          debugError("Error marcando notificación como leída:", e);
         }
       }
     };
@@ -496,9 +558,11 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
         else if (notifsRes && Array.isArray(notifsRes.data)) notifs = notifsRes.data;
         renderNotificationBar(notifs);
       } catch (err) {
-        console.error('Error actualizando notificaciones:', err);
+        debugError('Error actualizando notificaciones:', err);
       }
     }
+
+    let notificationsPollingId = null;
 
     // end added notification helpers
 
@@ -586,127 +650,312 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
       const missionsList = document.getElementById("missions-list");
       const missionsCounter = document.getElementById("missions-counter");
       const missionsProgress = document.getElementById("missions-progress");
+      const missionsNextAction = document.getElementById("missions-next-action");
+      const missionsModalSummary = document.getElementById("missions-modal-summary");
+      let lastMissionTrigger = null;
+      let missionsExperimentVariant = null;
+      let activeMissionCategory = "all";
+      let missionCache = [];
+      const levelUpModal = document.getElementById("level-up-modal");
+      const levelUpTitle = document.getElementById("level-up-title");
+      const levelUpBenefits = document.getElementById("level-up-benefits");
+      const levelUpCloseBtn = document.getElementById("level-up-close-btn");
 
-      window.showMissionsModal = async () => {
-        console.log('showMissionsModal called');
-        if (!missionsModal) {
-          console.log('missionsModal not found');
+      const closeLevelUpModal = () => {
+        if (!levelUpModal) return;
+        levelUpModal.classList.add("opacity-0");
+        const box = levelUpModal.querySelector("div");
+        if (box) {
+          box.classList.add("scale-95");
+          box.classList.remove("scale-100");
+        }
+        setTimeout(() => {
+          levelUpModal.classList.add("hidden");
+          levelUpModal.classList.remove("flex");
+        }, 250);
+      };
+
+      if (levelUpCloseBtn) {
+        levelUpCloseBtn.addEventListener("click", closeLevelUpModal);
+      }
+
+      function normalizeMissionCategory(item) {
+        const code = String(item?.missions?.code || item?.code || "").toLowerCase();
+
+        if (code.startsWith("general_")) return "general";
+        if (code.startsWith("daily_")) return "daily";
+        if (code.startsWith("weekly_")) return "weekly";
+        if (code.startsWith("accumulative_")) return "accumulative";
+        if (code.startsWith("streak_")) return "streak";
+        if (code.startsWith("repeatable_")) return "repeatable";
+        return "general";
+      }
+
+      function cleanMissionTitle(rawTitle) {
+        const safeTitle = String(rawTitle || "").trim();
+        if (!safeTitle) return "";
+        const withoutPrefix = safeTitle.replace(/^[^:]{2,35}:\s*/i, "").trim();
+        return withoutPrefix || safeTitle;
+      }
+
+      function getCategoryMeta(category) {
+        if (category === "general") return { label: "Generales", accent: "#d7fd48", text: "#111827" };
+        if (category === "daily") return { label: "Diarias", accent: "#60a5fa", text: "#111827" };
+        if (category === "weekly") return { label: "Semanales", accent: "#8b5cf6", text: "#ffffff" };
+        if (category === "accumulative") return { label: "Acumulables", accent: "#14b8a6", text: "#111827" };
+        if (category === "streak") return { label: "De racha", accent: "#f59e0b", text: "#111827" };
+        if (category === "repeatable") return { label: "Repetibles", accent: "#111827", text: "#ffffff" };
+        return { label: "Todas", accent: "#111827" };
+      }
+
+      function renderMissionCards(items) {
+        if (!Array.isArray(items) || items.length === 0) {
+          return '<p class="text-sm text-center font-black uppercase text-slate-600">No hay misiones en esta categoria.</p>';
+        }
+
+        return items
+          .map((item) => {
+            const target = item.missions?.target_count ?? item.target_count ?? 1;
+            const progress = item.progress ?? 0;
+            const percent = Math.min(100, Math.round((progress / target) * 100));
+            const categoryMeta = getCategoryMeta(item.category);
+
+            return `
+              <div class="border-2 border-black bg-white p-3 rounded-lg">
+                <div class="flex justify-between items-center gap-2">
+                  <p class="font-black text-xs uppercase tracking-wider">${item.missions?.title || 'Mision'}</p>
+                  <span class="text-[10px] font-black ${item.completed ? 'text-green-700' : 'text-gray-600'}">${item.completed ? 'LISTA' : 'EN CURSO'}</span>
+                </div>
+                <p class="text-[10px] text-gray-600 mt-1">${item.missions?.description || 'Descripcion no disponible'}</p>
+                <div class="mt-2 flex items-center justify-between gap-2 text-[10px] font-black uppercase">
+                  <span class="border-2 border-black px-2 py-0.5" style="background:${categoryMeta.accent};color:${categoryMeta.text || '#111827'}">${categoryMeta.label}</span>
+                  <span>+${item.missions?.xp_reward ?? item.xp_reward ?? 0} XP</span>
+                </div>
+                <div class="w-full bg-black/10 h-2 rounded-full mt-2 overflow-hidden border-2 border-black">
+                  <div class="h-full bg-[#8b5cf6] transition-[width] duration-700 ease-out" style="width: ${percent}%"></div>
+                </div>
+                <p class="text-[10px] font-black mt-1">${progress} / ${target}</p>
+                <div class="mt-2 flex justify-end">
+                  ${item.claimed
+                    ? '<span class="inline-block px-2 py-1 text-[10px] font-black uppercase text-white bg-black rounded">Reclamada</span>'
+                    : item.completed
+                    ? `<button class="px-2 py-1 text-[10px] font-black uppercase text-white bg-green-700 border-2 border-black rounded hover:bg-green-800 transition" onclick="window.claimMissionReward('${item.id}')">Reclamar +XP</button>`
+                    : '<span class="inline-block px-2 py-1 text-[10px] font-black uppercase bg-slate-100 border-2 border-black rounded">En progreso</span>'}
+                </div>
+              </div>`;
+          })
+          .join("");
+      }
+
+      function renderMissionsByCategory() {
+        if (!missionsList) return;
+
+        if (!Array.isArray(missionCache) || missionCache.length === 0) {
+          missionsList.innerHTML = '<p class="text-sm text-center font-black uppercase text-slate-600">No hay misiones disponibles.</p>';
           return;
         }
+
+        const categoryOrder = ["general", "daily", "weekly", "accumulative", "streak", "repeatable"];
+        const groups = missionCache.reduce((acc, mission) => {
+          const key = mission.category || "general";
+          if (!acc[key]) acc[key] = [];
+          acc[key].push(mission);
+          return acc;
+        }, {});
+
+        if (activeMissionCategory !== "all") {
+          missionsList.innerHTML = renderMissionCards(groups[activeMissionCategory] || []);
+          return;
+        }
+
+        missionsList.innerHTML = categoryOrder
+          .map((key) => {
+            const meta = getCategoryMeta(key);
+            const items = groups[key] || [];
+            return `
+              <section class="space-y-2">
+                <div class="flex items-center justify-between">
+                  <h3 class="text-xs font-black uppercase tracking-widest">${meta.label}</h3>
+                  <span class="text-[10px] font-black uppercase border-2 border-black px-2 py-0.5">${items.length}</span>
+                </div>
+                ${renderMissionCards(items)}
+              </section>`;
+          })
+          .join("");
+      }
+
+      function updateMissionTabs() {
+        const tabButtons = document.querySelectorAll(".missions-tab-btn");
+        tabButtons.forEach((button) => {
+          const isActive = button.getAttribute("data-category") === activeMissionCategory;
+          button.classList.toggle("bg-black", isActive);
+          button.classList.toggle("text-white", isActive);
+          button.classList.toggle("bg-white", !isActive);
+          button.classList.toggle("text-black", !isActive);
+        });
+      }
+
+      document.querySelectorAll(".missions-tab-btn").forEach((button) => {
+        button.addEventListener("click", () => {
+          activeMissionCategory = button.getAttribute("data-category") || "all";
+          updateMissionTabs();
+          renderMissionsByCategory();
+        });
+      });
+
+      async function fetchAndRenderMissions({ renderModal = false } = {}) {
         const currentUser = authService.getCurrentUser();
         if (!currentUser?.id) {
-          console.warn('Usuario no autenticado para misiones');
+          debugWarn('Usuario no autenticado para misiones');
+          return [];
+        }
+
+        try {
+          const weeklyData = await gamificationService.getWeeklyMissions(currentUser.id);
+
+          const missions = (weeklyData?.missions || []).map((item) => ({
+            id: item.id,
+            progress: item.progress,
+            completed: Boolean(item.completed),
+            claimed: Boolean(item.claimed),
+            segment: item.segment,
+            category: normalizeMissionCategory(item),
+            missions: {
+              code: item.code,
+              title: item.title,
+              description: item.description,
+              target_count: item.target,
+              xp_reward: item.xpReward
+            },
+            expiresAt: item.expiresAt,
+            status: item.status
+          }));
+
+          let completed = 0;
+          missions.forEach((item) => {
+            if (item.completed) completed += 1;
+          });
+
+          if (missionsCounter) {
+            missionsCounter.textContent = `${completed}/${missions.length} listas`;
+          }
+
+          if (missionsProgress) {
+            missionsProgress.style.width = `${missions.length > 0 ? Math.round((completed / missions.length) * 100) : 0}%`;
+          }
+
+          if (missionsNextAction) {
+            const pending = missions.find((mission) => !mission.completed);
+            const missionName = cleanMissionTitle(pending?.missions?.title);
+            missionsNextAction.textContent = pending
+              ? `Siguiente: ${missionName || "Completa una mision"}`
+              : "Excelente: completaste todo por ahora";
+          }
+
+          if (missionsModalSummary) {
+            missionsModalSummary.textContent = missions.length > 0
+              ? `Llevas ${completed} de ${missions.length} misiones completadas esta semana.`
+              : "No tienes misiones activas esta semana.";
+          }
+
+          missionCache = missions;
+
+          if (renderModal && missionsList) {
+            renderMissionsByCategory();
+          }
+
+          return missions;
+        } catch (err) {
+          debugError('Error cargando misiones:', err);
+          if (renderModal && missionsList) {
+            missionsList.innerHTML = '<p class="text-sm text-center">No se pudieron cargar las misiones.</p>';
+          }
+          return [];
+        }
+      }
+
+      async function initMissionsExperiment(currentUserId) {
+        try {
+          const assignment = await gamificationService.assignExperimentVariant('missions_copy_v1', currentUserId);
+          missionsExperimentVariant = assignment?.variant || 'control';
+
+          await gamificationService.trackExperimentEvent({
+            userId: currentUserId,
+            experimentKey: 'missions_copy_v1',
+            variant: missionsExperimentVariant,
+            eventType: 'dashboard_view'
+          });
+        } catch (error) {
+          debugWarn('No se pudo inicializar experimento de misiones:', error);
+          missionsExperimentVariant = 'control';
+        }
+      }
+
+      window.showMissionsModal = async () => {
+        if (!missionsModal) {
           return;
         }
+        lastMissionTrigger = document.activeElement;
+        await fetchAndRenderMissions({ renderModal: true });
+        updateMissionTabs();
 
-        console.log('Fetching missions for user:', currentUser.id);
-        try {
-          const res = await fetch(`/api/missions/user/${currentUser.id}`);
-          console.log('Fetch response status:', res.status);
-          const body = await res.json();
-          console.log('Fetch response body:', body);
-          const { missions = [] } = body;
-          console.log('Missions array:', missions);
-          console.log('First mission item:', missions[0]);
-
-          if (missionsList) {
-            if (missions.length === 0) {
-              missionsList.innerHTML = '<p class="text-sm text-center">No hay misiones disponibles.</p>';
-            } else {
-              let completed = 0;
-              missionsList.innerHTML = missions.map((item) => {
-                const target = item.missions?.target_count ?? item.target_count ?? 1;
-                const progress = item.progress ?? 0;
-                const percent = Math.min(100, Math.round((progress / target) * 100));
-                if (item.completed) completed += 1;
-
-                return `
-                <div class="border-2 border-black bg-white p-3 rounded-lg">
-                  <div class="flex justify-between items-center">
-                    <p class="font-black text-xs uppercase tracking-wider">${item.missions?.title || 'Misión'}</p>
-                    <span class="text-[10px] font-black ${item.completed ? 'text-green-700' : 'text-gray-600'}">${item.completed ? 'COMPLETADA' : 'EN PROCESO'}</span>
-                  </div>
-                  <p class="text-[10px] text-gray-600 mt-1">${item.missions?.description || 'Descripción no disponible'}</p>
-                  <div class="w-full bg-black/10 h-2 rounded-full mt-2 overflow-hidden border-2 border-black">
-                    <div class="h-full bg-[#8b5cf6]" style="width: ${percent}%"></div>
-                  </div>
-                  <p class="text-[10px] font-black mt-1">${progress} / ${target} · +${item.missions?.xp_reward ?? item.xp_reward ?? 0} XP</p>
-                  <div class="mt-2 flex justify-end">
-                    ${item.completed
-                      ? '<span class="inline-block px-2 py-1 text-[10px] font-black uppercase text-white bg-green-700 rounded">Completada</span>'
-                      : `<button class="px-2 py-1 text-[10px] font-black uppercase bg-[#d7fd48] border-2 border-black rounded hover:bg-[#cde439] transition" onclick="window.completeMission('${item.missions?.code ?? item.code}')">Avanzar misión</button>`
-                    }
-                  </div>
-                </div>`;
-              }).join('');
-
-              if (missionsCounter) {
-                missionsCounter.textContent = `${completed}/${missions.length} Completadas`;
-              }
-              if (missionsProgress) {
-                missionsProgress.style.width = `${missions.length > 0 ? Math.round((completed / missions.length) * 100) : 0}%`;
-              }
-            }
-          }
-        } catch (err) {
-          console.error('Error cargando misiones:', err);
-          // Mock data for testing
-          const missions = [
-            { mission: { title: 'Recargar tu saldo', description: 'Realiza una recarga en tu saldo Capy.', target_count: 1, xp_reward: 10 }, progress: 0, completed: false },
-            { mission: { title: 'Enviar saldo a otro usuario', description: 'Envía saldo a otro usuario CapyPay.', target_count: 1, xp_reward: 5 }, progress: 0, completed: false },
-            { mission: { title: 'Comprar en el comedor', description: 'Realiza una compra en el comedor.', target_count: 1, xp_reward: 10 }, progress: 0, completed: false }
-          ];
+        const currentUser = authService.getCurrentUser();
+        if (currentUser?.id && missionsExperimentVariant) {
+          gamificationService.trackExperimentEvent({
+            userId: currentUser.id,
+            experimentKey: 'missions_copy_v1',
+            variant: missionsExperimentVariant,
+            eventType: 'missions_modal_open'
+          }).catch((err) => debugWarn('No se pudo trackear modal de misiones:', err));
         }
 
-        console.log('Showing modal');
+        missionsModal.setAttribute('aria-hidden', 'false');
         missionsModal.classList.remove('hidden');
         missionsModal.classList.add('flex');
         requestAnimationFrame(() => {
           missionsModal.classList.remove('opacity-0');
           const modalBox = missionsModal.querySelector('div');
-          console.log('modalBox:', modalBox);
           if (modalBox) {
             modalBox.classList.remove('scale-95');
             modalBox.classList.add('scale-100');
             modalBox.classList.remove('opacity-0');
           }
+
+          const closeBtn = document.getElementById("missions-modal-close");
+          if (closeBtn && typeof closeBtn.focus === 'function') {
+            closeBtn.focus();
+          }
         });
       };
 
-      window.completeMission = async (missionCode) => {
+      window.claimMissionReward = async (missionId) => {
         const user = authService.getCurrentUser();
-        if (!user?.id || !missionCode) return;
+        if (!user?.id || !missionId) return;
 
         try {
-          const response = await fetch('/api/missions/complete', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ userId: user.id, missionCode })
-          });
-
-          if (!response.ok) {
-            const err = await response.json();
-            console.error('Error completando misión:', err);
-            return;
-          }
-
-          const result = await response.json();
-          console.log('Misión actualizada:', result);
-          if (window.showToast) {
-            window.showToast(`Misión '${missionCode}' actualizada`, 'success', 'Misión completada');
-          }
+          await gamificationService.claimMission(missionId, user.id);
+          await fetchUserProfile();
+          await fetchGamificationSnapshot();
           await refreshNotifications();
-          await window.showMissionsModal();
-        } catch (error) {
-          console.error('Error en completeMission:', error);
+          await fetchAndRenderMissions({ renderModal: true });
           if (window.showToast) {
-            window.showToast('Error al completar misión', 'error');
+            window.showToast('Recompensa reclamada', 'success', 'XP acreditada');
+          }
+        } catch (error) {
+          debugError('Error en claimMissionReward:', error);
+          if (window.showToast) {
+            window.showToast(error?.message || 'No se pudo reclamar', 'error');
           }
         }
       };
 
       window.closeMissionsModal = () => {
         if (!missionsModal) return;
+        const active = document.activeElement;
+        if (active && missionsModal.contains(active) && typeof active.blur === 'function') {
+          active.blur();
+        }
+
         missionsModal.classList.add('opacity-0');
         const modalBox = missionsModal.querySelector('div');
         if (modalBox) {
@@ -717,6 +966,11 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
         setTimeout(() => {
           missionsModal.classList.add('hidden');
           missionsModal.classList.remove('flex');
+          missionsModal.setAttribute('aria-hidden', 'true');
+
+          if (lastMissionTrigger && typeof lastMissionTrigger.focus === 'function') {
+            lastMissionTrigger.focus();
+          }
         }, 300);
       };
 
@@ -739,11 +993,80 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
 
       window.addEventListener("logout-requested", window.showLogoutModal);
 
-      // Fetch
-      try {
-        const userInfo = await userService.getProfile();
+      window.addEventListener("capypay-level-up", async (event) => {
+        const detail = event?.detail || {};
+        const profile = userProfile.get();
+        const discountPct = Math.round((profile?.benefits?.descuento || 0) * 100);
+        const vipLabel = profile?.benefits?.accesoVIP ? " + VIP" : "";
+
+        if (typeof window.showToast === "function") {
+          window.showToast(
+            `Subiste a nivel ${detail.newLevel || "nuevo"}`,
+            "success",
+            detail.levelName || "¡Nuevo nivel desbloqueado!",
+          );
+        }
+
+        if (levelUpModal) {
+          if (levelUpTitle) {
+            levelUpTitle.textContent = `${detail.levelName || "Nivel"} (LV ${detail.newLevel || "?"})`;
+          }
+          if (levelUpBenefits) {
+            levelUpBenefits.textContent = `Beneficios: ${discountPct}% descuento${vipLabel}`;
+          }
+
+          levelUpModal.classList.remove("hidden");
+          levelUpModal.classList.add("flex");
+          requestAnimationFrame(() => {
+            levelUpModal.classList.remove("opacity-0");
+            const box = levelUpModal.querySelector("div");
+            if (box) {
+              box.classList.remove("scale-95");
+              box.classList.add("scale-100");
+            }
+          });
+        }
 
         await refreshNotifications();
+      });
+
+      function registerNivelesPrefetch(userId) {
+        if (!userId) return;
+        const levelLink = document.getElementById('dashboard-level-link');
+        if (!levelLink || levelLink.dataset.prefetchBound === '1') return;
+
+        let prefetchStarted = false;
+        const prefetch = () => {
+          if (prefetchStarted) return;
+          prefetchStarted = true;
+
+          Promise.allSettled([
+            gamificationService.getWeeklySummary(userId),
+            gamificationService.getWeeklyMissions(userId),
+            gamificationService.getRewards(userId, 'pending')
+          ]).catch(() => {});
+        };
+
+        levelLink.addEventListener('mouseenter', prefetch, { passive: true });
+        levelLink.addEventListener('focus', prefetch, { passive: true });
+        levelLink.addEventListener('touchstart', prefetch, { passive: true });
+        levelLink.dataset.prefetchBound = '1';
+      }
+
+      // Fetch
+      try {
+        await fetchUserProfile();
+        await fetchGamificationSnapshot();
+        const userInfo = await userService.getProfile();
+        registerNivelesPrefetch(userInfo?.id);
+        await initMissionsExperiment(userInfo?.id);
+        await fetchAndRenderMissions();
+
+        await refreshNotifications();
+
+        if (!notificationsPollingId) {
+          notificationsPollingId = window.setInterval(refreshNotifications, 30000);
+        }
 
         document.addEventListener("click", (e) => {
           const container = document.getElementById("notif-dropdown-container");
@@ -771,7 +1094,7 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
               '<p class="text-center font-bold text-red-500 text-sm mt-10 uppercase">ERROR AL CARGAR</p>';
         }
       } catch (err) {
-        console.error("DEBUG DASH:", err);
+        debugError("DEBUG DASH:", err);
         const c = document.getElementById("history-list-container");
         if (c)
           c.innerHTML =
@@ -786,5 +1109,61 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
     } else {
       initDashboard();
     }
+
+    // Suscribirse al store de usuario para actualizar nivel
+    userProfile.subscribe((profile) => {
+      const levelEl = document.getElementById("user-level");
+      const progressEl = document.getElementById("level-progress");
+      const benefitChip = document.getElementById("level-benefit-chip");
+      const vipChip = document.getElementById("vip-chip");
+      const discountPct = Math.round((profile?.benefits?.descuento || 0) * 100);
+      const streak = profile?.streakStatus || {};
+      const level = Number(profile?.level || 1);
+
+      if (levelEl) levelEl.textContent = level;
+      if (progressEl) progressEl.style.width = `${profile.progress || 0}%`;
+      if (benefitChip) benefitChip.textContent = `Beneficio: ${discountPct}%`;
+
+      window.dispatchEvent(
+        new CustomEvent("capypay-level-changed", {
+          detail: { level },
+        }),
+      );
+
+      if (vipChip) {
+        if (profile?.benefits?.accesoVIP) {
+          vipChip.classList.remove("hidden");
+        } else {
+          vipChip.classList.add("hidden");
+        }
+      }
+
+      const streakDailyEl = document.getElementById('streak-daily');
+      const streakWarningEl = document.getElementById('streak-warning');
+      const levelStreakSummaryEl = document.getElementById('level-streak-summary');
+
+      if (streakDailyEl) streakDailyEl.textContent = Number(streak.currentDaily || 0);
+
+      if (levelStreakSummaryEl) {
+        const daily = Number(streak.currentDaily || 0);
+        const weekly = Number(streak.currentWeekly || 0);
+        if (daily > 0) {
+          levelStreakSummaryEl.textContent = `Racha ${daily}d · Sem ${weekly}`;
+        } else {
+          levelStreakSummaryEl.textContent = 'Empieza tu racha';
+        }
+      }
+
+      if (streakWarningEl) {
+        const lastQualifiedAt = streak.lastQualifiedAt ? new Date(streak.lastQualifiedAt).getTime() : null;
+        const hoursSince = lastQualifiedAt ? (Date.now() - lastQualifiedAt) / (1000 * 60 * 60) : 0;
+        if (Number(streak.currentDaily || 0) > 0 && hoursSince >= 20 && hoursSince <= 48) {
+          streakWarningEl.classList.remove('hidden');
+          if (levelStreakSummaryEl) levelStreakSummaryEl.textContent = 'Racha en riesgo';
+        } else {
+          streakWarningEl.classList.add('hidden');
+        }
+      }
+    });
   </script>
 </CapyPay>

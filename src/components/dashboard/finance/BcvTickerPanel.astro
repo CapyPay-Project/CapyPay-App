@@ -3,72 +3,70 @@
 ---
 
 <div
-  class="h-full w-full bg-[#d7fd48] border-4 border-black hover:-translate-y-1 transition-all box-shadow-brutal p-4 sm:p-5 flex flex-col justify-between group cursor-default transition-all hover:bg-[#c2f01f]"
+  class="h-full min-h-42.5 sm:min-h-0 w-full bg-[#d7fd48] border-4 border-black hover:-translate-y-1 transition-all box-shadow-brutal p-3 sm:p-5 flex flex-col justify-between group cursor-default hover:bg-[#c2f01f]"
   id="exchange-rate-widget"
 >
-  <div class="w-full flex justify-between items-start mb-2">
+  <div class="w-full flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-2">
     <p
-      class="font-black text-sm uppercase text-black tracking-widest leading-none"
+      class="font-black text-xs sm:text-sm uppercase text-black tracking-widest leading-none"
     >
       TASA DEL DÍA
     </p>
     <span
-      class="bg-white border-2 border-black px-2 py-0.5 text-[10px] font-black uppercase animate-pulse flex items-center gap-1"
+      class="bg-white border-2 border-black px-2 py-0.5 text-[9px] sm:text-[10px] font-black uppercase animate-pulse flex items-center gap-1"
     >
       <div class="w-2 h-2 rounded-full bg-green-500"></div> EN VIVO
     </span>
   </div>
 
-  <div class="flex items-center justify-between mt-3">
+  <div class="grid grid-cols-[1fr_auto_1fr] items-center mt-2 sm:mt-3 gap-2 sm:gap-4">
     <!-- Left SIDE -->
-    <div class="flex flex-col">
-      <span class="text-3xl font-black text-black tracking-tight leading-none"
+    <div class="flex flex-col min-w-0">
+      <span class="text-2xl sm:text-3xl font-black text-black tracking-tight leading-none"
         >1 <span class="text-emerald-700">Capy</span></span
       >
       <span
-        class="text-[10px] uppercase font-black tracking-widest text-[#555] mt-1"
+        class="text-[9px] sm:text-[10px] uppercase font-black tracking-widest text-[#555] mt-1"
         >Moneda Base</span
       >
     </div>
 
     <!-- ARROW -->
     <span
-      class="material-symbols-outlined text-black font-black text-2xl group-hover:translate-x-1 transition-transform"
+      class="material-symbols-outlined text-black font-black text-xl sm:text-2xl group-hover:translate-x-1 transition-transform"
       >arrow_forward</span
     >
 
     <!-- Right SIDE -->
-    <div class="flex flex-col items-end">
+    <div class="flex flex-col items-end min-w-0">
       <div class="flex items-baseline gap-1">
         <span
-          class="text-3xl font-black text-black tracking-tight leading-none"
+          class="text-2xl sm:text-3xl font-black text-black tracking-tight leading-none"
           id="bcv-rate-value">--</span
         >
       </div>
       <span
-        class="text-[10px] uppercase font-black tracking-widest text-[#555] mt-1"
+        class="text-[9px] sm:text-[10px] uppercase font-black tracking-widest text-[#555] mt-1"
         >Bolívares</span
       >
     </div>
   </div>
 
   <!-- DATE & TIME -->
-  <div
-    class="flex justify-between items-center mt-5 pt-3 border-t-2 border-dashed border-black/30"
-  >
+  <div class="flex justify-between items-center mt-4 pt-2 sm:pt-3 border-t-2 border-dashed border-black/30 gap-2">
     <div
-      class="flex items-center gap-1 bg-white border-2 border-black px-2 py-1 shadow-[2px_2px_0px_#000]"
+      class="flex items-center gap-1 bg-white border-2 border-black px-2 py-1 shadow-[2px_2px_0px_#000] min-w-0"
     >
       <span class="material-symbols-outlined text-sm font-black"
         >calendar_month</span
       >
-      <span class="text-[10px] font-black uppercase" id="bcv-date">--</span>
+      <span class="text-[9px] sm:text-[10px] font-black uppercase truncate" id="bcv-date">--</span>
     </div>
     <div
       class="bg-white border-2 border-black px-2 py-1 shadow-[2px_2px_0px_#000]"
     >
       <span
-        class="text-[10px] font-black uppercase tracking-widest"
+        class="text-[9px] sm:text-[10px] font-black uppercase tracking-widest"
         id="bcv-time">--</span
       >
     </div>

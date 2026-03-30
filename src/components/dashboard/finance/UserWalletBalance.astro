@@ -1,13 +1,16 @@
 ---
+// @ts-nocheck
 const { amount = "0.00" } = Astro.props;
 ---
 
 <div
-  class="relative overflow-hidden p-6 sm:p-8 bg-[#d7fd48] border-4 border-black box-shadow-brutal w-full -2xl transition-transform hover:-translate-y-1"
+  id="wallet-card"
+  class="wallet-card relative overflow-hidden p-6 sm:p-8 border-4 border-black box-shadow-brutal w-full rounded-3xl transition-transform"
+  style="--card-base:#d7fd48;--card-accent:#8b5cf6;--card-ink:#111111;--card-overlay:#ffffff22;"
 >
-  <!-- Paw Print Background (Decorative) -->
+  <!-- Decorative background -->
   <div
-    class="absolute -right-4 -top-10 opacity-10 pointer-events-none scale-150 transform rotate-12"
+    class="absolute -right-4 -top-10 opacity-12 pointer-events-none scale-150 transform rotate-12 text-black"
   >
     <svg
       width="200"
@@ -22,30 +25,41 @@ const { amount = "0.00" } = Astro.props;
     </svg>
   </div>
 
-  <div class="relative z-10 flex flex-col justify-between h-full min-h-[160px]">
+  <div class="absolute inset-0 wallet-card-overlay pointer-events-none"></div>
+  <div id="wallet-shine" class="wallet-shine pointer-events-none" aria-hidden="true"></div>
+
+  <div class="relative z-10 flex flex-col justify-between h-full min-h-42.5">
     <!-- Top Row -->
     <div class="flex justify-between items-start">
       <div
-        class="bg-black text-[#d7fd48] px-3 py-1 font-black text-[10px] uppercase tracking-widest border-2 border-black"
+        id="wallet-card-label"
+        class="bg-black text-white px-3 py-1 font-black text-[10px] uppercase tracking-widest border-2 border-black rounded-md"
       >
         ACTIVOS FIJOS
       </div>
-      <!-- Logo circle/card thing -->
-      <div class="flex">
+      <div class="flex items-center gap-2">
+        <span id="wallet-card-tier" class="border-2 border-black bg-white px-2 py-0.5 text-[10px] font-black uppercase rounded-md">Nivel 1</span>
         <div
-          class="w-8 h-8 -full border-2 border-black mix-blend-multiply opacity-60"
+          class="w-8 h-8 rounded-full border-2 border-black mix-blend-multiply opacity-70 bg-white/70"
         >
         </div>
         <div
-          class="w-8 h-8 -full border-2 border-black -ml-4 mix-blend-multiply opacity-60 bg-[#8b5cf6]"
+          id="wallet-card-mark"
+          class="w-8 h-8 rounded-full border-2 border-black -ml-4 mix-blend-multiply opacity-80"
+          style="background: var(--card-accent);"
         >
         </div>
       </div>
     </div>
 
-    <!-- Center Balance -->
+    <!-- Center balance -->
     <div class="mt-4 mb-6">
-      <span class="text-xl sm:text-2xl font-black text-black mr-1">$</span>
+      <div class="flex items-center justify-between mb-3">
+        <div class="wallet-chip border-2 border-black rounded-md" aria-hidden="true"></div>
+        <span class="text-[10px] font-black uppercase tracking-[0.18em] text-black/70">CapyPay Card</span>
+      </div>
+      <p class="text-[10px] font-black uppercase tracking-[0.22em] text-black/80 mb-2">Saldo disponible</p>
+      <span class="text-xl sm:text-2xl font-black text-black mr-1">Bs.</span>
       <span
         id="balance-amount"
         class="text-5xl sm:text-6xl lg:text-7xl font-black text-black tracking-tighter mix-blend-normal"
@@ -69,21 +83,208 @@ const { amount = "0.00" } = Astro.props;
           MAXIMUS CAPYBARA
         </p>
       </div>
-      <div class="text-base sm:text-lg font-black text-black tracking-widest">
-        **** 9021
+      <div id="wallet-card-number" class="text-base sm:text-lg font-black text-black tracking-[0.2em]">
+        **** 0921
       </div>
     </div>
   </div>
 </div>
 
 <style>
+  .wallet-card {
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--card-base) 84%, white),
+      color-mix(in srgb, var(--card-accent) 30%, var(--card-base))
+    );
+    transition: transform 240ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 240ms ease;
+  }
+
+  .wallet-card-overlay {
+    background:
+      radial-gradient(circle at 16% 12%, var(--card-overlay), transparent 36%),
+      radial-gradient(circle at 88% 88%, color-mix(in srgb, var(--card-accent) 26%, transparent), transparent 42%);
+  }
+
+  .wallet-chip {
+    width: 44px;
+    height: 30px;
+    background:
+      linear-gradient(180deg, #f8f8f8, #cfcfcf),
+      repeating-linear-gradient(90deg, transparent 0 6px, rgba(0, 0, 0, 0.12) 6px 7px);
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.2);
+  }
+
+  .wallet-shine {
+    position: absolute;
+    inset: -20% auto -20% -45%;
+    width: 34%;
+    transform: skewX(-18deg);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7), transparent);
+    opacity: 0;
+  }
+
+  .wallet-shine.is-active {
+    animation: wallet-shine-sweep 720ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .wallet-card.is-level-up {
+    animation: wallet-level-up-bump-mobile 300ms ease-in-out;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .wallet-card:hover {
+      transform: translateY(-6px) rotate(-0.35deg);
+      box-shadow: 9px 9px 0px 0px rgba(0, 0, 0, 1), 0 0 30px color-mix(in srgb, var(--card-accent) 50%, transparent);
+    }
+
+    .wallet-card.is-level-up {
+      animation: wallet-level-up-bump-desktop 380ms ease-in-out;
+    }
+  }
+
+  @keyframes wallet-level-up-bump-mobile {
+    0% {
+      transform: translateX(0) rotate(0deg);
+    }
+    25% {
+      transform: translateX(-1px) rotate(-0.15deg);
+    }
+    50% {
+      transform: translateX(1px) rotate(0.15deg);
+    }
+    75% {
+      transform: translateX(-0.5px) rotate(-0.08deg);
+    }
+    100% {
+      transform: translateX(0) rotate(0deg);
+    }
+  }
+
+  @keyframes wallet-level-up-bump-desktop {
+    0% {
+      transform: translateX(0) rotate(0deg);
+    }
+    22% {
+      transform: translateX(-2px) rotate(-0.35deg);
+    }
+    48% {
+      transform: translateX(2px) rotate(0.35deg);
+    }
+    74% {
+      transform: translateX(-1px) rotate(-0.2deg);
+    }
+    100% {
+      transform: translateX(0) rotate(0deg);
+    }
+  }
+
+  @keyframes wallet-shine-sweep {
+    0% {
+      left: -48%;
+      opacity: 0;
+    }
+    15% {
+      opacity: 0.35;
+    }
+    50% {
+      opacity: 0.85;
+    }
+    100% {
+      left: 120%;
+      opacity: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .wallet-card,
+    .wallet-shine,
+    .wallet-card.is-level-up {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+
   .box-shadow-brutal {
     box-shadow: 6px 6px 0px 0px rgba(0, 0, 0, 1);
   }
 </style>
 
 <script>
+  // @ts-nocheck
   import { authService, userService } from "../../../services/api.js";
+
+  const LEVEL_THEMES = {
+    1: { base: "#CBD5E1", accent: "#64748B", label: "Novato" },
+    2: { base: "#BAE6FD", accent: "#0284C7", label: "Bachiller" },
+    3: { base: "#E9D5FF", accent: "#7E22CE", label: "Licenciado" },
+    4: { base: "#BBF7D0", accent: "#15803D", label: "Magister" },
+    5: { base: "#FDE68A", accent: "#B45309", label: "Doctor" },
+    6: { base: "#FECDD3", accent: "#BE123C", label: "Capy Legend" },
+  };
+
+  let currentLevel = 1;
+  let hasMountedTheme = false;
+
+  function triggerShine() {
+    const shine = document.getElementById("wallet-shine");
+    if (!shine) return;
+    shine.classList.remove("is-active");
+    void shine.offsetWidth;
+    shine.classList.add("is-active");
+  }
+
+  function triggerLevelUpBump() {
+    const card = document.getElementById("wallet-card");
+    if (!card) return;
+    card.classList.remove("is-level-up");
+    void card.offsetWidth;
+    card.classList.add("is-level-up");
+  }
+
+  function applyWalletTheme(level = 1) {
+    const safeLevel = Math.min(6, Math.max(1, Number(level) || 1));
+    const theme = LEVEL_THEMES[safeLevel] || LEVEL_THEMES[1];
+    const card = document.getElementById("wallet-card");
+    const label = document.getElementById("wallet-card-label");
+    const mark = document.getElementById("wallet-card-mark");
+    const tier = document.getElementById("wallet-card-tier");
+
+    if (card) {
+      card.style.setProperty("--card-base", theme.base);
+      card.style.setProperty("--card-accent", theme.accent);
+      card.style.setProperty("--card-overlay", `${theme.accent}2b`);
+      card.style.boxShadow = `6px 6px 0px 0px rgba(0,0,0,1), 0 0 26px ${theme.accent}52`;
+    }
+
+    if (label) {
+      label.style.color = theme.base;
+      label.style.background = "#111111";
+    }
+
+    if (mark) {
+      mark.style.background = theme.accent;
+    }
+
+    if (tier) {
+      tier.textContent = `Nivel ${safeLevel} · ${theme.label}`;
+      tier.style.background = `${theme.base}`;
+    }
+
+    if (safeLevel !== currentLevel) {
+      const previousLevel = currentLevel;
+      currentLevel = safeLevel;
+      triggerShine();
+
+      if (hasMountedTheme && safeLevel > previousLevel) {
+        triggerLevelUpBump();
+      }
+    }
+
+    if (!hasMountedTheme) {
+      hasMountedTheme = true;
+    }
+  }
 
   async function updateBalance() {
     try {
@@ -110,10 +311,25 @@ const { amount = "0.00" } = Astro.props;
           },
         );
       }
+
+      const profileLevel =
+        profile && typeof profile === "object"
+          ? Number(Reflect.get(profile, "level") || 1)
+          : 1;
+
+      applyWalletTheme(profileLevel);
     } catch (e) {
       console.error("Error updating balance", e);
     }
   }
+
+  window.addEventListener("capypay-level-changed", (event) => {
+    /** @type {any} */
+    const detail = event && "detail" in event ? event.detail : {};
+    const level = Number(Reflect.get(detail || {}, "level") || 1);
+
+    applyWalletTheme(level);
+  });
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", updateBalance);

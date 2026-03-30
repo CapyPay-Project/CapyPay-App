@@ -267,6 +267,7 @@ import BcvTickerPanel from "../../components/dashboard/finance/BcvTickerPanel.as
 
 <script>
   import { fetchAPI } from "../../services/api.js";
+  import { updateUserLevel } from "../../store/userStore.js";
 
   document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("recarga-form") as HTMLFormElement;
@@ -371,6 +372,10 @@ import BcvTickerPanel from "../../components/dashboard/finance/BcvTickerPanel.as
           "¡RECARGA ENVIADA A REVISIÓN! +10 XP CUANDO SEA APROBADA 🐹",
           "success",
         );
+        
+        // Actualizar nivel después de recarga
+        updateUserLevel();
+        
         setTimeout(() => {
           window.location.href = "/finance/history";
         }, 3000);

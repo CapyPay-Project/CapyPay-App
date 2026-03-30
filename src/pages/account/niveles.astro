@@ -3,14 +3,15 @@ import CapyPay from "../../layouts/MainLayout.astro";
 import RankProgression from "../../components/dashboard/gamification/RankProgression.astro";
 const url = new URL(Astro.request.url);
 const xpParam = url.searchParams.get("xp");
+const fromParam = url.searchParams.get("from");
 const xpParsed = Number.parseInt(xpParam ?? "", 10);
 const puntosActuales =
   Number.isFinite(xpParsed) && xpParsed >= 0 ? xpParsed : 1500;
-const mostrarDemo = import.meta.env.DEV || url.searchParams.get("demo") === "1";
+const fromDashboard = fromParam === "dashboard";
 ---
 
 <CapyPay title="Niveles | CapyPay" showSidebar={true}>
-  <div class="w-full max-w-2xl mx-auto">
+  <div class="w-full max-w-6xl mx-auto px-2 sm:px-4 lg:px-2">
     <!-- Header -->
     <header
       class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 lg:gap-4 shrink-0 mb-6"
@@ -18,7 +19,7 @@ const mostrarDemo = import.meta.env.DEV || url.searchParams.get("demo") === "1";
       <div class="flex items-center gap-3 lg:gap-4 w-full md:w-auto">
         <a
           href="/dashboard"
-          class="w-9 h-9 lg:w-10 lg:h-10  border-4 border-black flex items-center justify-center text-black font-bold hover:text-black hover:bg-white border-2 border-black transition-colors shrink-0"
+          class="w-9 h-9 lg:w-10 lg:h-10 border-4 border-black flex items-center justify-center text-black font-bold hover:text-black hover:bg-white transition-colors shrink-0"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -46,75 +47,15 @@ const mostrarDemo = import.meta.env.DEV || url.searchParams.get("demo") === "1";
         </div>
       </div>
 
-      <div
-        id="xp-sync-badge"
-        class="text-[11px] md:text-xs px-3 py-1  border-4 border-black text-slate-300 bg-white border-2 border-black"
-        aria-live="polite"
-      >
-        Sincronizando XP...
-      </div>
     </header>
 
     {
-      mostrarDemo && (
-        <div class="bg-black/60 backdrop-blur-lg border-4 border-black -3xl p-4 mb-6">
-          <h3 class="text-black text-sm font-bold mb-3 flex items-center gap-2">
-            <svg
-              class="w-4 h-4 text-brand-lime"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
-              />
-            </svg>
-            Panel de Control (Demo)
-          </h3>
-          <div class="flex flex-wrap gap-2">
-            <button
-              type="button"
-              class="xp-demo-btn px-3 py-1.5 bg-white border-2 border-black hover:bg-white border-2 border-black text-black text-xs font-bold  transition-colors border-4 border-black hover:border-brand-lime/30"
-              data-xp="200"
-            >
-              Novato (200 XP)
-            </button>
-            <button
-              type="button"
-              class="xp-demo-btn px-3 py-1.5 bg-white border-2 border-black hover:bg-white border-2 border-black text-black text-xs font-bold  transition-colors border-4 border-black hover:border-brand-lime/30"
-              data-xp="1500"
-            >
-              Bachiller (1,500 XP)
-            </button>
-            <button
-              type="button"
-              class="xp-demo-btn px-3 py-1.5 bg-white border-2 border-black hover:bg-white border-2 border-black text-black text-xs font-bold  transition-colors border-4 border-black hover:border-brand-lime/30"
-              data-xp="3500"
-            >
-              Licenciado (3,500 XP)
-            </button>
-            <button
-              type="button"
-              class="xp-demo-btn px-3 py-1.5 bg-white border-2 border-black hover:bg-white border-2 border-black text-black text-xs font-bold  transition-colors border-4 border-black hover:border-brand-lime/30"
-              data-xp="7500"
-            >
-              Magíster (7,500 XP)
-            </button>
-            <button
-              type="button"
-              class="xp-demo-btn px-3 py-1.5 bg-white border-2 border-black hover:bg-white border-2 border-black text-black text-xs font-bold  transition-colors border-4 border-black hover:border-brand-lime/30"
-              data-xp="12000"
-            >
-              Doctorado (12,000 XP)
-            </button>
-          </div>
-          <p class="text-black font-semibold text-xs mt-2">
-            Solo en desarrollo (o con <code>?demo=1</code>). Simula XP para
-            pruebas visuales.
-          </p>
+      fromDashboard && (
+        <div
+          id="from-dashboard-banner"
+          class="mb-4 bg-[#d7fd48] border-4 border-black px-4 py-3 text-black font-black uppercase text-xs sm:text-sm shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] opacity-0 translate-y-1 transition-all duration-500"
+        >
+          Llegaste desde dashboard: aquí puedes ver tu progreso y beneficios por nivel.
         </div>
       )
     }
@@ -128,13 +69,109 @@ const mostrarDemo = import.meta.env.DEV || url.searchParams.get("demo") === "1";
     <div class="lg:hidden h-24 w-full"></div>
   </div>
 
+  <section class="mt-6 bg-[#fffdf6] border-4 border-black rounded-3xl p-4 sm:p-5 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
+      <article class="border-2 border-black rounded-2xl bg-[#fffdf6] p-2.5 sm:p-3.5">
+        <div class="flex items-center justify-between gap-2 mb-2">
+          <h2 class="text-xs sm:text-sm font-black uppercase tracking-widest text-black">Calendario de racha</h2>
+          <div class="flex items-center gap-1.5">
+            <button
+              id="streak-toggle-legend"
+              type="button"
+              class="text-[10px] font-black uppercase border-2 border-black bg-[#fffdf6] px-2 py-1 hover:-translate-y-0.5 transition"
+              aria-expanded="false"
+              aria-controls="streak-legend"
+            >
+              Ver estados
+            </button>
+            <span id="streak-shield-chip" class="text-[10px] font-black uppercase border-2 border-black bg-[#d7fd48] px-2 py-1">Escudos: 0</span>
+          </div>
+        </div>
+        <p class="text-[10px] font-bold uppercase text-slate-600 mb-2">Mes academico actual</p>
+        <div id="streak-calendar-grid" class="grid grid-cols-7 gap-1" aria-live="polite">
+          <div class="col-span-7 text-[11px] font-black uppercase text-slate-700">Cargando calendario...</div>
+        </div>
+        <div id="streak-legend" class="mt-2 grid grid-cols-2 sm:grid-cols-4 gap-1 text-[9px] font-black uppercase text-slate-700" style="display:none;">
+          <span class="border border-black px-1.5 py-0.5 bg-[#d7fd48]/45">Activo</span>
+          <span class="border border-black px-1.5 py-0.5 bg-[#fde68a]">Protegido</span>
+          <span class="border border-black px-1.5 py-0.5 bg-white">Inactivo</span>
+          <span class="border border-black px-1.5 py-0.5 bg-slate-100">Ignorado</span>
+        </div>
+      </article>
+
+      <article class="border-2 border-black rounded-2xl bg-[#fffdf6] p-3 sm:p-4">
+        <div class="flex items-center justify-between gap-2 mb-2">
+          <h2 class="text-sm sm:text-base font-black uppercase tracking-widest text-black">Detalle del dia</h2>
+          <span id="streak-selected-state" class="text-[10px] font-black uppercase border-2 border-black px-2 py-1 bg-[#fffdf6]">--</span>
+        </div>
+        <p id="streak-selected-date" class="text-[11px] font-black uppercase text-slate-800 mb-3">Selecciona un dia</p>
+        <div id="streak-selected-summary" class="border-2 border-black bg-[#fffdf6] p-2.5 text-[11px] font-bold uppercase text-slate-800 mb-2">
+          Elige un dia para ver actividad asociada.
+        </div>
+        <div id="streak-selected-missions" class="space-y-2" aria-live="polite">
+          <p class="text-[11px] font-bold uppercase text-slate-700">Aun no hay detalle diario.</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
   <script>
-    import { authService } from "../../services/api";
+    import { authService, gamificationService } from "../../services/api";
+    import { setupPageWebVitals } from "../../utils/webVitals.js";
 
     declare global {
       interface Window {
         actualizarXPModulo?: (xp: number) => void;
         actualizarTarjetaDashboard?: (xp: number) => void;
+        showToast?: (
+          message: string,
+          type?: "success" | "error" | "info",
+          title?: string,
+        ) => void;
+      }
+    }
+
+    type CalendarState = "active" | "protected" | "inactive" | "ignored" | "pending";
+
+    type CalendarDay = {
+      key: string;
+      date: Date;
+      state: CalendarState;
+      label: string;
+      isToday: boolean;
+      missionsCompleted?: Array<{ code?: string; title?: string }>;
+      missionsCompletedCount?: number;
+    };
+
+    type ToastType = "success" | "error" | "info";
+
+    setupPageWebVitals("niveles");
+    const debugMode = new URLSearchParams(window.location.search).get("debug") === "1";
+
+    function debugLog(...args: unknown[]) {
+      if (!debugMode) return;
+      console.log(...args);
+    }
+
+    function debugWarn(...args: unknown[]) {
+      if (!debugMode) return;
+      console.warn(...args);
+    }
+
+    function debugError(...args: unknown[]) {
+      if (!debugMode) return;
+      console.error(...args);
+    }
+
+    function showToastSafe(message: string, type: ToastType = "info", title?: string) {
+      const toastFn = (
+        window as Window & {
+          showToast?: (message: string, type?: ToastType, title?: string) => void;
+        }
+      ).showToast;
+
+      if (typeof toastFn === "function") {
+        toastFn(message, type, title);
       }
     }
 
@@ -143,34 +180,126 @@ const mostrarDemo = import.meta.env.DEV || url.searchParams.get("demo") === "1";
       return Number.isFinite(parsed) && parsed >= 0 ? parsed : fallback;
     }
 
-    function updateSyncBadge(
-      text: string,
-      tone: "neutral" | "ok" | "warn" | "error" = "neutral",
-    ) {
-      const badge = document.getElementById("xp-sync-badge");
-      if (!badge) return;
-      badge.textContent = text;
+    function dateKeyFromLocal(date: Date): string {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    }
 
-      badge.classList.remove(
-        "text-slate-300",
-        "text-brand-lime",
-        "text-amber-300",
-        "text-red-300",
-        "bg-white border-2 border-black",
-        "bg-brand-lime/10",
-        "bg-amber-400/10",
-        "bg-red-400/10",
-      );
+    function isWeekend(date: Date): boolean {
+      const day = date.getDay();
+      return day === 0 || day === 6;
+    }
 
-      if (tone === "ok") {
-        badge.classList.add("text-brand-lime", "bg-brand-lime/10");
-      } else if (tone === "warn") {
-        badge.classList.add("text-amber-300", "bg-amber-400/10");
-      } else if (tone === "error") {
-        badge.classList.add("text-red-300", "bg-red-400/10");
-      } else {
-        badge.classList.add("text-slate-300", "bg-white border-2 border-black");
+    function parseDateSafe(value: unknown): Date | null {
+      if (!value) return null;
+      const parsed = new Date(String(value));
+      if (Number.isNaN(parsed.getTime())) return null;
+      return parsed;
+    }
+
+    const missionCodeLabels: Record<string, string> = {
+      RECHARGE: "Recargar saldo",
+      SEND_BALANCE: "Enviar saldo",
+      RECEIVE_BALANCE: "Recibir saldo",
+      TICKET_BUS: "Pagar ticket de bus",
+      SETUP_PROFILE: "Completar perfil",
+      FIRST_CANTINA: "Primera compra en cantina",
+      FIRST_COMEDOR: "Primera compra en comedor",
+      FIRST_SERVICE: "Primera compra de servicio",
+      GENERAL_SETUP_PROFILE: "Completar perfil",
+      GENERAL_VERIFY_ACCOUNT: "Verificar cuenta",
+      DAILY_COMEDOR_PURCHASE: "Compra en comedor",
+      DAILY_CANTINA_PURCHASE: "Compra en cantina",
+      WEEKLY_COMEDOR_7D: "Comedor 7 dias seguidos",
+      WEEKLY_CANTINA_7D: "Cantina 7 dias seguidos",
+      ACCUMULATIVE_RECHARGE_VOLUME: "Recargar saldo acumulado",
+      REPEATABLE_SEND_BALANCE: "Enviar saldo",
+      REPEATABLE_RECEIVE_BALANCE: "Recibir saldo",
+      REPEATABLE_BUS_TICKET: "Pagar ticket de bus",
+      STREAK_LOGIN_3D: "Iniciar sesion 3 dias seguidos",
+      STREAK_LOGIN_7D: "Iniciar sesion 7 dias seguidos",
+      STREAK_LOGIN_21D: "Iniciar sesion 21 dias seguidos",
+      STREAK_LOGIN_30D: "Iniciar sesion 30 dias seguidos",
+      STREAK_LOGIN_90D: "Iniciar sesion 90 dias seguidos",
+      STREAK_LOGIN_180D: "Iniciar sesion 180 dias seguidos",
+      STREAK_LOGIN_365D: "Iniciar sesion 365 dias seguidos"
+    };
+
+    const missionTokenLabels: Record<string, string> = {
+      RECHARGE: "recarga",
+      SEND: "enviar",
+      RECEIVE: "recibir",
+      BALANCE: "saldo",
+      TICKET: "ticket",
+      BUS: "bus",
+      SETUP: "configurar",
+      PROFILE: "perfil",
+      GENERAL: "general",
+      DAILY: "diaria",
+      WEEKLY: "semanal",
+      ACCUMULATIVE: "acumulable",
+      REPEATABLE: "repetible",
+      STREAK: "racha",
+      LOGIN: "inicio de sesion",
+      VERIFY: "verificar",
+      ACCOUNT: "cuenta",
+      PURCHASE: "compra",
+      VOLUME: "volumen",
+      D: "dias",
+      FIRST: "primera",
+      CANTINA: "cantina",
+      COMEDOR: "comedor",
+      SERVICE: "servicio"
+    };
+
+    function normalizeMissionCode(value: string): string {
+      return value
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toUpperCase()
+        .replace(/[^A-Z0-9]+/g, "_")
+        .replace(/^WK_*/, "")
+        .replace(/_\d+$/, "")
+        .replace(/^_+|_+$/g, "");
+    }
+
+    function prettifyMissionLabel(raw?: string): string {
+      const value = String(raw || "").trim();
+      if (!value) return "Mision completada";
+
+      const normalizedCode = normalizeMissionCode(value);
+
+      if (missionCodeLabels[normalizedCode]) {
+        return missionCodeLabels[normalizedCode];
       }
+
+      const translatedFallback = normalizedCode
+        .split("_")
+        .filter(Boolean)
+        .map((token) => {
+          const numericDays = token.match(/^(\d+)D$/);
+          if (numericDays) {
+            return `${numericDays[1]} dias`;
+          }
+          return missionTokenLabels[token] || token.toLowerCase();
+        })
+        .join(" ")
+        .trim();
+
+      if (translatedFallback) {
+        return translatedFallback.charAt(0).toUpperCase() + translatedFallback.slice(1);
+      }
+
+      const cleaned = value
+        .replace(/^WK\s*/i, "")
+        .replace(/[_-]+/g, " ")
+        .toLowerCase()
+        .trim();
+
+      if (!cleaned) return "Mision completada";
+      return cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
     }
 
     function persistXPInCache(xp: number) {
@@ -183,7 +312,7 @@ const mostrarDemo = import.meta.env.DEV || url.searchParams.get("demo") === "1";
         user.xp = xp;
         localStorage.setItem("capypay_user", JSON.stringify(user));
       } catch (e) {
-        console.warn("No se pudo persistir XP en capypay_user:", e);
+        debugWarn("No se pudo persistir XP en capypay_user:", e);
       }
     }
 
@@ -199,13 +328,6 @@ const mostrarDemo = import.meta.env.DEV || url.searchParams.get("demo") === "1";
           detail: { xp, source },
         }),
       );
-
-      updateSyncBadge(
-        source === "server"
-          ? `XP sincronizada (${xp.toLocaleString("es-VE")})`
-          : `XP local (${xp.toLocaleString("es-VE")})`,
-        source === "server" ? "ok" : "neutral",
-      );
     }
 
     const container = document.getElementById("modulo-niveles-wrapper");
@@ -214,35 +336,62 @@ const mostrarDemo = import.meta.env.DEV || url.searchParams.get("demo") === "1";
     }
 
     document.addEventListener("DOMContentLoaded", async () => {
-      updateSyncBadge("Cargando XP local...");
+      const params = new URLSearchParams(window.location.search);
+      const fromDashboard = params.get("from") === "dashboard";
+      const fromDashboardBanner = document.getElementById("from-dashboard-banner");
+
+      if (fromDashboardBanner) {
+        requestAnimationFrame(() => {
+          fromDashboardBanner.classList.remove("opacity-0", "translate-y-1");
+        });
+
+        setTimeout(() => {
+          fromDashboardBanner.classList.add("opacity-0", "-translate-y-1");
+        }, 2400);
+
+        setTimeout(() => {
+          fromDashboardBanner.remove();
+        }, 3000);
+      }
+
+      if (fromDashboard && container) {
+        container.style.boxShadow = "0 0 0 4px #000, 0 0 0 8px #d7fd48";
+        container.style.transform = "translateY(-2px)";
+
+        setTimeout(() => {
+          container.style.boxShadow = "none";
+          container.style.transform = "translateY(0)";
+        }, 1800);
+      }
+
+      let cachedCalendarDays: CalendarDay[] = [];
+      let selectedDayKey = "";
 
       // 1) Carga inmediata desde caché (SWR)
       const userStr = localStorage.getItem("capypay_user");
       let currentXP = parseXP(localStorage.getItem("capypay_user_xp"), 0);
-
       if (currentXP <= 0 && userStr) {
         try {
           const user = JSON.parse(userStr);
           currentXP = parseXP(user?.xp ?? user?.puntos, 0);
         } catch (e) {
-          console.error("Error leyendo caché de usuario", e);
+          debugError("Error leyendo cache de usuario", e);
         }
       }
 
       if (currentXP > 0) {
         applyXPToUI(currentXP, "cache");
-      } else {
-        updateSyncBadge("Sin XP en caché, consultando servidor...", "warn");
       }
-
       // 2) Revalidar con servidor en segundo plano
       try {
         const freshUser = await authService.getProfile();
         const freshXP = parseXP(freshUser?.xp, currentXP);
 
         if (Number.isFinite(freshXP) && freshXP >= 0) {
-          if (freshXP !== currentXP && typeof window.showToast === "function") {
-            window.showToast(
+          const prevXP = currentXP;
+          currentXP = freshXP;
+          if (freshXP !== prevXP) {
+            showToastSafe(
               `XP actualizada a ${freshXP.toLocaleString("es-VE")}`,
               "success",
               "Progreso sincronizado",
@@ -251,31 +400,309 @@ const mostrarDemo = import.meta.env.DEV || url.searchParams.get("demo") === "1";
           applyXPToUI(freshXP, "server");
         }
       } catch (err) {
-        console.log("Usando versión en caché (offline o error de red)", err);
-        updateSyncBadge("Modo caché (sin conexión al servidor)", "warn");
+        debugLog("Usando version en cache (offline o error de red)", err);
       }
 
-      // 3) Demo panel (solo si existe en el DOM)
-      const demoBtns = document.querySelectorAll(".xp-demo-btn");
-      demoBtns.forEach((btn) => {
-        btn.addEventListener("click", () => {
-          const xpValue = parseXP(btn.getAttribute("data-xp"), 0);
-          console.log("Simulando XP (Demo):", xpValue);
-          applyXPToUI(xpValue, "demo");
-          updateSyncBadge(
-            `Modo demo: ${xpValue.toLocaleString("es-VE")} XP`,
-            "warn",
-          );
-        });
-      });
-
-      // 4) Sincronización entre pestañas
+      // 3) Sincronización entre pestañas
       window.addEventListener("storage", (event) => {
         if (event.key === "capypay_user_xp" && event.newValue) {
           const xpFromOtherTab = parseXP(event.newValue, currentXP);
+          currentXP = xpFromOtherTab;
           applyXPToUI(xpFromOtherTab, "cache");
         }
       });
+
+      window.addEventListener("capypay-xp-updated", (event) => {
+        const xpValue = parseXP((event as CustomEvent<{ xp?: number }>).detail?.xp, currentXP);
+        currentXP = xpValue;
+      });
+
+      function buildAcademicWeek(startAt?: string) {
+        const startDate = parseDateSafe(startAt) || new Date();
+        startDate.setHours(0, 0, 0, 0);
+
+        const monday = new Date(startDate);
+        const mondayOffset = (monday.getDay() + 6) % 7;
+        monday.setDate(monday.getDate() - mondayOffset);
+
+        const days: Date[] = [];
+        for (let i = 0; i < 7; i += 1) {
+          const day = new Date(monday);
+          day.setDate(monday.getDate() + i);
+          days.push(day);
+        }
+        return days;
+      }
+
+      function inferCalendarStates(streak: { currentDaily?: number; weeklyShieldAvailable?: number }, weekDays: Date[], lastQualifiedAt?: string | null): CalendarDay[] {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const todayKey = dateKeyFromLocal(today);
+        const lastQualifiedDate = parseDateSafe(lastQualifiedAt || null);
+        if (lastQualifiedDate) lastQualifiedDate.setHours(0, 0, 0, 0);
+
+        const currentDaily = Math.max(0, Number(streak?.currentDaily || 0));
+        let activeBudget = currentDaily;
+
+        const days: CalendarDay[] = weekDays.map((date): CalendarDay => {
+          const key = dateKeyFromLocal(date);
+          const isFuture = date.getTime() > today.getTime();
+          let state: CalendarState = "inactive";
+
+          if (isWeekend(date)) {
+            state = "ignored";
+          } else if (isFuture) {
+            state = "pending";
+          }
+
+          return {
+            key,
+            date,
+            state: state as CalendarState,
+            label: date.toLocaleDateString("es-VE", { weekday: "short" }).replace(".", ""),
+            isToday: key === todayKey
+          };
+        });
+
+        for (let i = days.length - 1; i >= 0 && activeBudget > 0; i -= 1) {
+          if (days[i].state === "ignored" || days[i].state === "pending") continue;
+          (days[i] as CalendarDay).state = "active";
+          activeBudget -= 1;
+        }
+
+        if (Number(streak?.weeklyShieldAvailable || 0) === 0) {
+          const protectedCandidate = [...days]
+            .reverse()
+            .find((day) => !day.isToday && day.state === "inactive" && day.date.getTime() <= today.getTime());
+          if (protectedCandidate) {
+            (protectedCandidate as CalendarDay).state = "protected";
+          }
+        }
+
+        if (lastQualifiedDate) {
+          const lastKey = dateKeyFromLocal(lastQualifiedDate);
+          const lastDay = days.find((day) => day.key === lastKey);
+          if (lastDay && lastDay.state === "inactive") {
+            (lastDay as CalendarDay).state = "active";
+          }
+        }
+
+        return days;
+      }
+
+      function stateLabel(state: CalendarState): string {
+        if (state === "active") return "Activo";
+        if (state === "protected") return "Protegido";
+        if (state === "ignored") return "Ignorado";
+        if (state === "pending") return "Pendiente";
+        return "Inactivo";
+      }
+
+      function stateClasses(state: CalendarState): string {
+        if (state === "active") return "bg-[#d7fd48]/45 border-black text-black";
+        if (state === "protected") return "bg-[#fde68a] border-black text-black";
+        if (state === "ignored") return "bg-slate-100 border-slate-300 text-slate-400";
+        if (state === "pending") return "bg-white border-slate-300 text-slate-500";
+        return "bg-white border-slate-300 text-slate-500";
+      }
+
+      function renderCalendar() {
+        const grid = document.getElementById("streak-calendar-grid");
+        if (!grid) return;
+
+        if (cachedCalendarDays.length === 0) {
+          grid.innerHTML = '<div class="col-span-7 text-[11px] font-black uppercase text-slate-700">No hay datos de racha.</div>';
+          return;
+        }
+
+        const weekdayLabels = ["Lun", "Mar", "Mie", "Jue", "Vie", "Sab", "Dom"];
+        const firstDay = cachedCalendarDays[0];
+        const firstDayWeekIndex = ((firstDay.date.getDay() + 6) % 7);
+
+        const leadingEmptyCells = Array.from({ length: firstDayWeekIndex })
+          .map(() => '<div class="h-11 sm:h-12 border-2 border-transparent"></div>')
+          .join("");
+
+        const dayCells = cachedCalendarDays
+          .map((day) => {
+            const activeRing = day.key === selectedDayKey ? "ring-2 ring-black" : "";
+            const completedCount = Number(day.missionsCompletedCount || 0);
+            return `
+              <button
+                type="button"
+                data-day-key="${day.key}"
+                class="relative border-2 px-1 py-1 h-11 sm:h-12 text-center text-[10px] font-black uppercase transition hover:-translate-y-0.5 ${stateClasses(day.state)} ${activeRing}"
+              >
+                <span class="block text-[11px] sm:text-xs leading-none mt-0.5">${day.date.getDate()}</span>
+                ${completedCount > 0
+                  ? `<span class="absolute bottom-0.5 right-0.5 min-w-4 h-4 px-1 border border-black bg-black text-white text-[8px] leading-[14px]">${completedCount}</span>`
+                  : ""}
+              </button>`;
+          })
+          .join("");
+
+        const headerCells = weekdayLabels
+          .map((label) => `<div class="text-[9px] sm:text-[10px] font-black uppercase text-slate-500 text-center py-0.5">${label}</div>`)
+          .join("");
+
+        grid.innerHTML = `${headerCells}${leadingEmptyCells}${dayCells}`;
+
+        grid.querySelectorAll("button[data-day-key]").forEach((button) => {
+          button.addEventListener("click", () => {
+            selectedDayKey = button.getAttribute("data-day-key") || selectedDayKey;
+            renderCalendar();
+            renderSelectedDayDetail();
+          });
+        });
+      }
+
+      function renderSelectedDayDetail() {
+        const selectedDate = document.getElementById("streak-selected-date");
+        const selectedState = document.getElementById("streak-selected-state");
+        const selectedSummary = document.getElementById("streak-selected-summary");
+        const selectedMissions = document.getElementById("streak-selected-missions");
+        if (!selectedDate || !selectedState || !selectedSummary || !selectedMissions) return;
+
+        const day = cachedCalendarDays.find((item) => item.key === selectedDayKey);
+        if (!day) {
+          selectedDate.textContent = "Selecciona un dia";
+          selectedState.textContent = "--";
+          selectedSummary.textContent = "Elige un dia para ver actividad asociada.";
+          selectedMissions.innerHTML = '<p class="text-[11px] font-bold uppercase text-slate-700">Sin datos para este dia.</p>';
+          return;
+        }
+
+        selectedDate.textContent = day.date.toLocaleDateString("es-VE", {
+          weekday: "long",
+          day: "numeric",
+          month: "long"
+        });
+        selectedState.textContent = stateLabel(day.state);
+
+        const completedByDay = Array.isArray(day.missionsCompleted) ? day.missionsCompleted : [];
+        if (completedByDay.length > 0) {
+          selectedSummary.textContent = `Misiones completadas: ${completedByDay.length}`;
+          const visibleMissions = completedByDay.slice(0, 6);
+          const hiddenCount = Math.max(0, completedByDay.length - visibleMissions.length);
+
+          selectedMissions.innerHTML = visibleMissions.map((mission) => {
+            const missionLabel = prettifyMissionLabel(mission?.title || mission?.code);
+            return `
+              <div class="border-2 border-black bg-white p-2 text-[11px] font-black uppercase flex items-center justify-between gap-2">
+                <span class="truncate">${missionLabel}</span>
+                <span class="px-2 py-0.5 border border-black bg-[#22c55e]/25">Completada</span>
+              </div>`;
+          }).join("") + (hiddenCount > 0
+            ? `<p class="text-[10px] font-black uppercase text-slate-700">+${hiddenCount} misiones completadas adicionales</p>`
+            : "");
+          return;
+        }
+
+        selectedSummary.textContent = "Aun no hay misiones completadas este dia.";
+        selectedMissions.innerHTML = '<p class="text-[11px] font-bold uppercase text-slate-700">Completa una misión y aparecerá aquí.</p>';
+      }
+
+      async function loadStreakPanel() {
+        const user = authService.getCurrentUser();
+        const shieldChip = document.getElementById("streak-shield-chip");
+        if (!user?.id) {
+          if (shieldChip) shieldChip.textContent = "Escudos: --";
+          cachedCalendarDays = [];
+          renderCalendar();
+          renderSelectedDayDetail();
+          return;
+        }
+
+        try {
+          const [summary, streakRes] = await Promise.all([
+            gamificationService.getWeeklySummary(user.id),
+            gamificationService.getStreak(user.id)
+          ]);
+
+          const streakData = streakRes?.streak || summary?.streak || {};
+          const apiDayStates = Array.isArray(streakRes?.dayStates)
+            ? streakRes.dayStates
+            : Array.isArray(streakRes?.calendar?.dayStates)
+              ? streakRes.calendar.dayStates
+              : [];
+
+          if (apiDayStates.length > 0) {
+            cachedCalendarDays = apiDayStates.map((item: { dateKey?: string; state?: string }) => {
+              const rawKey = String(item?.dateKey || "");
+              const date = parseDateSafe(rawKey ? `${rawKey}T12:00:00.000Z` : "") || new Date();
+              const normalizedState = String(item?.state || "inactive").toLowerCase();
+              const mappedState: CalendarState =
+                normalizedState === "active"
+                  ? "active"
+                  : normalizedState === "protected"
+                    ? "protected"
+                    : normalizedState === "ignored"
+                      ? "ignored"
+                      : "inactive";
+
+              return {
+                key: dateKeyFromLocal(date),
+                date,
+                state: mappedState,
+                label: date.toLocaleDateString("es-VE", { weekday: "short" }).replace(".", ""),
+                isToday: dateKeyFromLocal(date) === dateKeyFromLocal(new Date()),
+                missionsCompleted: Array.isArray((item as { missionsCompleted?: unknown[] }).missionsCompleted)
+                  ? (item as { missionsCompleted: Array<{ code?: string; title?: string }> }).missionsCompleted
+                  : [],
+                missionsCompletedCount: Number((item as { missionsCompletedCount?: number }).missionsCompletedCount || 0)
+              };
+            });
+          } else {
+            const weekDays = buildAcademicWeek(summary?.week?.startAt);
+            cachedCalendarDays = inferCalendarStates(streakData, weekDays, streakData?.lastQualifiedAt);
+          }
+
+          if (!selectedDayKey && cachedCalendarDays.length > 0) {
+            const todayKey = dateKeyFromLocal(new Date());
+            const preferredDay = cachedCalendarDays.find((day) => day.key === todayKey) || cachedCalendarDays[cachedCalendarDays.length - 1];
+            selectedDayKey = preferredDay.key;
+          }
+
+          if (shieldChip) {
+            shieldChip.textContent = `Escudos: ${Number(streakData?.weeklyShieldAvailable || 0)}`;
+          }
+
+          renderCalendar();
+          renderSelectedDayDetail();
+        } catch (error) {
+          debugError("Error cargando panel de racha:", error);
+          cachedCalendarDays = [];
+          renderCalendar();
+          renderSelectedDayDetail();
+          if (shieldChip) shieldChip.textContent = "Escudos: --";
+        }
+      }
+
+      const legendToggleBtn = document.getElementById("streak-toggle-legend") as HTMLButtonElement | null;
+      const legendBox = document.getElementById("streak-legend");
+      let legendVisible = false;
+
+      function updateLegendToggleUI() {
+        if (!legendToggleBtn || !legendBox) return;
+        legendToggleBtn.setAttribute("aria-expanded", legendVisible ? "true" : "false");
+        legendToggleBtn.textContent = legendVisible ? "Ocultar estados" : "Ver estados";
+
+        if (legendVisible) {
+          legendBox.style.display = "grid";
+        } else {
+          legendBox.style.display = "none";
+        }
+      }
+
+      if (legendToggleBtn && legendBox) {
+        legendToggleBtn.addEventListener("click", () => {
+          legendVisible = !legendVisible;
+          updateLegendToggleUI();
+        });
+        updateLegendToggleUI();
+      }
+
+      await loadStreakPanel();
     });
   </script>
 </CapyPay>

@@ -3,20 +3,28 @@
 
 <div
   onclick="window.showMissionsModal && window.showMissionsModal()"
-  class="cursor-pointer bg-brand-lime border-4 border-black p-4 sm:p-6 neo-shadow flex flex-col justify-between hover:-translate-y-1 hover:neo-shadow-lg transition-all group h-full"
+  class="cursor-pointer bg-brand-lime border-4 border-black p-4 sm:p-5 neo-shadow flex flex-col justify-between hover:-translate-y-1 hover:neo-shadow-lg transition-all group h-full"
   role="button"
   aria-label="Abrir misiones"
   tabindex="0"
   onkeydown="if(event.key==='Enter'||event.key===' ') window.showMissionsModal && window.showMissionsModal()"
 >
-  <div class="flex justify-between items-start mb-4">
+  <div class="flex justify-between items-start gap-2 mb-3">
     <span class="material-symbols-outlined text-4xl text-black">checklist</span>
-    <span id="missions-counter" class="font-headline font-bold text-xs uppercase border-2 border-black px-3 py-1 bg-white text-black">0/0 Completadas</span>
+    <span id="missions-counter" class="font-headline font-bold text-[11px] uppercase border-2 border-black px-2.5 py-1 bg-white text-black">0/0 listas</span>
   </div>
+
   <div>
-    <h4 class="font-headline font-bold uppercase tracking-widest text-sm mt-4 text-black">Misiones</h4>
+    <h4 class="font-headline font-bold uppercase tracking-widest text-sm text-black">Misiones de la semana</h4>
+    <p id="missions-next-action" class="text-[11px] font-black uppercase text-black/80 mt-1">Da el primer paso de hoy.</p>
     <div class="w-full bg-white h-3 mt-2 border-2 border-black rounded-full overflow-hidden">
-      <div id="missions-progress" class="bg-brand-purple h-full border-r-2 border-black" style="width: 0%"></div>
+      <div id="missions-progress" class="bg-brand-purple h-full border-r-2 border-black transition-[width] duration-700 ease-out" style="width: 0%"></div>
+    </div>
+
+    <div class="mt-3 flex items-center justify-end">
+      <span id="vip-chip" class="hidden text-[10px] font-black uppercase bg-black border-2 border-black px-2 py-1 text-[#d7fd48]">
+        VIP Activo
+      </span>
     </div>
   </div>
 </div>

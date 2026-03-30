@@ -1,0 +1,58 @@
+# 🗺️ Roadmap de Gamificación & Comedor (V2)
+
+## 📌 Corto Plazo (Sprint Actual)
+
+- Finalizar UI y conexión de **Ranking de Influencia** con Supabase.
+- Asegurar PC-First (Diseño Desktop principal).
+- Eliminar placeholders estáticos y confirmar actualización. (Realizado)
+- Solucionar bugs visuales como el solapamiento del título principal. (Realizado)
+
+## ⏳ Mediano Plazo
+
+- **Niveles de Usuario**: Integrar mecánica de niveles y avatars basados en XP total.
+- **Logros/Misiones**: Permitir completar misiones (ej. "Compra 3 veces en Cantina Ingeniería") para ganar _Ranking Points_.
+- **Batalla de Facultades**: Expandir detalles de progreso y animaciones de Facultad.
+- **Integración con Comedores/Cantinas**: Conectar la compra en menú simulado con la adjudicación automática de XP.
+
+## 🚀 Largo Plazo
+
+- **Mobile First / Responsive**: Adaptar toda la UI Neo-Brutalista a móvil sin perder rendimiento.
+- **Widgets de Dashboard**: Reincorporar las estadísticas resumidas (Ranking, Nivel y próximos logros) directamente en el inicio del Dashboard PC.
+- **Tienda de Recompensas**: Opción de canjear _Baras_ por recompensas físicas o merch.
+
+## ✅ Fase 3 (Widgets + Notificaciones) - Implementada
+
+- **Notificación de subida de nivel** en backend para eventos de XP:
+	- Recarga
+	- Transferencia
+	- Compra en comedor
+	- Recompensa por misión completada
+- **Widget de Misiones mejorado** con beneficios activos:
+	- Chip de descuento aplicado por nivel
+	- Chip de estado VIP activo
+- **Dashboard reactivo de nivel**:
+	- Actualización de nivel y barra de progreso desde el store
+	- Refresco automático de notificaciones al subir de nivel
+	- Polling ligero de notificaciones cada 30 segundos
+
+## 🧭 Fase 4 (Progresión Activa) - Definida
+
+- Especificación funcional y técnica cerrada en:
+	- `docs/phases/FASE4_SISTEMA_NIVELES_ESPECIFICACION.md`
+- Incluye:
+	- Misiones semanales dinámicas por segmento
+	- Rachas con multiplicador y escudo semanal
+	- Recompensas reclamables (claim) idempotentes
+	- Control de economía XP (topes + anti-abuso)
+	- Métricas de retención y conversión
+
+## ✅ Fase 5 (Estabilización + Piloto) - En marcha
+
+- Documento operativo:
+	- `docs/phases/FASE5_ESTABILIZACION_Y_PILOTO.md`
+- Entregado hoy:
+	- Observabilidad backend (`/ops/health`, `/ops/metrics`)
+	- Logs estructurados por request y latencia p95 en memoria
+	- Base de QA con tests de servicios críticos
+- Siguiente paso:
+	- Smoke E2E de flujos core + piloto controlado (5-10%)
