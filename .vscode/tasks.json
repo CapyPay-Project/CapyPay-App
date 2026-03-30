@@ -1,0 +1,15 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "E2E Smoke Sprint 5.2",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"e2e:smoke"
+			],
+			"isBackground": false
+		}
+	]
+}

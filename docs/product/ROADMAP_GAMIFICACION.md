@@ -38,10 +38,21 @@
 ## 🧭 Fase 4 (Progresión Activa) - Definida
 
 - Especificación funcional y técnica cerrada en:
-	- `FASE4_SISTEMA_NIVELES_ESPECIFICACION.md`
+	- `docs/phases/FASE4_SISTEMA_NIVELES_ESPECIFICACION.md`
 - Incluye:
 	- Misiones semanales dinámicas por segmento
 	- Rachas con multiplicador y escudo semanal
 	- Recompensas reclamables (claim) idempotentes
 	- Control de economía XP (topes + anti-abuso)
 	- Métricas de retención y conversión
+
+## ✅ Fase 5 (Estabilización + Piloto) - En marcha
+
+- Documento operativo:
+	- `docs/phases/FASE5_ESTABILIZACION_Y_PILOTO.md`
+- Entregado hoy:
+	- Observabilidad backend (`/ops/health`, `/ops/metrics`)
+	- Logs estructurados por request y latencia p95 en memoria
+	- Base de QA con tests de servicios críticos
+- Siguiente paso:
+	- Smoke E2E de flujos core + piloto controlado (5-10%)

@@ -513,6 +513,8 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
             ? '<span class="inline-block text-[8px] px-1 py-0.5 border border-black bg-[#8b5cf6] text-white font-black uppercase">LEVEL UP</span>'
             : n.type === 'payment_received'
               ? '<span class="inline-block text-[8px] px-1 py-0.5 border border-black bg-[#d7fd48] text-black font-black uppercase">PAGO</span>'
+              : n.type === 'mission_complete'
+                ? '<span class="inline-block text-[8px] px-1 py-0.5 border border-black bg-[#16a34a] text-white font-black uppercase">MISION</span>'
               : n.type === 'reward_ready'
                 ? '<span class="inline-block text-[8px] px-1 py-0.5 border border-black bg-black text-[#d7fd48] font-black uppercase">REWARD</span>'
                 : n.type === 'streak_warning'
