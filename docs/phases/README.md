@@ -6,6 +6,7 @@ Este directorio tenia multiples archivos por fase. Para simplificar navegacion, 
 - Fase 5: `FASE5_ESTABILIZACION_Y_PILOTO.md`
 - Fase 6: `FASE6.md`
 - Fase 7: `FASE7.md`
+- Fase 8: `FASE8.md`
 
 ## Politica de documentacion
 
@@ -31,3 +32,27 @@ Este directorio tenia multiples archivos por fase. Para simplificar navegacion, 
 - `archive/fase7/FASE7_ANEXO_S74_CALIBRACION_ALERTAS.md`
 - `archive/fase7/FASE7_ANEXO_S74_ROLLBACK_FALLBACK.md`
 - `archive/fase7/FASE7_ANEXO_BACKLOG_INICIAL.md`
+
+## Anexos Fase 8
+
+- `archive/fase8/FASE8_ANEXO_PLAN_EJECUTABLE.md`
+- `archive/fase8/FASE8_ANEXO_BACKLOG.md`
+- `archive/fase8/FASE8_ANEXO_RESULTADOS.md`
+
+## Trazabilidad de nombres (legacy -> actual)
+
+| Legacy | Actual |
+| --- | --- |
+| `FASE6_NIVELES_2_0_PLAN_EJECUTABLE.md` | `archive/fase6/FASE6_ANEXO_PLAN_EJECUTABLE.md` |
+| `FASE6_BACKLOG_OPERATIVO.md` | `archive/fase6/FASE6_ANEXO_BACKLOG.md` |
+| `FASE6_RESULTADOS_Y_DECISION.md` | `archive/fase6/FASE6_ANEXO_RESULTADOS.md` |
+| `FASE7_NIVELES_3_0_PLAN_EJECUTABLE.md` | `archive/fase7/FASE7_ANEXO_PLAN_EJECUTABLE.md` |
+| `FASE7_BACKLOG_OPERATIVO.md` | `archive/fase7/FASE7_ANEXO_BACKLOG.md` |
+| `FASE7_RESULTADOS_Y_DECISION.md` | `archive/fase7/FASE7_ANEXO_RESULTADOS.md` |
+| `FASE7_S71_REPORTE_BASELINE_DB.md` | `archive/fase7/FASE7_ANEXO_S71_BASELINE_DB.md` |
+| `FASE7_S73_REPORTE_LATENCIA_PERCIBIDA.md` | `archive/fase7/FASE7_ANEXO_S73_LATENCIA_PERCIBIDA.md` |
+| `FASE7_S74_REPORTE_CARGA_INICIAL.md` | `archive/fase7/FASE7_ANEXO_S74_CARGA_INICIAL.md` |
+| `FASE7_S74_REPORTE_WRITE_HEAVY.md` | `archive/fase7/FASE7_ANEXO_S74_WRITE_HEAVY.md` |
+| `FASE7_S74_CALIBRACION_ALERTAS.md` | `archive/fase7/FASE7_ANEXO_S74_CALIBRACION_ALERTAS.md` |
+| `FASE7_S74_VALIDACION_ROLLBACK_FALLBACK.md` | `archive/fase7/FASE7_ANEXO_S74_ROLLBACK_FALLBACK.md` |
+| `FASE7_BACKLOG_INICIAL_NIVELES.md` | `archive/fase7/FASE7_ANEXO_BACKLOG_INICIAL.md` |

@@ -160,29 +160,18 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
                 class="material-symbols-outlined text-2xl sm:text-3xl transition-transform group-hover:scale-110"
                 >military_tech</span
               >
-              <div class="flex items-center gap-1">
-                <span class="bg-white border-2 border-black px-1.5 py-0.5 text-[9px] sm:text-[10px] font-black">NIVEL</span>
-                <span class="bg-[#d7fd48] border-2 border-black px-1.5 py-0.5 text-[9px] sm:text-[10px] font-black">RACHA</span>
-              </div>
+              <span class="bg-white border-2 border-black px-1.5 py-0.5 text-[9px] sm:text-[10px] font-black uppercase">NIVELES</span>
             </div>
             <div class="mt-1 sm:mt-2 text-center w-full">
-              <p
-                class="font-black text-[9px] sm:text-[10px] uppercase text-black tracking-widest mb-1 text-center w-full"
-              >
-                NIVEL
-              </p>
-              <h3 class="font-black text-2xl sm:text-3xl uppercase leading-none" id="user-level">1</h3>
+              <h3 class="font-black text-3xl sm:text-4xl uppercase leading-none" id="user-level">1</h3>
               <div class="w-full bg-white border-2 border-black h-2 mt-1">
                 <div class="bg-[#8b5cf6] h-full transition-all duration-300" id="level-progress" style="width: 0%"></div>
               </div>
-              <div class="mt-2 grid grid-cols-3 gap-1 text-[9px] sm:text-[10px] font-black uppercase text-black">
-                <span class="border-2 border-black bg-white py-1 leading-none">🔥 <span id="streak-daily">0</span></span>
-                <span class="border-2 border-black bg-white py-1 leading-none" id="streak-weekly">Sem: 0</span>
-                <span class="border-2 border-black bg-white py-1 leading-none" id="streak-shield">Esc: 1</span>
+              <div class="mt-2 flex items-center justify-center gap-2 text-[9px] sm:text-[10px] font-black uppercase text-black">
+                <span class="border-2 border-black bg-white px-2 py-1 leading-none">🔥 <span id="streak-daily">0</span>d</span>
+                <span id="streak-warning" class="hidden border-2 border-black bg-[#fef08a] px-2 py-1 leading-none">Hoy</span>
               </div>
-              <p id="streak-warning" class="hidden mt-1 text-[9px] sm:text-[10px] font-black uppercase text-[#b91c1c]">
-                Racha en riesgo hoy
-              </p>
+              <p id="level-streak-summary" class="mt-1 text-[9px] sm:text-[10px] font-black uppercase text-black/80">Empieza tu racha</p>
             </div>
           </a>
         </div>
@@ -384,12 +373,22 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
       userService,
       notificationService,
       gamificationService,
-      missionService,
     } from "../../services/api.js";
     import { setupPageWebVitals } from "../../utils/webVitals.js";
     import { userProfile, fetchUserProfile, fetchGamificationSnapshot } from "../../store/userStore.js";
 
     setupPageWebVitals("dashboard");
+    const debugMode = new URLSearchParams(window.location.search).get("debug") === "1";
+
+    function debugWarn(...args) {
+      if (!debugMode) return;
+      console.warn(...args);
+    }
+
+    function debugError(...args) {
+      if (!debugMode) return;
+      console.error(...args);
+    }
 
     let cachedMovements = [];
     let currentFilter = "all";
@@ -545,7 +544,7 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
           // Actualizar estado local y refrescar
           await refreshNotifications();
         } catch (e) {
-          console.error("Error marcando notificación como leída:", e);
+          debugError("Error marcando notificación como leída:", e);
         }
       }
     };
@@ -559,7 +558,7 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
         else if (notifsRes && Array.isArray(notifsRes.data)) notifs = notifsRes.data;
         renderNotificationBar(notifs);
       } catch (err) {
-        console.error('Error actualizando notificaciones:', err);
+        debugError('Error actualizando notificaciones:', err);
       }
     }
 
@@ -651,10 +650,12 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
       const missionsList = document.getElementById("missions-list");
       const missionsCounter = document.getElementById("missions-counter");
       const missionsProgress = document.getElementById("missions-progress");
-      const missionsSegmentContext = document.getElementById("missions-segment-context");
-      const missionSegmentChip = document.getElementById("mission-segment-chip");
+      const missionsNextAction = document.getElementById("missions-next-action");
+      const missionsModalSummary = document.getElementById("missions-modal-summary");
       let lastMissionTrigger = null;
       let missionsExperimentVariant = null;
+      let activeMissionCategory = "all";
+      let missionCache = [];
       const levelUpModal = document.getElementById("level-up-modal");
       const levelUpTitle = document.getElementById("level-up-title");
       const levelUpBenefits = document.getElementById("level-up-benefits");
@@ -678,27 +679,139 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
         levelUpCloseBtn.addEventListener("click", closeLevelUpModal);
       }
 
+      function normalizeMissionCategory(item) {
+        const code = String(item?.missions?.code || item?.code || "").toLowerCase();
+
+        if (code.startsWith("general_")) return "general";
+        if (code.startsWith("daily_")) return "daily";
+        if (code.startsWith("weekly_")) return "weekly";
+        if (code.startsWith("accumulative_")) return "accumulative";
+        if (code.startsWith("streak_")) return "streak";
+        if (code.startsWith("repeatable_")) return "repeatable";
+        return "general";
+      }
+
+      function cleanMissionTitle(rawTitle) {
+        const safeTitle = String(rawTitle || "").trim();
+        if (!safeTitle) return "";
+        const withoutPrefix = safeTitle.replace(/^[^:]{2,35}:\s*/i, "").trim();
+        return withoutPrefix || safeTitle;
+      }
+
+      function getCategoryMeta(category) {
+        if (category === "general") return { label: "Generales", accent: "#d7fd48", text: "#111827" };
+        if (category === "daily") return { label: "Diarias", accent: "#60a5fa", text: "#111827" };
+        if (category === "weekly") return { label: "Semanales", accent: "#8b5cf6", text: "#ffffff" };
+        if (category === "accumulative") return { label: "Acumulables", accent: "#14b8a6", text: "#111827" };
+        if (category === "streak") return { label: "De racha", accent: "#f59e0b", text: "#111827" };
+        if (category === "repeatable") return { label: "Repetibles", accent: "#111827", text: "#ffffff" };
+        return { label: "Todas", accent: "#111827" };
+      }
+
+      function renderMissionCards(items) {
+        if (!Array.isArray(items) || items.length === 0) {
+          return '<p class="text-sm text-center font-black uppercase text-slate-600">No hay misiones en esta categoria.</p>';
+        }
+
+        return items
+          .map((item) => {
+            const target = item.missions?.target_count ?? item.target_count ?? 1;
+            const progress = item.progress ?? 0;
+            const percent = Math.min(100, Math.round((progress / target) * 100));
+            const categoryMeta = getCategoryMeta(item.category);
+
+            return `
+              <div class="border-2 border-black bg-white p-3 rounded-lg">
+                <div class="flex justify-between items-center gap-2">
+                  <p class="font-black text-xs uppercase tracking-wider">${item.missions?.title || 'Mision'}</p>
+                  <span class="text-[10px] font-black ${item.completed ? 'text-green-700' : 'text-gray-600'}">${item.completed ? 'LISTA' : 'EN CURSO'}</span>
+                </div>
+                <p class="text-[10px] text-gray-600 mt-1">${item.missions?.description || 'Descripcion no disponible'}</p>
+                <div class="mt-2 flex items-center justify-between gap-2 text-[10px] font-black uppercase">
+                  <span class="border-2 border-black px-2 py-0.5" style="background:${categoryMeta.accent};color:${categoryMeta.text || '#111827'}">${categoryMeta.label}</span>
+                  <span>+${item.missions?.xp_reward ?? item.xp_reward ?? 0} XP</span>
+                </div>
+                <div class="w-full bg-black/10 h-2 rounded-full mt-2 overflow-hidden border-2 border-black">
+                  <div class="h-full bg-[#8b5cf6] transition-[width] duration-700 ease-out" style="width: ${percent}%"></div>
+                </div>
+                <p class="text-[10px] font-black mt-1">${progress} / ${target}</p>
+                <div class="mt-2 flex justify-end">
+                  ${item.claimed
+                    ? '<span class="inline-block px-2 py-1 text-[10px] font-black uppercase text-white bg-black rounded">Reclamada</span>'
+                    : item.completed
+                    ? `<button class="px-2 py-1 text-[10px] font-black uppercase text-white bg-green-700 border-2 border-black rounded hover:bg-green-800 transition" onclick="window.claimMissionReward('${item.id}')">Reclamar +XP</button>`
+                    : '<span class="inline-block px-2 py-1 text-[10px] font-black uppercase bg-slate-100 border-2 border-black rounded">En progreso</span>'}
+                </div>
+              </div>`;
+          })
+          .join("");
+      }
+
+      function renderMissionsByCategory() {
+        if (!missionsList) return;
+
+        if (!Array.isArray(missionCache) || missionCache.length === 0) {
+          missionsList.innerHTML = '<p class="text-sm text-center font-black uppercase text-slate-600">No hay misiones disponibles.</p>';
+          return;
+        }
+
+        const categoryOrder = ["general", "daily", "weekly", "accumulative", "streak", "repeatable"];
+        const groups = missionCache.reduce((acc, mission) => {
+          const key = mission.category || "general";
+          if (!acc[key]) acc[key] = [];
+          acc[key].push(mission);
+          return acc;
+        }, {});
+
+        if (activeMissionCategory !== "all") {
+          missionsList.innerHTML = renderMissionCards(groups[activeMissionCategory] || []);
+          return;
+        }
+
+        missionsList.innerHTML = categoryOrder
+          .map((key) => {
+            const meta = getCategoryMeta(key);
+            const items = groups[key] || [];
+            return `
+              <section class="space-y-2">
+                <div class="flex items-center justify-between">
+                  <h3 class="text-xs font-black uppercase tracking-widest">${meta.label}</h3>
+                  <span class="text-[10px] font-black uppercase border-2 border-black px-2 py-0.5">${items.length}</span>
+                </div>
+                ${renderMissionCards(items)}
+              </section>`;
+          })
+          .join("");
+      }
+
+      function updateMissionTabs() {
+        const tabButtons = document.querySelectorAll(".missions-tab-btn");
+        tabButtons.forEach((button) => {
+          const isActive = button.getAttribute("data-category") === activeMissionCategory;
+          button.classList.toggle("bg-black", isActive);
+          button.classList.toggle("text-white", isActive);
+          button.classList.toggle("bg-white", !isActive);
+          button.classList.toggle("text-black", !isActive);
+        });
+      }
+
+      document.querySelectorAll(".missions-tab-btn").forEach((button) => {
+        button.addEventListener("click", () => {
+          activeMissionCategory = button.getAttribute("data-category") || "all";
+          updateMissionTabs();
+          renderMissionsByCategory();
+        });
+      });
+
       async function fetchAndRenderMissions({ renderModal = false } = {}) {
         const currentUser = authService.getCurrentUser();
         if (!currentUser?.id) {
-          console.warn('Usuario no autenticado para misiones');
+          debugWarn('Usuario no autenticado para misiones');
           return [];
         }
 
         try {
           const weeklyData = await gamificationService.getWeeklyMissions(currentUser.id);
-          const segmentation = weeklyData?.segmentation || {};
-          const userSegment = String(segmentation.userSegment || "global").toUpperCase();
-          const rulesVersion = String(segmentation.rulesVersion || "v1");
-
-          if (missionSegmentChip) {
-            missionSegmentChip.textContent = `Segmento: ${userSegment}`;
-          }
-
-          if (missionsSegmentContext) {
-            const staleLabel = weeklyData?.clientCache?.stale ? " · modo cache" : "";
-            missionsSegmentContext.textContent = `Segmento activo: ${userSegment} · Reglas ${rulesVersion}${staleLabel}`;
-          }
 
           const missions = (weeklyData?.missions || []).map((item) => ({
             id: item.id,
@@ -706,6 +819,7 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
             completed: Boolean(item.completed),
             claimed: Boolean(item.claimed),
             segment: item.segment,
+            category: normalizeMissionCategory(item),
             missions: {
               code: item.code,
               title: item.title,
@@ -723,50 +837,36 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
           });
 
           if (missionsCounter) {
-            missionsCounter.textContent = `${completed}/${missions.length} Completadas`;
+            missionsCounter.textContent = `${completed}/${missions.length} listas`;
           }
 
           if (missionsProgress) {
             missionsProgress.style.width = `${missions.length > 0 ? Math.round((completed / missions.length) * 100) : 0}%`;
           }
 
-          if (renderModal && missionsList) {
-            if (missions.length === 0) {
-              missionsList.innerHTML = '<p class="text-sm text-center">No hay misiones disponibles.</p>';
-            } else {
-              missionsList.innerHTML = missions.map((item) => {
-                const target = item.missions?.target_count ?? item.target_count ?? 1;
-                const progress = item.progress ?? 0;
-                const percent = Math.min(100, Math.round((progress / target) * 100));
+          if (missionsNextAction) {
+            const pending = missions.find((mission) => !mission.completed);
+            const missionName = cleanMissionTitle(pending?.missions?.title);
+            missionsNextAction.textContent = pending
+              ? `Siguiente: ${missionName || "Completa una mision"}`
+              : "Excelente: completaste todo por ahora";
+          }
 
-                return `
-                <div class="border-2 border-black bg-white p-3 rounded-lg">
-                  <div class="flex justify-between items-center">
-                    <p class="font-black text-xs uppercase tracking-wider">${item.missions?.title || 'Misión'}</p>
-                    <span class="text-[10px] font-black ${item.completed ? 'text-green-700' : 'text-gray-600'}">${item.completed ? 'COMPLETADA' : 'EN PROCESO'}</span>
-                  </div>
-                  <p class="text-[10px] text-gray-600 mt-1">${item.missions?.description || 'Descripción no disponible'}</p>
-                  <p class="text-[10px] font-black uppercase mt-1 text-[#8b5cf6]">Segmento: ${String(item.segment || 'global').toUpperCase()}</p>
-                  <div class="w-full bg-black/10 h-2 rounded-full mt-2 overflow-hidden border-2 border-black">
-                    <div class="h-full bg-[#8b5cf6]" style="width: ${percent}%"></div>
-                  </div>
-                  <p class="text-[10px] font-black mt-1">${progress} / ${target} · +${item.missions?.xp_reward ?? item.xp_reward ?? 0} XP</p>
-                  <div class="mt-2 flex justify-end">
-                    ${item.claimed
-                      ? '<span class="inline-block px-2 py-1 text-[10px] font-black uppercase text-white bg-black rounded">Reclamada</span>'
-                      : item.completed
-                      ? `<button class="px-2 py-1 text-[10px] font-black uppercase text-white bg-green-700 border-2 border-black rounded hover:bg-green-800 transition" onclick="window.claimMissionReward('${item.id}')">Reclamar +XP</button>`
-                      : `<button class="px-2 py-1 text-[10px] font-black uppercase bg-[#d7fd48] border-2 border-black rounded hover:bg-[#cde439] transition" onclick="window.completeMission('${item.id}', '${item.missions?.code ?? item.code}', '${item.segment || ''}')">Avanzar misión</button>`
-                    }
-                  </div>
-                </div>`;
-              }).join('');
-            }
+          if (missionsModalSummary) {
+            missionsModalSummary.textContent = missions.length > 0
+              ? `Llevas ${completed} de ${missions.length} misiones completadas esta semana.`
+              : "No tienes misiones activas esta semana.";
+          }
+
+          missionCache = missions;
+
+          if (renderModal && missionsList) {
+            renderMissionsByCategory();
           }
 
           return missions;
         } catch (err) {
-          console.error('Error cargando misiones:', err);
+          debugError('Error cargando misiones:', err);
           if (renderModal && missionsList) {
             missionsList.innerHTML = '<p class="text-sm text-center">No se pudieron cargar las misiones.</p>';
           }
@@ -786,7 +886,7 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
             eventType: 'dashboard_view'
           });
         } catch (error) {
-          console.warn('No se pudo inicializar experimento de misiones:', error);
+          debugWarn('No se pudo inicializar experimento de misiones:', error);
           missionsExperimentVariant = 'control';
         }
       }
@@ -797,6 +897,7 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
         }
         lastMissionTrigger = document.activeElement;
         await fetchAndRenderMissions({ renderModal: true });
+        updateMissionTabs();
 
         const currentUser = authService.getCurrentUser();
         if (currentUser?.id && missionsExperimentVariant) {
@@ -805,7 +906,7 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
             experimentKey: 'missions_copy_v1',
             variant: missionsExperimentVariant,
             eventType: 'missions_modal_open'
-          }).catch((err) => console.warn('No se pudo trackear modal de misiones:', err));
+          }).catch((err) => debugWarn('No se pudo trackear modal de misiones:', err));
         }
 
         missionsModal.setAttribute('aria-hidden', 'false');
@@ -820,36 +921,11 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
             modalBox.classList.remove('opacity-0');
           }
 
-          const closeBtn = missionsModal.querySelector('button[aria-label="Cerrar misión"]');
+          const closeBtn = document.getElementById("missions-modal-close");
           if (closeBtn && typeof closeBtn.focus === 'function') {
             closeBtn.focus();
           }
         });
-      };
-
-      window.completeMission = async (missionId, missionCode, missionSegment = '') => {
-        const user = authService.getCurrentUser();
-        if (!user?.id) return;
-
-        try {
-          if (missionSegment === 'legacy') {
-            await missionService.completeMission(missionCode, user.id);
-          } else {
-            await gamificationService.progressMission(missionId, user.id, 1);
-          }
-
-          if (window.showToast) {
-            window.showToast(`Misión actualizada`, 'success', 'Progreso guardado');
-          }
-          await fetchGamificationSnapshot();
-          await refreshNotifications();
-          await fetchAndRenderMissions({ renderModal: true });
-        } catch (error) {
-          console.error('Error en completeMission:', error);
-          if (window.showToast) {
-            window.showToast('Error al completar misión', 'error');
-          }
-        }
       };
 
       window.claimMissionReward = async (missionId) => {
@@ -866,7 +942,7 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
             window.showToast('Recompensa reclamada', 'success', 'XP acreditada');
           }
         } catch (error) {
-          console.error('Error en claimMissionReward:', error);
+          debugError('Error en claimMissionReward:', error);
           if (window.showToast) {
             window.showToast(error?.message || 'No se pudo reclamar', 'error');
           }
@@ -1018,7 +1094,7 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
               '<p class="text-center font-bold text-red-500 text-sm mt-10 uppercase">ERROR AL CARGAR</p>';
         }
       } catch (err) {
-        console.error("DEBUG DASH:", err);
+        debugError("DEBUG DASH:", err);
         const c = document.getElementById("history-list-container");
         if (c)
           c.innerHTML =
@@ -1042,10 +1118,18 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
       const vipChip = document.getElementById("vip-chip");
       const discountPct = Math.round((profile?.benefits?.descuento || 0) * 100);
       const streak = profile?.streakStatus || {};
+      const level = Number(profile?.level || 1);
 
-      if (levelEl) levelEl.textContent = profile.level || 1;
+      if (levelEl) levelEl.textContent = level;
       if (progressEl) progressEl.style.width = `${profile.progress || 0}%`;
       if (benefitChip) benefitChip.textContent = `Beneficio: ${discountPct}%`;
+
+      window.dispatchEvent(
+        new CustomEvent("capypay-level-changed", {
+          detail: { level },
+        }),
+      );
+
       if (vipChip) {
         if (profile?.benefits?.accesoVIP) {
           vipChip.classList.remove("hidden");
@@ -1055,19 +1139,27 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
       }
 
       const streakDailyEl = document.getElementById('streak-daily');
-      const streakWeeklyEl = document.getElementById('streak-weekly');
-      const streakShieldEl = document.getElementById('streak-shield');
       const streakWarningEl = document.getElementById('streak-warning');
+      const levelStreakSummaryEl = document.getElementById('level-streak-summary');
 
       if (streakDailyEl) streakDailyEl.textContent = Number(streak.currentDaily || 0);
-      if (streakWeeklyEl) streakWeeklyEl.textContent = `Sem: ${Number(streak.currentWeekly || 0)}`;
-      if (streakShieldEl) streakShieldEl.textContent = `Esc: ${Number(streak.weeklyShieldAvailable || 0)}`;
+
+      if (levelStreakSummaryEl) {
+        const daily = Number(streak.currentDaily || 0);
+        const weekly = Number(streak.currentWeekly || 0);
+        if (daily > 0) {
+          levelStreakSummaryEl.textContent = `Racha ${daily}d · Sem ${weekly}`;
+        } else {
+          levelStreakSummaryEl.textContent = 'Empieza tu racha';
+        }
+      }
 
       if (streakWarningEl) {
         const lastQualifiedAt = streak.lastQualifiedAt ? new Date(streak.lastQualifiedAt).getTime() : null;
         const hoursSince = lastQualifiedAt ? (Date.now() - lastQualifiedAt) / (1000 * 60 * 60) : 0;
         if (Number(streak.currentDaily || 0) > 0 && hoursSince >= 20 && hoursSince <= 48) {
           streakWarningEl.classList.remove('hidden');
+          if (levelStreakSummaryEl) levelStreakSummaryEl.textContent = 'Racha en riesgo';
         } else {
           streakWarningEl.classList.add('hidden');
         }

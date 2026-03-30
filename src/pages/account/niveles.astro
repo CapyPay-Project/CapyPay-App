@@ -7,9 +7,6 @@ const fromParam = url.searchParams.get("from");
 const xpParsed = Number.parseInt(xpParam ?? "", 10);
 const puntosActuales =
   Number.isFinite(xpParsed) && xpParsed >= 0 ? xpParsed : 1500;
-const mostrarDemo =
-  ["localhost", "127.0.0.1"].includes(url.hostname) ||
-  url.searchParams.get("demo") === "1";
 const fromDashboard = fromParam === "dashboard";
 ---
 
@@ -50,13 +47,6 @@ const fromDashboard = fromParam === "dashboard";
         </div>
       </div>
 
-      <div
-        id="xp-sync-badge"
-        class="text-[11px] md:text-xs px-3 py-1 border-4 border-black text-slate-700 bg-white"
-        aria-live="polite"
-      >
-        Sincronizando XP...
-      </div>
     </header>
 
     {
@@ -70,70 +60,6 @@ const fromDashboard = fromParam === "dashboard";
       )
     }
 
-    {
-      mostrarDemo && (
-        <div class="bg-black/60 backdrop-blur-lg border-4 border-black -3xl p-4 mb-6">
-          <h3 class="text-black text-sm font-bold mb-3 flex items-center gap-2">
-            <svg
-              class="w-4 h-4 text-brand-lime"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
-              />
-            </svg>
-            Panel de Control (Demo)
-          </h3>
-          <div class="flex flex-wrap gap-2">
-            <button
-              type="button"
-              class="xp-demo-btn px-3 py-1.5 bg-white border-4 border-black hover:bg-white text-black text-xs font-bold transition-colors hover:border-brand-lime/30"
-              data-xp="200"
-            >
-              Novato (200 XP)
-            </button>
-            <button
-              type="button"
-              class="xp-demo-btn px-3 py-1.5 bg-white border-4 border-black hover:bg-white text-black text-xs font-bold transition-colors hover:border-brand-lime/30"
-              data-xp="1500"
-            >
-              Bachiller (1,500 XP)
-            </button>
-            <button
-              type="button"
-              class="xp-demo-btn px-3 py-1.5 bg-white border-4 border-black hover:bg-white text-black text-xs font-bold transition-colors hover:border-brand-lime/30"
-              data-xp="3500"
-            >
-              Licenciado (3,500 XP)
-            </button>
-            <button
-              type="button"
-              class="xp-demo-btn px-3 py-1.5 bg-white border-4 border-black hover:bg-white text-black text-xs font-bold transition-colors hover:border-brand-lime/30"
-              data-xp="7500"
-            >
-              Magíster (7,500 XP)
-            </button>
-            <button
-              type="button"
-              class="xp-demo-btn px-3 py-1.5 bg-white border-4 border-black hover:bg-white text-black text-xs font-bold transition-colors hover:border-brand-lime/30"
-              data-xp="12000"
-            >
-              Doctorado (12,000 XP)
-            </button>
-          </div>
-          <p class="text-black font-semibold text-xs mt-2">
-            Solo en desarrollo (o con <code>?demo=1</code>). Simula XP para
-            pruebas visuales.
-          </p>
-        </div>
-      )
-    }
-
     <!-- Módulo de Niveles -->
     <div id="modulo-niveles-wrapper">
       <RankProgression puntosActuales={puntosActuales} />
@@ -143,51 +69,49 @@ const fromDashboard = fromParam === "dashboard";
     <div class="lg:hidden h-24 w-full"></div>
   </div>
 
-  <section class="mt-6 bg-white border-4 border-black p-4 sm:p-5 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
-    <div class="mb-3" id="segment-context-box">
-      <p class="text-[11px] font-black uppercase text-black border-2 border-black bg-[#d7fd48] px-3 py-2 inline-block" id="segment-context-text">
-        Segmento de misiones: Cargando...
-      </p>
-    </div>
-    <div id="weekly-summary-box" class="mb-4 border-2 border-black bg-slate-50 p-3 sm:p-4">
-      <div class="flex items-center justify-between gap-2 mb-2">
-        <h2 class="text-xs sm:text-sm font-black uppercase tracking-widest text-black">Resumen semanal</h2>
-        <span id="weekly-summary-completion" class="text-[10px] sm:text-[11px] font-black uppercase border-2 border-black bg-[#d7fd48] px-2 py-1">--%</span>
-      </div>
-      <p id="weekly-summary-line" class="text-[11px] sm:text-xs font-bold uppercase text-slate-800">Cargando progreso semanal...</p>
-      <div class="mt-2 grid grid-cols-2 sm:grid-cols-4 gap-2 text-[10px] sm:text-[11px] font-black uppercase">
-        <div class="border-2 border-black bg-white px-2 py-1.5">Misiones: <span id="weekly-summary-missions">0/0</span></div>
-        <div class="border-2 border-black bg-white px-2 py-1.5">Reclamos: <span id="weekly-summary-claims">0</span></div>
-        <div class="border-2 border-black bg-white px-2 py-1.5">Racha: <span id="weekly-summary-streak">0</span></div>
-        <div class="border-2 border-black bg-white px-2 py-1.5">Cierre: <span id="weekly-summary-remaining">--</span></div>
-      </div>
-      <div class="mt-2 flex items-center gap-2">
-        <button
-          id="reload-context-btn"
-          type="button"
-          class="px-2 py-1 text-[10px] font-black uppercase bg-white border-2 border-black hover:-translate-y-0.5 transition"
-        >
-          Reintentar datos
-        </button>
-        <span id="levels-data-state" class="text-[10px] font-black uppercase text-slate-700">estado: inicializando</span>
-      </div>
-    </div>
-    <div class="flex items-center justify-between gap-3 mb-3">
-      <h2 class="text-sm sm:text-base font-black uppercase tracking-widest text-black">
-        Recompensas
-      </h2>
-      <button
-        id="refresh-rewards-btn"
-        class="px-3 py-1.5 text-[11px] font-black uppercase bg-[#d7fd48] border-2 border-black hover:-translate-y-0.5 transition"
-        type="button"
-      >
-        Actualizar
-      </button>
-    </div>
-    <div id="rewards-list" class="space-y-2" aria-live="polite">
-      <div class="border-2 border-black bg-white p-3 animate-pulse h-14"></div>
-      <div class="border-2 border-black bg-white p-3 animate-pulse h-14"></div>
-      <p class="text-xs font-bold text-slate-700 uppercase">Cargando recompensas...</p>
+  <section class="mt-6 bg-[#fffdf6] border-4 border-black rounded-3xl p-4 sm:p-5 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
+      <article class="border-2 border-black rounded-2xl bg-[#fffdf6] p-2.5 sm:p-3.5">
+        <div class="flex items-center justify-between gap-2 mb-2">
+          <h2 class="text-xs sm:text-sm font-black uppercase tracking-widest text-black">Calendario de racha</h2>
+          <div class="flex items-center gap-1.5">
+            <button
+              id="streak-toggle-legend"
+              type="button"
+              class="text-[10px] font-black uppercase border-2 border-black bg-[#fffdf6] px-2 py-1 hover:-translate-y-0.5 transition"
+              aria-expanded="false"
+              aria-controls="streak-legend"
+            >
+              Ver estados
+            </button>
+            <span id="streak-shield-chip" class="text-[10px] font-black uppercase border-2 border-black bg-[#d7fd48] px-2 py-1">Escudos: 0</span>
+          </div>
+        </div>
+        <p class="text-[10px] font-bold uppercase text-slate-600 mb-2">Mes academico actual</p>
+        <div id="streak-calendar-grid" class="grid grid-cols-7 gap-1" aria-live="polite">
+          <div class="col-span-7 text-[11px] font-black uppercase text-slate-700">Cargando calendario...</div>
+        </div>
+        <div id="streak-legend" class="mt-2 grid grid-cols-2 sm:grid-cols-4 gap-1 text-[9px] font-black uppercase text-slate-700" style="display:none;">
+          <span class="border border-black px-1.5 py-0.5 bg-[#d7fd48]/45">Activo</span>
+          <span class="border border-black px-1.5 py-0.5 bg-[#fde68a]">Protegido</span>
+          <span class="border border-black px-1.5 py-0.5 bg-white">Inactivo</span>
+          <span class="border border-black px-1.5 py-0.5 bg-slate-100">Ignorado</span>
+        </div>
+      </article>
+
+      <article class="border-2 border-black rounded-2xl bg-[#fffdf6] p-3 sm:p-4">
+        <div class="flex items-center justify-between gap-2 mb-2">
+          <h2 class="text-sm sm:text-base font-black uppercase tracking-widest text-black">Detalle del dia</h2>
+          <span id="streak-selected-state" class="text-[10px] font-black uppercase border-2 border-black px-2 py-1 bg-[#fffdf6]">--</span>
+        </div>
+        <p id="streak-selected-date" class="text-[11px] font-black uppercase text-slate-800 mb-3">Selecciona un dia</p>
+        <div id="streak-selected-summary" class="border-2 border-black bg-[#fffdf6] p-2.5 text-[11px] font-bold uppercase text-slate-800 mb-2">
+          Elige un dia para ver actividad asociada.
+        </div>
+        <div id="streak-selected-missions" class="space-y-2" aria-live="polite">
+          <p class="text-[11px] font-bold uppercase text-slate-700">Aun no hay detalle diario.</p>
+        </div>
+      </article>
     </div>
   </section>
 
@@ -199,7 +123,6 @@ const fromDashboard = fromParam === "dashboard";
       interface Window {
         actualizarXPModulo?: (xp: number) => void;
         actualizarTarjetaDashboard?: (xp: number) => void;
-        claimRewardFromLevels?: (rewardId: string) => Promise<void>;
         showToast?: (
           message: string,
           type?: "success" | "error" | "info",
@@ -208,17 +131,37 @@ const fromDashboard = fromParam === "dashboard";
       }
     }
 
-    type RewardItem = {
-      id: string;
-      type: string;
-      value?: {
-        xp?: number;
-      };
+    type CalendarState = "active" | "protected" | "inactive" | "ignored" | "pending";
+
+    type CalendarDay = {
+      key: string;
+      date: Date;
+      state: CalendarState;
+      label: string;
+      isToday: boolean;
+      missionsCompleted?: Array<{ code?: string; title?: string }>;
+      missionsCompletedCount?: number;
     };
 
     type ToastType = "success" | "error" | "info";
 
     setupPageWebVitals("niveles");
+    const debugMode = new URLSearchParams(window.location.search).get("debug") === "1";
+
+    function debugLog(...args: unknown[]) {
+      if (!debugMode) return;
+      console.log(...args);
+    }
+
+    function debugWarn(...args: unknown[]) {
+      if (!debugMode) return;
+      console.warn(...args);
+    }
+
+    function debugError(...args: unknown[]) {
+      if (!debugMode) return;
+      console.error(...args);
+    }
 
     function showToastSafe(message: string, type: ToastType = "info", title?: string) {
       const toastFn = (
@@ -237,44 +180,126 @@ const fromDashboard = fromParam === "dashboard";
       return Number.isFinite(parsed) && parsed >= 0 ? parsed : fallback;
     }
 
-    function formatRemainingTime(ms: number): string {
-      const safeMs = Math.max(0, Number(ms || 0));
-      const hours = Math.floor(safeMs / (1000 * 60 * 60));
-      const days = Math.floor(hours / 24);
-      if (days > 0) return `${days}d`;
-      return `${Math.max(0, hours)}h`;
+    function dateKeyFromLocal(date: Date): string {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
     }
 
-    function updateSyncBadge(
-      text: string,
-      tone: "neutral" | "ok" | "warn" | "error" = "neutral",
-    ) {
-      const badge = document.getElementById("xp-sync-badge");
-      if (!badge) return;
-      badge.textContent = text;
+    function isWeekend(date: Date): boolean {
+      const day = date.getDay();
+      return day === 0 || day === 6;
+    }
 
-      badge.classList.remove(
-        "text-slate-700",
-        "text-brand-lime",
-        "text-amber-300",
-        "text-red-300",
-        "bg-white",
-        "border-2",
-        "border-black",
-        "bg-brand-lime/10",
-        "bg-amber-400/10",
-        "bg-red-400/10",
-      );
+    function parseDateSafe(value: unknown): Date | null {
+      if (!value) return null;
+      const parsed = new Date(String(value));
+      if (Number.isNaN(parsed.getTime())) return null;
+      return parsed;
+    }
 
-      if (tone === "ok") {
-        badge.classList.add("text-brand-lime", "bg-brand-lime/10");
-      } else if (tone === "warn") {
-        badge.classList.add("text-amber-300", "bg-amber-400/10");
-      } else if (tone === "error") {
-        badge.classList.add("text-red-300", "bg-red-400/10");
-      } else {
-        badge.classList.add("text-slate-700", "bg-white", "border-2", "border-black");
+    const missionCodeLabels: Record<string, string> = {
+      RECHARGE: "Recargar saldo",
+      SEND_BALANCE: "Enviar saldo",
+      RECEIVE_BALANCE: "Recibir saldo",
+      TICKET_BUS: "Pagar ticket de bus",
+      SETUP_PROFILE: "Completar perfil",
+      FIRST_CANTINA: "Primera compra en cantina",
+      FIRST_COMEDOR: "Primera compra en comedor",
+      FIRST_SERVICE: "Primera compra de servicio",
+      GENERAL_SETUP_PROFILE: "Completar perfil",
+      GENERAL_VERIFY_ACCOUNT: "Verificar cuenta",
+      DAILY_COMEDOR_PURCHASE: "Compra en comedor",
+      DAILY_CANTINA_PURCHASE: "Compra en cantina",
+      WEEKLY_COMEDOR_7D: "Comedor 7 dias seguidos",
+      WEEKLY_CANTINA_7D: "Cantina 7 dias seguidos",
+      ACCUMULATIVE_RECHARGE_VOLUME: "Recargar saldo acumulado",
+      REPEATABLE_SEND_BALANCE: "Enviar saldo",
+      REPEATABLE_RECEIVE_BALANCE: "Recibir saldo",
+      REPEATABLE_BUS_TICKET: "Pagar ticket de bus",
+      STREAK_LOGIN_3D: "Iniciar sesion 3 dias seguidos",
+      STREAK_LOGIN_7D: "Iniciar sesion 7 dias seguidos",
+      STREAK_LOGIN_21D: "Iniciar sesion 21 dias seguidos",
+      STREAK_LOGIN_30D: "Iniciar sesion 30 dias seguidos",
+      STREAK_LOGIN_90D: "Iniciar sesion 90 dias seguidos",
+      STREAK_LOGIN_180D: "Iniciar sesion 180 dias seguidos",
+      STREAK_LOGIN_365D: "Iniciar sesion 365 dias seguidos"
+    };
+
+    const missionTokenLabels: Record<string, string> = {
+      RECHARGE: "recarga",
+      SEND: "enviar",
+      RECEIVE: "recibir",
+      BALANCE: "saldo",
+      TICKET: "ticket",
+      BUS: "bus",
+      SETUP: "configurar",
+      PROFILE: "perfil",
+      GENERAL: "general",
+      DAILY: "diaria",
+      WEEKLY: "semanal",
+      ACCUMULATIVE: "acumulable",
+      REPEATABLE: "repetible",
+      STREAK: "racha",
+      LOGIN: "inicio de sesion",
+      VERIFY: "verificar",
+      ACCOUNT: "cuenta",
+      PURCHASE: "compra",
+      VOLUME: "volumen",
+      D: "dias",
+      FIRST: "primera",
+      CANTINA: "cantina",
+      COMEDOR: "comedor",
+      SERVICE: "servicio"
+    };
+
+    function normalizeMissionCode(value: string): string {
+      return value
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toUpperCase()
+        .replace(/[^A-Z0-9]+/g, "_")
+        .replace(/^WK_*/, "")
+        .replace(/_\d+$/, "")
+        .replace(/^_+|_+$/g, "");
+    }
+
+    function prettifyMissionLabel(raw?: string): string {
+      const value = String(raw || "").trim();
+      if (!value) return "Mision completada";
+
+      const normalizedCode = normalizeMissionCode(value);
+
+      if (missionCodeLabels[normalizedCode]) {
+        return missionCodeLabels[normalizedCode];
       }
+
+      const translatedFallback = normalizedCode
+        .split("_")
+        .filter(Boolean)
+        .map((token) => {
+          const numericDays = token.match(/^(\d+)D$/);
+          if (numericDays) {
+            return `${numericDays[1]} dias`;
+          }
+          return missionTokenLabels[token] || token.toLowerCase();
+        })
+        .join(" ")
+        .trim();
+
+      if (translatedFallback) {
+        return translatedFallback.charAt(0).toUpperCase() + translatedFallback.slice(1);
+      }
+
+      const cleaned = value
+        .replace(/^WK\s*/i, "")
+        .replace(/[_-]+/g, " ")
+        .toLowerCase()
+        .trim();
+
+      if (!cleaned) return "Mision completada";
+      return cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
     }
 
     function persistXPInCache(xp: number) {
@@ -287,7 +312,7 @@ const fromDashboard = fromParam === "dashboard";
         user.xp = xp;
         localStorage.setItem("capypay_user", JSON.stringify(user));
       } catch (e) {
-        console.warn("No se pudo persistir XP en capypay_user:", e);
+        debugWarn("No se pudo persistir XP en capypay_user:", e);
       }
     }
 
@@ -303,13 +328,6 @@ const fromDashboard = fromParam === "dashboard";
           detail: { xp, source },
         }),
       );
-
-      updateSyncBadge(
-        source === "server"
-          ? `XP sincronizada (${xp.toLocaleString("es-VE")})`
-          : `XP local (${xp.toLocaleString("es-VE")})`,
-        source === "server" ? "ok" : "neutral",
-      );
     }
 
     const container = document.getElementById("modulo-niveles-wrapper");
@@ -318,18 +336,6 @@ const fromDashboard = fromParam === "dashboard";
     }
 
     document.addEventListener("DOMContentLoaded", async () => {
-            const levelsDataState = document.getElementById("levels-data-state");
-
-            function setDataState(label: string, tone: "ok" | "warn" | "error" | "neutral" = "neutral") {
-              if (!levelsDataState) return;
-              levelsDataState.textContent = `estado: ${label}`;
-              levelsDataState.classList.remove("text-slate-700", "text-green-700", "text-amber-700", "text-red-700");
-              if (tone === "ok") levelsDataState.classList.add("text-green-700");
-              else if (tone === "warn") levelsDataState.classList.add("text-amber-700");
-              else if (tone === "error") levelsDataState.classList.add("text-red-700");
-              else levelsDataState.classList.add("text-slate-700");
-            }
-
       const params = new URLSearchParams(window.location.search);
       const fromDashboard = params.get("from") === "dashboard";
       const fromDashboardBanner = document.getElementById("from-dashboard-banner");
@@ -358,34 +364,33 @@ const fromDashboard = fromParam === "dashboard";
         }, 1800);
       }
 
-      updateSyncBadge("Cargando XP local...");
+      let cachedCalendarDays: CalendarDay[] = [];
+      let selectedDayKey = "";
 
       // 1) Carga inmediata desde caché (SWR)
       const userStr = localStorage.getItem("capypay_user");
       let currentXP = parseXP(localStorage.getItem("capypay_user_xp"), 0);
-
       if (currentXP <= 0 && userStr) {
         try {
           const user = JSON.parse(userStr);
           currentXP = parseXP(user?.xp ?? user?.puntos, 0);
         } catch (e) {
-          console.error("Error leyendo caché de usuario", e);
+          debugError("Error leyendo cache de usuario", e);
         }
       }
 
       if (currentXP > 0) {
         applyXPToUI(currentXP, "cache");
-      } else {
-        updateSyncBadge("Sin XP en caché, consultando servidor...", "warn");
       }
-
       // 2) Revalidar con servidor en segundo plano
       try {
         const freshUser = await authService.getProfile();
         const freshXP = parseXP(freshUser?.xp, currentXP);
 
         if (Number.isFinite(freshXP) && freshXP >= 0) {
-          if (freshXP !== currentXP) {
+          const prevXP = currentXP;
+          currentXP = freshXP;
+          if (freshXP !== prevXP) {
             showToastSafe(
               `XP actualizada a ${freshXP.toLocaleString("es-VE")}`,
               "success",
@@ -395,205 +400,309 @@ const fromDashboard = fromParam === "dashboard";
           applyXPToUI(freshXP, "server");
         }
       } catch (err) {
-        console.log("Usando versión en caché (offline o error de red)", err);
-        updateSyncBadge("Modo caché (sin conexión al servidor)", "warn");
+        debugLog("Usando version en cache (offline o error de red)", err);
       }
 
-      // 3) Demo panel (solo si existe en el DOM)
-      const demoBtns = document.querySelectorAll(".xp-demo-btn");
-      demoBtns.forEach((btn) => {
-        btn.addEventListener("click", () => {
-          const xpValue = parseXP(btn.getAttribute("data-xp"), 0);
-          console.log("Simulando XP (Demo):", xpValue);
-          applyXPToUI(xpValue, "demo");
-          updateSyncBadge(
-            `Modo demo: ${xpValue.toLocaleString("es-VE")} XP`,
-            "warn",
-          );
-        });
-      });
-
-      // 4) Sincronización entre pestañas
+      // 3) Sincronización entre pestañas
       window.addEventListener("storage", (event) => {
         if (event.key === "capypay_user_xp" && event.newValue) {
           const xpFromOtherTab = parseXP(event.newValue, currentXP);
+          currentXP = xpFromOtherTab;
           applyXPToUI(xpFromOtherTab, "cache");
         }
       });
 
-      async function loadRewards() {
-        const list = document.getElementById("rewards-list");
-        if (!list) return;
+      window.addEventListener("capypay-xp-updated", (event) => {
+        const xpValue = parseXP((event as CustomEvent<{ xp?: number }>).detail?.xp, currentXP);
+        currentXP = xpValue;
+      });
 
-        list.innerHTML = '<div class="border-2 border-black bg-white p-3 animate-pulse h-14"></div><div class="border-2 border-black bg-white p-3 animate-pulse h-14"></div>';
+      function buildAcademicWeek(startAt?: string) {
+        const startDate = parseDateSafe(startAt) || new Date();
+        startDate.setHours(0, 0, 0, 0);
 
-        const user = authService.getCurrentUser();
-        if (!user?.id) {
-          list.innerHTML = '<p class="text-xs font-black text-red-700 uppercase">No hay sesión activa</p>';
-          return;
+        const monday = new Date(startDate);
+        const mondayOffset = (monday.getDay() + 6) % 7;
+        monday.setDate(monday.getDate() - mondayOffset);
+
+        const days: Date[] = [];
+        for (let i = 0; i < 7; i += 1) {
+          const day = new Date(monday);
+          day.setDate(monday.getDate() + i);
+          days.push(day);
         }
+        return days;
+      }
 
-        try {
-          const [pendingRes, claimedRes] = await Promise.all([
-            gamificationService.getRewards(user.id, "pending"),
-            gamificationService.getRewards(user.id, "claimed"),
-          ]);
+      function inferCalendarStates(streak: { currentDaily?: number; weeklyShieldAvailable?: number }, weekDays: Date[], lastQualifiedAt?: string | null): CalendarDay[] {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const todayKey = dateKeyFromLocal(today);
+        const lastQualifiedDate = parseDateSafe(lastQualifiedAt || null);
+        if (lastQualifiedDate) lastQualifiedDate.setHours(0, 0, 0, 0);
 
-          const pending: RewardItem[] = Array.isArray(pendingRes?.rewards)
-            ? pendingRes.rewards
-            : [];
-          const claimed: RewardItem[] = Array.isArray(claimedRes?.rewards)
-            ? claimedRes.rewards
-            : [];
+        const currentDaily = Math.max(0, Number(streak?.currentDaily || 0));
+        let activeBudget = currentDaily;
 
-          if (pending.length === 0 && claimed.length === 0) {
-            list.innerHTML = '<p class="text-xs font-bold text-slate-700 uppercase">Sin recompensas por ahora</p>';
-            return;
+        const days: CalendarDay[] = weekDays.map((date): CalendarDay => {
+          const key = dateKeyFromLocal(date);
+          const isFuture = date.getTime() > today.getTime();
+          let state: CalendarState = "inactive";
+
+          if (isWeekend(date)) {
+            state = "ignored";
+          } else if (isFuture) {
+            state = "pending";
           }
 
-          const pendingHtml = pending
-            .map((reward: RewardItem) => {
-              const xp = Number(reward?.value?.xp || 0);
-              return `
-                <div class="border-2 border-black bg-[#d7fd48]/30 p-3 flex items-center justify-between gap-3">
-                  <div>
-                    <p class="text-xs font-black uppercase text-black">Recompensa pendiente</p>
-                    <p class="text-[11px] font-bold text-slate-800 uppercase">+${xp} XP · ${reward.type}</p>
-                  </div>
-                  <button
-                    class="px-3 py-1.5 text-[10px] font-black uppercase border-2 border-black bg-black text-[#d7fd48]"
-                    onclick="window.claimRewardFromLevels('${reward.id}')"
-                  >Reclamar</button>
-                </div>
-              `;
-            })
-            .join("");
+          return {
+            key,
+            date,
+            state: state as CalendarState,
+            label: date.toLocaleDateString("es-VE", { weekday: "short" }).replace(".", ""),
+            isToday: key === todayKey
+          };
+        });
 
-          const claimedHtml = claimed
-            .slice(0, 4)
-            .map((reward: RewardItem) => {
-              const xp = Number(reward?.value?.xp || 0);
-              return `
-                <div class="border-2 border-black bg-white p-3 flex items-center justify-between gap-3">
-                  <div>
-                    <p class="text-xs font-black uppercase text-black">Reclamada</p>
-                    <p class="text-[11px] font-bold text-slate-700 uppercase">+${xp} XP · ${reward.type}</p>
-                  </div>
-                  <span class="text-[10px] font-black uppercase border-2 border-black px-2 py-1 bg-black text-white">OK</span>
-                </div>
-              `;
-            })
-            .join("");
-
-          list.innerHTML = `${pendingHtml}${claimedHtml}`;
-          setDataState("datos sincronizados", "ok");
-        } catch (error) {
-          console.error("Error cargando recompensas:", error);
-          list.innerHTML = '<p class="text-xs font-black text-red-700 uppercase">No se pudieron cargar recompensas</p><button id="retry-rewards-btn" class="mt-2 px-2 py-1 text-[10px] font-black uppercase border-2 border-black bg-white">Reintentar</button>';
-          const retryRewardsBtn = document.getElementById("retry-rewards-btn");
-          if (retryRewardsBtn) retryRewardsBtn.addEventListener("click", loadRewards, { once: true });
-          setDataState("degradado por red", "warn");
-        }
-      }
-
-      async function loadSegmentationContext() {
-        const contextText = document.getElementById("segment-context-text");
-        if (!contextText) return;
-
-        const user = authService.getCurrentUser();
-        if (!user?.id) {
-          contextText.textContent = "Segmento de misiones: Sin sesión";
-          return;
+        for (let i = days.length - 1; i >= 0 && activeBudget > 0; i -= 1) {
+          if (days[i].state === "ignored" || days[i].state === "pending") continue;
+          (days[i] as CalendarDay).state = "active";
+          activeBudget -= 1;
         }
 
-        try {
-          const weeklyRes = await gamificationService.getWeeklyMissions(user.id);
-          const segmentation = weeklyRes?.segmentation || {};
-          const userSegment = String(segmentation.userSegment || "global").toUpperCase();
-          const rulesVersion = String(segmentation.rulesVersion || "v1");
-          const stale = weeklyRes?.clientCache?.stale ? " · CACHE" : "";
-          contextText.textContent = `Segmento de misiones: ${userSegment} · Reglas ${rulesVersion}${stale}`;
-        } catch (error) {
-          console.error("Error cargando contexto de segmentación:", error);
-          contextText.textContent = "Segmento de misiones: No disponible";
-          setDataState("segmentación degradada", "warn");
-        }
-      }
-
-      async function loadWeeklySummary() {
-        const line = document.getElementById("weekly-summary-line");
-        const completion = document.getElementById("weekly-summary-completion");
-        const missions = document.getElementById("weekly-summary-missions");
-        const claims = document.getElementById("weekly-summary-claims");
-        const streak = document.getElementById("weekly-summary-streak");
-        const remaining = document.getElementById("weekly-summary-remaining");
-
-        const user = authService.getCurrentUser();
-        if (!user?.id) {
-          if (line) line.textContent = "Inicia sesión para ver tu avance semanal.";
-          return;
-        }
-
-        try {
-          const summary = await gamificationService.getWeeklySummary(user.id);
-          const m = summary?.missions || {};
-          const s = summary?.streak || {};
-          const week = summary?.week || {};
-
-          if (line) line.textContent = String(summary?.nextAction || "Sigue avanzando esta semana.");
-          if (completion) completion.textContent = `${Number(m.completionPct || 0).toFixed(0)}%`;
-          if (missions) missions.textContent = `${Number(m.completed || 0)}/${Number(m.total || 0)}`;
-          if (claims) claims.textContent = String(Number(m.pendingClaim || 0));
-          if (streak) streak.textContent = String(Number(s.currentDaily || 0));
-          if (remaining) remaining.textContent = formatRemainingTime(Number(week.remainingMs || 0));
-          if (summary?.clientCache?.stale) {
-            setDataState("cache local (SWR)", "warn");
-          } else {
-            setDataState("datos sincronizados", "ok");
+        if (Number(streak?.weeklyShieldAvailable || 0) === 0) {
+          const protectedCandidate = [...days]
+            .reverse()
+            .find((day) => !day.isToday && day.state === "inactive" && day.date.getTime() <= today.getTime());
+          if (protectedCandidate) {
+            (protectedCandidate as CalendarDay).state = "protected";
           }
-        } catch (error) {
-          console.error("Error cargando resumen semanal:", error);
-          if (line) line.textContent = "No se pudo cargar el resumen semanal.";
-          setDataState("resumen degradado", "error");
         }
+
+        if (lastQualifiedDate) {
+          const lastKey = dateKeyFromLocal(lastQualifiedDate);
+          const lastDay = days.find((day) => day.key === lastKey);
+          if (lastDay && lastDay.state === "inactive") {
+            (lastDay as CalendarDay).state = "active";
+          }
+        }
+
+        return days;
       }
 
-      window.claimRewardFromLevels = async (rewardId: string) => {
-        const user = authService.getCurrentUser();
-        if (!user?.id || !rewardId) return;
-        try {
-          await gamificationService.claimReward(rewardId, user.id);
-          const freshUser = await authService.getProfile();
-          const freshXP = parseXP(freshUser?.xp, currentXP);
-          applyXPToUI(freshXP, "server");
-          await loadRewards();
-          showToastSafe("Recompensa reclamada", "success", "XP acreditada");
-        } catch (error: unknown) {
-          console.error("Error reclamando recompensa:", error);
-          const errorMessage =
-            error instanceof Error ? error.message : "No se pudo reclamar";
-          showToastSafe(errorMessage, "error");
-        }
-      };
-
-      const refreshRewardsBtn = document.getElementById("refresh-rewards-btn");
-      if (refreshRewardsBtn) {
-        refreshRewardsBtn.addEventListener("click", loadRewards);
+      function stateLabel(state: CalendarState): string {
+        if (state === "active") return "Activo";
+        if (state === "protected") return "Protegido";
+        if (state === "ignored") return "Ignorado";
+        if (state === "pending") return "Pendiente";
+        return "Inactivo";
       }
 
-      const reloadContextBtn = document.getElementById("reload-context-btn");
-      if (reloadContextBtn) {
-        reloadContextBtn.addEventListener("click", async () => {
-          setDataState("reintentando", "neutral");
-          await loadSegmentationContext();
-          await loadWeeklySummary();
-          await loadRewards();
+      function stateClasses(state: CalendarState): string {
+        if (state === "active") return "bg-[#d7fd48]/45 border-black text-black";
+        if (state === "protected") return "bg-[#fde68a] border-black text-black";
+        if (state === "ignored") return "bg-slate-100 border-slate-300 text-slate-400";
+        if (state === "pending") return "bg-white border-slate-300 text-slate-500";
+        return "bg-white border-slate-300 text-slate-500";
+      }
+
+      function renderCalendar() {
+        const grid = document.getElementById("streak-calendar-grid");
+        if (!grid) return;
+
+        if (cachedCalendarDays.length === 0) {
+          grid.innerHTML = '<div class="col-span-7 text-[11px] font-black uppercase text-slate-700">No hay datos de racha.</div>';
+          return;
+        }
+
+        const weekdayLabels = ["Lun", "Mar", "Mie", "Jue", "Vie", "Sab", "Dom"];
+        const firstDay = cachedCalendarDays[0];
+        const firstDayWeekIndex = ((firstDay.date.getDay() + 6) % 7);
+
+        const leadingEmptyCells = Array.from({ length: firstDayWeekIndex })
+          .map(() => '<div class="h-11 sm:h-12 border-2 border-transparent"></div>')
+          .join("");
+
+        const dayCells = cachedCalendarDays
+          .map((day) => {
+            const activeRing = day.key === selectedDayKey ? "ring-2 ring-black" : "";
+            const completedCount = Number(day.missionsCompletedCount || 0);
+            return `
+              <button
+                type="button"
+                data-day-key="${day.key}"
+                class="relative border-2 px-1 py-1 h-11 sm:h-12 text-center text-[10px] font-black uppercase transition hover:-translate-y-0.5 ${stateClasses(day.state)} ${activeRing}"
+              >
+                <span class="block text-[11px] sm:text-xs leading-none mt-0.5">${day.date.getDate()}</span>
+                ${completedCount > 0
+                  ? `<span class="absolute bottom-0.5 right-0.5 min-w-4 h-4 px-1 border border-black bg-black text-white text-[8px] leading-[14px]">${completedCount}</span>`
+                  : ""}
+              </button>`;
+          })
+          .join("");
+
+        const headerCells = weekdayLabels
+          .map((label) => `<div class="text-[9px] sm:text-[10px] font-black uppercase text-slate-500 text-center py-0.5">${label}</div>`)
+          .join("");
+
+        grid.innerHTML = `${headerCells}${leadingEmptyCells}${dayCells}`;
+
+        grid.querySelectorAll("button[data-day-key]").forEach((button) => {
+          button.addEventListener("click", () => {
+            selectedDayKey = button.getAttribute("data-day-key") || selectedDayKey;
+            renderCalendar();
+            renderSelectedDayDetail();
+          });
         });
       }
 
-      await loadRewards();
-      await loadSegmentationContext();
-      await loadWeeklySummary();
+      function renderSelectedDayDetail() {
+        const selectedDate = document.getElementById("streak-selected-date");
+        const selectedState = document.getElementById("streak-selected-state");
+        const selectedSummary = document.getElementById("streak-selected-summary");
+        const selectedMissions = document.getElementById("streak-selected-missions");
+        if (!selectedDate || !selectedState || !selectedSummary || !selectedMissions) return;
+
+        const day = cachedCalendarDays.find((item) => item.key === selectedDayKey);
+        if (!day) {
+          selectedDate.textContent = "Selecciona un dia";
+          selectedState.textContent = "--";
+          selectedSummary.textContent = "Elige un dia para ver actividad asociada.";
+          selectedMissions.innerHTML = '<p class="text-[11px] font-bold uppercase text-slate-700">Sin datos para este dia.</p>';
+          return;
+        }
+
+        selectedDate.textContent = day.date.toLocaleDateString("es-VE", {
+          weekday: "long",
+          day: "numeric",
+          month: "long"
+        });
+        selectedState.textContent = stateLabel(day.state);
+
+        const completedByDay = Array.isArray(day.missionsCompleted) ? day.missionsCompleted : [];
+        if (completedByDay.length > 0) {
+          selectedSummary.textContent = `Misiones completadas: ${completedByDay.length}`;
+          const visibleMissions = completedByDay.slice(0, 6);
+          const hiddenCount = Math.max(0, completedByDay.length - visibleMissions.length);
+
+          selectedMissions.innerHTML = visibleMissions.map((mission) => {
+            const missionLabel = prettifyMissionLabel(mission?.title || mission?.code);
+            return `
+              <div class="border-2 border-black bg-white p-2 text-[11px] font-black uppercase flex items-center justify-between gap-2">
+                <span class="truncate">${missionLabel}</span>
+                <span class="px-2 py-0.5 border border-black bg-[#22c55e]/25">Completada</span>
+              </div>`;
+          }).join("") + (hiddenCount > 0
+            ? `<p class="text-[10px] font-black uppercase text-slate-700">+${hiddenCount} misiones completadas adicionales</p>`
+            : "");
+          return;
+        }
+
+        selectedSummary.textContent = "Aun no hay misiones completadas este dia.";
+        selectedMissions.innerHTML = '<p class="text-[11px] font-bold uppercase text-slate-700">Completa una misión y aparecerá aquí.</p>';
+      }
+
+      async function loadStreakPanel() {
+        const user = authService.getCurrentUser();
+        const shieldChip = document.getElementById("streak-shield-chip");
+        if (!user?.id) {
+          if (shieldChip) shieldChip.textContent = "Escudos: --";
+          cachedCalendarDays = [];
+          renderCalendar();
+          renderSelectedDayDetail();
+          return;
+        }
+
+        try {
+          const [summary, streakRes] = await Promise.all([
+            gamificationService.getWeeklySummary(user.id),
+            gamificationService.getStreak(user.id)
+          ]);
+
+          const streakData = streakRes?.streak || summary?.streak || {};
+          const apiDayStates = Array.isArray(streakRes?.dayStates)
+            ? streakRes.dayStates
+            : Array.isArray(streakRes?.calendar?.dayStates)
+              ? streakRes.calendar.dayStates
+              : [];
+
+          if (apiDayStates.length > 0) {
+            cachedCalendarDays = apiDayStates.map((item: { dateKey?: string; state?: string }) => {
+              const rawKey = String(item?.dateKey || "");
+              const date = parseDateSafe(rawKey ? `${rawKey}T12:00:00.000Z` : "") || new Date();
+              const normalizedState = String(item?.state || "inactive").toLowerCase();
+              const mappedState: CalendarState =
+                normalizedState === "active"
+                  ? "active"
+                  : normalizedState === "protected"
+                    ? "protected"
+                    : normalizedState === "ignored"
+                      ? "ignored"
+                      : "inactive";
+
+              return {
+                key: dateKeyFromLocal(date),
+                date,
+                state: mappedState,
+                label: date.toLocaleDateString("es-VE", { weekday: "short" }).replace(".", ""),
+                isToday: dateKeyFromLocal(date) === dateKeyFromLocal(new Date()),
+                missionsCompleted: Array.isArray((item as { missionsCompleted?: unknown[] }).missionsCompleted)
+                  ? (item as { missionsCompleted: Array<{ code?: string; title?: string }> }).missionsCompleted
+                  : [],
+                missionsCompletedCount: Number((item as { missionsCompletedCount?: number }).missionsCompletedCount || 0)
+              };
+            });
+          } else {
+            const weekDays = buildAcademicWeek(summary?.week?.startAt);
+            cachedCalendarDays = inferCalendarStates(streakData, weekDays, streakData?.lastQualifiedAt);
+          }
+
+          if (!selectedDayKey && cachedCalendarDays.length > 0) {
+            const todayKey = dateKeyFromLocal(new Date());
+            const preferredDay = cachedCalendarDays.find((day) => day.key === todayKey) || cachedCalendarDays[cachedCalendarDays.length - 1];
+            selectedDayKey = preferredDay.key;
+          }
+
+          if (shieldChip) {
+            shieldChip.textContent = `Escudos: ${Number(streakData?.weeklyShieldAvailable || 0)}`;
+          }
+
+          renderCalendar();
+          renderSelectedDayDetail();
+        } catch (error) {
+          debugError("Error cargando panel de racha:", error);
+          cachedCalendarDays = [];
+          renderCalendar();
+          renderSelectedDayDetail();
+          if (shieldChip) shieldChip.textContent = "Escudos: --";
+        }
+      }
+
+      const legendToggleBtn = document.getElementById("streak-toggle-legend") as HTMLButtonElement | null;
+      const legendBox = document.getElementById("streak-legend");
+      let legendVisible = false;
+
+      function updateLegendToggleUI() {
+        if (!legendToggleBtn || !legendBox) return;
+        legendToggleBtn.setAttribute("aria-expanded", legendVisible ? "true" : "false");
+        legendToggleBtn.textContent = legendVisible ? "Ocultar estados" : "Ver estados";
+
+        if (legendVisible) {
+          legendBox.style.display = "grid";
+        } else {
+          legendBox.style.display = "none";
+        }
+      }
+
+      if (legendToggleBtn && legendBox) {
+        legendToggleBtn.addEventListener("click", () => {
+          legendVisible = !legendVisible;
+          updateLegendToggleUI();
+        });
+        updateLegendToggleUI();
+      }
+
+      await loadStreakPanel();
     });
   </script>
 </CapyPay>

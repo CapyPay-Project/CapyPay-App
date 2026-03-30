@@ -25,9 +25,9 @@ Documento canónico del sistema de niveles actual:
 
 Backlog de evolución siguiente:
 
-- `docs/phases/archive/fase7/FASE7_ANEXO_BACKLOG_INICIAL.md`
-- `docs/phases/archive/fase7/FASE7_ANEXO_PLAN_EJECUTABLE.md`
-- `docs/phases/archive/fase7/FASE7_ANEXO_BACKLOG.md`
+- `docs/phases/FASE8.md`
+- `docs/phases/archive/fase8/FASE8_ANEXO_PLAN_EJECUTABLE.md`
+- `docs/phases/archive/fase8/FASE8_ANEXO_BACKLOG.md`
 
 Documento recomendado para onboarding:
 
