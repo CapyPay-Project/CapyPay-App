@@ -1,5 +1,7 @@
 // @ts-nocheck
 import { rankingService, authService, userService } from "../services/api";
+import autoAnimate from '@formkit/auto-animate';
+import confetti from 'canvas-confetti';
 
 const estado = {
   vista: "users",
@@ -335,6 +337,11 @@ function inicializarContador() {
 }
 
 export function initRanking() {
+  const listContainer = document.getElementById("ranking-list-container");
+  if (listContainer) {
+    autoAnimate(listContainer);
+  }
+
   const tabUsers     = document.getElementById("tab-users");
   const tabFaculties = document.getElementById("tab-faculties");
 
@@ -345,19 +352,30 @@ export function initRanking() {
   tabFaculties?.addEventListener("click", () => {
     estado.paginaActual = 1;
     cambiarTab("faculties");
+    cheer(); // Neo-brutalist interaction!
   });
 
-  document.getElementById("pag-prev")?.addEventListener("click", () => {
+  document.getElementById("pag-prev")?.addEventListener("click", () => {        
     if (estado.paginaActual > 1) {
       estado.paginaActual--;
       renderizar();
     }
   });
-  document.getElementById("pag-next")?.addEventListener("click", () => {
+  document.getElementById("pag-next")?.addEventListener("click", () => {        
     estado.paginaActual++;
     renderizar();
   });
 
   inicializarContador();
-  cargarDatos();
+  cargarDatos().then(() => cheer());
+}
+
+function cheer() {
+  confetti({
+    particleCount: 100,
+    spread: 70,
+    origin: { y: 0.6 },
+    colors: ['#d7fd48', '#8b5cf6', '#18181b', '#ffffff'] // Neo-brutalism themed confetti
+  });
+
 }

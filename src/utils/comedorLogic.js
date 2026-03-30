@@ -440,8 +440,21 @@ function handleCartClick(e) {
     };
     addItemToCart(item);
 
-    isCartOpen.set(true);
-    showToast(`¡${item.name} agregado! 🍔`, "success");
+    // Animación interactiva en el botón
+    const originalText = btn.innerHTML;
+    btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+      <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+    </svg>`;
+    btn.classList.add("bg-green-500", "text-white", "border-green-700");
+    btn.classList.remove("bg-[#d7fd48]", "text-black");
+    
+    setTimeout(() => {
+        btn.innerHTML = originalText;
+        btn.classList.remove("bg-green-500", "text-white", "border-green-700");
+        btn.classList.add("bg-[#d7fd48]", "text-black");
+    }, 1000);
+
+    showToast(`¡${item.name} añadido al carrito!`, "success");
 }
 
 function updateText(id, text) {

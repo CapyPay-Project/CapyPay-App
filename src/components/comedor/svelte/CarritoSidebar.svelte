@@ -32,7 +32,7 @@
     $isCartOpen = false;
   }
 
-  async function handleCheckout() {
+  function handleCheckout() {
     if (itemsArray.length === 0) return;
     isCheckingOut = true;
 
@@ -71,6 +71,9 @@
     } finally {
       isCheckingOut = false;
     }
+    // Redirigir al checkout para confirmar todo
+    closeCart();
+    window.location.href = "/services/checkout";
   }
 </script>
 

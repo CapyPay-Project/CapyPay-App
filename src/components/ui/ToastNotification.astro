@@ -1,42 +1,56 @@
 <div
   id="toast-container"
-  class="fixed top-4 right-4 z-99999 flex flex-col gap-2 pointer-events-none"
+  class="fixed top-4 right-4 z-99999 flex flex-col gap-4 pointer-events-none"
 >
   <!-- Toasts injected here -->
 </div>
 
 <template id="toast-template">
   <div
-    class="pointer-events-auto min-w-75 bg-[#1a1a1a] border-4 border-black -xl p-4 shadow-2xl flex items-start gap-3 transform transition-all duration-300 translate-x-10 opacity-0"
+    class="pointer-events-auto min-w-[300px] max-w-sm bg-white border-[4px] border-black p-4 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] flex items-start gap-3 transform transition-all duration-300 translate-x-10 opacity-0 relative overflow-hidden group mb-2"
   >
+    <!-- Accent Color Bar -->
+    <div
+      class="absolute left-0 top-0 bottom-0 w-3 toast-color-bar border-r-[4px] border-black"
+    >
+    </div>
+
     <!-- Icon -->
-    <div class="shrink-0 pt-0.5">
-      <div
-        class="w-5 h-5 -full flex items-center justify-center icon-container"
-      >
+    <div class="shrink-0 pt-0.5 ml-3">
+      <div class="w-6 h-6 flex items-center justify-center icon-container">
         <!-- Icon SVG -->
       </div>
     </div>
     <!-- Content -->
     <div class="flex-1">
-      <h4 class="text-sm font-bold text-white title">Notificación</h4>
-      <p class="text-xs text-slate-400 mt-0.5 message">Mensaje aquí</p>
+      <h4
+        class="text-base font-black text-black uppercase tracking-tight title leading-tight"
+        style="font-family: 'Space Grotesk', sans-serif;"
+      >
+        Notificación
+      </h4>
+      <p
+        class="text-sm font-bold text-black/60 mt-1 uppercase tracking-tight message leading-tight"
+        style="font-family: 'Space Grotesk', sans-serif;"
+      >
+        Mensaje aquí
+      </p>
     </div>
     <!-- Close -->
     <button
-      class="text-black font-semibold hover:text-white transition-colors shrink-0 close-btn"
+      class="text-black font-black hover:scale-110 active:scale-90 transition-transform shrink-0 close-btn -mt-1 -mr-1 p-1"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        class="h-4 w-4"
+        class="h-5 w-5"
         fill="none"
         viewBox="0 0 24 24"
         stroke="currentColor"
+        stroke-width="3"
       >
         <path
           stroke-linecap="round"
           stroke-linejoin="round"
-          stroke-width="2"
           d="M6 18L18 6M6 6l12 12"></path>
       </svg>
     </button>
@@ -48,19 +62,22 @@
   // Icons
   const icons = {
     success: {
-      bg: "bg-brand-lime/10",
-      text: "text-brand-lime",
-      svg: `<svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" /></svg>`,
+      barClass: "bg-[#d7fd48]",
+      text: "text-[#d7fd48]",
+      bg: "bg-black shadow-[2px_2px_0px_0px_rgba(215,253,72,1)] border-2 border-black",
+      svg: `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M5 13l4 4L19 7" /></svg>`,
     },
     error: {
-      bg: "bg-red-500/10",
-      text: "text-red-500",
-      svg: `<svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12" /></svg>`,
+      barClass: "bg-[#DB2777]",
+      text: "text-[#DB2777]",
+      bg: "bg-black shadow-[2px_2px_0px_0px_rgba(219,39,119,1)] border-2 border-black",
+      svg: `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M6 18L18 6M6 6l12 12" /></svg>`,
     },
     info: {
-      bg: "bg-blue-500/10",
-      text: "text-blue-500",
-      svg: `<svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`,
+      barClass: "bg-[#8CFFE1]",
+      text: "text-[#8CFFE1]",
+      bg: "bg-black shadow-[2px_2px_0px_0px_rgba(140,255,225,1)] border-2 border-black",
+      svg: `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`,
     },
   };
 
@@ -95,13 +112,19 @@
     const iconContainer = toast.querySelector(".icon-container");
     if (iconContainer) {
       iconContainer.innerHTML = iconConfig.svg;
-      iconContainer.className = `w-5 h-5 -full flex items-center justify-center shrink-0 ${iconConfig.bg} ${iconConfig.text}`;
+      iconContainer.className = `w-7 h-7 flex items-center justify-center shrink-0 ${iconConfig.bg} ${iconConfig.text}`;
+    }
+
+    // Setup color bar
+    const colorBar = toast.querySelector(".toast-color-bar");
+    if (colorBar) {
+      colorBar.className = `absolute left-0 top-0 bottom-0 w-3 border-r-[4px] border-black ${iconConfig.barClass}`;
     }
 
     // Append
     container.appendChild(toast);
 
-    // Animate In
+    // Animate In (neobrutalist quick slide)
     requestAnimationFrame(() => {
       toast.classList.remove("translate-x-10", "opacity-0");
     });
@@ -109,7 +132,7 @@
     // Auto Remove
     const timeout = setTimeout(() => {
       removeToast(toast);
-    }, 5000);
+    }, 4000);
 
     // Manual Close
     const closeBtn = toast.querySelector(".close-btn");

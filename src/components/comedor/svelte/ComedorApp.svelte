@@ -9,6 +9,7 @@
   import CapyTip from "./CapyTip.svelte";
   import { isCartOpen } from "../../../store/cartStore.js";
   import CarritoSidebar from "./CarritoSidebar.svelte";
+  import { Trophy, ArrowRight, Star } from "lucide-svelte";
 
   const categories = [
     { id: "all", label: "Todo" },
@@ -173,13 +174,43 @@
       />
     </div>
 
-    <!-- Go to Ranking Link -->
-    <div class="w-full flex justify-end mb-6">
+    <!-- Go to Ranking Link (Clean Neo-brutalist style) -->
+    <div class="w-full mb-8">
       <a
         href="/account/ranking"
-        class="bg-[#E4C1F9] border-4 border-black px-6 py-3 font-black uppercase text-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] active:translate-y-1 active:shadow-none transition-all flex items-center gap-2"
+        class="group relative flex w-full flex-col sm:flex-row items-center justify-between gap-4 border-4 border-black bg-[#E4C1F9] p-5 shadow-[4px_4px_0px_rgba(0,0,0,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_rgba(0,0,0,1)] active:translate-y-1 active:shadow-none transition-all"
       >
-        <span>🏆</span> Ver Ranking y Recompensas
+        <!-- Background Pattern (Subtle) -->
+        <div
+          class="absolute inset-0 opacity-10 pointer-events-none"
+          style="background-image: radial-gradient(circle at 2px 2px, black 1px, transparent 0); background-size: 16px 16px;"
+        ></div>
+
+        <div class="flex items-center gap-4 z-10">
+          <div
+            class="flex h-12 w-12 items-center justify-center border-2 border-black bg-white shadow-[2px_2px_0px_rgba(0,0,0,1)] group-hover:rotate-12 transition-transform"
+          >
+            <Trophy size={24} strokeWidth={2.5} class="text-black" />
+          </div>
+          <div class="flex flex-col text-left">
+            <span
+              class="font-black text-xl md:text-2xl uppercase tracking-tighter text-black"
+              >Ver Ranking y Recompensas</span
+            >
+            <span
+              class="font-bold text-sm text-black/80 flex items-center gap-1"
+            >
+              <Star size={14} class="fill-black" /> ¡Sube de nivel para ganar beneficios!
+            </span>
+          </div>
+        </div>
+
+        <div
+          class="z-10 flex h-10 items-center justify-center gap-2 border-2 border-black bg-[#FFDE00] px-4 font-black uppercase shadow-[2px_2px_0px_rgba(0,0,0,1)] group-hover:bg-white transition-colors"
+        >
+          <span>Explorar</span>
+          <ArrowRight size={18} strokeWidth={3} />
+        </div>
       </a>
     </div>
 

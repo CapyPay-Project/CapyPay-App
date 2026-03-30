@@ -271,12 +271,16 @@ function setupModalEvents(dom, state) {
           badgeEl.innerText = isNegative ? "GASTO" : "INGRESO";
         }
       }
-
+        
+        const dateObj = new Date(movement.fecha);
+        document.getElementById("modal-date").innerText = isNaN(dateObj.getTime()) ? "--/--/----" : dateObj.toLocaleDateString();
+        document.getElementById("modal-time").innerText = isNaN(dateObj.getTime()) ? "--:--" : dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        document.getElementById("modal-desc").innerText = movement.descripcion || movement.concept || "Transferencia";
+        document.getElementById("modal-type").innerText = movement.tipo || "General";
+        
     dom.modal.classList.remove("hidden");
-    dom.modal.classList.add("flex");
-
+    // Pequeño delay para permitir que el display:block surta efecto antes de animar
     setTimeout(() => {
-      if (!dom.modal) return;
       dom.modal.classList.remove("opacity-0");
       const inner = dom.modal.querySelector("div");
       inner?.classList.remove("scale-95");
