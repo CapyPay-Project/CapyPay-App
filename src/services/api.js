@@ -311,6 +311,15 @@ export const gamificationService = {
     return fetchAPI(`/gamification/missions/weekly?userId=${userId}`);
   },
 
+  getWeeklySummary: async (userId) => {
+    if (!userId) {
+      const u = authService.getCurrentUser();
+      userId = u?.id;
+    }
+    if (!userId) throw new Error('ID de usuario no encontrado');
+    return fetchAPI(`/gamification/summary/weekly?userId=${userId}`);
+  },
+
   getStreak: async (userId) => {
     if (!userId) {
       const u = authService.getCurrentUser();
@@ -367,7 +376,39 @@ export const gamificationService = {
   },
 
   getPublicConfig: async () => fetchAPI('/gamification/config/public'),
-  getMetricsSummary: async () => fetchAPI('/gamification/metrics/summary')
+  getMetricsSummary: async () => fetchAPI('/gamification/metrics/summary'),
+
+  assignExperimentVariant: async (experimentKey, userId) => {
+    if (!userId) {
+      const u = authService.getCurrentUser();
+      userId = u?.id;
+    }
+    if (!userId) throw new Error('ID de usuario no encontrado');
+    if (!experimentKey) throw new Error('experimentKey es requerido');
+
+    return fetchAPI(
+      `/gamification/experiments/assign?userId=${encodeURIComponent(userId)}&experimentKey=${encodeURIComponent(experimentKey)}`
+    );
+  },
+
+  trackExperimentEvent: async ({ experimentKey, variant, eventType, payload = {}, userId }) => {
+    if (!userId) {
+      const u = authService.getCurrentUser();
+      userId = u?.id;
+    }
+    if (!userId) throw new Error('ID de usuario no encontrado');
+
+    return fetchAPI('/gamification/experiments/track', {
+      method: 'POST',
+      body: JSON.stringify({
+        userId,
+        experimentKey,
+        variant,
+        eventType,
+        payload
+      })
+    });
+  }
 };
 
 // Servicio de PIN para validación

@@ -19,6 +19,16 @@ Todo documento nuevo debe vivir dentro de `docs/`.
 - `docs/qa/`: matrices de regresión, planes de prueba, evidencias QA.
 - `docs/pilot/`: plantillas KPI, go/no-go, rollback y operación de piloto.
 
+Documento canónico del sistema de niveles actual:
+
+- `docs/product/SISTEMA_NIVELES_ACTUAL.md`
+
+Backlog de evolución siguiente:
+
+- `docs/phases/FASE7_BACKLOG_INICIAL_NIVELES.md`
+- `docs/phases/FASE7_NIVELES_3_0_PLAN_EJECUTABLE.md`
+- `docs/phases/FASE7_BACKLOG_OPERATIVO.md`
+
 Documento recomendado para onboarding:
 
 - `docs/product/GUIA_GENERAL_PROYECTO.md`: visión general del ecosistema CapyPay, setup y flujos de trabajo para nuevos miembros.

@@ -18,6 +18,8 @@ Durante Fase 4 y Fase 5 se consolidaron:
 La documentacion funcional y operativa vive en docs/:
 
 - Fases: docs/phases/
+- Plan ejecutable Fase 6 (Niveles 2.0): docs/phases/FASE6_NIVELES_2_0_PLAN_EJECUTABLE.md
+- Backlog operativo Fase 6 (IDs y tablero): docs/phases/FASE6_BACKLOG_OPERATIVO.md
 - Producto y roadmap: docs/product/
 - QA: docs/qa/
 - Piloto: docs/pilot/

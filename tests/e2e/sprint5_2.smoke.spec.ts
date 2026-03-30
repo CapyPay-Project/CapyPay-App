@@ -104,6 +104,10 @@ async function installApiMocks(page: Page) {
     if (path.endsWith('/api/gamification/missions/weekly') && method === 'GET') {
       return json({
         missions: state.missions,
+        segmentation: {
+          userSegment: 'avanzado',
+          rulesVersion: 'v1'
+        },
         week: {
           weekKey: '2026-03-30',
           endAt: buildNowIso()
@@ -187,9 +191,11 @@ test('Smoke principal: login -> dashboard -> misiones -> claim -> notificaciones
   await login(page);
 
   await expect(page.locator('#missions-counter')).toBeVisible();
+  await expect(page.locator('#mission-segment-chip')).toContainText(/AVANZADO/i);
   await page.locator('[aria-label="Abrir misiones"]').click();
   await expect(page.locator('#missions-modal')).toBeVisible();
   await expect(page.locator('#missions-list')).toBeVisible();
+  await expect(page.locator('#missions-segment-context')).toContainText(/AVANZADO/i);
 
   const claimButton = page.getByRole('button', { name: /Reclamar \+XP/i });
   const progressButton = page.getByRole('button', { name: /Avanzar misión/i });

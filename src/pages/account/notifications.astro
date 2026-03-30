@@ -93,6 +93,29 @@ import { Card, Button } from "../../components/ui";
       </Button>
     </div>
 
+    <section
+      id="weekly-summary-notifications"
+      class="mb-4 bg-white border-4 border-black px-4 py-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+    >
+      <div class="flex items-center justify-between gap-3 mb-2">
+        <h2 class="text-xs sm:text-sm font-black uppercase tracking-widest text-black">
+          Resumen semanal
+        </h2>
+        <span
+          id="weekly-summary-notification-badge"
+          class="text-[10px] font-black uppercase border-2 border-black bg-[#d7fd48] px-2 py-1"
+        >--%</span>
+      </div>
+      <p id="weekly-summary-notification-line" class="text-xs font-bold uppercase text-slate-800">
+        Cargando progreso semanal...
+      </p>
+      <div class="mt-2 flex flex-wrap gap-2 text-[10px] font-black uppercase">
+        <span class="border-2 border-black px-2 py-1 bg-slate-100">Misiones: <span id="weekly-summary-notification-missions">0/0</span></span>
+        <span class="border-2 border-black px-2 py-1 bg-slate-100">Pendientes: <span id="weekly-summary-notification-claims">0</span></span>
+        <span class="border-2 border-black px-2 py-1 bg-slate-100">Alertas racha: <span id="weekly-summary-notification-warnings">0</span></span>
+      </div>
+    </section>
+
     <!-- Lista de Notificaciones -->
     <div
       id="notifications-container"
@@ -167,9 +190,39 @@ import { Card, Button } from "../../components/ui";
 
   <script>
     // @ts-nocheck
-    import { authService, notificationService } from "../../services/api.js";
+    import { authService, gamificationService, notificationService } from "../../services/api.js";
 
     let notifications = [];
+
+    async function loadWeeklySummaryCard() {
+      const user = authService.getCurrentUser();
+      const line = document.getElementById("weekly-summary-notification-line");
+      const badge = document.getElementById("weekly-summary-notification-badge");
+      const missions = document.getElementById("weekly-summary-notification-missions");
+      const claims = document.getElementById("weekly-summary-notification-claims");
+      const warnings = document.getElementById("weekly-summary-notification-warnings");
+
+      if (!user || (!user.id && !user.usuarioId && !user._id)) {
+        if (line) line.textContent = "Inicia sesión para ver tu resumen semanal.";
+        return;
+      }
+
+      try {
+        const userId = user.id || user.usuarioId || user._id;
+        const summary = await gamificationService.getWeeklySummary(userId);
+        const m = summary?.missions || {};
+        const n = summary?.notifications || {};
+
+        if (line) line.textContent = String(summary?.nextAction || "Revisa tu progreso semanal.");
+        if (badge) badge.textContent = `${Number(m.completionPct || 0).toFixed(0)}%`;
+        if (missions) missions.textContent = `${Number(m.completed || 0)}/${Number(m.total || 0)}`;
+        if (claims) claims.textContent = String(Number(m.pendingClaim || 0));
+        if (warnings) warnings.textContent = String(Number(n.streakWarningsUnread || 0));
+      } catch (e) {
+        console.error("Error cargando resumen semanal de notificaciones:", e);
+        if (line) line.textContent = "No se pudo cargar el resumen semanal.";
+      }
+    }
 
     async function loadNotifications() {
       const container = document.getElementById("notifications-container");
@@ -412,6 +465,7 @@ import { Card, Button } from "../../components/ui";
       }
 
       // Cargar notificaciones
+      loadWeeklySummaryCard();
       loadNotifications();
     });
   </script>

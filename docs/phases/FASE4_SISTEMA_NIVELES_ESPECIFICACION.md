@@ -1,5 +1,11 @@
 # Fase 4 - Sistema de Niveles (Definicion Completa)
 
+> Estado documental: HISTORICO / ARCHIVADO.
+>
+> Este documento se conserva por trazabilidad de implementación.
+> La referencia funcional vigente del sistema de niveles es:
+> `docs/product/SISTEMA_NIVELES_ACTUAL.md`.
+
 ## 1) Objetivo de negocio
 
 Convertir el sistema de niveles en un motor de retencion semanal y recurrencia de uso.

@@ -144,6 +144,24 @@ const fromDashboard = fromParam === "dashboard";
   </div>
 
   <section class="mt-6 bg-white border-4 border-black p-4 sm:p-5 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+    <div class="mb-3" id="segment-context-box">
+      <p class="text-[11px] font-black uppercase text-black border-2 border-black bg-[#d7fd48] px-3 py-2 inline-block" id="segment-context-text">
+        Segmento de misiones: Cargando...
+      </p>
+    </div>
+    <div id="weekly-summary-box" class="mb-4 border-2 border-black bg-slate-50 p-3 sm:p-4">
+      <div class="flex items-center justify-between gap-2 mb-2">
+        <h2 class="text-xs sm:text-sm font-black uppercase tracking-widest text-black">Resumen semanal</h2>
+        <span id="weekly-summary-completion" class="text-[10px] sm:text-[11px] font-black uppercase border-2 border-black bg-[#d7fd48] px-2 py-1">--%</span>
+      </div>
+      <p id="weekly-summary-line" class="text-[11px] sm:text-xs font-bold uppercase text-slate-800">Cargando progreso semanal...</p>
+      <div class="mt-2 grid grid-cols-2 sm:grid-cols-4 gap-2 text-[10px] sm:text-[11px] font-black uppercase">
+        <div class="border-2 border-black bg-white px-2 py-1.5">Misiones: <span id="weekly-summary-missions">0/0</span></div>
+        <div class="border-2 border-black bg-white px-2 py-1.5">Reclamos: <span id="weekly-summary-claims">0</span></div>
+        <div class="border-2 border-black bg-white px-2 py-1.5">Racha: <span id="weekly-summary-streak">0</span></div>
+        <div class="border-2 border-black bg-white px-2 py-1.5">Cierre: <span id="weekly-summary-remaining">--</span></div>
+      </div>
+    </div>
     <div class="flex items-center justify-between gap-3 mb-3">
       <h2 class="text-sm sm:text-base font-black uppercase tracking-widest text-black">
         Recompensas
@@ -202,6 +220,14 @@ const fromDashboard = fromParam === "dashboard";
     function parseXP(value: unknown, fallback = 0): number {
       const parsed = Number.parseInt(String(value ?? ""), 10);
       return Number.isFinite(parsed) && parsed >= 0 ? parsed : fallback;
+    }
+
+    function formatRemainingTime(ms: number): string {
+      const safeMs = Math.max(0, Number(ms || 0));
+      const hours = Math.floor(safeMs / (1000 * 60 * 60));
+      const days = Math.floor(hours / 24);
+      if (days > 0) return `${days}d`;
+      return `${Math.max(0, hours)}h`;
     }
 
     function updateSyncBadge(
@@ -437,6 +463,60 @@ const fromDashboard = fromParam === "dashboard";
         }
       }
 
+      async function loadSegmentationContext() {
+        const contextText = document.getElementById("segment-context-text");
+        if (!contextText) return;
+
+        const user = authService.getCurrentUser();
+        if (!user?.id) {
+          contextText.textContent = "Segmento de misiones: Sin sesión";
+          return;
+        }
+
+        try {
+          const weeklyRes = await gamificationService.getWeeklyMissions(user.id);
+          const segmentation = weeklyRes?.segmentation || {};
+          const userSegment = String(segmentation.userSegment || "global").toUpperCase();
+          const rulesVersion = String(segmentation.rulesVersion || "v1");
+          contextText.textContent = `Segmento de misiones: ${userSegment} · Reglas ${rulesVersion}`;
+        } catch (error) {
+          console.error("Error cargando contexto de segmentación:", error);
+          contextText.textContent = "Segmento de misiones: No disponible";
+        }
+      }
+
+      async function loadWeeklySummary() {
+        const line = document.getElementById("weekly-summary-line");
+        const completion = document.getElementById("weekly-summary-completion");
+        const missions = document.getElementById("weekly-summary-missions");
+        const claims = document.getElementById("weekly-summary-claims");
+        const streak = document.getElementById("weekly-summary-streak");
+        const remaining = document.getElementById("weekly-summary-remaining");
+
+        const user = authService.getCurrentUser();
+        if (!user?.id) {
+          if (line) line.textContent = "Inicia sesión para ver tu avance semanal.";
+          return;
+        }
+
+        try {
+          const summary = await gamificationService.getWeeklySummary(user.id);
+          const m = summary?.missions || {};
+          const s = summary?.streak || {};
+          const week = summary?.week || {};
+
+          if (line) line.textContent = String(summary?.nextAction || "Sigue avanzando esta semana.");
+          if (completion) completion.textContent = `${Number(m.completionPct || 0).toFixed(0)}%`;
+          if (missions) missions.textContent = `${Number(m.completed || 0)}/${Number(m.total || 0)}`;
+          if (claims) claims.textContent = String(Number(m.pendingClaim || 0));
+          if (streak) streak.textContent = String(Number(s.currentDaily || 0));
+          if (remaining) remaining.textContent = formatRemainingTime(Number(week.remainingMs || 0));
+        } catch (error) {
+          console.error("Error cargando resumen semanal:", error);
+          if (line) line.textContent = "No se pudo cargar el resumen semanal.";
+        }
+      }
+
       window.claimRewardFromLevels = async (rewardId: string) => {
         const user = authService.getCurrentUser();
         if (!user?.id || !rewardId) return;
@@ -461,6 +541,8 @@ const fromDashboard = fromParam === "dashboard";
       }
 
       await loadRewards();
+      await loadSegmentationContext();
+      await loadWeeklySummary();
     });
   </script>
 </CapyPay>

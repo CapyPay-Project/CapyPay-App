@@ -13,6 +13,11 @@ export const userProfile = atom({
   nextXp: 100,
   benefits: { descuento: 0, accesoVIP: false },
   weeklyMissions: [],
+  missionSegmentation: {
+    userSegment: 'global',
+    rulesVersion: 'v1',
+    profile: 'weekly_global_v1'
+  },
   streakStatus: {
     currentDaily: 0,
     bestDaily: 0,
@@ -114,6 +119,7 @@ export async function fetchGamificationSnapshot() {
     userProfile.set({
       ...current,
       weeklyMissions: weeklyData?.missions || [],
+      missionSegmentation: weeklyData?.segmentation || current.missionSegmentation,
       streakStatus: streakData?.streak || current.streakStatus,
       gamificationConfig: configData?.config || {}
     });

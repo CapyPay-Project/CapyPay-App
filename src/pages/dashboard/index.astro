@@ -647,7 +647,10 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
       const missionsList = document.getElementById("missions-list");
       const missionsCounter = document.getElementById("missions-counter");
       const missionsProgress = document.getElementById("missions-progress");
+      const missionsSegmentContext = document.getElementById("missions-segment-context");
+      const missionSegmentChip = document.getElementById("mission-segment-chip");
       let lastMissionTrigger = null;
+      let missionsExperimentVariant = null;
       const levelUpModal = document.getElementById("level-up-modal");
       const levelUpTitle = document.getElementById("level-up-title");
       const levelUpBenefits = document.getElementById("level-up-benefits");
@@ -680,6 +683,18 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
 
         try {
           const weeklyData = await gamificationService.getWeeklyMissions(currentUser.id);
+          const segmentation = weeklyData?.segmentation || {};
+          const userSegment = String(segmentation.userSegment || "global").toUpperCase();
+          const rulesVersion = String(segmentation.rulesVersion || "v1");
+
+          if (missionSegmentChip) {
+            missionSegmentChip.textContent = `Segmento: ${userSegment}`;
+          }
+
+          if (missionsSegmentContext) {
+            missionsSegmentContext.textContent = `Segmento activo: ${userSegment} · Reglas ${rulesVersion}`;
+          }
+
           const missions = (weeklyData?.missions || []).map((item) => ({
             id: item.id,
             progress: item.progress,
@@ -726,6 +741,7 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
                     <span class="text-[10px] font-black ${item.completed ? 'text-green-700' : 'text-gray-600'}">${item.completed ? 'COMPLETADA' : 'EN PROCESO'}</span>
                   </div>
                   <p class="text-[10px] text-gray-600 mt-1">${item.missions?.description || 'Descripción no disponible'}</p>
+                  <p class="text-[10px] font-black uppercase mt-1 text-[#8b5cf6]">Segmento: ${String(item.segment || 'global').toUpperCase()}</p>
                   <div class="w-full bg-black/10 h-2 rounded-full mt-2 overflow-hidden border-2 border-black">
                     <div class="h-full bg-[#8b5cf6]" style="width: ${percent}%"></div>
                   </div>
@@ -753,12 +769,39 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
         }
       }
 
+      async function initMissionsExperiment(currentUserId) {
+        try {
+          const assignment = await gamificationService.assignExperimentVariant('missions_copy_v1', currentUserId);
+          missionsExperimentVariant = assignment?.variant || 'control';
+
+          await gamificationService.trackExperimentEvent({
+            userId: currentUserId,
+            experimentKey: 'missions_copy_v1',
+            variant: missionsExperimentVariant,
+            eventType: 'dashboard_view'
+          });
+        } catch (error) {
+          console.warn('No se pudo inicializar experimento de misiones:', error);
+          missionsExperimentVariant = 'control';
+        }
+      }
+
       window.showMissionsModal = async () => {
         if (!missionsModal) {
           return;
         }
         lastMissionTrigger = document.activeElement;
         await fetchAndRenderMissions({ renderModal: true });
+
+        const currentUser = authService.getCurrentUser();
+        if (currentUser?.id && missionsExperimentVariant) {
+          gamificationService.trackExperimentEvent({
+            userId: currentUser.id,
+            experimentKey: 'missions_copy_v1',
+            variant: missionsExperimentVariant,
+            eventType: 'missions_modal_open'
+          }).catch((err) => console.warn('No se pudo trackear modal de misiones:', err));
+        }
 
         missionsModal.setAttribute('aria-hidden', 'false');
         missionsModal.classList.remove('hidden');
@@ -911,6 +954,7 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
         await fetchUserProfile();
         await fetchGamificationSnapshot();
         const userInfo = await userService.getProfile();
+        await initMissionsExperiment(userInfo?.id);
         await fetchAndRenderMissions();
 
         await refreshNotifications();
