@@ -1,306 +1,531 @@
 ---
 import MainLayout from "../../layouts/MainLayout.astro";
+import 'leaflet/dist/leaflet.css';
+
+interface Parada {
+  nombre: string;
+  estado: string;
+  porcentaje: number;
+}
 
 const precioPasaje = 5.00;
-const paradasUNERG = ["Terminal", "La Redoma", "Plaza Bolívar", "UNERG Entrada", "Área de Salud", "Ingeniería"];
-const rutasRecientes = ["Ingeniería", "Terminal"]; // Las que aparecerán en el nuevo botón
+
+const paradasUNERG: Parada[] = [
+  { nombre: "Terminal", estado: "Lleno", porcentaje: 90 },
+  { nombre: "La Redoma", estado: "Normal", porcentaje: 40 },
+  { nombre: "Plaza Bolívar", estado: "Vacio", porcentaje: 15 },
+  { nombre: "UNERG Entrada", estado: "Normal", porcentaje: 55 },
+  { nombre: "Área de Salud", estado: "Lleno", porcentaje: 85 },
+  { nombre: "Ingeniería", estado: "Vacio", porcentaje: 20 },
+];
 ---
 
-<MainLayout title="Ticket Bus | CapyPay">
+<MainLayout title="TicketBus | Tu Asistente de Transporte">
   <div class="flex flex-col gap-6 h-full p-4 lg:p-0">
-    
-    <div class="bg-brand-black p-6 rounded-3xl border border-white/10 shadow-lg relative overflow-hidden group">
-      <div class="relative z-10 flex gap-4 items-center w-full">
-        <a href="/dashboard" class="flex items-center justify-center w-12 h-12 rounded-full bg-white/5 hover:bg-white/10 text-white border border-white/10 transition-all">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-          </svg>
-        </a>
-        <div class="w-16 h-16 rounded-full bg-brand-purple/20 flex items-center justify-center text-brand-purple border border-brand-purple/30">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h8a2 2 0 012 2v10a2 2 0 01-2 2H8a2 2 0 01-2-2V9a2 2 0 012-2zM6 13h12M7 17h.01M17 17h.01" />
-          </svg>
-        </div>
-        <div>
-          <h1 class="text-2xl font-bold text-white mb-1">Ticket Bus</h1>
-          <p class="text-slate-400 text-sm">San Juan de los Morros - UNERG</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="bg-brand-black p-6 rounded-3xl border border-white/10 shadow-lg relative overflow-hidden">
-      <div class="flex flex-col relative z-10">
-       <span class="text-slate-400 text-sm uppercase mb-1 font-bold tracking-wider">Tu saldo actual:</span>
-        <div class="flex items-baseline gap-2">
-          <span id="ticketbus-balance" class="text-5xl font-bold text-brand-lime font-monaco">0.00</span>
-         <span class="text-slate-400 text-lg font-bold">BARAS</span>
-       </div>
-      </div>
-    </div>
-
-    <div class="bg-brand-black p-6 rounded-3xl border border-white/10 shadow-lg flex flex-col gap-4">
-      <div class="relative">
-        <p class="text-slate-500 text-xs uppercase tracking-widest mb-2 font-bold">Ruta General</p>
-        <button id="btn-rutas" class="w-full flex justify-between items-center bg-white/5 p-5 rounded-2xl border border-white/10 hover:border-brand-lime/50 transition-all text-white font-bold text-lg">
-          <span id="ruta-seleccionada">Selecciona tu parada</span>
-          <svg xmlns="http://www.w3.org/2000/svg" id="icono-flecha-rutas" class="h-6 w-6 text-brand-lime transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-          </svg>
-        </button>
-        
-        <div id="lista-paradas" class="hidden absolute z-30 w-full mt-2 bg-slate-900/80 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl max-h-60 overflow-y-auto">
-         {paradasUNERG.map((parada) => (
-          <button class="opcion-parada w-full p-4 text-left hover:bg-brand-lime/10 border-b border-white/5 text-slate-200 transition-colors">
-            {parada}
-          </button>
-        ))}
-        </div>
-      </div>
-
-      <div class="relative mt-2">
-        <p class="text-slate-500 text-xs uppercase tracking-widest mb-2 font-bold">Accesos Rápidos</p>
-        <button id="btn-recientes" class="w-full flex justify-between items-center bg-brand-purple/10 p-5 rounded-2xl border border-brand-purple/30 hover:bg-brand-purple/20 hover:border-brand-purple transition-all text-white font-bold text-lg animate-pulse hover:animate-none">
-          <div class="flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-brand-purple" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+    <!-- Tarjeta principal "TicketBus" -->
+   <div class="bg-brand-black p-6 rounded-3xl border border-white/10 shadow-2xl relative overflow-hidden">
+      <div class="relative z-10 flex gap-4 items-center w-full justify-between">
+          <div class="flex items-center gap-4">
+          <div class="w-14 h-14 rounded-2xl bg-brand-purple/20 flex items-center justify-center text-brand-purple border border-brand-purple/20">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-9 h-9" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="8" width="18" height="10" rx="2" ry="2"/>
+              <path d="M3 13h18"/>
+              <circle cx="7" cy="17" r="1.2"/>
+              <circle cx="17" cy="17" r="1.2"/>
+              <rect x="7" y="10" width="10" height="4" rx="0.5" ry="0.5"/>
+             <path d="M3 11 L1 11 L1 13"/>
+             <path d="M21 11 L23 11 L23 13"/>
             </svg>
-            <span id="texto-reciente">Rutas Recientes</span>
           </div>
-          <svg xmlns="http://www.w3.org/2000/svg" id="icono-flecha-recientes" class="h-6 w-6 text-brand-purple transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-          </svg>
-        </button>
+          <div>
+            <h1 class="text-3xl font-black text-white tracking-tighter">TicketBus</h1>
+            <p class="text-slate-500 text-xs font-bold tracking-widest uppercase">UNERG • Sistema de Transporte</p>
+          </div>
+        </div>
+        <div class="text-right hidden sm:block">
+          <p class="text-slate-500 text-[10px] uppercase font-black tracking-[0.2em]">Costo Fijo</p>
+          <p class="text-2xl font-black text-brand-lime">5.00 <span class="text-xs">BARAS</span></p>
+        </div>
+      </div>
+    </div>
 
-        <div id="lista-recientes" class="hidden absolute z-30 w-full mt-2 bg-slate-900/80 backdrop-blur-xl border border-brand-purple/30 rounded-2xl shadow-2xl max-h-60 overflow-y-auto">
-          {rutasRecientes.map((reciente) => (
-          <button class="opcion-reciente w-full p-4 text-left hover:bg-brand-purple/10 border-b border-white/5 text-brand-purple transition-colors font-medium">
-            {reciente}
+    <!-- Saldo dinámico -->
+    <div class="bg-brand-black p-6 rounded-3xl border border-white/10 shadow-2xl relative overflow-hidden">
+      <div class="flex flex-col relative z-10">
+        <span class="text-slate-400 text-sm uppercase mb-1 font-bold tracking-wider">Tu saldo actual:</span>
+        <div class="flex items-baseline gap-2">
+          <span id="ticketbus-balance" class="text-6xl font-black text-brand-lime font-monaco tracking-tighter">0.00</span>
+          <span class="text-slate-400 text-xl font-bold">BARAS</span>
+        </div>
+      </div>
+      <div class="absolute -right-8 -bottom-8 w-40 h-40 bg-brand-lime/10 rounded-full blur-3xl"></div>
+    </div>
+
+<!-- ==================== WIZARD DE 3 PASOS ==================== -->
+    <div class="bg-brand-black/40 backdrop-blur-md rounded-3xl border border-white/5 p-6 shadow-2xl min-h-85 flex flex-col">
+
+      <!-- Paso 1: Seleccionar Parada -->
+      <div id="step-1" class="step-container">
+        <div class="text-center mb-6">
+          <span class="bg-brand-purple/20 text-brand-purple text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest">Paso 1 de 3</span>
+          <h2 class="text-white text-2xl font-black mt-2 tracking-tight">¿A dónde vas?</h2>
+          <p class="text-slate-500 text-xs mt-1">Selecciona tu parada de destino</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-64 overflow-y-auto pr-2 custom-scrollbar">
+        {paradasUNERG.map((parada) => (
+          <button onclick={`window.seleccionarParada('${parada.nombre}')`}
+                  class="opcion-parada group w-full p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-brand-purple/50 hover:bg-white/10 transition-all text-left">
+            <span class="text-white font-bold block group-hover:text-brand-purple transition-colors">{parada.nombre}</span>
+            
+            <!-- Color según estado -->
+            <span class={`text-[9px] uppercase font-mono px-3 py-0.5 rounded-full inline-block mt-1
+              ${parada.estado === 'Lleno' ? 'bg-red-500/20 text-red-400' : 
+                parada.estado === 'Normal' ? 'bg-yellow-500/20 text-yellow-400' : 
+                'bg-green-500/20 text-green-400'}`}>
+              {parada.estado}
+            </span>
           </button>
           ))}
         </div>
       </div>
 
-      <div class="relative group mt-4">
-        <div class="absolute -inset-1 bg-liner-to-r from-brand-lime to-emerald-400 rounded-2xl blur opacity-25 group-hover:opacity-75 transition duration-1000 group-hover:duration-200"></div>
-        
-        <button 
-          id="btn-pagar" 
-          type="button"
-          class="relative w-full py-5 rounded-2xl font-black text-xl bg-brand-lime text-black flex items-center justify-center gap-3 shadow-[0_10px_20px_rgba(163,230,53,0.3)] hover:shadow-brand-lime/50 hover:-translate-y-1 active:translate-y-0.5 active:scale-95 transition-all duration-300 overflow-hidden"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
-          </svg>
-          
-          <span id="texto-btn-pagar" class="tracking-tight">GENERAR TICKET QR</span>
+      <!-- Paso 2: Seleccionar Autobús -->
+      <div id="step-2" class="step-container hidden">
+        <div class="flex items-center gap-4 mb-6">
+          <button onclick="window.goToStep(1)" class="p-2 hover:bg-white/5 rounded-full text-slate-400">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+          </button>
+          <div>
+            <span class="bg-brand-lime/20 text-brand-lime text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest">Paso 2 de 3</span>
+            <h2 class="text-white text-xl font-black mt-1">Unidades Disponibles</h2>
+          </div>
+        </div>
+        <div id="menu-buses-disponibles" class="grid grid-cols-1 gap-3"></div>
+      </div>
 
-          <div class="absolute top-0 -inset-full h-full w-1/2 z-5 block transform -skew-x-12 bg-linear-to-r from-transparent via-white/40 to-transparent opacity-40 group-hover:animate-shine"></div>
-        </button>
+      <!-- Paso 3: Confirmar y Pagar -->
+      <div id="step-3" class="step-container hidden">
+        <div class="flex items-center gap-4 mb-6">
+          <button onclick="window.goToStep(2)" class="p-2 hover:bg-white/5 rounded-full text-slate-400">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+          </button>
+          <div>
+            <span class="bg-white/20 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest">Paso 3 de 3</span>
+            <h2 class="text-white text-xl font-black mt-1">Confirmar Ticket</h2>
+          </div>
+        </div>
+        <div class="bg-white/5 rounded-3xl p-6 border border-white/10 mb-6 text-center">
+          <p class="text-slate-400 text-[10px] uppercase font-bold tracking-[0.2em] mb-2">Destino Seleccionado</p>
+          <p id="resumen-destino" class="text-white text-3xl font-black italic mb-4">---</p>
+          <p id="resumen-bus" class="text-brand-lime text-xl font-bold"></p>
+          <div class="flex justify-between items-center px-4 py-3 bg-black/40 rounded-xl border border-white/5 mt-6">
+            <span class="text-slate-500 text-xs font-bold uppercase">Costo del Pasaje</span>
+            <span class="text-brand-lime font-black">5.00 BARAS</span>
+          </div>
+        </div>
+        <div class="relative group">
+          <div class="absolute -inset-1 bg-brand-lime rounded-2xl blur opacity-20 group-hover:opacity-50 transition duration-500"></div>
+          <button id="btn-pagar" class="relative w-full py-5 rounded-2xl font-black text-xl bg-brand-lime text-black flex items-center justify-center gap-3 active:scale-95 transition-all shadow-xl">
+            GENERAR TICKET QR
+          </button>
+        </div>
       </div>
     </div>
-  </div>
 
-<div id="modal-qr" class="hidden fixed inset-0 z-50 items-center justify-center p-4 bg-black/90 backdrop-blur-md">
-  <div class="bg-brand-black border border-white/10 p-8 rounded-[2.5rem] max-w-sm w-full text-center shadow-[0_0_50px_rgba(163,230,53,0.1)] flex flex-col items-center">
-    
-    <div class="w-12 h-1 bg-white/10 rounded-full mb-6"></div> <h2 class="text-white text-2xl font-black mb-2 tracking-tight">¡VIAJE LISTO!</h2>
-    <p class="text-slate-400 text-sm mb-8">Muestra este código al chofer del bus</p>
-    
-    <div class="bg-white p-5 rounded-4xl shadow-2xl mb-8 transform hover:scale-105 transition-transform duration-300">
-      <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=CapyPay-Ticket-UNERG" alt="QR Ticket" class="w-48 h-48" />
+    <!-- Novedades + Estado de Paradas (Glassmorphism mejorado) -->
+    <div class="grid grid-cols-1 lg:grid-cols-1 gap-6">
+      <!-- Widget Novedades -->
+      <div class="bg-brand-black/70 backdrop-blur-3xl p-6 rounded-3xl border border-white/5 shadow-2xl">
+        <h3 class="text-white text-xl font-bold mb-4 flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-brand-purple" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          Novedades de Ruta
+        </h3>
+        <div class="space-y-3 text-sm">
+          <p class="text-yellow-400 flex items-start gap-2"><span class="text-lg leading-none mt-px">⚠️</span> Retrasos en La Redoma (aprox. 15 min)</p>
+          <p class="text-green-400 flex items-start gap-2"><span class="text-lg leading-none mt-px">✅</span> Unidad 024 salió de Ingeniería hace 5 min</p>
+        </div>
+      </div>
+
+     <!-- NUEVA SECCIÓN: AUTOBUSES EN RUTA + MAPA -->
+      <div class="bg-brand-black p-6 rounded-3xl border border-white/5 shadow-2xl">
+        <h3 class="text-white text-xl font-bold mb-5 flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-brand-lime" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2V10a2 2 0 012-2h2m-2 0V8a2 2 0 012-2" />
+          </svg>
+        Autobuses en Ruta
+      </h3>
+
+      <!-- Tarjetas de autobuses -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8" id="lista-autobuses">
+        <!-- Se llenará con JavaScript -->
+      </div>
+
+      <!-- Mapa -->
+      <div class="rounded-3xl overflow-hidden border border-white/10">
+        <div id="mapa-unerg" class="h-80 w-full"></div>
+        </div>
+      </div>
+
+      <!-- Widget Estado de Paradas -->
+      <div class="bg-brand-black/70 backdrop-blur-2xl p-6 rounded-3xl border border-white/10 shadow-2xl">
+        <h3 class="text-white text-xl font-bold mb-4">Estado de Paradas</h3>
+        <div class="grid grid-cols-2 gap-4">
+          {paradasUNERG.map(parada => (
+            <div class="space-y-2">
+              <p class="text-slate-300 text-sm font-medium">{parada.nombre}</p>
+              <div class="w-full h-2 bg-white/5 rounded-3xl overflow-hidden">
+                <div class={`h-full transition-all duration-700 ${parada.porcentaje > 80 ? 'bg-red-500' : parada.porcentaje > 40 ? 'bg-yellow-500' : 'bg-green-500'}`}
+                     style={`width: ${parada.porcentaje}%`}></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
 
-    <div class="bg-white/5 border border-white/5 py-3 px-6 rounded-2xl mb-8">
-       <p id="info-ticket" class="text-brand-lime font-mono text-xl font-bold uppercase tracking-widest"></p>
+    <!-- Trigger del Drawer de Tickets -->
+    <div class="bg-brand-black p-6 rounded-3xl border border-white/10 shadow-2xl">
+      <button id="btn-abrir-drawer" 
+              class="w-full flex justify-between items-center text-white font-bold text-xl hover:text-brand-lime transition-colors">
+        <span class="flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-brand-lime" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 5l-7 7-7-7" />
+          </svg>
+          Mis Tickets Comprados
+        </span>
+        <span id="contador-tickets" class="text-brand-lime text-sm font-mono">0</span>
+      </button>
     </div>
-
-    <button id="btn-cerrar-qr" class="w-full py-4 bg-white/5 text-slate-300 rounded-2xl hover:bg-purple-500/20 hover:text-purple-500 border border-white/5 transition-all font-bold">
-      CERRAR TICKET
-    </button>
   </div>
-</div>
 
-<style>
-  @keyframes shine {
-    100% {
-      left: 125%;
-    }
-  }
-  .group-hover\:animate-shine:hover {
-    animation: shine 0.8s;
-  }
-</style>
+  <!-- DRAWER DE TICKETS -->
+  <div id="drawer-tickets" class="hidden fixed inset-x-0 bottom-0 z-50 bg-brand-black border-t border-white/10 rounded-t-3xl shadow-2xl max-h-[75vh] overflow-hidden translate-y-full transition-transform duration-300">
+    <div class="p-6">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="text-white text-2xl font-black">Mis Tickets</h3>
+        <button id="btn-cerrar-drawer" class="text-slate-400 hover:text-white">✕</button>
+      </div>
+      <div id="lista-tickets-drawer" class="space-y-4 max-h-[55vh] overflow-y-auto pb-8"></div>
+    </div>
+  </div>
 
+  <!-- MODAL QR -->
+  <div id="modal-qr" class="hidden fixed inset-0 z-100 items-center justify-center p-4 bg-black/90 backdrop-blur-md">
+    <div class="bg-brand-black border border-white/10 p-8 rounded-[2.5rem] max-w-sm w-full text-center flex flex-col items-center" style="box-shadow: none !important;">
+      <div class="w-12 h-1 bg-white/10 rounded-full mb-6"></div>
+      <h2 class="text-white text-3xl font-black mb-2 tracking-tighter">¡VIAJE LISTO!</h2>
+      <p class="text-slate-400 text-sm mb-8">Muestra este código al chofer del bus</p>
+      
+      <div class="bg-white p-2 rounded-2xl mb-8 transform hover:scale-105 transition-transform duration-300">
+        <div id="qrcode" class="w-48 h-48 mx-auto"></div>
+      </div>
+
+      <div class="bg-white/5 border border-white/5 py-3 px-6 rounded-2xl mb-8">
+        <p id="info-ticket-destino" class="text-brand-lime font-monaco text-2xl font-black uppercase tracking-widest"></p>
+        <p id="info-ticket-fecha" class="text-slate-400 text-sm mt-2"></p>
+      </div>
+
+      <button id="btn-cerrar-qr" 
+              class="w-full py-5 bg-white/5 hover:bg-red-500/10 hover:text-red-400 border border-white/10 rounded-2xl font-bold text-lg transition-colors">
+        Cerrar Ticket
+      </button>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div id="toast" class="hidden fixed bottom-8 left-1/2 -translate-x-1/2 px-6 py-3 rounded-2xl shadow-2xl text-white font-medium text-sm z-200"></div>
 </MainLayout>
 
+
+
+
 <script>
+ // === FIXES TYPE SCRIPT ===
+  const precioPasaje = 5.00;
 
-  // @ts-nocheck
+  declare global {
+    interface Window {
+     mostrarTicketQr: (index: number) => void;
+     goToStep: (step: number) => void;
+     seleccionarParada: (parada: string) => void;
+     seleccionarUnidad: (id: string) => void; 
+    }
+  }
+  declare const L: any;
+  // =========================
+
   import { userProfile, fetchUserProfile } from "../../store/userStore.js";
+  import { ticketsStore, loadTickets, addTicket } from "../../store/ticketStore.ts";
+  import qrcode from 'qrcode-generator';
 
-  function procesarPago(monto) {
-    const perfilActual = userProfile.get();
-    if (perfilActual.balance >= monto) {
-      userProfile.set({
-        ...perfilActual,
-        balance: perfilActual.balance - monto
-      });
+  let selectedDestino = "";
+  let selectedBus = "";        
+  let isProcessing = false;
+
+  const sonidoExito = new Audio('/sounds/success.mp3');
+
+  function triggerHaptic() {
+    if (navigator.vibrate) navigator.vibrate([60, 30, 60]);
+  }
+
+  function showToast(message: string, type: 'success' | 'error' = 'success') {
+    const toast = document.getElementById('toast') as HTMLElement;
+    toast.textContent = message;
+    toast.className = `fixed bottom-8 left-1/2 -translate-x-1/2 px-6 py-3 rounded-2xl shadow-2xl text-white font-medium text-sm z-200 transition-all ${
+      type === 'success' ? 'bg-brand-lime text-black' : 'bg-red-500'
+    }`;
+    toast.classList.remove('hidden');
+    setTimeout(() => toast.classList.add('hidden'), 2800);
+  }
+
+  function procesarPago(monto: number): boolean {
+    const perfil = userProfile.get();
+    if (perfil.balance >= monto) {
+      userProfile.set({ ...perfil, balance: perfil.balance - monto });
+      triggerHaptic();
+      sonidoExito.currentTime = 0;
+      sonidoExito.play().catch(() => {});
       return true;
     }
+    showToast("¡Saldo insuficiente! 💸", "error");
     return false;
   }
 
+// ==================== WIZARD (3 PASOS) ====================
+
+  window.goToStep = (step: number) => {
+    document.querySelectorAll('.step-container').forEach(el => el.classList.add('hidden'));
+    const target = document.getElementById(`step-${step}`);
+    if (target) target.classList.remove('hidden');
+  };
+
+  window.seleccionarParada = (parada: string) => {
+    selectedDestino = parada;
+    document.getElementById('resumen-destino')!.textContent = parada;
+    window.goToStep(2);
+    mostrarMenuBuses(parada);
+  };
+
+  function mostrarMenuBuses(parada: string = selectedDestino) {
+    const container = document.getElementById('menu-buses-disponibles');
+    if (!container) return;
+
+    // Datos de ejemplo (puedes expandir más tarde)
+    const buses = [
+      { id: "Unidad 024", puestos: 30, ocupados: 12, estado: "En camino" },
+      { id: "Unidad 019", puestos: 30, ocupados: 28, estado: "Lleno" },
+      { id: "Unidad 031", puestos: 30, ocupados: 5, estado: "En parada" },
+      { id: "Unidad 010", puestos: 30, ocupados: 18, estado: "En camino" }
+    ];
+
+    container.innerHTML = buses.map(bus => {
+      const disponible = bus.puestos - bus.ocupados;
+      const isFull = disponible <= 0;
+
+      return `
+        <button onclick="window.seleccionarUnidad('${bus.id}')" ${isFull ? 'disabled' : ''}
+                class="flex justify-between items-center p-5 rounded-2xl border transition-all w-full ${isFull ? 'bg-red-500/10 border-red-500/30 opacity-60' : 'bg-white/5 border-white/10 hover:border-brand-lime'}">
+          <div>
+            <p class="font-bold text-white">${bus.id}</p>
+            <p class="text-xs text-slate-400">${bus.estado}</p>
+          </div>
+          <div class="text-right">
+            <p class="text-sm ${isFull ? 'text-red-400' : 'text-brand-lime'}">${disponible} puestos libres</p>
+          </div>
+        </button>
+      `;
+    }).join('');
+  }
+
+  window.seleccionarUnidad = (unidad: string) => {
+    selectedBus = unidad;
+    document.getElementById('resumen-bus')!.textContent = unidad;
+    window.goToStep(3);
+  };
+
+
+  // ==================== Map Que NO SIRVE NOJODA =================   
+  function initMapa() {
+    const mapElement = document.getElementById('mapa-unerg');
+    if (!mapElement) return;
+
+    const map = L.map('mapa-unerg', { zoomControl: true, attributionControl: false }).setView([8.95, -67.45], 15);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19
+    }).addTo(map);
+
+    L.marker([8.95, -67.45]).addTo(map).bindPopup("UNERG Entrada");
+    L.marker([8.94, -67.42]).addTo(map).bindPopup("Terminal");
+  }
+
+  // ==================== TICKETS Y QR ====================
+  function renderTicketsDrawer() {
+    const container = document.getElementById('lista-tickets-drawer');
+    if (!container) return;
+    
+    const tickets = ticketsStore.get();
+    document.getElementById('contador-tickets')!.textContent = tickets.length.toString();
+
+    container.innerHTML = tickets.length === 0 
+      ? `<p class="text-slate-500 text-center py-8 italic">Aún no tienes tickets</p>`
+      : tickets.map((ticket: any, index: number) => `
+        <button onclick="window.mostrarTicketQr(${index})" 
+                class="ticket-card w-full bg-white/5 hover:bg-white/10 border border-white/10 hover:border-brand-lime p-5 rounded-2xl text-left transition-all flex justify-between items-start">
+          <div>
+            <p class="text-slate-400 text-xs font-bold">${ticket.fecha} • ${ticket.hora}</p>
+            <p class="text-white text-xl font-semibold mt-1">${ticket.destino}</p>
+          </div>
+          <div class="text-brand-lime text-sm font-medium mt-1">Ver QR →</div>
+        </button>
+      `).join('');
+  }
+  // ==================== TICKETS CON EXPIRACIÓN ====================
+  function createTicket(destino: string, busUnidad: string) {
+    const ahora = new Date();
+    // PUNTO 1: Expiración en 2 horas
+    const expira = new Date(ahora.getTime() + 2 * 60 * 60 * 1000); 
+
+    return {
+     id_unico: `Capy_${Date.now()}`,
+      destino: destino,
+      bus: busUnidad,
+      fecha: ahora.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' }),
+      hora: ahora.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }),
+      // Guardamos la hora de expiración para mostrarla en el ticket
+      expira: expira.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })
+    };
+  }
+
+  window.mostrarTicketQr = (index: number) => {
+    const ticket = ticketsStore.get()[index];
+    if (!ticket) return;
+
+    const modal = document.getElementById('modal-qr')!;
+    const qrContainer = document.getElementById('qrcode')!;
+    const destinoEl = document.getElementById('info-ticket-destino')!;
+    const fechaEl = document.getElementById('info-ticket-fecha')!;
+
+    destinoEl.textContent = ticket.destino;
+    fechaEl.textContent = `Comprado: ${ticket.fecha} • ${ticket.hora}`;
+
+    qrContainer.innerHTML = '';
+    const qr = qrcode(0, 'H');
+    qr.addData(ticket.id_unico);
+    qr.make();
+    qrContainer.innerHTML = qr.createImgTag(6, 4);
+
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+  };
+
+  function animateNumber(element: HTMLElement, start: number, end: number, duration: number) {
+    let startTime: number | null = null;
+    const step = (timestamp: number) => {
+      if (!startTime) startTime = timestamp;
+      const progress = Math.min((timestamp - startTime) / duration, 1);
+      const value = progress * (end - start) + start;
+      element.textContent = value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      if (progress < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }
+
+
+
+  // ==================== INICIALIZACIÓN ====================
   fetchUserProfile();
+  loadTickets();
 
-// Variable para guardar el saldo anterior y saber desde dónde empezar el conteo
   let saldoAnterior = 0;
-
   userProfile.subscribe((profile) => {
     const balanceEl = document.getElementById("ticketbus-balance");
-    
     if (balanceEl && !profile.isLoading) {
       const saldoFinal = profile.balance || 0;
-      
-      // Si el saldo cambió, hacemos la animación
       if (saldoFinal !== saldoAnterior) {
-        animateNumber(balanceEl, saldoAnterior, saldoFinal, 1000); // 1000ms = 1 segundo de duración
+        animateNumber(balanceEl, saldoAnterior, saldoFinal, 1000);
         saldoAnterior = saldoFinal;
       }
     }
   });
 
-  // Función mágica para animar el número
-  function animateNumber(element, start, end, duration) {
-    let startTime = null;
-
-    function step(timestamp) {
-      if (!startTime) startTime = timestamp;
-      const progress = Math.min((timestamp - startTime) / duration, 1);
-      const current = progress * (end - start) + start;
-      
-      element.innerText = current.toLocaleString("en-US", { 
-        minimumFractionDigits: 2, 
-        maximumFractionDigits: 2 
-      });
-
-      if (progress < 1) {
-        window.requestAnimationFrame(step);
-      }
-    }
-    window.requestAnimationFrame(step);
-  }
+  ticketsStore.subscribe(() => renderTicketsDrawer());
 
   document.addEventListener('DOMContentLoaded', () => {
-    // Referencias al Menú Principal (Verde)
     const btnRutas = document.getElementById('btn-rutas');
     const listaParadas = document.getElementById('lista-paradas');
     const textoRuta = document.getElementById('ruta-seleccionada');
-    const flechaRutas = document.getElementById('icono-flecha-rutas');
-    const opcionesParada = document.querySelectorAll('.opcion-parada');
-    
-    // Referencias al Menú Recientes (Morado)
-    const btnRecientes = document.getElementById('btn-recientes');
-    const listaRecientes = document.getElementById('lista-recientes');
-    const textoReciente = document.getElementById('texto-reciente');
-    const flechaRecientes = document.getElementById('icono-flecha-recientes');
-    const opcionesReciente = document.querySelectorAll('.opcion-reciente');
-
-    // Referencias de Pago
-    const btnPagar = document.getElementById('btn-pagar');
+    const btnPagar = document.getElementById('btn-pagar') as HTMLButtonElement;
     const textoBtnPagar = document.getElementById('texto-btn-pagar');
+    const btnAbrirDrawer = document.getElementById('btn-abrir-drawer');
+    const btnCerrarDrawer = document.getElementById('btn-cerrar-drawer');
+    const drawer = document.getElementById('drawer-tickets');
     const modalQr = document.getElementById('modal-qr');
     const btnCerrarQr = document.getElementById('btn-cerrar-qr');
-    const infoTicket = document.getElementById('info-ticket');
 
-    // 1. Lógica del Menú Principal
-    btnRutas?.addEventListener('click', () => {
-      listaParadas?.classList.toggle('hidden');
-      flechaRutas?.classList.toggle('rotate-180');
-      // Cerrar el otro menú por si está abierto
-      listaRecientes?.classList.add('hidden');
-      flechaRecientes?.classList.remove('rotate-180');
+    // Dropdown rutas
+    btnRutas?.addEventListener('click', () => listaParadas?.classList.toggle('hidden'));
+
+    // Drawer
+    btnAbrirDrawer?.addEventListener('click', () => {
+      drawer?.classList.remove('hidden');
+      setTimeout(() => drawer?.classList.remove('translate-y-full'), 10);
     });
 
-    opcionesParada.forEach(opcion => {
-      opcion.addEventListener('click', () => {
-        if(textoRuta) textoRuta.innerText = opcion.innerText;
-        listaParadas?.classList.add('hidden');
-        flechaRutas?.classList.remove('rotate-180');
-        // Resetear el otro menú
-        if(textoReciente) textoReciente.innerText = "Rutas Recientes";
-      });
+    btnCerrarDrawer?.addEventListener('click', () => {
+      drawer?.classList.add('translate-y-full');
+      setTimeout(() => drawer?.classList.add('hidden'), 300);
     });
 
-    // 2. Lógica del Menú Recientes
-    btnRecientes?.addEventListener('click', () => {
-      listaRecientes?.classList.toggle('hidden');
-      flechaRecientes?.classList.toggle('rotate-180');
-      // Cerrar el menú principal por si está abierto
-      listaParadas?.classList.add('hidden');
-      flechaRutas?.classList.remove('rotate-180');
-    });
-
-    opcionesReciente.forEach(opcion => {
-      opcion.addEventListener('click', () => {
-        const rutaElegida = opcion.innerText;
-        if(textoReciente) textoReciente.innerText = rutaElegida;
-        listaRecientes?.classList.add('hidden');
-        flechaRecientes?.classList.remove('rotate-180');
-        // Poner la misma ruta en el principal
-        if(textoRuta) textoRuta.innerText = rutaElegida;
-      });
-    });
-
-    // 3. Lógica del Botón Pagar
+    // Btn pagar - Versión corregida para el wizard
     btnPagar?.addEventListener('click', () => {
-      const ruta = textoRuta?.innerText;
-      
-      if (ruta === "Selecciona tu parada" || ruta === "Rutas Recientes") {
-        alert("¡Paola, elige una parada primero! 😊");
+      if (isProcessing || !selectedDestino || !selectedBus) {
+        showToast("Selecciona un destino y un autobús primero", "error");
         return;
       }
 
-      // Animación de "Procesando"
-      if (textoBtnPagar) textoBtnPagar.innerText = "PROCESANDO...";
-      if (window.navigator.vibrate) window.navigator.vibrate(50);
-      
-      setTimeout(() => {
-        if (textoBtnPagar) textoBtnPagar.innerText = "GENERAR TICKET QR";
-        
-        // Intentar Cobrar
-        // Definimos los sonidos (puedes cambiarlos por otros enlaces .mp3 si quieres)
-        const sonidoExito = new Audio('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3'); // Sonido de moneda/pago
-        const sonidoError = new Audio('https://assets.mixkit.co/active_storage/sfx/253/253-preview.mp3');   // Sonido de error/alerta
-        if (procesarPago(5.00)) {
-           // ¡SUENA EL DINERO! 💰
-        sonidoExito.play(); 
-  
-       if (infoTicket) infoTicket.innerText = ruta;
-           modalQr?.classList.remove('hidden');
-           modalQr?.classList.add('flex');
-        } else {
-        // ¡SUENA EL ERROR! ❌
-        sonidoError.play();
-          // Error visual si no hay saldo
-          const balanceContainer = document.getElementById('ticketbus-balance')?.parentElement?.parentElement;
-          if (balanceContainer) {
-            balanceContainer.classList.add('animate-bounce');
-            document.getElementById('ticketbus-balance').classList.replace('text-brand-lime', 'text-red-500');
-            
-            setTimeout(() => {
-              balanceContainer.classList.remove('animate-bounce');
-              document.getElementById('ticketbus-balance').classList.replace('text-red-500', 'text-brand-lime');
-            }, 1000);
-          }
-          alert("¡Paola, te quedaste sin BARAS! 💸");
-        }
-      }, 600);
+      isProcessing = true;
+      btnPagar.disabled = true;
+
+      if (procesarPago(precioPasaje)) {
+        const nuevoTicket = {
+          id_unico: `CapyPay_TBus_${Date.now()}_${Math.random().toString(16).slice(2, 10)}`,
+          destino: selectedDestino,
+          bus: selectedBus,
+          fecha: new Date().toLocaleDateString('es-ES', { day: '2-digit', month: 'short' }),
+          hora: new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })
+        };
+        addTicket(nuevoTicket);
+        showToast("¡Ticket generado exitosamente!", "success");
+        window.mostrarTicketQr(ticketsStore.get().length - 1);
+
+        // Reset del wizard
+        selectedDestino = "";
+        selectedBus = "";
+        window.goToStep(1);
+      }
+
+      isProcessing = false;
+      btnPagar.disabled = false;
     });
 
-    // 4. Cerrar QR
+    // Cerrar QR
     btnCerrarQr?.addEventListener('click', () => {
       modalQr?.classList.add('hidden');
       modalQr?.classList.remove('flex');
     });
+
+    // Cerrar con Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        modalQr?.classList.add('hidden');
+        modalQr?.classList.remove('flex');
+      }
+    });
+
+    // Inicializar nuevas secciones
+    initMapa();
+    renderTicketsDrawer();
   });
 </script>

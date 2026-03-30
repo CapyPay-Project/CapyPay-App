@@ -11,6 +11,7 @@
   "dependencies": {
     "@tailwindcss/vite": "^4.1.18",
     "astro": "^5.16.11",
+    "leaflet": "^1.9.4",
     "nanostores": "^1.1.0",
     "qrcode-generator": "^2.0.4",
     "tailwindcss": "^4.1.18"
