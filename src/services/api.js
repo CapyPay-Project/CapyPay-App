@@ -160,7 +160,18 @@ export async function fetchAPI(endpoint, options = {}) {
 
     return data;
   } catch (error) {
-    console.error('API Error:', error);
+    const isNetworkError = error instanceof TypeError;
+    if (isNetworkError) {
+      error.isNetworkError = true;
+    }
+
+    const debugApi = typeof window !== 'undefined' &&
+      (new URLSearchParams(window.location.search).get('debugApi') === '1' || window.__CAPYPAY_DEBUG_API__ === true);
+
+    if (debugApi) {
+      console.error('API Error:', error);
+    }
+
     throw error;
   }
 }

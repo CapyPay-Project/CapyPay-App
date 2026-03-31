@@ -10,6 +10,11 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
     server: {
+      hmr: {
+        protocol: 'ws',
+        host: 'localhost',
+        clientPort: 4321
+      },
       proxy: {
         '/api': {
           target: 'http://localhost:3000',

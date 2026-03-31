@@ -437,7 +437,31 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
         logoutBound: false,
         visibilityBound: false,
         notificationsPollingId: null,
+        notificationsFailureCount: 0,
+        notificationsRetryTimerId: null,
       });
+
+    function stopNotificationsPolling() {
+      if (dashboardRuntime.notificationsPollingId) {
+        clearInterval(dashboardRuntime.notificationsPollingId);
+        dashboardRuntime.notificationsPollingId = null;
+      }
+    }
+
+    function scheduleNotificationsRetry() {
+      if (dashboardRuntime.notificationsRetryTimerId || document.hidden) return;
+      const waitMs = Math.min(60000, 5000 * Math.max(1, dashboardRuntime.notificationsFailureCount));
+      dashboardRuntime.notificationsRetryTimerId = window.setTimeout(async () => {
+        dashboardRuntime.notificationsRetryTimerId = null;
+        await refreshNotifications({ silentNetworkFailure: true });
+        if (!dashboardRuntime.notificationsPollingId && dashboardRuntime.notificationsFailureCount === 0) {
+          dashboardRuntime.notificationsPollingId = window.setInterval(
+            () => refreshNotifications({ silentNetworkFailure: true }),
+            30000,
+          );
+        }
+      }, waitMs);
+    }
 
     function renderHistoryList() {
       const container = document.getElementById("history-list-container");
@@ -595,15 +619,32 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
       }
     };
 
-    async function refreshNotifications() {
+    async function refreshNotifications({ silentNetworkFailure = false } = {}) {
       try {
         const notifsRes = await notificationService.getNotifications();
         let notifs = [];
         if (Array.isArray(notifsRes)) notifs = notifsRes;
         else if (notifsRes && Array.isArray(notifsRes.notifications)) notifs = notifsRes.notifications;
         else if (notifsRes && Array.isArray(notifsRes.data)) notifs = notifsRes.data;
+
+        dashboardRuntime.notificationsFailureCount = 0;
         renderNotificationBar(notifs);
       } catch (err) {
+        const isNetworkFailure = Boolean(err?.isNetworkError || /failed to fetch/i.test(String(err?.message || "")));
+        if (isNetworkFailure) {
+          dashboardRuntime.notificationsFailureCount += 1;
+          stopNotificationsPolling();
+          scheduleNotificationsRetry();
+
+          if (!silentNetworkFailure) {
+            const notifMenuList = document.getElementById('notif-menu-list');
+            if (notifMenuList) {
+              notifMenuList.innerHTML = '<p class="text-xs text-center font-bold uppercase py-2">Sin conexion de notificaciones</p>';
+            }
+          }
+          return;
+        }
+
         debugError('Error actualizando notificaciones:', err);
       }
     }
@@ -1112,7 +1153,10 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
         await Promise.all([fetchAndRenderMissions(), refreshNotifications()]);
 
         if (!dashboardRuntime.notificationsPollingId) {
-          dashboardRuntime.notificationsPollingId = window.setInterval(refreshNotifications, 30000);
+          dashboardRuntime.notificationsPollingId = window.setInterval(
+            () => refreshNotifications({ silentNetworkFailure: true }),
+            30000,
+          );
         }
 
         if (!dashboardRuntime.outsideClickBound) {
@@ -1130,16 +1174,16 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
         if (!dashboardRuntime.visibilityBound) {
           document.addEventListener("visibilitychange", () => {
             if (document.hidden) {
-              if (dashboardRuntime.notificationsPollingId) {
-                clearInterval(dashboardRuntime.notificationsPollingId);
-                dashboardRuntime.notificationsPollingId = null;
-              }
+              stopNotificationsPolling();
               return;
             }
 
-            refreshNotifications();
+            refreshNotifications({ silentNetworkFailure: true });
             if (!dashboardRuntime.notificationsPollingId) {
-              dashboardRuntime.notificationsPollingId = window.setInterval(refreshNotifications, 30000);
+              dashboardRuntime.notificationsPollingId = window.setInterval(
+                () => refreshNotifications({ silentNetworkFailure: true }),
+                30000,
+              );
             }
           });
           dashboardRuntime.visibilityBound = true;
@@ -1159,6 +1203,12 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
           else if (histRes && Array.isArray(histRes.data))
             cachedMovements = histRes.data;
           else cachedMovements = [];
+
+          window.__capypayHistoryCache = {
+            cedula: activeCedula,
+            movimientos: cachedMovements,
+            updatedAt: Date.now(),
+          };
 
           renderHistoryList();
         } catch (e) {
