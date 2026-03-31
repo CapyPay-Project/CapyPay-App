@@ -1,4 +1,7 @@
-# 🗺️ Roadmap de Gamificación & Comedor (V2)
+# Roadmap de Gamificacion y Comedor (V2)
+
+- Ultima actualizacion: 2026-03-31
+- Ambito: plan de evolucion funcional de gamificacion, ranking y servicios de comedor/cantina
 
 ## 📌 Corto Plazo (Sprint Actual)
 

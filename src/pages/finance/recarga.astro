@@ -268,8 +268,12 @@ import BcvTickerPanel from "../../components/dashboard/finance/BcvTickerPanel.as
 <script>
   import { fetchAPI } from "../../services/api.js";
   import { updateUserLevel } from "../../store/userStore.js";
+  import { createPagePerf, runWhenIdle, withTimeout } from "../../utils/pagePerf.js";
 
   document.addEventListener("DOMContentLoaded", () => {
+    const perf = createPagePerf("recarga");
+    perf.mark("init-start");
+
     const form = document.getElementById("recarga-form") as HTMLFormElement;
     const submitBtn = document.getElementById(
       "btn-submit",
@@ -285,11 +289,15 @@ import BcvTickerPanel from "../../components/dashboard/finance/BcvTickerPanel.as
     let tasaDolar = 45; // Default fallback
 
     // Conseguir tasa real
-    fetchAPI("/tasa")
+    withTimeout(fetchAPI("/tasa"), 3500, "tasa")
       .then((res) => {
         if (res && res.tasa) tasaDolar = res.tasa;
+        perf.mark("tasa-ready", { tasa: tasaDolar });
       })
-      .catch((err) => console.log("Error cargando tasa en recargas", err));
+      .catch((err) => {
+        console.log("Error cargando tasa en recargas", err);
+        perf.mark("tasa-fallback", { tasa: tasaDolar });
+      });
 
     // Copiar a portapapeles
     document.querySelectorAll(".copy-btn").forEach((btn) => {
@@ -343,10 +351,9 @@ import BcvTickerPanel from "../../components/dashboard/finance/BcvTickerPanel.as
       submitBtn.classList.add("opacity-70", "cursor-not-allowed");
 
       try {
-        // SIMULACIÓN PARA PRUEBAS
-        let response: any = {};
-        try {
-          response = await fetchAPI("/transacciones/recargar", {
+        perf.mark("submit-start");
+        await withTimeout(
+          fetchAPI("/transacciones/recargar", {
             method: "POST",
             body: JSON.stringify({
               cedula,
@@ -354,17 +361,11 @@ import BcvTickerPanel from "../../components/dashboard/finance/BcvTickerPanel.as
               metodo_pago,
               reference_number,
             }),
-          });
-
-          if (response.error) {
-            console.warn(
-              "Error del backend ignorado para probar interfaz:",
-              response.error,
-            );
-          }
-        } catch (err) {
-          console.warn("Backend catch ignorado:", err);
-        }
+          }),
+          8000,
+          "recarga-submit",
+        );
+        perf.mark("submit-ok");
 
         form.reset();
         montoCapyPreview.innerHTML = "Monto estimado en capys: 0.00";
@@ -384,12 +385,15 @@ import BcvTickerPanel from "../../components/dashboard/finance/BcvTickerPanel.as
           error.message || "ERROR AL CONECTAR CON EL SERVIDOR",
           "error",
         );
+        perf.mark("submit-error", { message: String(error?.message || error) });
         submitBtn.disabled = false;
         submitBtn.innerHTML =
           '<span class="material-symbols-outlined font-black">send</span> ENVIAR RECARGA A REVISIÓN';
         submitBtn.classList.remove("opacity-70", "cursor-not-allowed");
       }
     });
+
+    runWhenIdle(() => perf.flush(), 2500);
 
     function showBrutalistToast(message: string, type: string = "success") {
       const container = document.getElementById("toast-container");

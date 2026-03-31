@@ -1,6 +1,9 @@
 # CapyPay App
 
-Documentacion tecnica y funcional del frontend de CapyPay.
+Documento maestro del frontend de CapyPay.
+
+- Ultima actualizacion: 2026-03-31
+- Ambito: arquitectura, rutas, scripts y estado operativo de CapyPay-App
 
 ## Actualizacion al 2026-03-31
 

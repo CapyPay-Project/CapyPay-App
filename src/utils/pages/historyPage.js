@@ -1,7 +1,45 @@
 // @ts-nocheck
 import { authService, userService } from "../../services/api.js";
+import { createPagePerf, runWhenIdle, withTimeout } from "../pagePerf.js";
+
+const perf = createPagePerf("history");
+
+function loadScript(src) {
+  return new Promise((resolve, reject) => {
+    const existing = document.querySelector(`script[src="${src}"]`);
+    if (existing) {
+      resolve();
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.src = src;
+    script.async = true;
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error(`No se pudo cargar ${src}`));
+    document.head.appendChild(script);
+  });
+}
+
+async function ensurePdfLibs() {
+  if (window.jspdf?.jsPDF && window.jspdf?.API?.autoTable) return;
+
+  perf.mark("pdf-libs-load-start");
+  await withTimeout(
+    loadScript("https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"),
+    5000,
+    "jspdf",
+  );
+  await withTimeout(
+    loadScript("https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"),
+    5000,
+    "jspdf-autotable",
+  );
+  perf.mark("pdf-libs-load-end");
+}
 
 export function initHistoryPage() {
+  perf.mark("init-start");
   const state = {
     allMovements: [],
     filteredMovements: [],
@@ -15,6 +53,7 @@ export function initHistoryPage() {
   setupModalEvents(dom, state);
   setupExportAndReceiptEvents(dom, state);
   initHistory(dom, state);
+  runWhenIdle(() => perf.flush(), 3000);
 }
 
 function getDomRefs() {
@@ -37,6 +76,7 @@ function getDomRefs() {
 }
 
 async function initHistory(dom, state) {
+  perf.mark("history-fetch-start");
   const user = authService.getCurrentUser();
   if (!user) {
     window.location.href = "/auth/login";
@@ -48,8 +88,8 @@ async function initHistory(dom, state) {
       const cedula = user.cedula || null;
       
       const [profileData, response] = await Promise.all([
-        userService.getProfile(userId).catch(() => ({})),
-        userService.getHistory(cedula).catch(() => null)
+        withTimeout(userService.getProfile(userId).catch(() => ({})), 4500, "profile").catch(() => ({})),
+        withTimeout(userService.getHistory(cedula).catch(() => null), 5500, "history").catch(() => null)
       ]);
 
       const realUser = profileData?.usuario || profileData?.user || profileData || {};
@@ -70,9 +110,11 @@ async function initHistory(dom, state) {
     }));
 
     applyFilters(dom, state);
+    perf.mark("history-fetch-end", { total: state.allMovements.length });
   } catch (error) {
     console.error("Error loading history:", error);
     showEmpty(dom, state, "Error al cargar el historial.");
+    perf.mark("history-fetch-error", { message: String(error?.message || error) });
   }
 }
 
@@ -318,6 +360,9 @@ function setupExportAndReceiptEvents(dom, state) {
   });
 
   const exportFn = () => {
+    const runExport = async () => {
+      await ensurePdfLibs();
+
     if (state.filteredMovements.length === 0) {
       window.showToast?.("No hay datos para exportar", "error");
       return;
@@ -355,6 +400,12 @@ function setupExportAndReceiptEvents(dom, state) {
     });
 
     doc.save("CapyPay_Historial.pdf");
+    };
+
+    runExport().catch((err) => {
+      window.showToast?.("No se pudo cargar el exportador PDF", "error");
+      perf.mark("pdf-export-error", { message: String(err?.message || err) });
+    });
   };
 
   window.exportToPDF = exportFn;

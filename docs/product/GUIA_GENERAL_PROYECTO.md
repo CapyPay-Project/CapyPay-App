@@ -2,7 +2,8 @@
 
 Documento de onboarding para nuevos integrantes del equipo. Resume arquitectura, flujo de trabajo y comandos base para ponerse operativo en poco tiempo.
 
-Actualizado al 2026-03-31.
+- Ultima actualizacion: 2026-03-31
+- Ambito: onboarding tecnico y operativo del ecosistema CapyPay
 
 ## 1) Vista general
 

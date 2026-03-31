@@ -417,8 +417,11 @@ import SkeletonLoader from "../../components/ui/SkeletonLoader.astro";
     } from "../../services/api.js";
     import { setupPageWebVitals } from "../../utils/webVitals.js";
     import { userProfile, fetchUserProfile, fetchGamificationSnapshot } from "../../store/userStore.js";
+    import { createPagePerf, runWhenIdle, withTimeout } from "../../utils/pagePerf.js";
 
     setupPageWebVitals("dashboard");
+    const perf = createPagePerf("dashboard");
+    perf.mark("script-init");
     const debugMode = new URLSearchParams(window.location.search).get("debug") === "1";
 
     function debugWarn(...args) {
@@ -682,6 +685,7 @@ import SkeletonLoader from "../../components/ui/SkeletonLoader.astro";
     // end added notification helpers
 
     async function initDashboard() {
+      perf.mark("init-start");
       const btnExpenses = document.getElementById("btn-hist-expenses");
       const btnIncome = document.getElementById("btn-hist-income");
       if (btnExpenses && btnIncome) {
@@ -717,6 +721,15 @@ import SkeletonLoader from "../../components/ui/SkeletonLoader.astro";
       const user = authService.getCurrentUser();
       if (!user) {
         return;
+      }
+
+      const cedulaFast = user?.cedula || "";
+      if (cedulaFast && window.__capypayHistoryCache?.cedula === cedulaFast) {
+        cachedMovements = Array.isArray(window.__capypayHistoryCache.movimientos)
+          ? window.__capypayHistoryCache.movimientos
+          : [];
+        renderHistoryList();
+        perf.mark("history-cache-render", { total: cachedMovements.length });
       }
 
       // User name updater
@@ -1173,14 +1186,22 @@ import SkeletonLoader from "../../components/ui/SkeletonLoader.astro";
 
       // Fetch
       try {
-        await Promise.all([fetchUserProfile(), fetchGamificationSnapshot()]);
+        await Promise.allSettled([
+          withTimeout(fetchUserProfile(), 5000, "profile"),
+          withTimeout(fetchGamificationSnapshot(), 5000, "gamification"),
+        ]);
+        perf.mark("critical-user-data-ready");
         const currentUser = authService.getCurrentUser();
         const activeUserId = currentUser?.id || currentUser?.usuarioId || currentUser?._id;
         const activeCedula = currentUser?.cedula || userProfile.get()?.cedula || "";
 
         registerNivelesPrefetch(activeUserId);
-        await initMissionsExperiment(activeUserId);
-        await Promise.all([fetchAndRenderMissions(), refreshNotifications()]);
+        runWhenIdle(() => {
+          initMissionsExperiment(activeUserId)
+            .then(() => Promise.allSettled([fetchAndRenderMissions(), refreshNotifications()]))
+            .then(() => perf.mark("non-critical-ready"))
+            .catch((err) => perf.mark("non-critical-error", { message: String(err?.message || err) }));
+        }, 1200);
 
         if (!dashboardRuntime.notificationsPollingId) {
           dashboardRuntime.notificationsPollingId = window.setInterval(
@@ -1226,7 +1247,7 @@ import SkeletonLoader from "../../components/ui/SkeletonLoader.astro";
             return;
           }
 
-          const histRes = await userService.getHistory(activeCedula);
+          const histRes = await withTimeout(userService.getHistory(activeCedula), 5500, "dashboard-history");
           if (Array.isArray(histRes)) cachedMovements = histRes;
           else if (histRes && Array.isArray(histRes.movimientos))
             cachedMovements = histRes.movimientos;
@@ -1241,11 +1262,13 @@ import SkeletonLoader from "../../components/ui/SkeletonLoader.astro";
           };
 
           renderHistoryList();
+          perf.mark("history-network-render", { total: cachedMovements.length });
         } catch (e) {
           const container = document.getElementById("history-list-container");
           if (container)
             container.innerHTML =
               '<p class="text-center font-bold text-red-500 text-sm mt-10 uppercase">ERROR AL CARGAR</p>';
+          perf.mark("history-network-error", { message: String(e?.message || e) });
         }
       } catch (err) {
         debugError("DEBUG DASH:", err);
@@ -1255,7 +1278,10 @@ import SkeletonLoader from "../../components/ui/SkeletonLoader.astro";
             '<p class="text-center font-bold text-red-500 text-sm mt-10 uppercase">ERROR INIT: ' +
             err.message +
             "</p>";
+        perf.mark("init-error", { message: String(err?.message || err) });
       }
+
+      runWhenIdle(() => perf.flush(), 3000);
     }
 
     if (document.readyState === "loading") {

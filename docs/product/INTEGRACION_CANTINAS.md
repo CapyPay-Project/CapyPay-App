@@ -7,6 +7,8 @@ Estado actual (2026-03-31):
 - Contrato consumido para catálogo: `GET /api/cantinas`.
 - Compra: `POST /api/cantinas/order`.
 
+- Ambito: contratos backend/frontend para cantina y su checkout asociado.
+
 Una vez que tengas creadas las 4 tablas en Supabase (`cantinas`, `cantina_products`, `cantina_orders`, `cantina_order_items`), los siguientes pasos se dividen en dos frentes: **Backend (API)** y **Frontend (Astro)**.
 
 ## 1. Backend: Nuevos Endpoints en tu API (o Edge Functions)
@@ -25,7 +27,7 @@ const { data, error } = await supabase
   `);
 ```
 
-### b. Obtener las Facultades/Áreas (`GET /api/faculties`)
+### b. Obtener las Facultades/Áreas (`GET /api/cantinas/faculties`)
 Reutilizar un endpoint que liste las facultades registradas.
 ```javascript
 // Lógica esperada en el backend
@@ -47,7 +49,7 @@ Agregaremos un nuevo servicio para manejar las cantinas, justo como tienes con e
 ```javascript
 export const cantinaService = {
   // Obtener áreas / facultades
-  getAreas: () => fetchAPI('/faculties'),
+  getAreas: () => fetchAPI('/cantinas/faculties'),
   
   // Obtener todas las cantinas con sus productos
   getCantinas: () => fetchAPI('/cantinas'),

@@ -2,7 +2,8 @@
 
 Manifesto de referencia para decisiones de producto, UX y estabilidad tecnica en V2.
 
-Ultima actualizacion: 2026-03-31.
+- Ultima actualizacion: 2026-03-31
+- Ambito: direccion de producto para UI, arquitectura y performance
 
 ## Los 3 pilares de V2
 

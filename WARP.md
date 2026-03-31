@@ -2,6 +2,9 @@
 
 Guia operativa para trabajar en CapyPay-App desde terminales asistidas.
 
+- Ultima actualizacion: 2026-03-31
+- Ambito: operacion tecnica, comandos y convenciones de trabajo
+
 ## Estado del proyecto
 
 - Frontend productivo con Astro 5 + Tailwind CSS 4.
