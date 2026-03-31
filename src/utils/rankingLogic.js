@@ -11,6 +11,8 @@ const estado = {
   contactIds: [],
 };
 
+let rankingInitialized = false;
+
 function setText(id, valor) {
   const el = document.getElementById(id);
   if (el) el.textContent = valor;
@@ -177,11 +179,15 @@ function actualizarTarjetaPodio(rango, datos, tipo) {
       avatarEl.classList.remove("hidden");
       avatarEl.src = datos.avatar || `https://api.dicebear.com/9.x/avataaars/svg?seed=${encodeURIComponent(nombreMostrar || "U")}`;
     }
-    if (iconEl) iconEl.classList.add("hidden");
+    if (iconEl) {
+      iconEl.classList.add("hidden");
+      iconEl.classList.remove("flex");
+    }
   } else {
     if (avatarEl) avatarEl.classList.add("hidden");
     if (iconEl) {
       iconEl.classList.remove("hidden");
+      iconEl.classList.add("flex");
       iconEl.textContent = iconoPorFacultad(nombreMostrar);
     }
   }
@@ -346,11 +352,12 @@ function inicializarContador() {
 }
 
 export async function initRanking() {
+  if (rankingInitialized) return;
+  rankingInitialized = true;
+
   const listContainer = document.getElementById("ranking-list-container");
   if (listContainer) {
-    import('@formkit/auto-animate').then(({ default: autoAnimate }) => {
-      autoAnimate(listContainer);
-    }).catch(console.error);
+    aplicarAnimacionLista(listContainer);
   }
 
   const tabUsers     = document.getElementById("tab-users");
@@ -383,16 +390,76 @@ export async function initRanking() {
 
 function cheer() {
   try {
-    import('canvas-confetti').then((confettiModule) => {
-      const confetti = confettiModule.default || confettiModule;
-      if (typeof confetti === 'function') {
-        confetti({
-          particleCount: 100,
-          spread: 70,
-          origin: { y: 0.6 },
-          colors: ['#d7fd48', '#8b5cf6', '#18181b', '#ffffff'] // Neo-brutalism themed confetti
-        });
-      }
+    lanzarConfettiLocal();
+  } catch (_) {
+    // No romper UX si el efecto falla.
+  }
+}
+
+function aplicarAnimacionLista(container) {
+  if (!container || container.dataset.rankAnimated === "1") return;
+  container.dataset.rankAnimated = "1";
+
+  const observer = new MutationObserver(() => {
+    Array.from(container.children).forEach((child, idx) => {
+      if (!(child instanceof HTMLElement)) return;
+      child.style.opacity = "0";
+      child.style.transform = "translateY(6px)";
+      child.style.transition = "opacity 0.2s ease, transform 0.2s ease";
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          child.style.opacity = "1";
+          child.style.transform = "translateY(0)";
+        }, idx * 22);
+      });
     });
-  } catch(e) { console.error("Confetti error:", e); }
+  });
+
+  observer.observe(container, { childList: true });
+}
+
+function lanzarConfettiLocal() {
+  const parent = document.body;
+  if (!parent) return;
+
+  const wrapper = document.createElement("div");
+  wrapper.style.position = "fixed";
+  wrapper.style.inset = "0";
+  wrapper.style.pointerEvents = "none";
+  wrapper.style.zIndex = "9999";
+
+  const colors = ["#d7fd48", "#8b5cf6", "#18181b", "#ffffff"];
+  const total = 28;
+
+  for (let i = 0; i < total; i += 1) {
+    const particle = document.createElement("span");
+    const size = 5 + Math.random() * 6;
+    const left = 8 + Math.random() * 84;
+    const delay = Math.random() * 120;
+    const duration = 550 + Math.random() * 550;
+    const drift = -30 + Math.random() * 60;
+
+    particle.style.position = "absolute";
+    particle.style.left = `${left}%`;
+    particle.style.top = "58%";
+    particle.style.width = `${size}px`;
+    particle.style.height = `${size * 1.8}px`;
+    particle.style.background = colors[i % colors.length];
+    particle.style.border = "2px solid #000";
+    particle.style.transform = "translate(0, 0) rotate(0deg)";
+    particle.style.opacity = "1";
+    particle.style.transition = `transform ${duration}ms cubic-bezier(.2,.8,.2,1), opacity ${duration}ms linear`;
+
+    wrapper.appendChild(particle);
+
+    setTimeout(() => {
+      particle.style.transform = `translate(${drift}px, ${-120 - Math.random() * 120}px) rotate(${120 + Math.random() * 280}deg)`;
+      particle.style.opacity = "0";
+    }, delay);
+  }
+
+  parent.appendChild(wrapper);
+  setTimeout(() => {
+    wrapper.remove();
+  }, 1400);
 }

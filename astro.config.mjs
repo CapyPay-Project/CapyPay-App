@@ -9,6 +9,10 @@ export default defineConfig({
   integrations: [svelte()],
   vite: {
     plugins: [tailwindcss()],
+    optimizeDeps: {
+      // Evita servir una version pre-optimizada obsoleta en dev para nanostores.
+      exclude: ['nanostores']
+    },
     server: {
       hmr: {
         protocol: 'ws',

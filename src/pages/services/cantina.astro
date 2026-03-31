@@ -40,15 +40,7 @@ import FloatingActions from "../../components/widgets/comedor/FloatingActions.as
 
   <FloatingActions hideOrders={true} />
 
-  <!-- Custom Styles -->
   <style>
-    .glass-card {
-      background: rgba(20, 20, 20, 0.6);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      position: relative;
-    }
-
     /* Ocultar scrollbar horizontal en todas las vistas */
     #areas-view,
     #cantinas-view,
@@ -75,31 +67,6 @@ import FloatingActions from "../../components/widgets/comedor/FloatingActions.as
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-    }
-
-    /* Mejorar efecto glow en hover */
-    .glass-card:hover::before {
-      content: '';
-      position: absolute;
-      inset: -2px;
-      border-radius: 1rem;
-      background: linear-linear(45deg, rgba(215, 253, 73, 0.3), rgba(215, 253, 73, 0.1), rgba(215, 253, 73, 0.3));
-      filter: blur(20px);
-      z-index: -1;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    .glass-card:hover::after {
-      content: '';
-      position: absolute;
-      inset: -1px;
-      border-radius: 1rem;
-      background: linear-linear(45deg, rgba(215, 253, 73, 0.4), rgba(215, 253, 73, 0.1), rgba(215, 253, 73, 0.4));
-      filter: blur(30px);
-      z-index: -1;
-      opacity: 1;
-      transition: opacity 0.3s ease;
     }
   </style>
 
@@ -146,10 +113,27 @@ import FloatingActions from "../../components/widgets/comedor/FloatingActions.as
     function renderCantinaDelDia() {
       // Seleccionar una cantina aleatoria de las que están abiertas
       const openCantinas = cantinasData.filter((c) => c.isOpen);
+      const card = document.getElementById("cantina-del-dia");
+
+      if (!card || openCantinas.length === 0) {
+        if (card) {
+          card.classList.add("opacity-60", "cursor-not-allowed");
+          card.onclick = null;
+        }
+        const nameEl = document.getElementById("cantina-del-dia-name");
+        const facultyEl = document.getElementById("cantina-del-dia-faculty");
+        const votesEl = document.getElementById("cantina-del-dia-votes");
+        const imgEl = document.getElementById("cantina-del-dia-img");
+        if (nameEl) nameEl.textContent = "Sin cantinas abiertas";
+        if (facultyEl) facultyEl.textContent = "Vuelve mas tarde";
+        if (votesEl) votesEl.textContent = "0";
+        if (imgEl) imgEl.src = "https://images.unsplash.com/photo-1498654896293-37aacf113fd9?w=400";
+        return;
+      }
       const randomCantina = openCantinas[Math.floor(Math.random() * openCantinas.length)];
 
       // Obtener el nombre del área
-      const area = areasData.find((a) => a.id === randomCantina.faculty);
+      const area = areasData.find((a) => String(a.id) === String(randomCantina.faculty));
 
       // Actualizar UI
       document.getElementById("cantina-del-dia-img").src = randomCantina.image;
@@ -158,12 +142,13 @@ import FloatingActions from "../../components/widgets/comedor/FloatingActions.as
       document.getElementById("cantina-del-dia-votes").textContent = Math.floor(Math.random() * 200) + 150;
 
       // Añadir click para ir a la cantina
-      document.getElementById("cantina-del-dia").addEventListener("click", () => {
+      card.classList.remove("opacity-60", "cursor-not-allowed");
+      card.onclick = () => {
         showCantinasList(area);
         setTimeout(() => {
           showProductsView(randomCantina);
         }, 100);
-      });
+      };
     }
 
     function renderAreasList() {
@@ -173,35 +158,35 @@ import FloatingActions from "../../components/widgets/comedor/FloatingActions.as
 
       areasData.forEach((area) => {
         // Calcular estadísticas del área
-        const areaCantinas = cantinasData.filter((c) => c.faculty === area.id);
+        const areaCantinas = cantinasData.filter((c) => String(c.faculty) === String(area.id));
         const totalCantinas = areaCantinas.length;
         const activeCantinas = areaCantinas.filter((c) => c.isOpen).length;
 
         const card = document.createElement("div");
         card.className =
-          "bg-white border-2 border-black border-4 border-black -3xl overflow-hidden cursor-pointer transition-all hover:bg-white/8 hover:-translate-y-2 duration-500 ease-out group min-w-0";
+          "bg-white border-4 border-black overflow-hidden cursor-pointer transition-all hover:translate-y-1 hover:shadow-none duration-300 ease-out group min-w-0 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]";
         card.innerHTML = `
-          <div class="relative h-48 -2xl overflow-hidden mb-3 shadow-lg">
+          <div class="relative h-44 overflow-hidden border-b-4 border-black bg-[#fff9f0]">
             <img
               src="${area.image}"
               alt="${area.name}"
-              class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             />
-            <div class="absolute top-2 right-2 bg-black/60 backdrop-blur-md px-3 py-1.5 -full border-4 border-black">
-              <span class="text-brand-lime font-black text-xs">${activeCantinas}/${totalCantinas} cantinas</span>
+            <div class="absolute top-2 right-2 bg-[#d7fd48] border-2 border-black px-2 py-1">
+              <span class="text-black font-black text-[10px] uppercase">${activeCantinas}/${totalCantinas}</span>
             </div>
           </div>
-          <div class="px-4 pb-4">
-            <h4 class="font-bold text-base text-white mb-1 truncate">${area.name}</h4>
-            <p class="text-white/50 text-[10px] mb-3 line-clamp-2">${area.description}</p>
+          <div class="p-4">
+            <h4 class="font-black text-base text-black mb-1 uppercase truncate">${area.name}</h4>
+            <p class="text-black/60 text-[10px] font-black mb-3 uppercase line-clamp-2">${area.description}</p>
             <div class="flex items-center justify-between">
-              <span class="text-[10px] text-brand-lime font-medium flex items-center gap-1.5 truncate">
-                <div class="w-1.5 h-1.5 -full bg-brand-lime animate-pulse shrink-0"></div>
+              <span class="text-[10px] text-black font-black uppercase flex items-center gap-1.5 truncate">
+                <div class="w-2 h-2 border border-black bg-[#22c55e] shrink-0"></div>
                 ${activeCantinas} abiertas
               </span>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                class="h-4 w-4 text-brand-lime group-hover:translate-x-1 transition-transform shrink-0"
+                class="h-4 w-4 text-black group-hover:translate-x-1 transition-transform shrink-0"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -224,12 +209,12 @@ import FloatingActions from "../../components/widgets/comedor/FloatingActions.as
     }
 
     function renderCantinasList(area) {
-      const areaCantinas = cantinasData.filter((c) => c.faculty === area.id);
+      const areaCantinas = cantinasData.filter((c) => String(c.faculty) === String(area.id));
       const activeCantinas = areaCantinas.filter((c) => c.isOpen).length;
 
       // Actualizar encabezado
       document.getElementById("area-title").textContent = area.name;
-      document.getElementById("area-stats").innerHTML = `<span class="w-2 h-2 -full bg-brand-lime animate-pulse shrink-0"></span> ${activeCantinas} de ${areaCantinas.length} cantinas activas`;
+      document.getElementById("area-stats").innerHTML = `<span class="w-2 h-2 border border-black bg-[#d7fd48] shrink-0"></span> ${activeCantinas} de ${areaCantinas.length} cantinas activas`;
 
       // Limpiar contenedor de manera suave
       cantinasList.style.opacity = '0';
@@ -239,40 +224,40 @@ import FloatingActions from "../../components/widgets/comedor/FloatingActions.as
       const fragment = document.createDocumentFragment();
 
       areaCantinas.forEach((cantina, index) => {
-        const statusBadge = cantina.isOpen
-          ? `<span class="absolute top-2 left-2 inline-flex items-center gap-1 px-3 py-1.5 -full bg-brand-lime/20 border border-brand-lime/50 text-brand-lime text-xs font-bold uppercase tracking-wider backdrop-blur-md">
-               <span class="w-1.5 h-1.5 -full bg-brand-lime animate-pulse"></span>
+           const statusBadge = cantina.isOpen
+          ? `<span class="absolute top-2 left-2 inline-flex items-center gap-1 px-2 py-1 border-2 border-black bg-[#d7fd48] text-black text-[10px] font-black uppercase tracking-wide">
+            <span class="w-2 h-2 border border-black bg-[#22c55e]"></span>
                Abierto
              </span>`
-          : `<span class="absolute top-2 left-2 inline-flex items-center gap-1 px-3 py-1.5 -full bg-red-500/20 border border-red-500/50 text-red-400 text-xs font-bold uppercase tracking-wider backdrop-blur-md">
-               <span class="w-1.5 h-1.5 -full bg-red-400"></span>
+          : `<span class="absolute top-2 left-2 inline-flex items-center gap-1 px-2 py-1 border-2 border-black bg-[#fecaca] text-black text-[10px] font-black uppercase tracking-wide">
+            <span class="w-2 h-2 border border-black bg-[#ef4444]"></span>
                Cerrado
              </span>`;
 
         const card = document.createElement("div");
         card.className =
-          "bg-white border-2 border-black border-4 border-black -3xl p-4 group transition-all hover:bg-white/8 hover:-translate-y-2 duration-500 ease-out cursor-pointer min-w-0";
+          "bg-white border-4 border-black p-4 group transition-all hover:translate-y-1 hover:shadow-none duration-300 ease-out cursor-pointer min-w-0 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]";
         card.style.opacity = '0';
         card.style.transform = 'translateY(10px)';
         card.innerHTML = `
-          <div class="relative h-48 -2xl overflow-hidden mb-3 shadow-lg">
+          <div class="relative h-44 overflow-hidden mb-3 border-2 border-black bg-[#fff9f0]">
             <img
               src="${cantina.image}"
               alt="${cantina.name}"
-              class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             />
             ${statusBadge}
           </div>
-          <h4 class="font-bold text-base text-white mb-1 truncate">${cantina.name}</h4>
-          <p class="text-white/50 text-[10px] mb-3 line-clamp-2">${cantina.description}</p>
+          <h4 class="font-black text-base text-black mb-1 uppercase truncate">${cantina.name}</h4>
+          <p class="text-black/60 text-[10px] font-black mb-3 uppercase line-clamp-2">${cantina.description}</p>
           <div class="flex items-center justify-between">
-            <span class="text-[10px] text-brand-lime font-medium flex items-center gap-1.5 truncate">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 shrink-0" fill="currentColor" viewBox="0 -960 960 960"><path d="M120-80v-366q-51-14-85.5-56T160-600v-280h80v280h40v-280h80v280h40v-280h80v280q0 56-34.5 98T360-446v366h-80Zm400 0v-320H560v-280q0-83 58.5-141.5T760-880v800h-80Z" /></svg>
+            <span class="text-[10px] text-black font-black uppercase flex items-center gap-1.5 truncate">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4"></path><circle cx="9" cy="19" r="1"></circle><circle cx="17" cy="19" r="1"></circle></svg>
               ${cantina.products.length} productos
             </span>
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              class="h-4 w-4 text-brand-lime group-hover:translate-x-1 transition-transform shrink-0"
+              class="h-4 w-4 text-black group-hover:translate-x-1 transition-transform shrink-0"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -318,7 +303,7 @@ import FloatingActions from "../../components/widgets/comedor/FloatingActions.as
         const isOutOfStock = !product.isAvailable || product.stock <= 0;
         
         const card = document.createElement("div");
-        card.className = `bg-white border-2 border-black border-4 border-black -3xl p-4 group transition-all ${isOutOfStock ? 'opacity-70 grayscale-[0.5]' : 'hover:bg-white/8 hover:-translate-y-2'} duration-500 ease-out min-w-0`;
+        card.className = `bg-white border-4 border-black p-3 sm:p-4 group transition-all ${isOutOfStock ? 'opacity-75 grayscale-[0.35]' : 'hover:translate-y-1 hover:shadow-none'} duration-300 ease-out min-w-0 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]`;
         
         const stockOverlay = isOutOfStock ? `
           <div class="absolute inset-0 bg-black/60 backdrop-blur-[2px] z-10 flex flex-col items-center justify-center">
@@ -329,25 +314,25 @@ import FloatingActions from "../../components/widgets/comedor/FloatingActions.as
         ` : '';
         
         const buttonClasses = isOutOfStock 
-            ? 'w-full py-2.5 -xl border-4 border-black text-white/30 font-bold text-[10px] uppercase bg-white border-2 border-black cursor-not-allowed'
-            : 'buy-btn w-full py-2.5 -xl border border-brand-lime/30 text-brand-lime font-bold text-[10px] uppercase hover:bg-brand-lime hover:text-black transition-all cursor-pointer';
+          ? 'w-full py-2.5 border-2 border-black text-black/40 font-black text-[10px] uppercase bg-[#f3f4f6] cursor-not-allowed'
+          : 'buy-btn w-full py-2.5 border-2 border-black text-black font-black text-[10px] uppercase bg-[#d7fd48] hover:translate-y-1 hover:shadow-none transition-all cursor-pointer shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]';
 
         card.innerHTML = `
-          <div class="relative h-48 -2xl overflow-hidden mb-3 shadow-lg ${isOutOfStock ? 'scale-[0.98]' : ''}">
+          <div class="relative h-40 sm:h-44 overflow-hidden mb-3 border-2 border-black bg-[#fff9f0] ${isOutOfStock ? 'scale-[0.98]' : ''}">
             ${stockOverlay}
             <img
               src="${product.image}"
               alt="${product.name}"
-              class="w-full h-full object-cover ${isOutOfStock ? '' : 'group-hover:scale-110'} transition-transform duration-700"
+              class="w-full h-full object-cover ${isOutOfStock ? '' : 'group-hover:scale-105'} transition-transform duration-500"
             />
-            <div class="absolute top-2 right-2 bg-black/60 backdrop-blur-md px-2 py-0.5 -full border-4 border-black z-20">
-              <span class="text-brand-lime font-black text-[10px]">+${product.xpReward} XP</span>
+            <div class="absolute top-2 right-2 bg-[#d7fd48] px-2 py-0.5 border-2 border-black z-20">
+              <span class="text-black font-black text-[10px] uppercase">+${product.xpReward} XP</span>
             </div>
           </div>
-          <h4 class="font-bold text-base text-white mb-1 truncate ${isOutOfStock ? 'text-white/60' : ''}">${product.name}</h4>
+          <h4 class="font-black text-base text-black uppercase mb-1 truncate ${isOutOfStock ? 'text-black/50' : ''}">${product.name}</h4>
           <div class="flex items-center justify-between mb-3">
-            <span class="text-white/50 text-[10px]">Bs ${product.priceBs}</span>
-            <span class="text-brand-lime font-black text-[10px] ${isOutOfStock ? 'opacity-50' : ''}">${product.priceCapys} BARAS</span>
+            <span class="text-black/70 text-[10px] font-black uppercase">Bs ${product.priceBs}</span>
+            <span class="text-[#8b5cf6] font-black text-[10px] uppercase ${isOutOfStock ? 'opacity-50' : ''}">${product.priceCapys} BARAS</span>
           </div>
           <button
             class="${buttonClasses}"
@@ -425,12 +410,12 @@ import FloatingActions from "../../components/widgets/comedor/FloatingActions.as
       const statusBadge = document.getElementById("cantina-status");
       if (cantina.isOpen) {
         statusBadge.className =
-          "px-2 sm:px-3 py-1 -full text-[10px] sm:text-xs font-bold uppercase tracking-wider bg-brand-lime/20 border border-brand-lime/50 text-brand-lime";
-        statusBadge.innerHTML = `<span class="inline-flex items-center gap-1 sm:gap-1.5"><span class="w-1 sm:w-1.5 h-1 sm:h-1.5 -full bg-brand-lime animate-pulse"></span>Abierto</span>`;
+          "px-2 sm:px-3 py-1 border-2 border-black text-[10px] sm:text-xs font-black uppercase tracking-wider bg-[#d7fd48] text-black";
+        statusBadge.innerHTML = `<span class="inline-flex items-center gap-1 sm:gap-1.5"><span class="w-2 h-2 border border-black bg-[#22c55e]"></span>Abierto</span>`;
       } else {
         statusBadge.className =
-          "px-2 sm:px-3 py-1 -full text-[10px] sm:text-xs font-bold uppercase tracking-wider bg-red-500/20 border border-red-500/50 text-red-400";
-        statusBadge.innerHTML = `<span class="inline-flex items-center gap-1 sm:gap-1.5"><span class="w-1 sm:w-1.5 h-1 sm:h-1.5 -full bg-red-400"></span>Cerrado</span>`;
+          "px-2 sm:px-3 py-1 border-2 border-black text-[10px] sm:text-xs font-black uppercase tracking-wider bg-[#fecaca] text-black";
+        statusBadge.innerHTML = `<span class="inline-flex items-center gap-1 sm:gap-1.5"><span class="w-2 h-2 border border-black bg-[#ef4444]"></span>Cerrado</span>`;
       }
 
       // Renderizar productos o mensaje de cerrado
@@ -443,11 +428,11 @@ import FloatingActions from "../../components/widgets/comedor/FloatingActions.as
       } else {
         productsTitle.classList.add("hidden");
         productsGrid.innerHTML = `
-          <div class="col-span-full flex flex-col items-center justify-center py-16 text-center">
-            <div class="w-24 h-24 -full bg-red-500/10 flex items-center justify-center mb-6">
+          <div class="col-span-full flex flex-col items-center justify-center py-14 text-center bg-white border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] p-6">
+            <div class="w-18 h-18 border-2 border-black bg-[#fecaca] flex items-center justify-center mb-4">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                class="h-12 w-12 text-red-400"
+                class="h-9 w-9 text-[#b91c1c]"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -460,14 +445,14 @@ import FloatingActions from "../../components/widgets/comedor/FloatingActions.as
                 ></path>
               </svg>
             </div>
-            <h4 class="text-2xl font-bold text-white mb-3">Esta cantina está cerrada</h4>
-            <p class="text-white/60 text-sm max-w-md">
+            <h4 class="text-2xl font-black uppercase text-black mb-3">Esta cantina esta cerrada</h4>
+            <p class="text-black/70 text-sm font-bold uppercase max-w-md">
               Lo sentimos, pero por el momento esta cantina no está disponible para realizar compras.
               Por favor, intenta con otra cantina de la facultad.
             </p>
             <button
               onclick="showCantinasList(currentArea)"
-              class="mt-8 px-6 py-3 -xl bg-brand-lime hover:bg-brand-lime/90 text-black font-bold text-sm uppercase tracking-wider transition-all hover:scale-105 active:scale-95"
+              class="mt-7 px-5 py-3 border-4 border-black bg-[#d7fd48] hover:translate-y-1 hover:shadow-none text-black font-black text-xs uppercase tracking-wider transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
             >
               Volver a cantinas
             </button>
@@ -517,7 +502,7 @@ import FloatingActions from "../../components/widgets/comedor/FloatingActions.as
       addItemToCart(item);
       
       isCartOpen.set(true);
-      showToast(`¡${item.name} agregado al carrito!`, "success");
+      showToast("Carrito", `¡${item.name} agregado al carrito!`, "success");
     }
 
     function updateUserXP(xpToAdd) {
@@ -534,8 +519,12 @@ import FloatingActions from "../../components/widgets/comedor/FloatingActions.as
     // INICIALIZACIÓN Y SUSCRIPCIÓN AL CARRITO
     // ==========================================
 
+    function getAreaImage(areaId, index = 0) {
+      const seed = String(areaId ?? index ?? 0).toLowerCase().replace(/\s+/g, "-");
+      return `https://picsum.photos/seed/capy-area-${seed}/900/600`;
+    }
+
     async function loadCantinaData() {
-      console.log("[CANTINA] Iniciando carga de datos...");
       initDOMElements(); // Refresh DOM references
 
       try {
@@ -544,9 +533,15 @@ import FloatingActions from "../../components/widgets/comedor/FloatingActions.as
           cantinaService.getCantinas()
         ]);
 
-        console.log("[CANTINA] Respuestas recibidas: Áreas:", areasRes, "Cantinas:", cantinasRes);
+        const rawAreas = Array.isArray(areasRes?.faculties)
+          ? areasRes.faculties
+          : Array.isArray(areasRes?.data)
+            ? areasRes.data
+            : Array.isArray(areasRes)
+              ? areasRes
+              : [];
 
-        if (areasRes && areasRes.faculties) {
+        if (rawAreas.length > 0) {
           const colors = [
             "bg-blue-500/20 border-blue-500/30 text-blue-400",
             "bg-green-500/20 border-green-500/30 text-green-400",
@@ -556,17 +551,25 @@ import FloatingActions from "../../components/widgets/comedor/FloatingActions.as
             "bg-yellow-500/20 border-yellow-500/30 text-yellow-400"
           ];
           
-          areasData = areasRes.faculties.map((f, i) => ({
+          areasData = rawAreas.map((f, i) => ({
             id: f.id,
-            name: f.name,
-            image: "https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=600",
-            description: "Área de facultad",
+            name: f.name || f.nombre || `Facultad ${f.id ?? i + 1}`,
+            image: f.image_url || f.image || getAreaImage(f.id, i),
+            description: f.description || f.descripcion || "Area de facultad",
             color: colors[i % colors.length]
           }));
         }
 
-        if (cantinasRes && cantinasRes.cantinas) {
-          cantinasData = cantinasRes.cantinas.map(c => ({
+        const rawCantinas = Array.isArray(cantinasRes?.cantinas)
+          ? cantinasRes.cantinas
+          : Array.isArray(cantinasRes?.data)
+            ? cantinasRes.data
+            : Array.isArray(cantinasRes)
+              ? cantinasRes
+              : [];
+
+        if (rawCantinas.length > 0) {
+          cantinasData = rawCantinas.map(c => ({
             id: c.id,
             name: c.name,
             faculty: c.faculty_id,
@@ -585,22 +588,34 @@ import FloatingActions from "../../components/widgets/comedor/FloatingActions.as
             }))
           }));
         }
-        
-        console.log("[CANTINA] Datos procesados listos para renderizar. areasData:", areasData.length, "cantinasData:", cantinasData.length);
 
+        if (areasData.length === 0 && cantinasData.length > 0) {
+          const inferred = new Map();
+          cantinasData.forEach((c) => {
+            const key = String(c.faculty ?? "sin-facultad");
+            if (!inferred.has(key)) {
+              inferred.set(key, {
+                id: c.faculty ?? key,
+                name: c.faculty_name || `Facultad ${key}`,
+                image: getAreaImage(key, inferred.size),
+                description: "Area inferida por cantinas",
+                color: "bg-blue-500/20 border-blue-500/30 text-blue-400"
+              });
+            }
+          });
+          areasData = Array.from(inferred.values());
+        }
+        
         if(areasData.length > 0) {
            renderAreasList();
            if (cantinasData.length > 0) {
               renderCantinaDelDia();
            } else {
-             // Si hay facultades pero no cantinas, aún así renderizamos facultades
-             console.log("[CANTINA] Hay facultades pero no cantinas.");
-             const cantinaDelDiaSection = document.getElementById("cantina-del-dia");
-             if (cantinaDelDiaSection) cantinaDelDiaSection.classList.add("hidden");
+             // Si hay facultades pero no cantinas, aun asi renderizamos facultades.
+             renderCantinaDelDia();
            }
         } else {
-           console.log("[CANTINA] No hay areasData para renderizar.");
-           areasView.innerHTML = "<div class='text-center py-20 text-white/50'>No hay cantinas registradas en la base de datos</div>";
+            areasView.innerHTML = "<div class='text-center py-20 text-black/70 font-black uppercase border-4 border-black bg-white shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] p-6'>No hay cantinas registradas en la base de datos</div>";
         }
 
       } catch (error) {
@@ -633,14 +648,20 @@ import FloatingActions from "../../components/widgets/comedor/FloatingActions.as
       }
     });
 
-    // Initialize Page Logic
-    document.addEventListener("astro:page-load", () => {
-      console.log("[CANTINA] Evento astro:page-load detectado");
-      // Resubscribe to user events if buttons are in the DOM now
+    let hasInitializedCantinaPage = false;
+    function initCantinaPageOnce() {
+      if (hasInitializedCantinaPage) return;
+      hasInitializedCantinaPage = true;
+
       const mBtn = document.getElementById("manual-cart-btn");
       if (mBtn) mBtn.addEventListener("click", () => isCartOpen.set(true));
-      
+
       loadCantinaData();
+    }
+
+    // Initialize Page Logic
+    document.addEventListener("astro:page-load", () => {
+      initCantinaPageOnce();
     });
     
     // Fallback for non-ViewTransitions if used (or initial load)
@@ -648,8 +669,7 @@ import FloatingActions from "../../components/widgets/comedor/FloatingActions.as
       document.readyState === "complete" ||
       document.readyState === "interactive"
     ) {
-      console.log("[CANTINA] Ejecutando loadCantinaData desde fallback de document.readyState");
-      loadCantinaData();
+      initCantinaPageOnce();
     }
   </script>
 </MainLayout>

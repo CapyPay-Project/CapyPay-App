@@ -5,7 +5,7 @@ const { amount = "0.00" } = Astro.props;
 
 <div
   id="wallet-card"
-  class="wallet-card relative overflow-hidden p-6 sm:p-8 border-4 border-black box-shadow-brutal w-full rounded-3xl transition-transform"
+  class="wallet-card relative overflow-hidden p-4 sm:p-8 border-4 border-black box-shadow-brutal w-full rounded-3xl transition-transform"
   style="--card-base:#d7fd48;--card-accent:#8b5cf6;--card-ink:#111111;--card-overlay:#ffffff22;"
 >
   <!-- Decorative background -->
@@ -33,56 +33,53 @@ const { amount = "0.00" } = Astro.props;
   >
   </div>
 
-  <div class="relative z-10 flex flex-col justify-between h-full min-h-42.5">
+  <div class="relative z-10 flex flex-col justify-between h-full min-h-40 sm:min-h-42.5">
     <!-- Top Row -->
-    <div class="flex justify-between items-start">
+    <div class="flex justify-between items-start gap-2">
       <div
         id="wallet-card-label"
-        class="bg-black text-white px-3 py-1 font-black text-[10px] uppercase tracking-widest border-2 border-black rounded-md"
+        class="bg-black text-white px-2.5 sm:px-3 py-1 font-black text-[9px] sm:text-[10px] uppercase tracking-wider border-2 border-black rounded-md"
       >
-        ACTIVOS FIJOS
+        SALDO DISPONIBLE
       </div>
-      <div class="flex items-center gap-2">
-        <span
-          id="wallet-card-tier"
-          class="border-2 border-black bg-white px-2 py-0.5 text-[10px] font-black uppercase rounded-md"
-          >Nivel 1</span
-        >
-        <div
-          class="w-8 h-8 rounded-full border-2 border-black mix-blend-multiply opacity-70 bg-white/70"
-        >
-        </div>
-        <div
-          id="wallet-card-mark"
-          class="w-8 h-8 rounded-full border-2 border-black -ml-4 mix-blend-multiply opacity-80"
-          style="background: var(--card-accent);"
-        >
+      <div class="flex items-center gap-1.5 sm:gap-2">
+        <div class="relative w-12 h-7 sm:w-14 sm:h-8" aria-hidden="true">
+          <div
+            id="wallet-card-circle-a"
+            class="absolute right-5 top-0 w-7 h-7 sm:w-8 sm:h-8 rounded-full border-2 border-black bg-white/80 mix-blend-multiply"
+          >
+          </div>
+          <div
+            id="wallet-card-mark"
+            class="absolute right-0 top-0 w-7 h-7 sm:w-8 sm:h-8 rounded-full border-2 border-black mix-blend-multiply opacity-85"
+            style="background: var(--card-accent);"
+          >
+          </div>
         </div>
       </div>
     </div>
 
     <!-- Center balance -->
-    <div class="mt-4 mb-6">
-      <div class="flex items-center justify-between mb-3">
+    <div class="mt-3 sm:mt-4 mb-4 sm:mb-6">
+      <div class="flex items-center justify-between mb-2 sm:mb-3">
         <div
           class="wallet-chip border-2 border-black rounded-md"
           aria-hidden="true"
         >
         </div>
-        <span
-          class="text-[10px] font-black uppercase tracking-[0.18em] text-black/70"
-          >CapyPay Card</span
+        <button
+          id="wallet-card-number"
+          type="button"
+          class="text-[11px] sm:text-sm font-black text-black tracking-[0.12em] sm:tracking-[0.18em] border border-black/20 px-1.5 py-0.5 rounded-sm hover:bg-black/5 transition-colors"
+          aria-label="Alternar visibilidad del numero de tarjeta"
         >
+          0117 0000 0000 0000
+        </button>
       </div>
-      <p
-        class="text-[10px] font-black uppercase tracking-[0.22em] text-black/80 mb-2"
-      >
-        Saldo disponible
-      </p>
-      <span class="text-xl sm:text-2xl font-black text-black mr-1">Bs.</span>
+      <span class="text-lg sm:text-2xl font-black text-black mr-1">Bs.</span>
       <span
         id="balance-amount"
-        class="text-5xl sm:text-6xl lg:text-7xl font-black text-black tracking-tighter mix-blend-normal"
+        class="text-4xl sm:text-6xl lg:text-7xl font-black text-black tracking-tight sm:tracking-tighter mix-blend-normal"
       >
         {amount}
       </span>
@@ -92,22 +89,16 @@ const { amount = "0.00" } = Astro.props;
     <div class="flex justify-between items-end">
       <div>
         <p
-          class="text-[10px] font-black uppercase text-black/70 tracking-widest"
+          class="text-[9px] sm:text-[10px] font-black uppercase text-black/65 tracking-[0.14em]"
         >
-          TITULAR
+          TITULAR DE LA CUENTA
         </p>
         <p
           id="balance-username"
-          class="text-sm sm:text-base font-black text-black uppercase tracking-widest mt-0.5"
+          class="text-base sm:text-lg font-black text-black tracking-wide mt-0.5"
         >
           MAXIMUS CAPYBARA
         </p>
-      </div>
-      <div
-        id="wallet-card-number"
-        class="text-base sm:text-lg font-black text-black tracking-[0.2em]"
-      >
-        **** 0921
       </div>
     </div>
   </div>
@@ -266,6 +257,8 @@ const { amount = "0.00" } = Astro.props;
 
   let currentLevel = 1;
   let hasMountedTheme = false;
+  let currentFullCardNumber = "";
+  let isCardMasked = true;
 
   function triggerShine() {
     const shine = document.getElementById("wallet-shine");
@@ -289,7 +282,7 @@ const { amount = "0.00" } = Astro.props;
     const card = document.getElementById("wallet-card");
     const label = document.getElementById("wallet-card-label");
     const mark = document.getElementById("wallet-card-mark");
-    const tier = document.getElementById("wallet-card-tier");
+    const circleA = document.getElementById("wallet-card-circle-a");
 
     if (card) {
       card.style.setProperty("--card-base", theme.base);
@@ -307,9 +300,8 @@ const { amount = "0.00" } = Astro.props;
       mark.style.background = theme.accent;
     }
 
-    if (tier) {
-      tier.textContent = `Nivel ${safeLevel} · ${theme.label}`;
-      tier.style.background = `${theme.base}`;
+    if (circleA) {
+      circleA.style.background = `${theme.base}cc`;
     }
 
     if (safeLevel !== currentLevel) {
@@ -327,17 +319,89 @@ const { amount = "0.00" } = Astro.props;
     }
   }
 
+  function luhnCheckDigit(numberWithoutCheck) {
+    let sum = 0;
+    let doubleNext = true;
+
+    for (let i = numberWithoutCheck.length - 1; i >= 0; i -= 1) {
+      let digit = Number(numberWithoutCheck[i]);
+      if (doubleNext) {
+        digit *= 2;
+        if (digit > 9) digit -= 9;
+      }
+      sum += digit;
+      doubleNext = !doubleNext;
+    }
+
+    return String((10 - (sum % 10)) % 10);
+  }
+
+  function maskCardNumber(fullNumber) {
+    const compact = String(fullNumber || "").replace(/\s+/g, "");
+    if (compact.length !== 16) return fullNumber;
+    const first = compact.slice(0, 4);
+    const last = compact.slice(-4);
+    return `${first} **** **** ${last}`;
+  }
+
+  function renderCardNumber() {
+    const cardNumberEl = document.getElementById("wallet-card-number");
+    if (!cardNumberEl || !currentFullCardNumber) return;
+
+    cardNumberEl.textContent = isCardMasked
+      ? maskCardNumber(currentFullCardNumber)
+      : currentFullCardNumber;
+  }
+
+  function generateUniqueCardNumber(user, profile) {
+    const seed = String(
+      user?.id || user?.cedula || profile?.cedula || user?.email || profile?.name || "capypay-guest",
+    );
+
+    // Hash FNV-1a para derivar un numero estable por usuario.
+    let hash = 2166136261;
+    for (let i = 0; i < seed.length; i += 1) {
+      hash ^= seed.charCodeAt(i);
+      hash = Math.imul(hash, 16777619);
+    }
+
+    // Easter egg Halo: 117 (Jefe Maestro) en prefijo bancario ficticio.
+    const BANK_BIN = "0117";
+    const digits = [];
+    let value = hash >>> 0;
+    for (let i = 0; i < 11; i += 1) {
+      value = (Math.imul(value, 1664525) + 1013904223) >>> 0;
+      digits.push(String(value % 10));
+    }
+
+    const partial = `${BANK_BIN}${digits.join("")}`;
+    const checkDigit = luhnCheckDigit(partial);
+    const fullNumber = `${partial}${checkDigit}`;
+
+    return fullNumber.match(/.{1,4}/g)?.join(" ") || fullNumber;
+  }
+
+  function formatCardHolderName(rawName) {
+    const safe = String(rawName || "Usuario CapyPay").trim();
+    if (!safe) return "Usuario CapyPay";
+    return safe
+      .split(/\s+/)
+      .slice(0, 3)
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(" ");
+  }
+
   function updateBalanceFromProfile(profile) {
     const user = authService.getCurrentUser();
     const nameEl = document.getElementById("balance-username");
+    const userName = user?.nombre || user?.name || profile?.name || "Usuario CapyPay";
+
     if (nameEl) {
-      nameEl.innerText = (
-        user?.nombre ||
-        user?.name ||
-        profile?.name ||
-        "Cormex User"
-      ).toUpperCase();
+      nameEl.innerText = formatCardHolderName(userName);
     }
+
+    currentFullCardNumber = generateUniqueCardNumber(user, profile);
+    renderCardNumber();
 
     const amountEl = document.getElementById("balance-amount");
     const balance = Number(profile?.balance ?? user?.balance ?? 0);
@@ -365,6 +429,12 @@ const { amount = "0.00" } = Astro.props;
   } else {
     updateBalanceFromProfile(userProfile.get());
   }
+
+  const cardNumberBtn = document.getElementById("wallet-card-number");
+  cardNumberBtn?.addEventListener("click", () => {
+    isCardMasked = !isCardMasked;
+    renderCardNumber();
+  });
 
   userProfile.subscribe((profile) => {
     updateBalanceFromProfile(profile);

@@ -14,8 +14,6 @@ const extendedNavItems = [
   { href: "/account/ranking", label: "Ranking", icon: "emoji_events" },
 ];
 
-const quickLeftItems = quickNavItems.slice(0, 2);
-const quickRightItems = quickNavItems.slice(2);
 ---
 
 <div class="md:hidden fixed inset-x-0 bottom-0 z-50 pointer-events-none">
@@ -57,33 +55,18 @@ const quickRightItems = quickNavItems.slice(2);
 
   <nav
     id="mobile-bottom-nav"
-    class="relative w-full bg-[#FFF9F0] border-t-4 border-black px-2 pt-3 pb-[calc(env(safe-area-inset-bottom,0px)+10px)] shadow-[0_-3px_10px_rgba(0,0,0,0.13)] pointer-events-auto"
+    class="relative w-full bg-[#FFF9F0] border-t-4 border-black px-2 pt-4 pb-[calc(env(safe-area-inset-bottom,0px)+10px)] shadow-[0_-3px_10px_rgba(0,0,0,0.13)] pointer-events-auto"
   >
-    <div class="grid grid-cols-5 gap-1 items-end">
+    <div class="grid grid-cols-4 gap-1 items-end">
       {
-        quickLeftItems.map((item) => (
+        quickNavItems.map((item) => (
           <a
             href={item.href}
-            class="mobile-nav-item flex flex-col items-center justify-center gap-0.5 rounded-sm text-black hover:bg-black hover:text-[#d7fd48] transition-colors min-h-12"
+            class="mobile-nav-item flex flex-col items-center justify-center gap-0.5 rounded-sm text-black hover:bg-black hover:text-[#d7fd48] transition-colors min-h-12 px-1"
             data-nav={item.key}
           >
             <span class="material-symbols-outlined text-[20px] leading-none">{item.icon}</span>
-            <span class="text-[10px] font-black uppercase tracking-wide">{item.label}</span>
-          </a>
-        ))
-      }
-
-      <div class="min-h-12" aria-hidden="true"></div>
-
-      {
-        quickRightItems.map((item) => (
-          <a
-            href={item.href}
-            class="mobile-nav-item flex flex-col items-center justify-center gap-0.5 rounded-sm text-black hover:bg-black hover:text-[#d7fd48] transition-colors min-h-12"
-            data-nav={item.key}
-          >
-            <span class="material-symbols-outlined text-[20px] leading-none">{item.icon}</span>
-            <span class="text-[10px] font-black uppercase tracking-wide">{item.label}</span>
+            <span class="text-[9px] font-black uppercase tracking-[0.04em] leading-none truncate max-w-full">{item.label}</span>
           </a>
         ))
       }
@@ -91,13 +74,13 @@ const quickRightItems = quickNavItems.slice(2);
 
     <button
       id="mobile-nav-more-btn"
-      class="absolute left-1/2 -translate-x-1/2 -top-7 w-16 h-16 bg-[#d7fd48] border-4 border-black shadow-[0_6px_0px_0px_rgba(0,0,0,1)] rounded-full flex flex-col items-center justify-center gap-0 text-black hover:brightness-95 transition-all"
+      class="absolute left-1/2 -translate-x-1/2 -top-7 w-13 h-13 bg-[#d7fd48] border-4 border-black shadow-[0_4px_0px_0px_rgba(0,0,0,1)] rounded-full flex flex-col items-center justify-center gap-0 text-black hover:brightness-95 transition-all"
       type="button"
       aria-expanded="false"
       aria-controls="mobile-nav-panel"
     >
-      <span class="material-symbols-outlined text-[20px] leading-none">menu_open</span>
-      <span class="text-[10px] font-black uppercase tracking-wide">Mas</span>
+      <span class="material-symbols-outlined text-[16px] leading-none">menu_open</span>
+      <span class="text-[8px] font-black uppercase tracking-[0.04em] leading-none">Mas</span>
     </button>
   </nav>
 </div>

@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { authService, userService, gamificationService } from "../../services/api.js";
-import { calculateLevel } from "../levelsConfig.js";
+import { calculateLevel } from "../../config/levelsConfig.js";
 
 const BADGES_STORAGE_PREFIX = "capypay_badges_unlocked";
 const MAX_AVATAR_FILE_SIZE = 2 * 1024 * 1024;

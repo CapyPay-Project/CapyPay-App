@@ -172,6 +172,12 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
               >
                 1
               </h3>
+              <div id="user-level-badge" class="mt-1 inline-flex items-center gap-1.5 border-2 border-black bg-white px-2 py-0.5">
+                <span id="user-level-icon" class="inline-flex items-center justify-center w-3.5 h-3.5" aria-hidden="true">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-full h-full" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><path d="M9 9h.01"></path><path d="M15 9h.01"></path><path d="M10 3 8 8"></path><path d="M14 3 16 8"></path><path d="M3 13c0-5 4-9 9-9s9 4 9 9a9 9 0 0 1-18 0"></path></svg>
+                </span>
+                <span id="user-level-name" class="text-[10px] font-black uppercase tracking-wide">Novato</span>
+              </div>
               <div class="w-full bg-white border-2 border-black h-2 mt-1">
                 <div
                   class="bg-[#8b5cf6] h-full transition-all duration-300"
@@ -430,6 +436,33 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
 
     let cachedMovements = [];
     let currentFilter = "all";
+    const LEVEL_WIDGET_META = {
+      1: { icon: "paw", name: "Novato", bg: "#E2E8F0", fg: "#334155" },
+      2: { icon: "grad", name: "Bachiller", bg: "#BAE6FD", fg: "#075985" },
+      3: { icon: "badge", name: "Licenciado", bg: "#E9D5FF", fg: "#6B21A8" },
+      4: { icon: "sparkles", name: "Magister", bg: "#BBF7D0", fg: "#166534" },
+      5: { icon: "shield", name: "Doctor", bg: "#FDE68A", fg: "#92400E" },
+      6: { icon: "crown", name: "Capy Legend", bg: "#FECACA", fg: "#9F1239" },
+    };
+
+    function getLevelLucideSvg(iconKey) {
+      if (iconKey === "grad") {
+        return '<svg xmlns="http://www.w3.org/2000/svg" class="w-full h-full" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 10-10-5L2 10l10 5 10-5Z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>';
+      }
+      if (iconKey === "badge") {
+        return '<svg xmlns="http://www.w3.org/2000/svg" class="w-full h-full" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m8 21 4-2 4 2v-5"></path><path d="M12 3 4 7v6c0 4 3 7 8 8 5-1 8-4 8-8V7l-8-4Z"></path></svg>';
+      }
+      if (iconKey === "sparkles") {
+        return '<svg xmlns="http://www.w3.org/2000/svg" class="w-full h-full" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 3.9L18 9l-4.1 2.1L12 15l-1.9-3.9L6 9l4.1-2.1L12 3Z"></path><path d="M5 17l.9 1.9L8 20l-2.1 1.1L5 23l-.9-1.9L2 20l2.1-1.1L5 17Z"></path><path d="M19 13l1 2 2 1-2 1-1 2-1-2-2-1 2-1 1-2Z"></path></svg>';
+      }
+      if (iconKey === "shield") {
+        return '<svg xmlns="http://www.w3.org/2000/svg" class="w-full h-full" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v6c0 5 3.5 8 7 9 3.5-1 7-4 7-9V6l-7-3Z"></path><path d="m9 12 2 2 4-4"></path></svg>';
+      }
+      if (iconKey === "crown") {
+        return '<svg xmlns="http://www.w3.org/2000/svg" class="w-full h-full" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 8 4.5 4 4.5-7 4.5 7L21 8l-2 11H5L3 8Z"></path><path d="M8 19h8"></path></svg>';
+      }
+      return '<svg xmlns="http://www.w3.org/2000/svg" class="w-full h-full" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><path d="M9 9h.01"></path><path d="M15 9h.01"></path><path d="M10 3 8 8"></path><path d="M14 3 16 8"></path><path d="M3 13c0-5 4-9 9-9s9 4 9 9a9 9 0 0 1-18 0"></path></svg>';
+    }
     const dashboardRuntime =
       window.__capypayDashboardRuntime ||
       (window.__capypayDashboardRuntime = {
@@ -1237,14 +1270,26 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
     // Suscribirse al store de usuario para actualizar nivel
     userProfile.subscribe((profile) => {
       const levelEl = document.getElementById("user-level");
+      const levelBadgeEl = document.getElementById("user-level-badge");
+      const levelNameEl = document.getElementById("user-level-name");
+      const levelIconEl = document.getElementById("user-level-icon");
       const progressEl = document.getElementById("level-progress");
       const benefitChip = document.getElementById("level-benefit-chip");
       const vipChip = document.getElementById("vip-chip");
       const discountPct = Math.round((profile?.benefits?.descuento || 0) * 100);
       const streak = profile?.streakStatus || {};
       const level = Number(profile?.level || 1);
+      const meta = LEVEL_WIDGET_META[level] || LEVEL_WIDGET_META[1];
+      const rawLevelName = String(profile?.levelName || meta.name || "Novato");
+      const cleanLevelName = rawLevelName.split("(")[0].trim() || meta.name;
 
       if (levelEl) levelEl.textContent = level;
+      if (levelNameEl) levelNameEl.textContent = cleanLevelName;
+      if (levelIconEl) levelIconEl.innerHTML = getLevelLucideSvg(meta.icon);
+      if (levelBadgeEl) {
+        levelBadgeEl.style.background = meta.bg;
+        levelBadgeEl.style.color = meta.fg;
+      }
       if (progressEl) progressEl.style.width = `${profile.progress || 0}%`;
       if (benefitChip) benefitChip.textContent = `Beneficio: ${discountPct}%`;
 
