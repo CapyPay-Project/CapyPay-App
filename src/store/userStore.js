@@ -101,3 +101,55 @@ userProfile.subscribe((profile) => {
     localStorage.setItem('capyPayUserProfile', JSON.stringify(profile));
   }
 });
+// Function to update only the level data (useful after XP changes)
+export async function updateUserLevel() {
+  try {
+    const levelData = await userService.getUserLevel();
+    if (levelData) {
+      const currentProfile = userProfile.get();
+      const newLevel = Number(levelData?.level?.id || 1);
+      userProfile.set({
+        ...currentProfile,
+        level: newLevel,
+        levelName: levelData?.level?.nombre || currentProfile.levelName || 'Novato (Cachorro)',
+        progress: levelData.progress || 0,
+        nextXp: levelData.nextXp || 100,
+        benefits: levelData.benefits || { descuento: 0, accesoVIP: false }      
+      });
+
+      if (typeof window !== 'undefined' && newLevel > Number(currentProfile.level || 1)) {
+        window.dispatchEvent(new CustomEvent('capypay-level-up', {
+          detail: {
+            previousLevel: Number(currentProfile.level || 1),
+            newLevel,
+            levelName: levelData?.level?.nombre || 'Nuevo nivel'
+          }
+        }));
+      }
+    }
+  } catch (error) {
+    console.error("Error updating user level:", error);
+  }
+}
+
+// Preload de snapshot para consumo en widgets/dashboard.
+export async function fetchGamificationSnapshot() {
+  try {
+    const [weeklyData, streakData, configData] = await Promise.all([
+      gamificationService.getWeeklyMissions(),
+      gamificationService.getStreak(),
+      gamificationService.getPublicConfig()
+    ]);
+
+    const current = userProfile.get();
+    userProfile.set({
+      ...current,
+      weeklyMissions: weeklyData?.missions || [],
+      missionSegmentation: weeklyData?.segmentation || current.missionSegmentation,
+      streakStatus: streakData?.streak || current.streakStatus,
+      gamificationConfig: configData?.config || {}
+    });
+  } catch (error) {
+    console.error('Error preloading gamification snapshot:', error);
+  }
+}
