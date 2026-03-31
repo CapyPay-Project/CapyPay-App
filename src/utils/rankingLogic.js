@@ -1,7 +1,5 @@
-// @ts-nocheck
+
 import { rankingService, authService, userService } from "../services/api";
-import autoAnimate from '@formkit/auto-animate';
-import confetti from 'canvas-confetti';
 
 const estado = {
   vista: "users",
@@ -28,7 +26,7 @@ function setImg(id, src, nombre = "User") {
 }
 
 function iconoPorFacultad(nombre = "") {
-  const n = nombre.toLowerCase();
+  const n = String(nombre || "").toLowerCase();
   if (n.includes("medicina") || n.includes("salud")) return "🩺";
   if (n.includes("ingenieria") || n.includes("sistemas")) return "💻";
   if (n.includes("derecho") || n.includes("juridicas")) return "⚖️";
@@ -58,7 +56,7 @@ async function cargarDatos() {
   } catch (error) {
     console.error("Error al cargar el ranking:", error);
     if (listContainer) {
-      listContainer.innerHTML = '<div class="p-6 text-center font-bold uppercase">Error al cargar el ranking. Intenta de nuevo.</div>';
+      listContainer.innerHTML = '<div class="p-6 text-center font-bold uppercase text-red-500">Error al cargar el ranking: ' + (error.message || error) + '. Intenta de nuevo.</div>'; alert("Network/API Error: " + error.message);
     }
   }
 }
@@ -96,17 +94,27 @@ function renderizar() {
   if (!podiumContainer) return;
 
   podiumContainer.style.opacity = "0";
-  setTimeout(() => {
+  // Execute immediately without artificial setTimeout
+  try {
     if (estado.vista === "users") renderizarUsuarios();
     else renderizarFacultades();
+  } catch (err) {
+    console.error("Crash during render:", err);
+    // Give visual feedback for debugging what "nada carga" means
+    document.body.insertAdjacentHTML('afterbegin', `<div style="background:red;color:white;padding:10px;text-align:center;position:fixed;top:0;left:0;right:0;z-index:9999;">Error UI: ${err.message}</div>`);
+  }
+  // Restore opacity in the next frame
+  requestAnimationFrame(() => {
     podiumContainer.style.opacity = "1";
-  }, 200);
+  });
 
-  actualizarFooter();
+  try {
+    actualizarFooter();
+  } catch(e) {}
 }
 
 function renderizarUsuarios() {
-  const { top3, list } = estado.datos.users || {};
+  const usersData = estado.datos?.users || {}; const top3 = Array.isArray(usersData.top3) ? usersData.top3 : []; const list = Array.isArray(usersData.list) ? usersData.list : [];
   const battleSummary = document.getElementById("faculty-battle-summary");
   const listTitle     = document.getElementById("ranking-list-title");
 
@@ -121,7 +129,8 @@ function renderizarUsuarios() {
 }
 
 function renderizarFacultades() {
-  const facultades = estado.datos?.faculties || [];
+  const facultadesTmp = estado.datos?.faculties || [];
+  const facultades = Array.isArray(facultadesTmp) ? facultadesTmp : [];
 
   const battleSummary = document.getElementById("faculty-battle-summary");
   const listTitle     = document.getElementById("ranking-list-title");
@@ -182,7 +191,7 @@ function obtenerListaFiltrada(items, tipo) {
   if (!items || !items.length) return [];
   let resultado = items.filter((item) => {
     const pts = tipo === "user" ? (item.points || item.xp || 0) : (item.total_xp || item.xp || 0);
-    return pts > 0;
+    return pts >= 0; // Cambiado de > 0 a >= 0 para que la lista y layout no se vean vacíos si nadie tiene puntos aún.
   });
   return resultado;
 }
@@ -336,10 +345,12 @@ function inicializarContador() {
   actualizarContador();
 }
 
-export function initRanking() {
+export async function initRanking() {
   const listContainer = document.getElementById("ranking-list-container");
   if (listContainer) {
-    autoAnimate(listContainer);
+    import('@formkit/auto-animate').then(({ default: autoAnimate }) => {
+      autoAnimate(listContainer);
+    }).catch(console.error);
   }
 
   const tabUsers     = document.getElementById("tab-users");
@@ -371,11 +382,17 @@ export function initRanking() {
 }
 
 function cheer() {
-  confetti({
-    particleCount: 100,
-    spread: 70,
-    origin: { y: 0.6 },
-    colors: ['#d7fd48', '#8b5cf6', '#18181b', '#ffffff'] // Neo-brutalism themed confetti
-  });
-
+  try {
+    import('canvas-confetti').then((confettiModule) => {
+      const confetti = confettiModule.default || confettiModule;
+      if (typeof confetti === 'function') {
+        confetti({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6 },
+          colors: ['#d7fd48', '#8b5cf6', '#18181b', '#ffffff'] // Neo-brutalism themed confetti
+        });
+      }
+    });
+  } catch(e) { console.error("Confetti error:", e); }
 }

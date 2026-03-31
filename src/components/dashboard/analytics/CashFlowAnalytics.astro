@@ -60,6 +60,7 @@
 
 <script>
   import { userService } from "../../../services/api.js";
+  import { userProfile } from "../../../store/userStore.js";
 
   async function loadFinanceData() {
     const barsContainer = document.getElementById("chart-bars-container");
@@ -100,135 +101,138 @@
     }
 
     try {
-      const profile = await userService.getProfile();
-      if (profile && profile.cedula) {
+      userProfile.subscribe(async (profile) => {
+        if (!profile || !profile.cedula) return;
+
         const rawHistory: any = await userService
           .getHistory(profile.cedula)
           .catch(() => ({ movimientos: [] }));
         history = Array.isArray(rawHistory)
           ? rawHistory
           : rawHistory.movimientos || rawHistory.data || [];
-      }
 
-      updateChart = () => {
-        const filterVal = chartFilter ? chartFilter.value : "weekly";
-        let daysToCalculate = 5;
-        let periodLabel = "day";
+        updateChart = () => {
+          const filterVal = chartFilter ? chartFilter.value : "weekly";
+          let daysToCalculate = 5;
+          let periodLabel = "day";
 
-        if (filterVal === "monthly") {
-          daysToCalculate = 30;
-          periodLabel = "week";
-        } else if (filterVal === "trimestral") {
-          daysToCalculate = 90;
-          periodLabel = "month";
-        }
-
-        const now = new Date();
-        const cutoffDate = new Date();
-        cutoffDate.setDate(now.getDate() - daysToCalculate);
-
-        let ingresos = 0;
-        let egresos = 0;
-
-        const filteredHistory = history.filter(
-          (h: any) => new Date(h.fecha) >= cutoffDate,
-        );
-        filteredHistory.forEach((h: any) => {
-          const val = parseFloat(h.monto || 0);
-          if (h.es_negativo || val < 0 || h.tipo === "retiro") {
-            egresos += Math.abs(val);
-          } else {
-            ingresos += Math.abs(val);
+          if (filterVal === "monthly") {
+            daysToCalculate = 30;
+            periodLabel = "week";
+          } else if (filterVal === "trimestral") {
+            daysToCalculate = 90;
+            periodLabel = "month";
           }
-        });
 
-        if (totalIngresos)
-          totalIngresos.innerText = `Bs. +${ingresos.toFixed(2)}`;
-        if (totalEgresos) totalEgresos.innerText = `Bs. -${egresos.toFixed(2)}`;
+          const now = new Date();
+          const cutoffDate = new Date();
+          cutoffDate.setDate(now.getDate() - daysToCalculate);
 
-        const dataToRender = filteredHistory.filter((h: any) => {
-          const isExpense =
-            h.es_negativo ||
-            parseFloat(h.monto || 0) < 0 ||
-            h.tipo === "retiro";
-          return currentView === "expenses" ? isExpense : !isExpense;
-        });
+          let ingresos = 0;
+          let egresos = 0;
 
-        let dataPoints: any[] = [];
-        if (filterVal === "weekly") {
-          for (let i = 4; i >= 0; i--) {
-            const d = new Date();
-            d.setDate(d.getDate() - i);
-            dataPoints.push({
-              dateStr: d.toISOString().split("T")[0],
-              label: d.toLocaleDateString("es-ES", { weekday: "short" }),
-              val: 0,
-            });
-          }
-          dataToRender.forEach((ex: any) => {
-            const date = new Date(ex.fecha).toISOString().split("T")[0];
-            const dp = dataPoints.find((d: any) => d.dateStr === date);
-            if (dp) dp.val += Math.abs(parseFloat(ex.monto));
-          });
-        } else {
-          const chunksCount = filterVal === "monthly" ? 4 : 3;
-          for (let i = chunksCount - 1; i >= 0; i--) {
-            dataPoints.push({
-              label: filterVal === "monthly" ? `Sem ${4 - i}` : `Mes ${3 - i}`,
-              val: 0,
-              index: i,
-            });
-          }
-          dataToRender.forEach((ex: any) => {
-            const diffTime = Math.abs(
-              now.getTime() - new Date(ex.fecha).getTime(),
-            );
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-            let targetIdx = 0;
-            if (filterVal === "monthly") {
-              targetIdx = Math.floor(diffDays / 7.5);
-              targetIdx = Math.min(targetIdx, 3);
+          const filteredHistory = history.filter(
+            (h: any) => new Date(h.fecha) >= cutoffDate,
+          );
+          filteredHistory.forEach((h: any) => {
+            const val = parseFloat(h.monto || 0);
+            if (h.es_negativo || val < 0 || h.tipo === "retiro") {
+              egresos += Math.abs(val);
             } else {
-              targetIdx = Math.floor(diffDays / 30);
-              targetIdx = Math.min(targetIdx, 2);
-            }
-            const targetDp = dataPoints.find(
-              (dp: any) => dp.index === targetIdx,
-            );
-            if (targetDp) {
-              targetDp.val += Math.abs(parseFloat(ex.monto));
+              ingresos += Math.abs(val);
             }
           });
-          dataPoints.reverse();
-        }
 
-        const maxVal = Math.max(...dataPoints.map((d: any) => d.val), 10);
+          if (totalIngresos)
+            totalIngresos.innerText = `Bs. +${ingresos.toFixed(2)}`;
+          if (totalEgresos)
+            totalEgresos.innerText = `Bs. -${egresos.toFixed(2)}`;
 
-        barsContainer.innerHTML = dataPoints
-          .map((d: any, i: number) => {
-            const heightPercent = (d.val / maxVal) * 100;
-            const color = i % 2 === 0 ? "bg-[#8b5cf6]" : "bg-[#d7fd48]";
-            return `<div class="flex flex-col justify-end items-center flex-1 h-full relative group">
+          const dataToRender = filteredHistory.filter((h: any) => {
+            const isExpense =
+              h.es_negativo ||
+              parseFloat(h.monto || 0) < 0 ||
+              h.tipo === "retiro";
+            return currentView === "expenses" ? isExpense : !isExpense;
+          });
+
+          let dataPoints: any[] = [];
+          if (filterVal === "weekly") {
+            for (let i = 4; i >= 0; i--) {
+              const d = new Date();
+              d.setDate(d.getDate() - i);
+              dataPoints.push({
+                dateStr: d.toISOString().split("T")[0],
+                label: d.toLocaleDateString("es-ES", { weekday: "short" }),
+                val: 0,
+              });
+            }
+            dataToRender.forEach((ex: any) => {
+              const date = new Date(ex.fecha).toISOString().split("T")[0];
+              const dp = dataPoints.find((d: any) => d.dateStr === date);
+              if (dp) dp.val += Math.abs(parseFloat(ex.monto));
+            });
+          } else {
+            const chunksCount = filterVal === "monthly" ? 4 : 3;
+            for (let i = chunksCount - 1; i >= 0; i--) {
+              dataPoints.push({
+                label:
+                  filterVal === "monthly" ? `Sem ${4 - i}` : `Mes ${3 - i}`,
+                val: 0,
+                index: i,
+              });
+            }
+            dataToRender.forEach((ex: any) => {
+              const diffTime = Math.abs(
+                now.getTime() - new Date(ex.fecha).getTime(),
+              );
+              const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+              let targetIdx = 0;
+              if (filterVal === "monthly") {
+                targetIdx = Math.floor(diffDays / 7.5);
+                targetIdx = Math.min(targetIdx, 3);
+              } else {
+                targetIdx = Math.floor(diffDays / 30);
+                targetIdx = Math.min(targetIdx, 2);
+              }
+              const targetDp = dataPoints.find(
+                (dp: any) => dp.index === targetIdx,
+              );
+              if (targetDp) {
+                targetDp.val += Math.abs(parseFloat(ex.monto));
+              }
+            });
+            dataPoints.reverse();
+          }
+
+          const maxVal = Math.max(...dataPoints.map((d: any) => d.val), 10);
+
+          barsContainer.innerHTML = dataPoints
+            .map((d: any, i: number) => {
+              const heightPercent = (d.val / maxVal) * 100;
+              const color = i % 2 === 0 ? "bg-[#8b5cf6]" : "bg-[#d7fd48]";
+              return `<div class="flex flex-col justify-end items-center flex-1 h-full relative group">
             <div class="w-full max-w-[40px] ${color} border-4 border-black relative transition-all duration-500 ease-out hover:-translate-y-1" style="height: ${heightPercent}%">
                <div class="absolute -top-10 left-1/2 -translate-x-1/2 bg-black text-white text-xs font-black px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-10">Bs.${d.val.toFixed(2)}</div>
             </div>
           </div>`;
-          })
-          .join("");
+            })
+            .join("");
 
-        labelsContainer.innerHTML = dataPoints
-          .map((d: any) => {
-            return `<div class="flex-1 text-center truncate">${d.label}</div>`;
-          })
-          .join("");
-      };
+          labelsContainer.innerHTML = dataPoints
+            .map((d: any) => {
+              return `<div class="flex-1 text-center truncate">${d.label}</div>`;
+            })
+            .join("");
+        };
 
-      if (chartFilter) {
-        chartFilter.addEventListener("change", updateChart);
-      }
+        if (chartFilter) {
+          chartFilter.addEventListener("change", updateChart);
+        }
 
-      updateChart();
+        updateChart();
+      });
     } catch (e) {
       console.error("Error loading finance data", e);
       barsContainer.innerHTML =

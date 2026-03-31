@@ -26,7 +26,12 @@ const { amount = "0.00" } = Astro.props;
   </div>
 
   <div class="absolute inset-0 wallet-card-overlay pointer-events-none"></div>
-  <div id="wallet-shine" class="wallet-shine pointer-events-none" aria-hidden="true"></div>
+  <div
+    id="wallet-shine"
+    class="wallet-shine pointer-events-none"
+    aria-hidden="true"
+  >
+  </div>
 
   <div class="relative z-10 flex flex-col justify-between h-full min-h-42.5">
     <!-- Top Row -->
@@ -38,7 +43,11 @@ const { amount = "0.00" } = Astro.props;
         ACTIVOS FIJOS
       </div>
       <div class="flex items-center gap-2">
-        <span id="wallet-card-tier" class="border-2 border-black bg-white px-2 py-0.5 text-[10px] font-black uppercase rounded-md">Nivel 1</span>
+        <span
+          id="wallet-card-tier"
+          class="border-2 border-black bg-white px-2 py-0.5 text-[10px] font-black uppercase rounded-md"
+          >Nivel 1</span
+        >
         <div
           class="w-8 h-8 rounded-full border-2 border-black mix-blend-multiply opacity-70 bg-white/70"
         >
@@ -55,10 +64,21 @@ const { amount = "0.00" } = Astro.props;
     <!-- Center balance -->
     <div class="mt-4 mb-6">
       <div class="flex items-center justify-between mb-3">
-        <div class="wallet-chip border-2 border-black rounded-md" aria-hidden="true"></div>
-        <span class="text-[10px] font-black uppercase tracking-[0.18em] text-black/70">CapyPay Card</span>
+        <div
+          class="wallet-chip border-2 border-black rounded-md"
+          aria-hidden="true"
+        >
+        </div>
+        <span
+          class="text-[10px] font-black uppercase tracking-[0.18em] text-black/70"
+          >CapyPay Card</span
+        >
       </div>
-      <p class="text-[10px] font-black uppercase tracking-[0.22em] text-black/80 mb-2">Saldo disponible</p>
+      <p
+        class="text-[10px] font-black uppercase tracking-[0.22em] text-black/80 mb-2"
+      >
+        Saldo disponible
+      </p>
       <span class="text-xl sm:text-2xl font-black text-black mr-1">Bs.</span>
       <span
         id="balance-amount"
@@ -83,7 +103,10 @@ const { amount = "0.00" } = Astro.props;
           MAXIMUS CAPYBARA
         </p>
       </div>
-      <div id="wallet-card-number" class="text-base sm:text-lg font-black text-black tracking-[0.2em]">
+      <div
+        id="wallet-card-number"
+        class="text-base sm:text-lg font-black text-black tracking-[0.2em]"
+      >
         **** 0921
       </div>
     </div>
@@ -97,13 +120,19 @@ const { amount = "0.00" } = Astro.props;
       color-mix(in srgb, var(--card-base) 84%, white),
       color-mix(in srgb, var(--card-accent) 30%, var(--card-base))
     );
-    transition: transform 240ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 240ms ease;
+    transition:
+      transform 240ms cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 240ms ease;
   }
 
   .wallet-card-overlay {
     background:
       radial-gradient(circle at 16% 12%, var(--card-overlay), transparent 36%),
-      radial-gradient(circle at 88% 88%, color-mix(in srgb, var(--card-accent) 26%, transparent), transparent 42%);
+      radial-gradient(
+        circle at 88% 88%,
+        color-mix(in srgb, var(--card-accent) 26%, transparent),
+        transparent 42%
+      );
   }
 
   .wallet-chip {
@@ -111,7 +140,11 @@ const { amount = "0.00" } = Astro.props;
     height: 30px;
     background:
       linear-gradient(180deg, #f8f8f8, #cfcfcf),
-      repeating-linear-gradient(90deg, transparent 0 6px, rgba(0, 0, 0, 0.12) 6px 7px);
+      repeating-linear-gradient(
+        90deg,
+        transparent 0 6px,
+        rgba(0, 0, 0, 0.12) 6px 7px
+      );
     box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.2);
   }
 
@@ -120,7 +153,12 @@ const { amount = "0.00" } = Astro.props;
     inset: -20% auto -20% -45%;
     width: 34%;
     transform: skewX(-18deg);
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7), transparent);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.7),
+      transparent
+    );
     opacity: 0;
   }
 
@@ -135,7 +173,9 @@ const { amount = "0.00" } = Astro.props;
   @media (hover: hover) and (pointer: fine) {
     .wallet-card:hover {
       transform: translateY(-6px) rotate(-0.35deg);
-      box-shadow: 9px 9px 0px 0px rgba(0, 0, 0, 1), 0 0 30px color-mix(in srgb, var(--card-accent) 50%, transparent);
+      box-shadow:
+        9px 9px 0px 0px rgba(0, 0, 0, 1),
+        0 0 30px color-mix(in srgb, var(--card-accent) 50%, transparent);
     }
 
     .wallet-card.is-level-up {
@@ -213,6 +253,7 @@ const { amount = "0.00" } = Astro.props;
 <script>
   // @ts-nocheck
   import { authService, userService } from "../../../services/api.js";
+  import { userProfile } from "../../../store/userStore.js";
 
   const LEVEL_THEMES = {
     1: { base: "#CBD5E1", accent: "#64748B", label: "Novato" },
@@ -287,7 +328,7 @@ const { amount = "0.00" } = Astro.props;
   }
 
   async function updateBalance() {
-    try {
+    userProfile.subscribe((profile) => {
       const user = authService.getCurrentUser();
       const nameEl = document.getElementById("balance-username");
       if (user && nameEl) {
@@ -298,11 +339,10 @@ const { amount = "0.00" } = Astro.props;
         ).toUpperCase();
       }
 
-      if (!user) return;
+      if (!profile) return;
 
-      const profile = await userService.getProfile();
       const amountEl = document.getElementById("balance-amount");
-      if (amountEl && profile) {
+      if (amountEl) {
         amountEl.innerText = parseFloat(profile.balance).toLocaleString(
           "en-US",
           {
@@ -318,9 +358,7 @@ const { amount = "0.00" } = Astro.props;
           : 1;
 
       applyWalletTheme(profileLevel);
-    } catch (e) {
-      console.error("Error updating balance", e);
-    }
+    });
   }
 
   window.addEventListener("capypay-level-changed", (event) => {

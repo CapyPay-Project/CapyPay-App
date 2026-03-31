@@ -45,21 +45,26 @@ async function initHistory(dom, state) {
 
   try {
     const userId = user.id || user.usuarioId || user._id;
-    const profileData = await userService.getProfile(userId);
-    const realUser = profileData.usuario || profileData.user || profileData;
+      const cedula = user.cedula || null;
+      
+      const [profileData, response] = await Promise.all([
+        userService.getProfile(userId).catch(() => ({})),
+        userService.getHistory(cedula).catch(() => null)
+      ]);
 
-    if (!realUser.cedula) {
-      showEmpty(dom, state, "No se encontró cédula para cargar historial.");
-      return;
-    }
+      const realUser = profileData?.usuario || profileData?.user || profileData || {};
 
-    const response = await userService.getHistory(realUser.cedula);
-    if (!response || !response.movimientos) {
-      showEmpty(dom, state, "No hay movimientos registrados.");
-      return;
-    }
+      if (!realUser.cedula && !cedula) {
+        showEmpty(dom, state, "No se encontró cédula para cargar historial.");
+        return;
+      }
 
-    state.allMovements = response.movimientos.map((movement, index) => ({
+      if (!response || !response.movimientos) {
+        showEmpty(dom, state, "No hay movimientos registrados.");
+        return;
+      }
+
+      state.allMovements = response.movimientos.map((movement, index) => ({
       ...movement,
       uniqueId: index + 12450,
     }));

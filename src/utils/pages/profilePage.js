@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { authService, userService } from "../../services/api.js";
-import { calculateLevel } from "../levelsConfig.js";
+import { calculateLevel } from "../../config/levelsConfig.js";
 
 export function initProfilePage() {
   const dom = getDomRefs();

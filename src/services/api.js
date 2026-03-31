@@ -1,6 +1,6 @@
 // src/services/api.js
 
-const API_URL = import.meta.env.PUBLIC_API_URL || 'http://localhost:3000/api';
+const API_URL = import.meta.env.PUBLIC_API_URL || (typeof window !== 'undefined' ? `http://${window.location.hostname}:3000/api` : 'http://localhost:3000/api');
 
 const gmClientCache = new Map();
 const gmClientInflight = new Map();
@@ -341,7 +341,7 @@ export const comedorService = {
 };
 
 export const rankingService = {
-    getRanking: (userId) => fetchAPI(`/ranking${userId ? `?user_id=${userId}` : ''}`)
+    getRanking: (userId) => fetchAPI(`/ranking${userId && userId !== 'null' ? `?user_id=${userId}` : ''}`)
 };
 
 export const transactionService = {

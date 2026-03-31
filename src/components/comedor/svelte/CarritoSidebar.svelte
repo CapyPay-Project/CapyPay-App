@@ -22,7 +22,9 @@
   );
   $: levelDiscountRate = Number($userProfile?.benefits?.descuento || 0);
   $: discountAmount = Number((subtotal * levelDiscountRate).toFixed(2));
-  $: discountedSubtotal = Number(Math.max(0, subtotal - discountAmount).toFixed(2));
+  $: discountedSubtotal = Number(
+    Math.max(0, subtotal - discountAmount).toFixed(2),
+  );
   $: serviceFee = Math.round(discountedSubtotal * 0.05);
   $: total = Number((discountedSubtotal + serviceFee).toFixed(2));
 
@@ -32,7 +34,7 @@
     $isCartOpen = false;
   }
 
-  function handleCheckout() {
+  async function handleCheckout() {
     if (itemsArray.length === 0) return;
     isCheckingOut = true;
 
@@ -56,7 +58,7 @@
         dispatch("checkout_success", {
           order: response.order || { id: response.orderId },
         });
-        
+
         // Actualizar nivel después de compra
         updateUserLevel();
       } else {
@@ -155,14 +157,18 @@
           <span class="font-black text-lg">${subtotal.toFixed(2)}</span>
         </div>
         <div class="flex justify-between items-end text-[#10b981]">
-          <span class="font-bold uppercase text-sm">Descuento nivel ({Math.round(levelDiscountRate * 100)}%)</span>
+          <span class="font-bold uppercase text-sm"
+            >Descuento nivel ({Math.round(levelDiscountRate * 100)}%)</span
+          >
           <span class="font-black text-lg">-${discountAmount.toFixed(2)}</span>
         </div>
         <div class="flex justify-between items-end">
           <span class="font-bold uppercase text-sm">Servicio (5%)</span>
           <span class="font-black text-lg">${serviceFee.toFixed(2)}</span>
         </div>
-        <div class="flex justify-between items-end pt-2 border-t-4 border-black">
+        <div
+          class="flex justify-between items-end pt-2 border-t-4 border-black"
+        >
           <span class="font-bold uppercase text-lg">Total</span>
           <span class="font-black text-4xl tracking-tighter"
             >${total.toFixed(2)}</span
