@@ -8,7 +8,6 @@ const estado = {
   itemsPorPagina: 7,
   alcance: "global",
   periodo: "semana",
-  contactIds: [],
 };
 
 let rankingInitialized = false;
@@ -44,12 +43,7 @@ async function cargarDatos() {
     const usuario = authService.getCurrentUser();
     const userId = usuario ? (usuario.id || usuario.user_id) : null;
 
-    const [respuesta, contactsResp] = await Promise.all([
-      rankingService.getRanking(userId),
-      userId ? userService.getContacts(userId).catch(() => ({ contactos: [] })) : Promise.resolve({ contactos: [] }),
-    ]);
-
-    estado.contactIds = (contactsResp?.contactos || []).map(c => c.contact_id).filter(Boolean);
+    const respuesta = await rankingService.getRanking(userId);
 
     if (respuesta) {
       estado.datos = respuesta;

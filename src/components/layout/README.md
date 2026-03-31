@@ -12,7 +12,7 @@ Barra lateral de navegación para pantallas de escritorio (`lg+`).
 
 - **Estado:** Colapsado (`w-20`) / Expandido (`w-72`), controlado por JS con clases de Tailwind.
 - **Sub-componentes:** Delega la mayoría del HTML a la subcarpeta `sidebar/`.
-- **Script:** Maneja notificaciones (polling cada 10s), expansión/colapso, carga de contactos rápidos y el menú flotante de contactos.
+- **Script:** Renderiza navegación principal de escritorio con estilo neo-brutalist y acciones de sesión (ajustes/cerrar sesión).
 
 ### `NavBar.astro`
 
@@ -20,7 +20,7 @@ Barra superior fija para dispositivos móviles. Muestra el logo CapyPay y el bot
 
 ### `BottomNav.astro`
 
-Barra de navegación inferior fija para móviles. Contiene accesos rápidos: Dashboard, Contactos, Comedor, Perfil.
+Barra de navegación inferior fija para móviles. Contiene accesos rápidos: Inicio, Actividad, Perfil y Ajustes; además de un panel expandible con servicios y ranking.
 
 ---
 

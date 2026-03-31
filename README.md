@@ -2,6 +2,15 @@
 
 Documentacion tecnica y funcional del frontend de CapyPay.
 
+## Actualizacion al 2026-03-31
+
+- Se elimino por completo el modulo de Contactos (ruta, componentes, utilidades y referencias runtime).
+- Se limpio codigo legado no usado en widgets/comedor y controladores de pagina huérfanos.
+- TicketBus migro a Leaflet por paquete npm (sin assets legacy en public/vendor).
+- TicketBus ahora usa `ticketStore` real para persistencia de tickets en cliente.
+- `SkeletonLoader` se reforzo y ya se usa en vistas reales (ej. carga inicial de historial en dashboard).
+- Se activo prefetch en navegacion principal (Sidebar y BottomNav) para mejorar cambios de pagina.
+
 ## Estado actual
 
 El proyecto esta operativo sobre Astro con componentes Astro y Svelte, estilos con Tailwind CSS 4, logica en TypeScript/JavaScript y pruebas smoke E2E con Playwright.
@@ -45,7 +54,6 @@ Convencion de equipo:
 - /auth/registro: registro de nuevos usuarios.
 - /dashboard: vista principal del usuario con saldo, actividad y widgets de gamificacion.
 - /account/profile: perfil del usuario y datos personales de cuenta.
-- /account/contacts: gestion de contactos para transferencias o pagos frecuentes.
 - /account/notifications: bandeja de notificaciones y estado de lectura.
 - /account/niveles: progreso de niveles, XP, recompensas y reclamos.
 - /account/ranking: clasificacion semanal de usuarios y facultades.
@@ -59,6 +67,8 @@ Convencion de equipo:
 - /services/order: detalle y seguimiento de una orden puntual.
 - /services/orders: listado historico de ordenes del usuario.
 - /services/ticketbus: modulo de ticketing/transporte dentro de servicios.
+
+Rutas activas compiladas actualmente: 18.
 
 ## Flujos recomendados (referencia rapida)
 
@@ -74,7 +84,7 @@ CapyPay-App/
   public/                  # Activos estaticos (imagenes, fuentes y recursos publicos)
   src/
     components/            # Componentes reutilizables de UI y modulos por dominio
-      account/             # Componentes de perfil, contactos y secciones de cuenta
+      account/             # Componentes de perfil y secciones de cuenta
       comedor/svelte/      # Componentes Svelte para experiencias interactivas de comedor
       dashboard/           # Widgets principales del dashboard (finanzas, acciones, gamificacion)
       finance/             # Componentes de finanzas (historial, filtros, tablas)

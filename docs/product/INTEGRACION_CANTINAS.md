@@ -1,5 +1,12 @@
 # Integración de Cantinas con Supabase
 
+Estado actual (2026-03-31):
+
+- Frontend operativo sobre rutas de cantina en `/services/cantina` y checkout cantina.
+- Contrato consumido actualmente en frontend para áreas: `GET /api/cantinas/faculties`.
+- Contrato consumido para catálogo: `GET /api/cantinas`.
+- Compra: `POST /api/cantinas/order`.
+
 Una vez que tengas creadas las 4 tablas en Supabase (`cantinas`, `cantina_products`, `cantina_orders`, `cantina_order_items`), los siguientes pasos se dividen en dos frentes: **Backend (API)** y **Frontend (Astro)**.
 
 ## 1. Backend: Nuevos Endpoints en tu API (o Edge Functions)

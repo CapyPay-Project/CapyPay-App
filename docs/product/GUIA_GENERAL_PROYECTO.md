@@ -2,6 +2,8 @@
 
 Documento de onboarding para nuevos integrantes del equipo. Resume arquitectura, flujo de trabajo y comandos base para ponerse operativo en poco tiempo.
 
+Actualizado al 2026-03-31.
+
 ## 1) Vista general
 
 CapyPay esta dividido en 3 partes:
@@ -16,6 +18,13 @@ Objetivo funcional actual:
 - Servicios (cantina/comedor/pedidos).
 - Gamificacion (misiones semanales, racha, recompensas, ranking).
 - Operacion y monitoreo (salud, metricas, alertas, piloto).
+
+Cambios recientes clave (frontend):
+
+- Modulo Contactos eliminado del runtime (rutas/componentes/utilidades).
+- TicketBus migrado a Leaflet por npm (sin vendor legacy en `public/vendor`).
+- Persistencia de tickets movida a `ticketStore` real (Nanostores).
+- Navegacion principal con prefetch para reducir latencia percibida entre paginas.
 
 ## 2) Arquitectura (alto nivel)
 
@@ -40,6 +49,11 @@ Flujo simplificado:
 - CapyPay-App/src/services: cliente API frontend.
 - CapyPay-App/src/store: estado cliente.
 - CapyPay-App/docs: documentacion funcional y de proceso.
+
+Notas actuales de frontend:
+
+- Rutas compiladas activas: 18.
+- Componentes Svelte en servicios se usan de forma puntual para interactividad compleja.
 
 ### Backend
 

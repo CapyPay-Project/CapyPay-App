@@ -248,20 +248,12 @@ const paradasUNERG: Parada[] = [
   <div id="toast" class="hidden fixed bottom-8 left-1/2 -translate-x-1/2 px-6 py-3 rounded-2xl shadow-2xl text-white font-medium text-sm z-200"></div>
 </MainLayout>
 
-<link
-  rel="stylesheet"
-  href="/vendor/leaflet/leaflet.css"
-/>
-
-<script
-  src="/vendor/leaflet/leaflet.js"
-  is:inline
-></script>
-
-
-
-
 <script>
+  import * as L from "leaflet";
+  import "leaflet/dist/leaflet.css";
+  import { authService, missionService, gamificationService, userService } from "../../services/api.js";
+  import { addTicket, loadTickets, ticketsStore } from "../../store/ticketStore";
+
  // === FIXES TYPE SCRIPT ===
   const precioPasaje = 5.00;
 
@@ -271,12 +263,9 @@ const paradasUNERG: Parada[] = [
      goToStep: (step: number) => void;
      seleccionarParada: (parada: string) => void;
      seleccionarUnidad: (id: string) => void; 
-     L?: any;
     }
   }
   // =========================
-
-  import { authService, missionService, gamificationService, userService } from "../../services/api.js";
 
   let selectedDestino = "";
   let selectedBus = "";        
@@ -361,28 +350,8 @@ const paradasUNERG: Parada[] = [
     }
   }
 
-  function loadTicketsLocal() {
-    try {
-      const raw = localStorage.getItem('misTicketsCapyPay');
-      ticketsCache = raw ? JSON.parse(raw) : [];
-      if (!Array.isArray(ticketsCache)) ticketsCache = [];
-    } catch (_) {
-      ticketsCache = [];
-    }
-  }
-
-  function saveTicketsLocal() {
-    try {
-      localStorage.setItem('misTicketsCapyPay', JSON.stringify(ticketsCache));
-    } catch (_) {
-      // no-op
-    }
-  }
-
   function addTicketLocal(ticket: any) {
-    ticketsCache = [...ticketsCache, ticket];
-    saveTicketsLocal();
-    renderTicketsDrawer();
+    addTicket(ticket);
   }
 
   function procesarPago(monto: number): boolean {
@@ -497,25 +466,19 @@ const paradasUNERG: Parada[] = [
     const mapElement = document.getElementById('mapa-unerg');
     if (!mapElement) return;
 
-    const Leaflet = window.L;
-    if (!Leaflet) {
-      showToast('Mapa no disponible temporalmente', 'error');
-      return;
-    }
-
     if (mapaInstancia) {
       mapaInstancia.remove();
       mapaInstancia = null;
     }
 
-    mapaInstancia = Leaflet.map('mapa-unerg', { zoomControl: true, attributionControl: false }).setView([8.95, -67.45], 15);
+    mapaInstancia = L.map('mapa-unerg', { zoomControl: true, attributionControl: false }).setView([8.95, -67.45], 15);
 
-    Leaflet.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19
     }).addTo(mapaInstancia);
 
-    Leaflet.marker([8.95, -67.45]).addTo(mapaInstancia).bindPopup("UNERG Entrada");
-    Leaflet.marker([8.94, -67.42]).addTo(mapaInstancia).bindPopup("Terminal");
+    L.marker([8.95, -67.45]).addTo(mapaInstancia).bindPopup("UNERG Entrada");
+    L.marker([8.94, -67.42]).addTo(mapaInstancia).bindPopup("Terminal");
   }
 
   async function vincularMisionTicketBus() {
@@ -699,7 +662,12 @@ const paradasUNERG: Parada[] = [
     });
 
     // Inicializar nuevas secciones
-    loadTicketsLocal();
+    loadTickets();
+    ticketsCache = ticketsStore.get();
+    ticketsStore.subscribe((tickets) => {
+      ticketsCache = Array.isArray(tickets) ? tickets : [];
+      renderTicketsDrawer();
+    });
     initBalance();
     renderAutobusesEnRuta();
     void initMapa();

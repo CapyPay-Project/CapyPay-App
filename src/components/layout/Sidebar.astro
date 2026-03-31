@@ -49,6 +49,7 @@ const navItems = [
         return (
           <a
             href={item.href}
+            data-astro-prefetch
             class={`flex items-center gap-4 px-5 py-4 font-black text-sm uppercase tracking-widest transition-all ${isActive ? "bg-[#d7fd48] text-black border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-1 hover:shadow-none" : "text-black border-4 border-transparent hover:border-black hover:bg-gray-100"}`}
           >
             {item.isLucide ? (
@@ -70,6 +71,7 @@ const navItems = [
     <div class="space-y-2">
       <a
         href="/account/settings"
+        data-astro-prefetch
         class="flex items-center gap-4 px-5 py-3 text-black font-black text-xs uppercase tracking-widest border-4 border-transparent hover:border-black hover:bg-gray-100 transition-all"
       >
         <span class="material-symbols-outlined text-lg">settings</span> SETTINGS

@@ -70,46 +70,6 @@
 </script>
 
 <div class="max-w-6xl mx-auto w-full flex flex-col gap-8 pb-32 relative">
-  <!-- FIX: Dev Tool Panel so the user can test the states easily -->
-  <div class="bg-gray-100 border-4 border-dashed border-red-500 p-4 mb-4 mt-4">
-    <h3 class="font-black text-red-600 uppercase mb-2">
-      Panel de Pruebas (Dev)
-    </h3>
-    <div class="flex flex-wrap gap-2">
-      <button
-        on:click={() => (diningState = "browsing")}
-        class="bg-white border-2 border-black px-2 py-1 text-sm font-bold {diningState ===
-        'browsing'
-          ? 'bg-black text-white'
-          : ''}">Browsing</button
-      >
-      <button
-        on:click={() => {
-          diningState = "pre_arrival";
-          activeOrder = { id: "TEST-1234" };
-        }}
-        class="bg-white border-2 border-black px-2 py-1 text-sm font-bold {diningState ===
-        'pre_arrival'
-          ? 'bg-black text-white'
-          : ''}">Pre-Arrival</button
-      >
-      <button
-        on:click={() => (diningState = "waiting")}
-        class="bg-white border-2 border-black px-2 py-1 text-sm font-bold {diningState ===
-        'waiting'
-          ? 'bg-black text-white'
-          : ''}">Waiting</button
-      >
-      <button
-        on:click={() => (diningState = "ready")}
-        class="bg-white border-2 border-black px-2 py-1 text-sm font-bold {diningState ===
-        'ready'
-          ? 'bg-black text-white'
-          : ''}">Ready</button
-      >
-    </div>
-  </div>
-
   <div class="flex justify-between items-end border-b-8 border-black pb-4">
     <div>
       <h1

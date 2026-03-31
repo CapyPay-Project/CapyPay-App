@@ -1,37 +1,56 @@
-# 🐹 CAPYPAY V2 MANIFESTO: NEO-BRUTALIST PROTOCOL
+# CAPYPAY V2 MANIFESTO: NEO-BRUTALIST PROTOCOL
 
-Welcome to the **CapyPay V2: Neo-Brutalist Protocol**. The old ways are gone. The soft shadows are dead. We are building an aggressive, bold, and ultra-performant campus fintech dashboard.
+Manifesto de referencia para decisiones de producto, UX y estabilidad tecnica en V2.
 
-## ✊ The 3 Pillars of V2
+Ultima actualizacion: 2026-03-31.
 
-1. **Neo-Brutalism Overhaul:** Deep #0f101f blacks, neon #d7fd48 yellows, and vibrant #8b5cf6 purples. Thick order-4 border-black everywhere. Box shadows that don't blur, they hit hard.
-2. **Aggressive User Experience (UX):** No more 500 errors crashing the whole page. If one API endpoint drops, the rest of the application survives with robust Promise.allSettled fetching and localized error states.
-3. **Gamification & Ecosystem:** Recharges provide $+10$ XP. Tiers are real. An ecosystem of Cantinas, Comedores, and Transport tickets built directly on the robust backend.
+## Los 3 pilares de V2
 
----
-
-## 🎨 TRACK 1: NEO-BRUTALISM OVERHAUL (Design & CSS)
-
-- [x] **Finance Recharges:** Converted /finance/recarga to Neo-Brutalist. Includes estimated Capy calculators synced with active exchange rates.
-- [x] **Dashboard Overview:** Action buttons, ticker panels, and the main layout transitioned to the new brutalist CSS pattern.
-- [x] **Z-Index Layering:** Fixed the floating elements (Notifications popover) to ensure they sit above widgets on the z-axis.
-- [ ] **Account Pages (Pending Refactor):** Convert /account/profile, /account/settings, and /account/contacts into the new brutalist standard (thick borders, brutalist tables, rigid shapes).
-- [ ] **Animations:** Upgrade standard transitions to punchy -translate-y-1 and hover states with solid offsets (shadow-[4px_4px_0px_0px_#000]).
+1. Neo-Brutalismo funcional: UI fuerte, legible y consistente.
+2. Resiliencia de frontend: fallas parciales no deben tumbar la experiencia completa.
+3. Ecosistema gamificado: wallet + servicios + progreso de usuario en un mismo flujo.
 
 ---
 
-## 🏗️ TRACK 2: BACKEND & GAMIFICATION ARCHITECTURE
+## TRACK 1: UI / DISEÑO
 
-- [x] **Database Upgrades:** Executed ALTER TABLE to inject xp, vatar_url, eference_number, and status.
-- [x] **Gamification System:** Backend 	ransaccion.controller.js properly yields XP for pending recharges and handles user profiles dynamically.
-- [ ] **Approval Panel (Backoffice):** We need a basic admin dashboard view to change transaction statuses from pending -> pproved.
-- [ ] **XP Ranks:** Link the XP system directly to the UI badge system. (Nivel 1 = 0 XP, Nivel 2 = 100 XP, etc.)
+- [x] Recarga (`/finance/recarga`) integrada al estilo neo-brutalist.
+- [x] Dashboard principal migrado al lenguaje visual V2.
+- [x] Correcciones de capas/z-index en overlays y popovers.
+- [x] Limpieza de rutas y vistas obsoletas (incluida eliminacion de Contactos).
+- [ ] Homologar completamente `profile` y `settings` al mismo nivel visual de dashboard/servicios.
+- [ ] Definir y cerrar guideline unico de animaciones y estados hover.
 
 ---
 
-## ⚡ TRACK 3: USER EXPERIENCE (UX) & STABILITY
+## TRACK 2: ARQUITECTURA / BACKEND / GAMIFICACION
 
-- [x] **Frontend Resiliency:** Isolated fetching methods in the dashboard and echarge panel so total application failures are prevented.
-- [ ] **Contacts System:** Integrate the address book logic inside /account/contacts using the real backend structure rather than just UI stubs.
-- [ ] **Toast Overhaul:** Finish standardizing the global 	oast.js system to follow the heavy brutalist styling applied globally rather than per component.
-- [ ] **Concurrent Fetching:** Refactor the waterfall pattern inside .astro files. Move towards optimistic UI (show result before DB confirms) and fallback states.
+- [x] Integracion estable de XP en flujos transaccionales relevantes.
+- [x] Ranking operativo por usuarios/facultades con capa de frontend desacoplada.
+- [x] Servicio de TicketBus conectado con persistencia de tickets en store cliente.
+- [ ] Panel backoffice para aprobaciones y operaciones manuales.
+- [ ] Reglas de economia XP consolidada por canal (recarga, pedidos, transporte).
+
+---
+
+## TRACK 3: UX / ESTABILIDAD / PERFORMANCE
+
+- [x] Endurecimiento de vistas criticas de servicios (Cantina/Ranking/TicketBus).
+- [x] Eliminacion de imports dinamicos fragiles que causaban errores de optimize deps.
+- [x] Migracion de Leaflet a npm en TicketBus y retiro de vendor legacy.
+- [x] Prefetch de navegacion principal (Sidebar + BottomNav) para mejorar cambios de pagina.
+- [x] Skeletons reutilizables en vistas reales para mejorar percepcion de carga.
+- [ ] Continuar eliminando waterfalls de fetch y pasar a patrones de carga progresiva.
+- [ ] Instrumentar medicion por ruta (tiempos de carga y cuellos API) para tuning fino.
+
+---
+
+## Definicion de calidad V2
+
+Una entrega V2 se considera cerrada cuando:
+
+- Build de frontend en verde.
+- Sin rutas obsoletas ni referencias runtime a modulos eliminados.
+- Sin errores de consola bloqueantes en flujos criticos.
+- UX tolerante a fallas parciales de API.
+- Documentacion maestra actualizada al estado real del codigo.

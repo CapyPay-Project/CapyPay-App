@@ -81,11 +81,6 @@ Los toasts desaparecen solos a los 5 segundos o al pulsar la ×.
 | `recarga.astro`       | Monto inválido / sin referencia                   | `error`            |
 | `recarga.astro`       | Error en Recarga                                  | `error`            |
 | `recarga.astro`       | Copiado al portapapeles (datos bancarios)         | `success`          |
-| `contacts.astro`      | Contacto añadido exitosamente                     | `success`          |
-| `contacts.astro`      | Alias actualizado correctamente                   | `success`          |
-| `contacts.astro`      | Contacto eliminado                                | `success`          |
-| `contacts.astro`      | Añadido / Quitado de favoritos ★                  | `success`          |
-| `contacts.astro`      | Errores de API                                    | `error`            |
 | `notifications.astro` | Notificaciones eliminadas / marcadas              | `success`          |
 | `notifications.astro` | Error al limpiar                                  | `error`            |
 | `cantina.astro`       | ¡Compra Exitosa! + XP                             | `success`          |

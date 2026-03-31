@@ -1,45 +1,49 @@
 # WARP.md
 
-This file provides guidance to WARP (warp.dev) when working with code in this repository.
+Guia operativa para trabajar en CapyPay-App desde terminales asistidas.
 
-## Project Overview
+## Estado del proyecto
 
-CapyPay-App is an Astro-based web application using TypeScript with strict configuration. The project follows Astro's minimal starter template structure.
+- Frontend productivo con Astro 5 + Tailwind CSS 4.
+- Stack mixto Astro/Svelte para secciones interactivas (especialmente servicios).
+- Estado cliente con Nanostores.
+- Build estatico con rutas de app autenticada.
+- Modulo Contactos eliminado del runtime.
 
-## Development Commands
+## Comandos de desarrollo
 
-### Core Commands
-- `npm install` - Install dependencies
-- `npm run dev` - Start development server at `localhost:4321`
-- `npm run build` - Build production site to `./dist/`
-- `npm run preview` - Preview production build locally
-- `npm run astro` - Run Astro CLI commands (e.g., `npm run astro add`, `npm run astro check`)
+### Basicos
 
-### Testing and Linting
-No test framework or linting tools are currently configured in this project.
+- `npm install`: instalar dependencias.
+- `npm run dev`: iniciar entorno local.
+- `npm run build`: compilacion de produccion.
+- `npm run preview`: previsualizar build.
+- `npm run astro`: utilidades CLI de Astro.
 
-## Architecture
+### Calidad
 
-### Project Structure
-- **src/pages/** - File-based routing; each `.astro` or `.md` file becomes a route based on its filename
-- **src/components/** - Reusable Astro/React/Vue/Svelte/Preact components (not yet created)
-- **public/** - Static assets (images, fonts, etc.) served as-is
+- `npm run check:quick`: chequeo de tipos y proyecto con Astro.
+- `npm run e2e:smoke`: build + smoke tests E2E con Playwright.
+- `npm run e2e:smoke:headed`: smoke tests E2E en modo visual.
 
-### TypeScript Configuration
-The project uses Astro's strict TypeScript configuration (`astro/tsconfigs/strict`). All TypeScript code should adhere to strict type checking rules.
+## Convenciones de trabajo
 
-### Astro-Specific Patterns
-- **Component Frontmatter**: Logic and imports go in the `---` frontmatter section of `.astro` files
-- **Routing**: Automatic file-based routing from `src/pages/`
-- **Static Generation**: By default, all pages are statically generated at build time
+- Mantener documentacion funcional en `docs/` (evitar nuevos `.md` en raiz salvo README/WARP).
+- Preferir cambios pequeños y verificables con build.
+- No reintroducir rutas eliminadas de `src/pages` (ej. modulo Contactos).
+- Para navegacion global, conservar `data-astro-prefetch` en enlaces principales.
 
-## Development Guidelines
+## Estructura relevante
 
-### Adding New Pages
-Create `.astro` files in `src/pages/`. The file path determines the URL route (e.g., `src/pages/about.astro` → `/about`)
+- `src/pages/`: rutas.
+- `src/components/`: UI por dominio.
+- `src/services/`: cliente API.
+- `src/store/`: estado cliente (Nanostores).
+- `src/layouts/`: shell principal.
+- `docs/`: documentacion por producto/fases/QA/piloto.
 
-### Adding Components
-Create reusable components in `src/components/` (directory needs to be created). Components can be Astro components or framework components (React, Vue, etc.).
+## Notas de rendimiento
 
-### Static Assets
-Place images, fonts, and other static files in `public/`. Reference them with root-relative paths (e.g., `/favicon.svg`)
+- TicketBus usa Leaflet por npm y no por assets legacy en `public/vendor`.
+- `SkeletonLoader` esta habilitado para cargas iniciales de vistas criticas.
+- Navegacion desktop/mobile principal con prefetch activo para reducir tiempo percibido entre paginas.

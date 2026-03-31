@@ -298,53 +298,10 @@ export const userService = {
     return fetchAPI(`/historial?cedula=${cedula}`);
   },
 
-  getContacts: async (userId) => {
-     if(!userId) {
-         const u = authService.getCurrentUser();
-         userId = u?.id;
-     }
-     if(!userId) return { contactos: [] };
-     return fetchAPI(`/contactos?usuario_id=${userId}`);
-  },
-
-  addContact: async (cedula, alias) => {
-      const u = authService.getCurrentUser();
-      if(!u?.id) throw new Error("Usuario no autenticado");
-      
-      return fetchAPI('/contactos', {
-          method: 'POST',
-          body: JSON.stringify({
-              usuario_id: u.id,
-              cedula,
-              alias
-          })
-      });
-  },
-
-  deleteContact: async (contactId) => {
-      return fetchAPI(`/contactos/${contactId}`, {
-          method: 'DELETE'
-      });
-  },
-
   searchUsers: async (query) => {
       // ?q=...
       const data = await fetchAPI(`/buscar?q=${query}`);
       return data?.resultados || [];
-  },
-
-  toggleFavorite: async (contactId, isFavorite) => {
-      return fetchAPI(`/contactos/${contactId}/favorite`, {
-          method: 'PUT',
-          body: JSON.stringify({ is_favorite: isFavorite })
-      });
-  },
-
-  updateContact: async (contactId, alias) => {
-      return fetchAPI(`/contactos/${contactId}`, {
-          method: 'PUT',
-          body: JSON.stringify({ alias })
-      });
   },
 
   updateAvatar: async (userId, avatarUrl) => {

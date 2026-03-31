@@ -1,37 +1,31 @@
 ---
-/**
- * SkeletonLoader - Pantalla de esqueleto animada para estados de carga.
- *
- * Props:
- *   variant: 'card' | 'balance' | 'history-item' | 'notification' | 'menu-item' | 'profile-header' | 'text'
- *   lines:   number  — solo aplica en variant="text" y "card" (nro de líneas de texto). Default: 2
- *   count:   number  — cuántos skeletons renderizar en lista. Default: 1
- *   class:   string  — clases CSS adicionales para el wrapper externo
- */
 const {
   variant = "card",
   lines = 2,
   count = 1,
   class: className = "",
 } = Astro.props;
+
+const safeLines = Math.max(1, Number(lines) || 1);
+const safeCount = Math.max(1, Number(count) || 1);
 ---
 
-<div class={`skeleton-wrapper ${className}`} aria-hidden="true">
+<div class={`skeleton-wrapper ${className}`} role="status" aria-live="polite" aria-label="Cargando contenido">
   {
-    Array.from({ length: count }).map(() => {
+    Array.from({ length: safeCount }).map(() => {
       if (variant === "balance") {
         return (
-          <div class="skeleton-card -3xl p-6 border-4 border-black flex flex-col gap-4">
+          <div class="skeleton-card rounded-3xl p-6 border-4 border-black flex flex-col gap-4">
             <div class="flex justify-between items-start">
               <div class="flex flex-col gap-2">
-                <div class="shimmer h-3 w-24 -full" />
-                <div class="shimmer h-8 w-40 " />
+                <div class="shimmer h-3 w-24 rounded-full" />
+                <div class="shimmer h-8 w-40 rounded-md" />
               </div>
-              <div class="shimmer h-10 w-10 -xl" />
+              <div class="shimmer h-10 w-10 rounded-xl" />
             </div>
             <div class="flex gap-3 mt-2">
-              <div class="shimmer h-9 w-28 -xl" />
-              <div class="shimmer h-9 w-28 -xl" />
+              <div class="shimmer h-9 w-28 rounded-xl" />
+              <div class="shimmer h-9 w-28 rounded-xl" />
             </div>
           </div>
         );
@@ -39,15 +33,15 @@ const {
 
       if (variant === "history-item") {
         return (
-          <div class="skeleton-card -2xl p-4 border-4 border-black flex items-center gap-4">
-            <div class="shimmer w-12 h-12 -2xl shrink-0" />
+          <div class="skeleton-card rounded-2xl p-4 border-4 border-black flex items-center gap-4">
+            <div class="shimmer w-12 h-12 rounded-2xl shrink-0" />
             <div class="flex-1 flex flex-col gap-2">
-              <div class="shimmer h-4 w-3/4 -full" />
-              <div class="shimmer h-3 w-1/2 -full" />
+              <div class="shimmer h-4 w-3/4 rounded-full" />
+              <div class="shimmer h-3 w-1/2 rounded-full" />
             </div>
             <div class="flex flex-col items-end gap-2">
-              <div class="shimmer h-4 w-16 -full" />
-              <div class="shimmer h-3 w-10 -full" />
+              <div class="shimmer h-4 w-16 rounded-full" />
+              <div class="shimmer h-3 w-10 rounded-full" />
             </div>
           </div>
         );
@@ -55,12 +49,12 @@ const {
 
       if (variant === "notification") {
         return (
-          <div class="skeleton-card -3xl p-4 border-4 border-black flex items-start gap-4">
-            <div class="shimmer w-14 h-14 -2xl shrink-0" />
+          <div class="skeleton-card rounded-3xl p-4 border-4 border-black flex items-start gap-4">
+            <div class="shimmer w-14 h-14 rounded-2xl shrink-0" />
             <div class="flex-1 flex flex-col gap-2.5 pt-1">
-              <div class="shimmer h-4 w-5/6 -full" />
-              <div class="shimmer h-3 w-2/3 -full" />
-              <div class="shimmer h-3 w-1/3 -full" />
+              <div class="shimmer h-4 w-5/6 rounded-full" />
+              <div class="shimmer h-3 w-2/3 rounded-full" />
+              <div class="shimmer h-3 w-1/3 rounded-full" />
             </div>
           </div>
         );
@@ -68,14 +62,14 @@ const {
 
       if (variant === "menu-item") {
         return (
-          <div class="skeleton-card -2xl border-4 border-black overflow-hidden">
+          <div class="skeleton-card rounded-2xl border-4 border-black overflow-hidden">
             <div class="shimmer h-36 w-full" />
             <div class="p-3 flex flex-col gap-2">
-              <div class="shimmer h-4 w-3/4 -full" />
-              <div class="shimmer h-3 w-1/2 -full" />
+              <div class="shimmer h-4 w-3/4 rounded-full" />
+              <div class="shimmer h-3 w-1/2 rounded-full" />
               <div class="flex justify-between items-center mt-1">
-                <div class="shimmer h-5 w-16 -full" />
-                <div class="shimmer h-8 w-8 " />
+                <div class="shimmer h-5 w-16 rounded-full" />
+                <div class="shimmer h-8 w-8 rounded-md" />
               </div>
             </div>
           </div>
@@ -84,15 +78,15 @@ const {
 
       if (variant === "profile-header") {
         return (
-          <div class="skeleton-card -3xl p-6 border-4 border-black flex flex-col items-center gap-4">
-            <div class="shimmer w-24 h-24 -full" />
+          <div class="skeleton-card rounded-3xl p-6 border-4 border-black flex flex-col items-center gap-4">
+            <div class="shimmer w-24 h-24 rounded-full" />
             <div class="flex flex-col items-center gap-2 w-full">
-              <div class="shimmer h-5 w-36 -full" />
-              <div class="shimmer h-4 w-24 -full" />
+              <div class="shimmer h-5 w-36 rounded-full" />
+              <div class="shimmer h-4 w-24 rounded-full" />
             </div>
             <div class="flex gap-3 w-full">
-              <div class="shimmer h-10 flex-1 -xl" />
-              <div class="shimmer h-10 flex-1 -xl" />
+              <div class="shimmer h-10 flex-1 rounded-xl" />
+              <div class="shimmer h-10 flex-1 rounded-xl" />
             </div>
           </div>
         );
@@ -101,9 +95,9 @@ const {
       if (variant === "text") {
         return (
           <div class="flex flex-col gap-2.5 py-1">
-            {Array.from({ length: lines }).map((_, i) => (
+            {Array.from({ length: safeLines }).map((_, i) => (
               <div
-                class={`shimmer h-3.5 -full ${i === lines - 1 ? "w-3/5" : "w-full"}`}
+                class={`shimmer h-3.5 rounded-full ${i === safeLines - 1 ? "w-3/5" : "w-full"}`}
               />
             ))}
           </div>
@@ -112,17 +106,17 @@ const {
 
       /* Default: "card" */
       return (
-        <div class="skeleton-card -3xl p-5 border-4 border-black flex flex-col gap-3">
+        <div class="skeleton-card rounded-3xl p-5 border-4 border-black flex flex-col gap-3">
           <div class="flex items-center gap-3">
-            <div class="shimmer w-10 h-10 -xl shrink-0" />
+            <div class="shimmer w-10 h-10 rounded-xl shrink-0" />
             <div class="flex-1 flex flex-col gap-2">
-              <div class="shimmer h-4 w-1/2 -full" />
-              <div class="shimmer h-3 w-1/3 -full" />
+              <div class="shimmer h-4 w-1/2 rounded-full" />
+              <div class="shimmer h-3 w-1/3 rounded-full" />
             </div>
           </div>
-          {Array.from({ length: lines }).map((_, i) => (
+          {Array.from({ length: safeLines }).map((_, i) => (
             <div
-              class={`shimmer h-3 -full ${i === lines - 1 ? "w-4/5" : "w-full"}`}
+              class={`shimmer h-3 rounded-full ${i === safeLines - 1 ? "w-4/5" : "w-full"}`}
             />
           ))}
         </div>

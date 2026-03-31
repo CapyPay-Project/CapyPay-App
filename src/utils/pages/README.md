@@ -10,6 +10,5 @@ Este directorio contiene controladores cliente por página para evitar scripts i
 
 ## Archivos actuales
 
-- `contactsPage.js`: lógica de contactos (filtros, modal, CRUD, favoritos).
 - `historyPage.js`: lógica de historial (carga, filtros, paginación, modal, exportación).
 - `profilePage.js`: lógica de perfil (datos usuario, nivel/XP, modales, acciones de seguridad/sesión).
