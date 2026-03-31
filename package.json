@@ -23,9 +23,11 @@
     "embla-carousel": "^8.6.0",
     "embla-carousel-autoplay": "^8.6.0",
     "embla-carousel-svelte": "^8.6.0",
+    "leaflet": "^1.9.4",
     "lucide-astro": "^0.556.0",
     "lucide-svelte": "^1.0.1",
     "nanostores": "^1.1.0",
+    "qrcode-generator": "^2.0.4",
     "svelte": "^5.55.0",
     "tailwindcss": "^4.1.18"
   },

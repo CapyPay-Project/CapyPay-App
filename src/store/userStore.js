@@ -33,13 +33,26 @@ export const userProfile = atom({
 export async function fetchUserProfile() {
   try {
     userProfile.set({ ...userProfile.get(), isLoading: true });
-    
-    // Call API using the service
+
+    // 1. Cargar inmediatamente desde localStorage (para que el saldo no se pierda al recargar)
+    const savedProfile = localStorage.getItem('capyPayUserProfile');
+    if (savedProfile) {
+      const parsed = JSON.parse(savedProfile);
+      userProfile.set({
+        balance: Number(parsed.balance ?? 0),
+        xp: Number(parsed.xp ?? parsed.puntos ?? 0),
+        cedula: parsed.cedula || '',
+        name: parsed.nombre || parsed.name || '',
+        isLoading: false
+      });
+    }
+
+    // 2. Llamar a la API (datos del servidor)
     const profile = await userService.getProfile();
     const levelData = await userService.getUserLevel();
-    
+
     if (profile) {
-      userProfile.set({
+      const newProfile = {
         balance: Number(profile.balance ?? 0),
         xp: Number(profile.xp ?? profile.puntos ?? 0),
         cedula: profile.cedula || '',
@@ -50,21 +63,29 @@ export async function fetchUserProfile() {
         nextXp: levelData?.nextXp || 100,
         benefits: levelData?.benefits || { descuento: 0, accesoVIP: false },
         isLoading: false
+      };
+
+      // IMPORTANTE: Solo actualizamos el balance desde la API si NO tenemos un cambio reciente guardado
+      // (esto evita que la API sobrescriba el saldo después de una compra local)
+      const current = userProfile.get();
+      userProfile.set({
+        ...newProfile,
+        balance: current.balance !== 0 ? current.balance : newProfile.balance   // priorizamos el balance local si ya cambió
       });
-      
-      // Keep localStorage in sync just in case other parts of the old app still read it directly
+
+      // Sincronizamos el localStorage viejo que ya tenías
       const currentUserStr = localStorage.getItem('capypay_user');
       if (currentUserStr) {
         try {
           const storedUser = JSON.parse(currentUserStr);
-          storedUser.balance = profile.balance;
-          storedUser.xp = profile.xp;
+          storedUser.balance = newProfile.balance;
+          storedUser.xp = newProfile.xp;
           localStorage.setItem('capypay_user', JSON.stringify(storedUser));
         } catch (e) {
           console.error('Error synchronizing capypay_user in localStorage', e);
         }
       }
-      
+
       localStorage.setItem('capypay_user_xp', profile.xp?.toString() || '0');
     } else {
       userProfile.set({ ...userProfile.get(), isLoading: false });
@@ -74,56 +95,9 @@ export async function fetchUserProfile() {
     userProfile.set({ ...userProfile.get(), isLoading: false });
   }
 }
-
-// Function to update only the level data (useful after XP changes)
-export async function updateUserLevel() {
-  try {
-    const levelData = await userService.getUserLevel();
-    if (levelData) {
-      const currentProfile = userProfile.get();
-      const newLevel = Number(levelData?.level?.id || 1);
-      userProfile.set({
-        ...currentProfile,
-        level: newLevel,
-        levelName: levelData?.level?.nombre || currentProfile.levelName || 'Novato (Cachorro)',
-        progress: levelData.progress || 0,
-        nextXp: levelData.nextXp || 100,
-        benefits: levelData.benefits || { descuento: 0, accesoVIP: false }
-      });
-
-      if (typeof window !== 'undefined' && newLevel > Number(currentProfile.level || 1)) {
-        window.dispatchEvent(new CustomEvent('capypay-level-up', {
-          detail: {
-            previousLevel: Number(currentProfile.level || 1),
-            newLevel,
-            levelName: levelData?.level?.nombre || 'Nuevo nivel'
-          }
-        }));
-      }
-    }
-  } catch (error) {
-    console.error("Error updating user level:", error);
+// subscribe //
+userProfile.subscribe((profile) => {
+  if (!profile.isLoading && typeof window !== 'undefined') {
+    localStorage.setItem('capyPayUserProfile', JSON.stringify(profile));
   }
-}
-
-// Preload de snapshot Fase 4 para consumo en widgets/dashboard.
-export async function fetchGamificationSnapshot() {
-  try {
-    const [weeklyData, streakData, configData] = await Promise.all([
-      gamificationService.getWeeklyMissions(),
-      gamificationService.getStreak(),
-      gamificationService.getPublicConfig()
-    ]);
-
-    const current = userProfile.get();
-    userProfile.set({
-      ...current,
-      weeklyMissions: weeklyData?.missions || [],
-      missionSegmentation: weeklyData?.segmentation || current.missionSegmentation,
-      streakStatus: streakData?.streak || current.streakStatus,
-      gamificationConfig: configData?.config || {}
-    });
-  } catch (error) {
-    console.error('Error preloading gamification snapshot:', error);
-  }
-}
+});
