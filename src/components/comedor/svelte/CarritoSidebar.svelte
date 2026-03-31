@@ -32,7 +32,7 @@
     $isCartOpen = false;
   }
 
-  function handleCheckout() {
+  async function handleCheckout() {
     if (itemsArray.length === 0) return;
     isCheckingOut = true;
 

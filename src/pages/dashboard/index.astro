@@ -183,22 +183,22 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
       >
         <!-- Header -->
         <div
-          class="p-5 border-b-4 border-black flex flex-col sm:flex-row justify-between items-center shrink-0 bg-white z-10 w-full text-center lg:text-left gap-2"
+          class="p-4 sm:p-5 border-b-4 border-black flex flex-col items-stretch shrink-0 bg-white z-10 w-full gap-3"
         >
-          <h2 class="text-xl font-black text-black uppercase tracking-widest">
+          <h2 class="text-lg sm:text-xl font-black text-black uppercase tracking-widest text-center lg:text-left">
             HISTORIAL
           </h2>
           <div
-            class="flex border-2 border-black text-[10px] font-black uppercase"
+            class="grid grid-cols-2 w-full border-2 border-black text-[10px] sm:text-[11px] font-black uppercase"
           >
             <button
               id="btn-hist-expenses"
-              class="px-2 py-1 bg-white text-black hover:bg-gray-200 transition-colors"
+              class="px-2 py-1.5 bg-white text-black hover:bg-gray-200 transition-colors border-r-2 border-black text-center leading-none"
               >Egresos</button
             >
             <button
               id="btn-hist-income"
-              class="px-2 py-1 bg-white text-black hover:bg-gray-200 transition-colors"
+              class="px-2 py-1.5 bg-white text-black hover:bg-gray-200 transition-colors text-center leading-none"
               >Ingresos</button
             >
           </div>
@@ -392,6 +392,14 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
 
     let cachedMovements = [];
     let currentFilter = "all";
+    const dashboardRuntime =
+      window.__capypayDashboardRuntime ||
+      (window.__capypayDashboardRuntime = {
+        outsideClickBound: false,
+        logoutBound: false,
+        visibilityBound: false,
+        notificationsPollingId: null,
+      });
 
     function renderHistoryList() {
       const container = document.getElementById("history-list-container");
@@ -561,8 +569,6 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
         debugError('Error actualizando notificaciones:', err);
       }
     }
-
-    let notificationsPollingId = null;
 
     // end added notification helpers
 
@@ -991,7 +997,10 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
         };
       }
 
-      window.addEventListener("logout-requested", window.showLogoutModal);
+      if (!dashboardRuntime.logoutBound) {
+        window.addEventListener("logout-requested", window.showLogoutModal);
+        dashboardRuntime.logoutBound = true;
+      }
 
       window.addEventListener("capypay-level-up", async (event) => {
         const detail = event?.detail || {};
@@ -1055,30 +1064,57 @@ import MissionsModal from "../../components/dashboard/gamification/MissionsModal
 
       // Fetch
       try {
-        await fetchUserProfile();
-        await fetchGamificationSnapshot();
-        const userInfo = await userService.getProfile();
-        registerNivelesPrefetch(userInfo?.id);
-        await initMissionsExperiment(userInfo?.id);
-        await fetchAndRenderMissions();
+        await Promise.all([fetchUserProfile(), fetchGamificationSnapshot()]);
+        const currentUser = authService.getCurrentUser();
+        const activeUserId = currentUser?.id || currentUser?.usuarioId || currentUser?._id;
+        const activeCedula = currentUser?.cedula || userProfile.get()?.cedula || "";
 
-        await refreshNotifications();
+        registerNivelesPrefetch(activeUserId);
+        await initMissionsExperiment(activeUserId);
+        await Promise.all([fetchAndRenderMissions(), refreshNotifications()]);
 
-        if (!notificationsPollingId) {
-          notificationsPollingId = window.setInterval(refreshNotifications, 30000);
+        if (!dashboardRuntime.notificationsPollingId) {
+          dashboardRuntime.notificationsPollingId = window.setInterval(refreshNotifications, 30000);
         }
 
-        document.addEventListener("click", (e) => {
-          const container = document.getElementById("notif-dropdown-container");
-          const menu = document.getElementById("notif-menu");
-          if (container && menu && !container.contains(e.target)) {
-            menu.classList.add("hidden");
-            menu.classList.remove("flex");
-          }
-        });
+        if (!dashboardRuntime.outsideClickBound) {
+          document.addEventListener("click", (e) => {
+            const container = document.getElementById("notif-dropdown-container");
+            const menu = document.getElementById("notif-menu");
+            if (container && menu && !container.contains(e.target)) {
+              menu.classList.add("hidden");
+              menu.classList.remove("flex");
+            }
+          });
+          dashboardRuntime.outsideClickBound = true;
+        }
+
+        if (!dashboardRuntime.visibilityBound) {
+          document.addEventListener("visibilitychange", () => {
+            if (document.hidden) {
+              if (dashboardRuntime.notificationsPollingId) {
+                clearInterval(dashboardRuntime.notificationsPollingId);
+                dashboardRuntime.notificationsPollingId = null;
+              }
+              return;
+            }
+
+            refreshNotifications();
+            if (!dashboardRuntime.notificationsPollingId) {
+              dashboardRuntime.notificationsPollingId = window.setInterval(refreshNotifications, 30000);
+            }
+          });
+          dashboardRuntime.visibilityBound = true;
+        }
 
         try {
-          const histRes = await userService.getHistory(userInfo.cedula);
+          if (!activeCedula) {
+            cachedMovements = [];
+            renderHistoryList();
+            return;
+          }
+
+          const histRes = await userService.getHistory(activeCedula);
           if (Array.isArray(histRes)) cachedMovements = histRes;
           else if (histRes && Array.isArray(histRes.movimientos))
             cachedMovements = histRes.movimientos;

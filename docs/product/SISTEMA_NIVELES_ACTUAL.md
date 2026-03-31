@@ -1,6 +1,6 @@
 # Sistema de Niveles Actual (Definicion Unificada)
 
-Documento canónico del sistema de niveles/gamificación vigente tras cierre de Fase 6.
+Documento canónico del sistema de niveles/gamificación vigente tras cierre de Fase 8 y arranque de Fase 9.
 
 ## Gobierno documental
 
@@ -20,10 +20,12 @@ Cobertura funcional actual:
 
 - Niveles por XP con curva versionada.
 - Misiones semanales segmentadas.
-- Rachas (streak) y recompensas reclamables.
+- Rachas académicas (con lógica de días válidos y estados por día).
+- Recompensas reclamables.
 - Control anti-abuso con riesgo adaptativo.
 - Instrumentación A/B para experimentos de UX.
-- Resumen semanal en dashboard/niveles/notificaciones.
+- Calendario mensual de racha en /account/niveles con detalle diario de misiones completadas.
+- Insignias funcionales en /account/profile (misión, racha, verificación y nivel).
 
 ## 2) Objetivo del sistema
 
@@ -63,6 +65,11 @@ Incrementar retención y recurrencia de uso de CapyPay mediante progresión clar
 8. Resumen semanal UX:
 - Bloque consolidado con progreso, racha y siguiente acción sugerida.
 - Reduce ruido al priorizar contexto accionable.
+
+9. Insignias de perfil:
+- Catálogo de insignias por hitos (misiones, racha, verificación y nivel).
+- Desbloqueo y render dinámico en /account/profile.
+- Registro local de fecha de obtención por usuario para vista de recientes.
 
 ## 4) Reglas vigentes (v1)
 
@@ -138,18 +145,23 @@ Soporte:
 
 1. Dashboard:
 - Widget de misiones.
-- Segmento activo visible.
 - Modal de misiones con contexto de segmento.
 - Tracking de eventos de experimento.
+- Tarjeta de saldo tipo banco con tema dinámico por nivel.
 
 2. Niveles:
-- Contexto de segmento.
-- Resumen semanal (avance, reclamos, racha, tiempo restante).
-- Recompensas pendientes/reclamadas.
+- Widget principal de nivel (vista actual/siguiente/todos) con iconografía Lucide.
+- Calendario mensual de racha con estados activo/protegido/inactivo/ignorado.
+- Detalle diario de misiones completadas con etiquetas humanizadas.
 
 3. Notificaciones:
 - Bandeja de eventos.
-- Resumen semanal compacto para reducir ruido.
+- Señales accionables sin ruido técnico.
+
+4. Perfil:
+- Hero de nivel + progreso.
+- Sección "Mis Insignias" funcional.
+- Sección "Insignias recientes" con fecha de obtención.
 
 ## 8) Observabilidad y operación
 
@@ -169,8 +181,10 @@ Soporte:
 - Simulador de impacto de cambios de reglas antes de publicar config.
 - Umbrales anti-abuso específicos por segmento.
 - Mecánica de temporadas sobre progresión permanente.
+- Persistencia backend de historial de insignias (actualmente local en cliente).
+- Endpoints dedicados para consultar/otorgar insignias como entidad propia.
 
-Estos puntos están registrados en el backlog de Fase 7.
+Estos puntos quedan para backlog de Fase 9+.
 
 ## 11) Referencias fuente
 
@@ -178,6 +192,8 @@ Estos puntos están registrados en el backlog de Fase 7.
 - docs/phases/archive/fase6/FASE6_ANEXO_PLAN_EJECUTABLE.md
 - docs/phases/archive/fase6/FASE6_ANEXO_BACKLOG.md
 - docs/phases/archive/fase6/FASE6_ANEXO_RESULTADOS.md
+- docs/phases/archive/fase8/FASE8_ANEXO_PLAN_EJECUTABLE.md
+- docs/phases/archive/fase8/FASE8_ANEXO_BACKLOG.md
 - docs/product/BALANCE_NIVELES_V1.md
 - docs/product/SEGMENTACION_MISIONES_V1.md
 - ../capypay-backend/README.md (API/operación)

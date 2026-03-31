@@ -7,7 +7,7 @@
   class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4"
 >
   <div
-    class="bg-[#e5e5e5] border-2 border-black/95 border-4 border-black  w-full max-w-md p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] border-4 border-black max-h-[90vh] overflow-y-auto"
+    class="bg-[#e5e5e5] border-4 border-black w-full max-w-md p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] max-h-[90vh] overflow-y-auto"
   >
     <div class="flex items-center justify-between mb-4">
       <h3 class="text-xl font-bold text-black">Editar Perfil</h3>
@@ -38,7 +38,7 @@
         <input
           id="editNombre"
           type="text"
-          class="w-full px-4 py-3  bg-white border-2 border-black border-4 border-black text-black placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-lime/50 focus:border-brand-lime/50"
+          class="w-full px-4 py-3 bg-white border-4 border-black text-black placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-lime/50 focus:border-brand-lime/50"
           placeholder="Tu nombre completo"
           required
         />
@@ -51,7 +51,7 @@
         <input
           id="editAlias"
           type="text"
-          class="w-full px-4 py-3  bg-white border-2 border-black border-4 border-black text-black placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-lime/50 focus:border-brand-lime/50"
+          class="w-full px-4 py-3 bg-white border-4 border-black text-black placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-lime/50 focus:border-brand-lime/50"
           placeholder="@tu_alias"
           required
         />
@@ -64,7 +64,7 @@
         <input
           id="editEmail"
           type="email"
-          class="w-full px-4 py-3  bg-white border-2 border-black border-4 border-black text-black placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-lime/50 focus:border-brand-lime/50"
+          class="w-full px-4 py-3 bg-white border-4 border-black text-black placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-lime/50 focus:border-brand-lime/50"
           placeholder="tu@email.com"
           required
         />
@@ -77,8 +77,26 @@
         <textarea
           id="editDescripcion"
           rows="3"
-          class="w-full px-4 py-3  bg-white border-2 border-black border-4 border-black text-black placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-lime/50 focus:border-brand-lime/50 resize-none"
+          class="w-full px-4 py-3 bg-white border-4 border-black text-black placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-lime/50 focus:border-brand-lime/50 resize-none"
           placeholder="Cuéntanos sobre ti..."></textarea>
+      </div>
+
+      <div class="border-2 border-black bg-white px-3 py-3">
+        <label class="block text-sm font-medium text-black mb-2"
+          >Foto de perfil</label
+        >
+        <input
+          id="editAvatar"
+          type="file"
+          accept="image/*"
+          class="w-full text-xs text-black file:mr-3 file:px-3 file:py-1.5 file:border-2 file:border-black file:bg-[#fffdf6] file:text-black file:font-bold"
+        />
+        <p id="editAvatarCurrent" class="mt-2 text-[11px] font-bold uppercase text-slate-600">Usando avatar predeterminado</p>
+        <label class="mt-2 inline-flex items-center gap-2 text-[11px] font-bold uppercase text-black">
+          <input id="editAvatarRemove" type="checkbox" class="h-4 w-4 border-2 border-black" />
+          Quitar foto personalizada
+        </label>
+        <p class="mt-1 text-[10px] font-bold uppercase text-slate-500">Maximo 2 MB. Se sincroniza con tu cuenta.</p>
       </div>
 
       <div class="flex gap-3 pt-4">
@@ -105,7 +123,7 @@
   class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4"
 >
   <div
-    class="bg-[#e5e5e5] border-2 border-black/95 border-4 border-black  w-full max-w-md p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] border-4 border-black max-h-[90vh] overflow-y-auto"
+    class="bg-[#e5e5e5] border-4 border-black w-full max-w-md p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] max-h-[90vh] overflow-y-auto"
   >
     <div class="flex items-center justify-between mb-4">
       <h3 class="text-xl font-bold text-black">Seguridad de la Cuenta</h3>
@@ -130,7 +148,7 @@
 
     <div class="space-y-4">
       <button
-        class="w-full flex items-center justify-between p-4 bg-white border-2 border-black  border-4 border-black hover:border-brand-lime/30 transition-all"
+        class="w-full flex items-center justify-between p-4 bg-white border-4 border-black hover:border-brand-lime/30 transition-all"
         onclick="cambiarPin()"
       >
         <div class="flex items-center gap-3">
@@ -171,7 +189,7 @@
       </button>
 
       <button
-        class="w-full flex items-center justify-between p-4 bg-white border-2 border-black  border-4 border-black hover:border-brand-lime/30 transition-all"
+        class="w-full flex items-center justify-between p-4 bg-white border-4 border-black hover:border-brand-lime/30 transition-all"
         onclick="activarBiometria()"
       >
         <div class="flex items-center gap-3">
@@ -211,7 +229,7 @@
       </button>
 
       <button
-        class="w-full flex items-center justify-between p-4 bg-white border-2 border-black  border-4 border-black hover:border-brand-lime/30 transition-all"
+        class="w-full flex items-center justify-between p-4 bg-white border-4 border-black hover:border-brand-lime/30 transition-all"
         onclick="verificarDispositivos()"
       >
         <div class="flex items-center gap-3">
@@ -259,7 +277,7 @@
   class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4"
 >
   <div
-    class="bg-[#e5e5e5] border-2 border-black/95 border-4 border-black  w-full max-w-2xl p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] border-4 border-black max-h-[90vh] overflow-y-auto"
+    class="bg-[#e5e5e5] border-4 border-black w-full max-w-2xl p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] max-h-[90vh] overflow-y-auto"
   >
     <div class="flex items-center justify-between mb-6">
       <h3 class="text-xl font-bold text-black">Centro de Ayuda</h3>
@@ -283,7 +301,7 @@
     </div>
 
     <div class="space-y-4">
-      <div class="bg-white border-2 border-black  border-4 border-black p-4">
+      <div class="bg-white border-4 border-black p-4">
         <h4 class="text-brand-lime font-semibold mb-2">¿Cómo cambio mi PIN?</h4>
         <p class="text-slate-300 text-sm">
           Ve a Seguridad de la Cuenta y selecciona "Cambiar PIN". Recibirás un
@@ -291,7 +309,7 @@
         </p>
       </div>
 
-      <div class="bg-white border-2 border-black  border-4 border-black p-4">
+      <div class="bg-white border-4 border-black p-4">
         <h4 class="text-brand-lime font-semibold mb-2">
           ¿Cómo recupero mi cuenta?
         </h4>
@@ -301,7 +319,7 @@
         </p>
       </div>
 
-      <div class="bg-white border-2 border-black  border-4 border-black p-4">
+      <div class="bg-white border-4 border-black p-4">
         <h4 class="text-brand-lime font-semibold mb-2">
           ¿Las transferencias son instantáneas?
         </h4>
@@ -311,7 +329,7 @@
         </p>
       </div>
 
-      <div class="bg-white border-2 border-black  border-4 border-black p-4">
+      <div class="bg-white border-4 border-black p-4">
         <h4 class="text-brand-lime font-semibold mb-2">¿Cómo gano XP?</h4>
         <p class="text-slate-300 text-sm">
           Realizando transacciones, recargas y usando los servicios de
@@ -327,7 +345,7 @@
   class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4"
 >
   <div
-    class="bg-[#e5e5e5] border-2 border-black/95 border-4 border-black  w-full max-w-md p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] border-4 border-black"
+    class="bg-[#e5e5e5] border-4 border-black w-full max-w-md p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]"
   >
     <div class="text-center">
       <div

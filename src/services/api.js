@@ -111,12 +111,19 @@ function invalidateGamificationClientCache(userId) {
  */
 export async function fetchAPI(endpoint, options = {}) {
   const token = localStorage.getItem('capypay_token');
-  
+
+  const method = String(options.method || 'GET').toUpperCase();
+  const hasBody = options.body !== undefined && options.body !== null && method !== 'GET' && method !== 'HEAD';
+
   const headers = {
-    'Content-Type': 'application/json',
     ...(token && { Authorization: `Bearer ${token}` }),
     ...options.headers,
   };
+
+  const hasContentType = Object.keys(headers).some((key) => key.toLowerCase() === 'content-type');
+  if (hasBody && !hasContentType) {
+    headers['Content-Type'] = 'application/json';
+  }
 
   const config = {
     ...options,
@@ -182,6 +189,7 @@ export const authService = {
             cedula: response.cedula,
             balance: response.balance,
             xp: response.xp || 0,
+          avatar_url: response.avatar_url || null,
             last_login: response.last_login // Nuevo campo
         };
         localStorage.setItem('capypay_user', JSON.stringify(userToSave));
@@ -325,6 +333,20 @@ export const userService = {
       return fetchAPI(`/contactos/${contactId}`, {
           method: 'PUT',
           body: JSON.stringify({ alias })
+      });
+  },
+
+  updateAvatar: async (userId, avatarUrl) => {
+      let id = userId;
+      if (!id) {
+        const storedUser = authService.getCurrentUser();
+        id = storedUser?.id || storedUser?.user_id;
+      }
+      if (!id) throw new Error("ID de usuario no encontrado");
+
+      return fetchAPI(`/usuario/${id}/avatar`, {
+        method: 'PUT',
+        body: JSON.stringify({ avatar_url: avatarUrl || "" })
       });
   }
 };
@@ -515,6 +537,32 @@ export const gamificationService = {
       () => fetchAPI('/gamification/metrics/summary'),
       GM_CACHE_TTL_MS.metricsSummary
     );
+  },
+
+  getBadgesSync: async (userId) => {
+    if (!userId) {
+      const u = authService.getCurrentUser();
+      userId = u?.id;
+    }
+    if (!userId) throw new Error('ID de usuario no encontrado');
+    return fetchAPI(`/gamification/badges/sync?userId=${encodeURIComponent(userId)}`);
+  },
+
+  saveBadgesSync: async ({ userId, badges }) => {
+    let safeUserId = userId;
+    if (!safeUserId) {
+      const u = authService.getCurrentUser();
+      safeUserId = u?.id;
+    }
+    if (!safeUserId) throw new Error('ID de usuario no encontrado');
+
+    return fetchAPI('/gamification/badges/sync', {
+      method: 'POST',
+      body: JSON.stringify({
+        userId: safeUserId,
+        badges: badges || {}
+      })
+    });
   },
 
   invalidateClientCache: (userId) => {

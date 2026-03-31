@@ -212,7 +212,8 @@ const { amount = "0.00" } = Astro.props;
 
 <script>
   // @ts-nocheck
-  import { authService, userService } from "../../../services/api.js";
+  import { authService } from "../../../services/api.js";
+  import { userProfile } from "../../../store/userStore.js";
 
   const LEVEL_THEMES = {
     1: { base: "#CBD5E1", accent: "#64748B", label: "Novato" },
@@ -286,41 +287,29 @@ const { amount = "0.00" } = Astro.props;
     }
   }
 
-  async function updateBalance() {
-    try {
-      const user = authService.getCurrentUser();
-      const nameEl = document.getElementById("balance-username");
-      if (user && nameEl) {
-        nameEl.innerText = (
-          user.nombre ||
-          user.name ||
-          "Cormex User"
-        ).toUpperCase();
-      }
-
-      if (!user) return;
-
-      const profile = await userService.getProfile();
-      const amountEl = document.getElementById("balance-amount");
-      if (amountEl && profile) {
-        amountEl.innerText = parseFloat(profile.balance).toLocaleString(
-          "en-US",
-          {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          },
-        );
-      }
-
-      const profileLevel =
-        profile && typeof profile === "object"
-          ? Number(Reflect.get(profile, "level") || 1)
-          : 1;
-
-      applyWalletTheme(profileLevel);
-    } catch (e) {
-      console.error("Error updating balance", e);
+  function updateBalanceFromProfile(profile) {
+    const user = authService.getCurrentUser();
+    const nameEl = document.getElementById("balance-username");
+    if (nameEl) {
+      nameEl.innerText = (
+        user?.nombre ||
+        user?.name ||
+        profile?.name ||
+        "Cormex User"
+      ).toUpperCase();
     }
+
+    const amountEl = document.getElementById("balance-amount");
+    const balance = Number(profile?.balance ?? user?.balance ?? 0);
+    if (amountEl) {
+      amountEl.innerText = balance.toLocaleString("en-US", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      });
+    }
+
+    const profileLevel = Number(profile?.level || user?.level || 1);
+    applyWalletTheme(profileLevel);
   }
 
   window.addEventListener("capypay-level-changed", (event) => {
@@ -332,8 +321,12 @@ const { amount = "0.00" } = Astro.props;
   });
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", updateBalance);
+    document.addEventListener("DOMContentLoaded", () => updateBalanceFromProfile(userProfile.get()));
   } else {
-    updateBalance();
+    updateBalanceFromProfile(userProfile.get());
   }
+
+  userProfile.subscribe((profile) => {
+    updateBalanceFromProfile(profile);
+  });
 </script>

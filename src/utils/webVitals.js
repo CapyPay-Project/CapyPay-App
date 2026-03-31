@@ -37,8 +37,14 @@ function publishMetric(pageName, metricName, value, extra = {}) {
     }));
   }
 
-  // Telemetria local para comparar before/after en Sprint 7.3.
-  console.info('[CapyPay][WebVitals]', pageName, metricName, value, extra);
+  // Telemetria local solo en debug explicito.
+  if (typeof window !== 'undefined') {
+    const params = new URLSearchParams(window.location.search);
+    const enabled = params.get('debugVitals') === '1' || window.__CAPYPAY_DEBUG_VITALS__ === true;
+    if (enabled) {
+      console.info('[CapyPay][WebVitals]', pageName, metricName, value, extra);
+    }
+  }
 }
 
 function observePaint(pageName) {
