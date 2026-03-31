@@ -21,14 +21,15 @@ const quickRightItems = quickNavItems.slice(2);
 <div class="md:hidden fixed inset-x-0 bottom-0 z-50 pointer-events-none">
   <div
     id="mobile-nav-backdrop"
-    class="hidden absolute inset-0 bg-black/40 backdrop-blur-[2px] pointer-events-auto"
+    class="hidden absolute inset-0 bg-black/32 backdrop-blur-[2px] pointer-events-auto opacity-0 transition-opacity duration-200"
   ></div>
 
   <section
     id="mobile-nav-panel"
-    class="hidden absolute left-0 right-0 bottom-[calc(env(safe-area-inset-bottom,0px)+76px)] bg-[#FFF9F0] border-t-4 border-black shadow-[0_-8px_0px_0px_rgba(0,0,0,1)] p-3 pointer-events-auto max-h-[62vh] overflow-y-auto"
+    class="hidden absolute left-0 right-0 bottom-[calc(env(safe-area-inset-bottom,0px)+76px)] bg-[#FFF9F0] border-t-4 border-black shadow-[0_-4px_12px_rgba(0,0,0,0.14)] p-3 pointer-events-auto max-h-[62vh] overflow-y-auto opacity-0 translate-y-4 transition-[opacity,transform] duration-220"
     aria-label="Menu ampliado"
   >
+    <div class="w-12 h-1 rounded-full bg-black/35 mx-auto mb-2" aria-hidden="true"></div>
     <p class="text-[10px] font-black uppercase tracking-widest text-black/70 mb-2 px-1">Mas funciones</p>
     <div class="grid grid-cols-2 gap-2 max-w-xl mx-auto">
       {
@@ -55,7 +56,8 @@ const quickRightItems = quickNavItems.slice(2);
   </section>
 
   <nav
-    class="relative w-full bg-[#FFF9F0] border-t-4 border-black px-2 pt-3 pb-[calc(env(safe-area-inset-bottom,0px)+10px)] shadow-[0_-8px_20px_rgba(0,0,0,0.22)] pointer-events-auto"
+    id="mobile-bottom-nav"
+    class="relative w-full bg-[#FFF9F0] border-t-4 border-black px-2 pt-3 pb-[calc(env(safe-area-inset-bottom,0px)+10px)] shadow-[0_-3px_10px_rgba(0,0,0,0.13)] pointer-events-auto"
   >
     <div class="grid grid-cols-5 gap-1 items-end">
       {
@@ -127,21 +129,47 @@ const quickRightItems = quickNavItems.slice(2);
     const panel = document.getElementById("mobile-nav-panel");
     const backdrop = document.getElementById("mobile-nav-backdrop");
     const logoutBtn = document.getElementById("mobile-nav-logout");
+    const bottomNav = document.getElementById("mobile-bottom-nav");
 
     if (!moreBtn || !panel || !backdrop) return;
 
+    let closeTimer;
+    let navTouchStartY = 0;
+    let navTouchStartX = 0;
+    let panelTouchStartY = 0;
+    let panelTouchStartX = 0;
+
+    const clearCloseTimer = () => {
+      if (closeTimer) {
+        clearTimeout(closeTimer);
+        closeTimer = undefined;
+      }
+    };
+
     const closePanel = () => {
-      panel.classList.add("hidden");
-      backdrop.classList.add("hidden");
+      clearCloseTimer();
+      panel.classList.add("opacity-0", "translate-y-4");
+      backdrop.classList.add("opacity-0");
       moreBtn.setAttribute("aria-expanded", "false");
       moreBtn.classList.remove("!bg-black", "!text-[#d7fd48]");
+
+      closeTimer = window.setTimeout(() => {
+        panel.classList.add("hidden");
+        backdrop.classList.add("hidden");
+      }, 220);
     };
 
     const openPanel = () => {
+      clearCloseTimer();
       panel.classList.remove("hidden");
       backdrop.classList.remove("hidden");
       moreBtn.setAttribute("aria-expanded", "true");
       moreBtn.classList.add("!bg-black", "!text-[#d7fd48]");
+
+      requestAnimationFrame(() => {
+        panel.classList.remove("opacity-0", "translate-y-4");
+        backdrop.classList.remove("opacity-0");
+      });
     };
 
     moreBtn.addEventListener("click", () => {
@@ -154,6 +182,56 @@ const quickRightItems = quickNavItems.slice(2);
     panel.querySelectorAll("[data-nav-link]").forEach((link) => {
       link.addEventListener("click", closePanel);
     });
+
+    bottomNav?.addEventListener(
+      "touchstart",
+      (event) => {
+        const touch = event.touches[0];
+        navTouchStartY = touch.clientY;
+        navTouchStartX = touch.clientX;
+      },
+      { passive: true },
+    );
+
+    bottomNav?.addEventListener(
+      "touchend",
+      (event) => {
+        const touch = event.changedTouches[0];
+        const deltaY = touch.clientY - navTouchStartY;
+        const deltaX = touch.clientX - navTouchStartX;
+
+        // Swipe hacia arriba desde la barra inferior abre el panel.
+        if (deltaY < -42 && Math.abs(deltaX) < 48 && panel.classList.contains("hidden")) {
+          openPanel();
+        }
+      },
+      { passive: true },
+    );
+
+    panel.addEventListener(
+      "touchstart",
+      (event) => {
+        const touch = event.touches[0];
+        panelTouchStartY = touch.clientY;
+        panelTouchStartX = touch.clientX;
+      },
+      { passive: true },
+    );
+
+    panel.addEventListener(
+      "touchend",
+      (event) => {
+        const touch = event.changedTouches[0];
+        const deltaY = touch.clientY - panelTouchStartY;
+        const deltaX = touch.clientX - panelTouchStartX;
+
+        // Swipe hacia abajo dentro del panel lo cierra.
+        if (deltaY > 52 && Math.abs(deltaX) < 56 && !panel.classList.contains("hidden")) {
+          closePanel();
+        }
+      },
+      { passive: true },
+    );
 
     logoutBtn?.addEventListener("click", () => {
       closePanel();

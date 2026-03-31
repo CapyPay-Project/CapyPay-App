@@ -262,7 +262,7 @@ function actualizarLista(items, tipo) {
       <div class="flex items-center gap-4 sm:gap-6">
         <span class="font-black text-2xl w-8">${rango.toString().padStart(2, '0')}</span>
         ${iconoOAvatar}
-        <span class="font-black text-xl uppercase truncate max-w-[120px] sm:max-w-none">${nombre} ${soyYo ? "(Tú)" : ""}</span>
+        <span class="font-black text-xl uppercase truncate max-w-30 sm:max-w-none">${nombre} ${soyYo ? "(Tú)" : ""}</span>
       </div>
       <span class="font-bold text-xl sm:text-2xl">${puntos} XP</span>
     `;

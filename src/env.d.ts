@@ -19,6 +19,12 @@ declare global {
     ) => void;
     markNotifRead: (id: string, el: HTMLElement) => void;
     requestPin: (callback: (pin: string) => void) => void;
+    openLogoutModal: () => void;
+    __capypayHistoryCache?: {
+      cedula: string;
+      movimientos: any[];
+      updatedAt: number;
+    };
   }
 }
 

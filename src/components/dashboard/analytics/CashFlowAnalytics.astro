@@ -59,8 +59,7 @@
 </style>
 
 <script>
-  import { userService } from "../../../services/api.js";
-  import { userProfile } from "../../../store/userStore.js";
+  import { authService, userService } from "../../../services/api.js";
 
   async function loadFinanceData() {
     const barsContainer = document.getElementById("chart-bars-container");
@@ -101,15 +100,32 @@
     }
 
     try {
-      userProfile.subscribe(async (profile) => {
-        if (!profile || !profile.cedula) return;
+      const currentUser = authService.getCurrentUser();
+      const cedula = currentUser?.cedula || "";
+      const globalWindow = window as any;
+      const sharedCache = globalWindow.__capypayHistoryCache;
+      const cacheFresh =
+        sharedCache &&
+        sharedCache.cedula === cedula &&
+        Array.isArray(sharedCache.movimientos) &&
+        Date.now() - Number(sharedCache.updatedAt || 0) < 60000;
 
+      if (cacheFresh) {
+        history = sharedCache.movimientos;
+      } else if (cedula) {
         const rawHistory: any = await userService
-          .getHistory(profile.cedula)
+          .getHistory(cedula)
           .catch(() => ({ movimientos: [] }));
         history = Array.isArray(rawHistory)
           ? rawHistory
           : rawHistory.movimientos || rawHistory.data || [];
+
+        globalWindow.__capypayHistoryCache = {
+          cedula,
+          movimientos: history,
+          updatedAt: Date.now(),
+        };
+      }
 
         updateChart = () => {
           const filterVal = chartFilter ? chartFilter.value : "weekly";
@@ -232,7 +248,6 @@
         }
 
         updateChart();
-      });
     } catch (e) {
       console.error("Error loading finance data", e);
       barsContainer.innerHTML =
