@@ -1,0 +1,108 @@
+---
+import MainLayout from "../../layouts/MainLayout.astro";
+import { createServerSupabaseClient } from "../../utils/supabase/server";
+import { getSupabaseRuntimeConfig } from "../../utils/supabase/shared";
+
+const startedAt = Date.now();
+const cfg = getSupabaseRuntimeConfig();
+
+let status = "ok";
+let configOk = cfg.isConfigured;
+let ping: Array<{ id: unknown; tasa_dolar: unknown; updated_at: unknown }> = [];
+let profilesSample: Array<{ id: unknown; name: unknown; email: unknown }> = [];
+let errorMessage = "";
+
+if (configOk) {
+  try {
+    const supabase = createServerSupabaseClient();
+
+    const { data: tasaData, error: tasaError } = await supabase
+      .from("global_config")
+      .select("id, tasa_dolar, updated_at")
+      .limit(1);
+
+    if (tasaError) {
+      throw tasaError;
+    }
+
+    const { data: profileData, error: profileError } = await supabase
+      .from("profiles")
+      .select("id, name, email")
+      .limit(3);
+
+    if (profileError) {
+      throw profileError;
+    }
+
+    ping = tasaData || [];
+    profilesSample = profileData || [];
+  } catch (error) {
+    status = "error";
+    errorMessage = error?.message || String(error);
+  }
+} else {
+  status = "error";
+  errorMessage = "Variables de Supabase no configuradas en frontend.";
+}
+
+const elapsedMs = Date.now() - startedAt;
+---
+
+<MainLayout title="Diagnostico Supabase" showSidebar={true}>
+  <section class="max-w-4xl w-full mx-auto">
+    <header class="mb-6">
+      <h1 class="text-3xl font-black uppercase tracking-tight">Diagnostico Supabase</h1>
+      <p class="text-sm font-bold text-black/70 mt-2">
+        Validacion server-side desde Astro para revisar conexion frontend->Supabase.
+      </p>
+    </header>
+
+    <div class="grid gap-4 sm:grid-cols-2 mb-6">
+      <article class="border-4 border-black bg-white p-4">
+        <p class="text-xs font-black uppercase tracking-widest text-black/60">Estado</p>
+        <p class={`text-xl font-black mt-2 ${status === "ok" ? "text-green-700" : "text-red-700"}`}>
+          {status === "ok" ? "OK" : "ERROR"}
+        </p>
+      </article>
+
+      <article class="border-4 border-black bg-white p-4">
+        <p class="text-xs font-black uppercase tracking-widest text-black/60">Tiempo</p>
+        <p class="text-xl font-black mt-2">{elapsedMs} ms</p>
+      </article>
+    </div>
+
+    <article class="border-4 border-black bg-white p-4 mb-4">
+      <h2 class="text-sm font-black uppercase tracking-widest mb-2">Configuracion</h2>
+      <ul class="text-sm font-bold space-y-1">
+        <li>isConfigured: {String(configOk)}</li>
+        <li>url: {cfg.supabaseUrl ? "configurada" : "faltante"}</li>
+        <li>publishable key: {cfg.supabasePublishableKey ? "configurada" : "faltante"}</li>
+      </ul>
+    </article>
+
+    {
+      status === "error" && (
+        <article class="border-4 border-black bg-red-50 p-4 mb-4">
+          <h2 class="text-sm font-black uppercase tracking-widest mb-2">Error</h2>
+          <p class="text-sm font-bold text-red-800">{errorMessage}</p>
+        </article>
+      )
+    }
+
+    {
+      status === "ok" && (
+        <>
+          <article class="border-4 border-black bg-white p-4 mb-4">
+            <h2 class="text-sm font-black uppercase tracking-widest mb-2">global_config (muestra)</h2>
+            <pre class="text-xs overflow-x-auto font-mono bg-black text-[#d7fd48] p-3">{JSON.stringify(ping, null, 2)}</pre>
+          </article>
+
+          <article class="border-4 border-black bg-white p-4">
+            <h2 class="text-sm font-black uppercase tracking-widest mb-2">profiles (muestra)</h2>
+            <pre class="text-xs overflow-x-auto font-mono bg-black text-[#d7fd48] p-3">{JSON.stringify(profilesSample, null, 2)}</pre>
+          </article>
+        </>
+      )
+    }
+  </section>
+</MainLayout>

@@ -2,7 +2,7 @@
 
 Documento maestro del frontend de CapyPay.
 
-- Ultima actualizacion: 2026-03-31
+- Ultima actualizacion: 2026-04-01
 - Ambito: arquitectura, rutas, scripts y estado operativo de CapyPay-App
 
 ## Actualizacion al 2026-03-31
@@ -16,6 +16,16 @@ Documento maestro del frontend de CapyPay.
 - Se consolido el sistema de autenticacion unificado (`/auth/login` + `/auth/registro`) con widget unico.
 - Se activo refresh automatico de sesion en cliente para evitar cierres por expiracion durante navegacion normal.
 - Se agrego guardia global de sesion en layout principal y sincronizacion de logout entre pestanas.
+
+## Actualizacion al 2026-04-01
+
+- Integracion de Supabase adaptada a Astro (cliente y server) con lectura de variables `PUBLIC_*` y `NEXT_PUBLIC_*`.
+- Se agrego ruta de diagnostico server-side en `/dev/supabase-diagnostico` para validar conexion frontend -> Supabase.
+- Se reforzo el manejo de sesion en cliente para tratar `403` por token invalido como sesion expirada y reducir ruido en consola.
+- Se agrego script `dev:clean` para limpiar cache de Vite (`node_modules/.vite`) en casos de dependencias optimizadas obsoletas.
+- Se ajustaron dependencias de optimizacion de Vite para islas Svelte usadas en servicios (`lucide-svelte`, `embla-carousel-svelte`, `embla-carousel-autoplay`).
+- TicketBus ahora sincroniza saldo con estado global de perfil y muestra estado de sincronizacion en la UI.
+- CapyShop usa fallback de imagen local para evitar errores por placeholders externos bloqueados o caidos.
 
 ## Estado actual
 
@@ -125,7 +135,9 @@ CapyPay-App/
 ## Scripts disponibles
 
 - npm run dev: servidor de desarrollo.
+- npm run dev:clean: limpia cache de Vite y levanta desarrollo.
 - npm run build: compilacion de produccion.
+- npm run check:quick: validacion estatica Astro.
 - npm run preview: vista previa del build.
 - npm run e2e:smoke: build + smoke tests E2E.
 - npm run e2e:smoke:headed: smoke tests E2E en modo headed.
@@ -161,6 +173,8 @@ npm run e2e:smoke
 Definir en `CapyPay-App/.env` (o copiar desde `CapyPay-App/.env.example`):
 
 - `PUBLIC_API_URL`: URL base del backend (`/api`).
+- `PUBLIC_SUPABASE_URL` o `NEXT_PUBLIC_SUPABASE_URL`: URL del proyecto Supabase para frontend.
+- `PUBLIC_SUPABASE_PUBLISHABLE_KEY` o `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`: clave publica de Supabase para frontend.
 - `PUBLIC_SESSION_REFRESH_WINDOW_MINUTES`: ventana previa para renovar sesion automaticamente.
 - `PUBLIC_SESSION_REFRESH_COOLDOWN_SECONDS`: enfriamiento minimo entre refresh automaticos.
 - `PUBLIC_SESSION_REFRESH_POLL_SECONDS`: intervalo de chequeo de refresh.

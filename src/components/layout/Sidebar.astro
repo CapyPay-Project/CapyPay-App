@@ -2,14 +2,12 @@
 /**
  * Sidebar.astro (Neo-brutalist)
  */
-import { Trophy } from "lucide-astro";
-
 const currentPath = Astro.url.pathname;
 
 const navItems = [
   { href: "/dashboard", label: "INICIO", icon: "dashboard" },
   { href: "/finance/recarga", label: "BILLETERA", icon: "account_balance" },
-  { href: "/finance/history", label: "ACTIVIDAD", icon: "history" },
+  { href: "/finance/history", label: "HISTORIAL", icon: "history" },
   { href: "/services/comedor", label: "COMEDOR", icon: "restaurant" },
   {
     href: "/services/ticketbus",
@@ -17,7 +15,7 @@ const navItems = [
     icon: "confirmation_number",
   },
   { href: "/services/cantina", label: "CANTINA", icon: "storefront" },
-  { href: "/account/ranking", label: "RANKING", isLucide: true, icon: Trophy },
+  { href: "/account/ranking", label: "CLASIFICACION", icon: "emoji_events" },
 ];
 ---
 
@@ -25,16 +23,14 @@ const navItems = [
   class="hidden lg:flex sticky top-0 h-full flex-col p-8 z-40 bg-[#FFF9F0] border-r-4 border-black w-72"
 >
   <!-- Logo -->
-  <div class="flex flex-col mb-10 mt-2">
-    <div
-      class="text-3xl font-black text-black uppercase tracking-tighter mix-blend-normal"
-    >
-      CAPYPAY
-    </div>
-    <span
-      class="text-[10px] font-black tracking-widest text-[#8b5cf6] mt-1 uppercase"
-      >University Edition</span
-    >
+  <div class="flex flex-col mb-10 mt-2 px-5">
+    <img
+      src="/assets/landing/vectors/logocapinamedside.svg"
+      alt="Logo de CapyPay"
+      class="w-full h-auto"
+      loading="eager"
+      decoding="async"
+    />
   </div>
 
   <!-- Navigation -->
@@ -52,13 +48,9 @@ const navItems = [
             data-astro-prefetch
             class={`flex items-center gap-4 px-5 py-4 font-black text-sm uppercase tracking-widest transition-all ${isActive ? "bg-[#d7fd48] text-black border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-1 hover:shadow-none" : "text-black border-4 border-transparent hover:border-black hover:bg-gray-100"}`}
           >
-            {item.isLucide ? (
-              <item.icon class="w-6 h-6 stroke-3" />
-            ) : (
-              <span class="material-symbols-outlined font-black">
-                {item.icon}
-              </span>
-            )}
+            <span class="material-symbols-outlined font-black">
+              {item.icon}
+            </span>
             {item.label}
           </a>
         );
@@ -74,13 +66,13 @@ const navItems = [
         data-astro-prefetch
         class="flex items-center gap-4 px-5 py-3 text-black font-black text-xs uppercase tracking-widest border-4 border-transparent hover:border-black hover:bg-gray-100 transition-all"
       >
-        <span class="material-symbols-outlined text-lg">settings</span> SETTINGS
+        <span class="material-symbols-outlined text-lg">settings</span> CONFIGURACION
       </a>
       <button
         class="w-full flex items-center gap-4 px-5 py-3 text-black font-black text-xs uppercase tracking-widest border-4 border-transparent hover:border-black hover:bg-red-100 transition-all text-left"
         onclick="window.openLogoutModal()"
       >
-        <span class="material-symbols-outlined text-lg">logout</span> LOGOUT
+        <span class="material-symbols-outlined text-lg">logout</span> CERRAR SESION
       </button>
     </div>
   </div>

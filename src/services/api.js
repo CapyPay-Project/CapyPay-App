@@ -408,12 +408,6 @@ export async function fetchAPI(endpoint, options = {}) {
 
   try {
     const response = await fetch(`${API_URL}${endpoint}`, config);
-    
-    // Si el token expiró (401), redirigir al login
-    if (response.status === 401) {
-      clearAuthSessionWithNotice('Tu sesion ya no es valida. Vuelve a iniciar sesion.', { replace: true, delayMs: SESSION_NOTICE_DELAY_MS });
-      return null;
-    }
 
     let data;
     try {
@@ -425,6 +419,21 @@ export async function fetchAPI(endpoint, options = {}) {
         }
     }
     
+    // Tratar respuestas de auth invalida sin propagar ruido al resto de la UI.
+    if (response.status === 401) {
+      clearAuthSessionWithNotice('Tu sesion ya no es valida. Vuelve a iniciar sesion.', { replace: true, delayMs: SESSION_NOTICE_DELAY_MS });
+      return null;
+    }
+
+    if (response.status === 403) {
+      const rawMessage = String(data?.message || data?.error || '').toLowerCase();
+      const looksLikeAuthError = rawMessage.includes('token');
+      if (looksLikeAuthError) {
+        clearAuthSessionWithNotice('Tu sesion ya no es valida. Vuelve a iniciar sesion.', { replace: true, delayMs: SESSION_NOTICE_DELAY_MS });
+        return null;
+      }
+    }
+
     // Si el backend devuelve un error 400-500 y pudimos parsear el JSON
     if (!response.ok) {
       // Buscamos 'message' o 'error' porque tu backend usa ambos

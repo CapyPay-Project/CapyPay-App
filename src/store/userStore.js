@@ -91,7 +91,11 @@ export async function fetchUserProfile() {
       userProfile.set({ ...userProfile.get(), isLoading: false });
     }
   } catch (error) {
-    console.error("Error fetching user profile:", error);
+    const message = String(error?.message || '').toLowerCase();
+    const isAuthError = message.includes('token') || message.includes('sesion') || message.includes('unauthorized');
+    if (!isAuthError) {
+      console.error("Error fetching user profile:", error);
+    }
     userProfile.set({ ...userProfile.get(), isLoading: false });
   }
 }

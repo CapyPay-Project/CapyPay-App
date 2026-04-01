@@ -8,9 +8,11 @@ import svelte from '@astrojs/svelte';
 export default defineConfig({
   integrations: [svelte()],
   vite: {
+    envPrefix: ['PUBLIC_', 'NEXT_PUBLIC_'],
     plugins: [tailwindcss()],
     optimizeDeps: {
-      // Evita servir una version pre-optimizada obsoleta en dev para nanostores.
+      // Evita servir versiones pre-optimzadas obsoletas en dev.
+      include: ['lucide-svelte', 'embla-carousel-svelte', 'embla-carousel-autoplay'],
       exclude: ['nanostores']
     },
     server: {

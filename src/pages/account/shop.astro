@@ -5,7 +5,7 @@ import MainLayout from "../../layouts/MainLayout.astro";
 <MainLayout title="CapyShop - Recompensas | CapyPay" showSidebar={true}>
   <!-- Glowing/Animated Background for the entire shop -->
   <div
-    class="fixed inset-0 pointer-events-none z-[0] overflow-hidden bg-[#fafafa]"
+    class="fixed inset-0 pointer-events-none z-0 overflow-hidden bg-[#fafafa]"
   >
     <div
       class="absolute inset-0"
@@ -135,6 +135,19 @@ import MainLayout from "../../layouts/MainLayout.astro";
   import { gamificationService, authService } from "../../services/api.js";
   import { showToast } from "../../utils/toast.js";
 
+  const SHOP_FALLBACK_IMAGE = "/images/cantina/sandwich.jpg";
+
+  function resolveShopImageUrl(rawUrl: any) {
+    const url = String(rawUrl || "").trim();
+    if (!url) return SHOP_FALLBACK_IMAGE;
+
+    // Evita rutas inexistentes legacy y placeholders externos inestables.
+    if (url.startsWith("/images/shop/")) return SHOP_FALLBACK_IMAGE;
+    if (url.includes("via.placeholder.com")) return SHOP_FALLBACK_IMAGE;
+
+    return url;
+  }
+
   document.addEventListener("DOMContentLoaded", () => {
     const user = authService.getCurrentUser();
     if (user) {
@@ -172,7 +185,7 @@ import MainLayout from "../../layouts/MainLayout.astro";
               ${isOutOfStock ? `<div class="absolute inset-0 bg-white/80 z-10 flex flex-col items-center justify-center backdrop-blur-sm"><span class="bg-black text-white font-black px-4 py-2 border-2 border-black transform -rotate-12 text-xl">AGOTADO</span></div>` : ""}
               <div class="w-full h-40 border-4 border-black mb-4 overflow-hidden ${bgColor} flex items-center justify-center relative">
                  <div class="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white to-transparent"></div>
-                 <img src="${item.image_url || "https://via.placeholder.com/150"}" alt="${item.name}" class="max-h-[80%] object-contain group-hover:scale-125 transition-transform duration-500 drop-shadow-xl" onerror="this.src='https://via.placeholder.com/150'" />
+                 <img src="${resolveShopImageUrl(item.image_url)}" alt="${item.name}" class="max-h-[80%] object-contain group-hover:scale-125 transition-transform duration-500 drop-shadow-xl" onerror="this.onerror=null;this.src='${SHOP_FALLBACK_IMAGE}'" />
                  ${item.tier_requirement ? `<span class="absolute top-2 left-2 bg-black text-white text-[10px] uppercase font-black px-2 py-1 border-2 border-black tracking-widest shadow-[2px_2px_0px_0px_rgba(255,255,255,1)]">Nvl Min: ${item.tier_requirement}</span>` : ""}
                  ${item.stock !== null && item.stock !== undefined ? `<span class="absolute bottom-2 right-2 bg-white text-black text-xs font-black px-2 py-1 border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">Quedan ${item.stock}</span>` : `<span class="absolute bottom-2 right-2 bg-black text-white text-xs font-black px-2 py-1 border-2 border-white shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">∞ STOCK</span>`}
               </div>
@@ -255,7 +268,7 @@ import MainLayout from "../../layouts/MainLayout.astro";
       const result = await gamificationService.buyShopItem(id, user.id);
       showToast("Éxito", "¡Compra exitosa! Consulta tu inventario.", "success");
       user.reward_points = result.newBalance || user.reward_points - cost;
-      authService.setCurrentUser(user);
+      localStorage.setItem("capypay_user", JSON.stringify(user));
       const rewardPointsEl = document.getElementById("user-reward-points");
       if (rewardPointsEl) {
         rewardPointsEl.innerText = `${user.reward_points} Pts.`;

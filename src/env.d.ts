@@ -3,6 +3,10 @@
 declare global {
   interface ImportMetaEnv {
     readonly DEV: boolean;
+    readonly NEXT_PUBLIC_SUPABASE_URL?: string;
+    readonly NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY?: string;
+    readonly PUBLIC_SUPABASE_URL?: string;
+    readonly PUBLIC_SUPABASE_ANON_KEY?: string;
   }
 
   interface ImportMeta {
