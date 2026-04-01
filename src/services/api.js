@@ -681,6 +681,17 @@ export const missionService = {
 };
 
 export const gamificationService = {
+  buyShopItem: async (itemId, userId) => { return fetchAPI('/gamification/shop/buy', { method: 'POST', body: JSON.stringify({ itemId, userId }) }); },
+    getShopItems: async () => {
+    return fetchAPI('/gamification/shop/items');
+  },
+  
+  getEventMissions: async (userId) => {
+    if (!userId) { const u = authService.getCurrentUser(); userId = u?.id; }
+    if (!userId) return [];
+    return fetchAPI('/gamification/missions/event?userId='+userId);
+  },
+
   getWeeklyMissions: async (userId) => {
     if (!userId) {
       const u = authService.getCurrentUser();

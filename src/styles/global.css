@@ -133,3 +133,12 @@ input:-webkit-autofill::placeholder {
   .bg-primary-fixed { background-color: var(--color-brand-lime); }
   .bg-secondary { background-color: var(--color-brand-purple); }
 }
+
+@keyframes clash-center {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  75% { transform: translateX(6px); }
+  100% { transform: translateX(0); }
+}
+.animate-clash-center { animation: clash-center 0.4s ease-in-out infinite; }
+

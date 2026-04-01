@@ -26,9 +26,27 @@ import MainLayout from "../../layouts/MainLayout.astro";
 
   <!-- Header & Prize Banner -->
   <div
-    class="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6 mb-10 border-b-[6px] border-black pb-8"
+    class="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6 mb-10 border-b-[6px] border-black pb-8 relative"
   >
-    <div class="relative">
+    <!-- Background Decorator -->
+    <div
+      class="absolute -right-4 -top-8 text-[#d7fd48] opacity-20 pointer-events-none"
+      style="font-size: 15rem; font-family: 'Space Grotesk', sans-serif; z-index: 0; transform: rotate(-5deg);"
+    >
+      #1
+    </div>
+
+    <div class="relative z-10 w-full lg:w-auto">
+      <div class="flex items-center gap-4 mb-2">
+        <span
+          class="bg-black text-white px-3 py-1 font-black text-sm tracking-widest border-2 border-black rotate-2 shadow-[2px_2px_0px_#d7fd48]"
+          >TEMPORADA 1</span
+        >
+        <span
+          class="bg-[#8b5cf6] text-white px-3 py-1 font-black text-sm tracking-widest border-2 border-black -rotate-2 shadow-[2px_2px_0px_#000]"
+          >LIGA UNERG</span
+        >
+      </div>
       <h1
         class="flex flex-col items-start gap-1 text-5xl sm:text-6xl lg:text-7xl font-black text-black uppercase tracking-tighter relative z-30"
         style="font-family: 'Space Grotesk', sans-serif;"
@@ -37,14 +55,14 @@ import MainLayout from "../../layouts/MainLayout.astro";
           >RANKING DE</span
         >
         <span
-          class="bg-[#d7fd48] px-4 py-1 border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] relative z-20 -mt-1 sm:-mt-2 transform -rotate-1"
+          class="bg-[#d7fd48] px-4 py-1 border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] relative z-20 -mt-1 sm:-mt-2 transform -rotate-1 hover:rotate-1 transition-transform cursor-crosshair"
           >INFLUENCIA</span
         >
       </h1>
     </div>
 
     <div
-      class="bg-black text-white border-4 border-black shadow-[8px_8px_0px_0px_rgba(215,253,73,1)] p-5 transform -rotate-1 hover:rotate-1 transition-transform"
+      class="bg-black text-white border-4 border-black shadow-[8px_8px_0px_0px_rgba(215,253,73,1)] p-5 transform -rotate-1 hover:rotate-1 transition-transform w-full lg:w-auto z-10"
     >
       <p
         class="text-sm font-black uppercase tracking-widest text-[#8CFFE1] mb-1 flex items-center gap-2"
@@ -62,11 +80,17 @@ import MainLayout from "../../layouts/MainLayout.astro";
       >
         10,000 BARAS + MERCH
       </p>
-      <button
-        class="mt-4 bg-white text-black font-black uppercase text-xs px-3 py-1 border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-y-0.5 hover:shadow-none transition-all"
-        onclick="alert('1er Lugar: 5000 BARAS + T-Shirt Oficial\n2do Lugar: 3000 BARAS\n3er Lugar: 2000 BARAS');"
-        >VER PREMIOS</button
-      >
+      <div class="flex gap-2">
+        <button
+          class="mt-4 bg-white text-black font-black uppercase text-xs px-3 py-1 border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-y-0.5 hover:shadow-none transition-all active:bg-gray-200"
+          id="btn-ver-premios">VER PREMIOS</button
+        >
+        <a
+          href="/account/shop"
+          class="inline-block mt-4 bg-linear-to-r from-[#d7fd48] to-[#8CFFE1] text-black font-black uppercase text-xs px-3 py-1 border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-y-0.5 hover:shadow-none transition-all"
+          >🛒 CAPYSHOP</a
+        >
+      </div>
     </div>
   </div>
 
@@ -75,14 +99,14 @@ import MainLayout from "../../layouts/MainLayout.astro";
     style="font-family: 'Space Grotesk', sans-serif;"
   >
     <!-- Main Content (Podium + Leaderboard) -->
-    <div class="xl:col-span-2 space-y-10">
+    <div class="xl:col-span-2 space-y-10 z-10">
       <!-- Central Control Toggle -->
       <div
         class="flex flex-col sm:flex-row mb-2 border-4 border-black max-w-lg mx-auto overflow-hidden shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] font-black"
       >
         <button
           id="tab-users"
-          class="flex-1 py-3 text-xl bg-[#d7fd48] text-black sm:border-r-4 border-black uppercase active:bg-[#c4ec32]"
+          class="flex-1 py-3 text-xl bg-[#d7fd48] text-black sm:border-r-4 border-black uppercase active:bg-[#c4ec32] hover:bg-[#c4ec32] transition-colors"
           >ESTUDIANTES</button
         >
         <button
@@ -94,13 +118,20 @@ import MainLayout from "../../layouts/MainLayout.astro";
 
       <!-- Podium -->
       <div
-        class="bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjgiPjxyZWN0IHdpZHRoPSI4IiBoZWlnaHQ9IjgiIGZpbGw9IiNmZmYiLz48Y2lyY2xlIGN4PSIxIiBjeT0iMSIgcj0iMSIgZmlsbD0iI2QxZDVkYiIvPjwvc3ZnPg==')] border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] p-6 sm:px-12 pt-20 pb-8 sm:pb-8 sm:pt-24 relative overflow-visible mt-12 mb-12 sm:mb-16"
+        class="bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjgiPjxyZWN0IHdpZHRoPSI4IiBoZWlnaHQ9IjgiIGZpbGw9IiNmZmYiLz48Y2lyY2xlIGN4PSIxIiBjeT0iMSIgcj0iMSIgZmlsbD0iI2QxZDVkYiIvPjwvc3ZnPg==')] border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] p-6 sm:px-12 pt-20 pb-8 sm:pb-8 sm:pt-24 relative overflow-visible mt-12 mb-12 sm:mb-16 group"
       >
         <h2
-          class="absolute -top-5 left-6 bg-white border-4 border-black px-4 py-1 text-3xl font-black uppercase tracking-tighter shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] z-20"
+          class="absolute -top-5 left-6 bg-white border-4 border-black px-4 py-1 text-3xl font-black uppercase tracking-tighter shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] z-20 group-hover:rotate-2 transition-transform cursor-default"
         >
           EL PODIO
         </h2>
+
+        <button
+          id="btn-share-podium"
+          class="absolute -top-5 right-6 bg-[#8b5cf6] text-white border-4 border-black px-3 py-1 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] z-20 font-black uppercase hover:-translate-y-1 hover:bg-[#7c3aed] active:translate-y-1 active:shadow-none transition-all hidden md:flex items-center gap-2"
+        >
+          🔗 <span class="hidden sm:inline">COMPARTIR</span>
+        </button>
 
         <div
           id="podium-container"
@@ -225,6 +256,65 @@ import MainLayout from "../../layouts/MainLayout.astro";
         </div>
       </div>
 
+      <div
+        id="giant-vs-bar-container"
+        class="hidden border-4 border-black bg-black text-white shadow-[8px_8px_0px_0px_rgba(139,92,246,1)] p-5 sm:p-7 -mt-4"
+      >
+        <div
+          class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-5"
+        >
+          <h3
+            class="font-black text-3xl sm:text-4xl uppercase tracking-tighter leading-none"
+          >
+            GUERRA DE <span class="text-[#d7fd48]">FACULTADES</span>
+          </h3>
+          <span
+            class="font-black uppercase text-xs sm:text-sm bg-[#d7fd48] text-black border-2 border-white px-3 py-1 w-max"
+          >
+            Actualización en tiempo real
+          </span>
+        </div>
+
+        <div class="border-4 border-white bg-zinc-900 p-4 sm:p-5">
+          <div
+            class="flex items-center justify-between gap-3 mb-3 font-black uppercase text-xs sm:text-sm"
+          >
+            <span id="giant-top1-name" class="text-[#8CFFE1] truncate"
+              >Facultad A</span
+            >
+            <span class="text-white text-xl">VS</span>
+            <span
+              id="giant-top2-name"
+              class="text-[#ff9dcf] truncate text-right">Facultad B</span
+            >
+          </div>
+
+          <div class="h-12 border-2 border-white overflow-hidden flex">
+            <div
+              id="giant-vs-bar-fill1"
+              class="h-full bg-[#8CFFE1] text-black font-black text-xs sm:text-sm flex items-center pl-3 transition-all duration-700"
+              style="width: 50%;"
+            >
+              50%
+            </div>
+            <div
+              id="giant-vs-bar-fill2"
+              class="h-full bg-[#8b5cf6] text-white font-black text-xs sm:text-sm flex items-center justify-end pr-3 transition-all duration-700"
+              style="width: 50%;"
+            >
+              50%
+            </div>
+          </div>
+
+          <div
+            class="mt-3 flex items-center justify-between font-black text-sm sm:text-base"
+          >
+            <span id="giant-top1-pts" class="text-[#8CFFE1]">0 XP/h</span>
+            <span id="giant-top2-pts" class="text-[#ff9dcf]">0 XP/h</span>
+          </div>
+        </div>
+      </div>
+
       <!-- Leaderboard Table -->
       <div
         class="border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] overflow-hidden bg-white mt-12 md:mt-0"
@@ -266,168 +356,551 @@ import MainLayout from "../../layouts/MainLayout.astro";
     </div>
 
     <!-- Sidebars -->
-    <div class="space-y-10">
-      <!-- Faculty Battle Card -->
-      <div
-        id="faculty-battle-summary"
-        class="bg-white border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] p-6 -rotate-1 hover:rotate-1 transition-transform relative"
-      >
-        <!-- Decorator -->
+    <div class="space-y-10" id="sidebar-container">
+      <div id="faculties-info-sidebar" class="hidden space-y-10">
         <div
-          class="absolute -top-4 -right-4 bg-[#FF6B6B] border-[3px] border-black p-2 font-black text-white transform rotate-12 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] z-10 w-28 text-center text-sm"
+          class="bg-white border-4 border-black p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transform md:-rotate-1"
         >
-          EN CURSO
-        </div>
-
-        <h3
-          class="font-black text-3xl sm:text-4xl uppercase mb-6 tracking-tighter leading-none pr-8"
-        >
-          FACULTY <br /><span class="text-[#8b5cf6]">BATTLE</span>
-        </h3>
-
-        <div class="space-y-6">
-          <div
-            id="battle-details-text"
-            class="flex items-center justify-center font-black text-sm sm:text-base border-[3px] border-black bg-gray-100 p-3 text-center"
+          <h3
+            class="font-black text-2xl uppercase tracking-tighter mb-4 text-black bg-yellow-300 inline-block px-2 border-2 border-black"
           >
-            Calculando dominio...
+            Cómo se calcula
+          </h3>
+          <p class="font-bold text-sm text-gray-700 mb-2">
+            Puntuación = <br /><span
+              class="text-purple-600 bg-purple-100 px-1 border border-purple-600 rounded"
+              >Total XP Facultades</span
+            > / <span
+              class="bg-blue-100 text-blue-600 px-1 border border-blue-600 rounded"
+              >Total Estudiantes</span>
+          </p>
+          <ul class="list-disc pl-5 mt-4 text-sm font-bold space-y-2">
+            <li>La guerra se equilibra por cantidad de estudiantes.</li>
+            <li>Únete a ganar XP respondiendo quizes y comprando.</li>
+            <li>El top se recalcula cada vez que entra una nueva actividad.</li>
+            <li>Si hay empate, gana la facultad con más constancia semanal.</li>
+          </ul>
+          <div
+            class="mt-4 border-2 border-black bg-black text-white p-3 text-xs font-bold leading-relaxed"
+          >
+            <p class="uppercase text-[#d7fd48] mb-2">Cómo funciona el evento</p>
+            <p>1) Cada compra o misión suma XP personal.</p>
+            <p>2) Ese XP también aporta al acumulado de tu facultad.</p>
+            <p>3) El sistema divide por miembros activos para que sea justo.</p>
+          </div>
+        </div>
+      </div>
+      <div id="students-info-sidebar" class="space-y-10">
+        <!-- Faculty Battle Card -->
+        <div
+          id="faculty-battle-summary"
+          class="bg-white border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] p-6 -rotate-1 hover:rotate-1 transition-transform relative"
+        >
+          <!-- Decorator -->
+          <div
+            class="absolute -top-4 -right-4 bg-[#FF6B6B] border-[3px] border-black p-2 font-black text-white transform rotate-12 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] z-10 w-28 text-center text-sm"
+          >
+            EN CURSO
           </div>
 
-          <!-- Progress Bar Wrapper -->
-          <div
-            class="bg-black p-2 border-4 border-black shadow-[4px_4px_0px_0px_rgba(215,253,73,1)]"
+          <h3
+            class="font-black text-3xl sm:text-4xl uppercase mb-6 tracking-tighter leading-none pr-8"
           >
+            COPA DE LAS <br /><span class="text-[#8b5cf6]">FACULTADES</span>
+          </h3>
+
+          <div class="space-y-6">
             <div
-              id="battle-bar-container"
-              class="h-14 border-[3px] border-white flex relative overflow-hidden"
+              id="battle-details-text"
+              class="flex items-center justify-center font-black text-sm sm:text-base border-[3px] border-black bg-gray-100 p-3 text-center"
             >
-              <!-- JS Injects Bar Here -->
+              Calculando dominio por XP promedio...
+            </div>
+
+            <!-- Progress Bar Wrapper -->
+            <div
+              class="bg-black p-2 border-4 border-black shadow-[4px_4px_0px_0px_rgba(215,253,73,1)]"
+            >
+              <div
+                id="battle-bar-container"
+                class="h-14 border-[3px] border-white flex relative overflow-hidden"
+              >
+                <!-- JS Injects Bar Here -->
+              </div>
+            </div>
+            <button
+              class="w-full bg-[#8b5cf6] text-white py-4 font-black uppercase text-xl sm:text-2xl border-4 border-black hover:bg-[#d7fd48] hover:text-black hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] active:translate-y-1 transition-all"
+              onclick="document.getElementById('tab-faculties').click()"
+            >
+              VER RANKING
+            </button>
+            <div class="flex justify-center mt-2">
+              <span
+                class="text-center font-bold text-sm underline cursor-pointer hover:text-purple-500"
+                onclick="alert('Sistema Justo: La Copa de las Facultades calcula la XP de todos tus compañeros y la divide entre los miembros activos. ¡Cada acción cuenta, sin importar el tamaño de tu facultad!');"
+                >¿Cómo funciona la Copa?</span
+              >
             </div>
           </div>
-          <button
-            class="w-full bg-[#8b5cf6] text-white py-4 font-black uppercase text-xl sm:text-2xl border-4 border-black hover:bg-[#d7fd48] hover:text-black hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] active:translate-y-1 transition-all"
-            onclick="alert('Participar en minijuegos de Faculty Battle en desarrollo. ¡Pronto disponible!')"
+        </div>
+
+        <!-- How to earn XP -->
+        <div
+          class="bg-white border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] p-6 rotate-1 hover:rotate-0 transition-transform bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjgiPjxyZWN0IHdpZHRoPSI4IiBoZWlnaHQ9IjgiIGZpbGw9IiNmZmYiLz48cmVjdCB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjZTVlN2ViIi8+PC9zdmc+')]"
+        >
+          <h3
+            class="font-black text-2xl sm:text-3xl uppercase mb-6 border-b-4 border-black pb-4 flex items-center gap-3 cursor-pointer select-none group"
+            id="btn-bendicion"
           >
-            VER BATALLA
-          </button>
-          <div class="flex justify-center mt-2">
-            <span
-              class="text-center font-bold text-sm underline cursor-pointer hover:text-purple-500"
-              onclick="alert('Cada facultad compite semanalmente ganando XP colectiva. El ganador obtiene beneficios y descuentos.');"
-              >Ver Detalles de la Batalla</span
+            COMO SER UN <span
+              class="bg-[#d7fd48] px-2 py-1 border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] inline-block transform -rotate-3 group-hover:rotate-3 group-hover:scale-110 transition-all text-xl"
+              >CAPY CIUDADANO</span
             >
-          </div>
+          </h3>
+
+          <ul class="space-y-4 font-bold text-lg sm:text-xl">
+            <li
+              class="flex items-center gap-4 p-3 bg-white border-[3px] border-black hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all"
+              title="Escanea QR en zonas de reciclaje"
+            >
+              <span
+                class="bg-[#d7fd48] text-black w-10 h-10 flex items-center justify-center border-[3px] border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] text-2xl shrink-0"
+                >♻️</span
+              >
+              <span class="uppercase leading-tight"
+                >CAMPUS<br /><span class="text-sm">LIMPIO</span></span
+              >
+            </li>
+            <li
+              class="flex items-center gap-4 p-3 bg-white border-[3px] border-black hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all"
+              title="Realiza donaciones o divide deudas"
+            >
+              <span
+                class="bg-[#8CFFE1] text-black w-10 h-10 flex items-center justify-center border-[3px] border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] text-2xl shrink-0"
+                >🤝</span
+              >
+              <span class="uppercase leading-tight"
+                >PAGOS<br /><span class="text-sm">SOLIDARIOS</span></span
+              >
+            </li>
+            <li
+              class="flex items-center gap-4 p-3 bg-white border-[3px] border-black hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all"
+              title="Participa en eventos académicos y deportivos"
+            >
+              <span
+                class="bg-[#8b5cf6] text-white w-10 h-10 flex items-center justify-center border-[3px] border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] text-2xl shrink-0"
+                >🏅</span
+              >
+              <span class="uppercase leading-tight"
+                >EVENTOS<br /><span class="text-sm">Y CULTURA</span></span
+              >
+            </li>
+          </ul>
         </div>
       </div>
-
-      <!-- How to earn XP -->
-      <div
-        class="bg-white border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] p-6 rotate-1 hover:rotate-0 transition-transform bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjgiPjxyZWN0IHdpZHRoPSI4IiBoZWlnaHQ9IjgiIGZpbGw9IiNmZmYiLz48cmVjdCB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjZTVlN2ViIi8+PC9zdmc+')]"
-      >
-        <h3
-          class="font-black text-2xl sm:text-3xl uppercase mb-6 border-b-4 border-black pb-4 flex items-center gap-3"
-        >
-          COMO GANAR <span
-            class="bg-[#d7fd48] px-2 py-1 border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] inline-block transform -rotate-3 text-xl"
-            >XP</span
-          >
-        </h3>
-
-        <ul class="space-y-4 font-bold text-lg sm:text-xl">
-          <li
-            class="flex items-center gap-4 p-3 bg-white border-[3px] border-black hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all"
-          >
-            <span
-              class="bg-[#d7fd48] text-black w-10 h-10 flex items-center justify-center border-[3px] border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] text-2xl shrink-0"
-              >1</span
-            >
-            <span class="uppercase leading-tight"
-              >COMPLETA<br /><span class="text-sm">MISIONES</span></span
-            >
-          </li>
-          <li
-            class="flex items-center gap-4 p-3 bg-white border-[3px] border-black hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all"
-          >
-            <span
-              class="bg-[#8CFFE1] text-black w-10 h-10 flex items-center justify-center border-[3px] border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] text-2xl shrink-0"
-              >2</span
-            >
-            <span class="uppercase leading-tight"
-              >USA EL<br /><span class="text-sm">COMEDOR</span></span
-            >
-          </li>
-          <li
-            class="flex items-center gap-4 p-3 bg-white border-[3px] border-black hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all"
-          >
-            <span
-              class="bg-[#8b5cf6] text-white w-10 h-10 flex items-center justify-center border-[3px] border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] text-2xl shrink-0"
-              >3</span
-            >
-            <span class="uppercase leading-tight"
-              >PARTICIPA EN<br /><span class="text-sm">RETOS</span></span
-            >
-          </li>
-        </ul>
-      </div>
     </div>
-  </div>
 
-  <!-- Sticky Bottom Card: TU POSICIÓN -->
-  <div
-    class="fixed bottom-20 md:bottom-8 right-4 md:right-8 z-50 transform hover:-translate-y-2 transition-transform"
-  >
+    <!-- Modal Akasha -->
     <div
-      class="bg-black border-4 border-white shadow-[8px_8px_0px_0px_rgba(139,92,246,1)] p-4 sm:p-6 flex items-center gap-4 sm:gap-6 active:translate-y-1 transition-all cursor-pointer hover:shadow-[4px_4px_0px_0px_rgba(139,92,246,1)]"
+      id="akasha-modal"
+      class="fixed inset-0 z-50 bg-black/80 hidden flex-col items-center justify-center p-4 backdrop-blur-sm"
     >
-      <div class="text-white">
-        <p
-          class="font-black text-xs uppercase tracking-widest leading-none mb-2 text-[#d7fd48]"
+      <div
+        class="bg-[#0f172a] border-4 border-[#d7fd48] p-4 w-full max-w-6xl flex flex-col items-center relative shadow-[10px_10px_0px_0px_rgba(0,0,0,1)]"
+      >
+        <button
+          id="close-akasha"
+          class="absolute -top-4 -right-4 bg-red-500 text-white border-4 border-black px-4 py-2 font-black text-xl hover:bg-red-600 transition-colors z-50 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+          >X</button
         >
-          TU POSICIÓN GLOBAL
-        </p>
-        <p
-          id="user-rank"
-          class="font-black text-5xl sm:text-6xl leading-none drop-shadow-[2px_2px_0px_rgba(139,92,246,1)]"
+
+        <div
+          id="akasha-card"
+          class="w-full border-4 border-black bg-linear-to-r from-[#0b2a16] via-[#1f5130] to-[#103321] text-white p-4 md:p-6 relative overflow-hidden"
         >
-          #--
-        </p>
-      </div>
-      <div class="h-16 sm:h-20 w-1 bg-[#d7fd48]"></div>
-      <div class="text-white hidden sm:flex flex-col">
-        <p
-          class="font-black text-xs uppercase tracking-widest leading-none mb-2 text-[#8CFFE1]"
+          <div
+            class="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]"
+          >
+          </div>
+
+          <div
+            class="relative z-10 grid grid-cols-1 lg:grid-cols-[1.2fr_1fr_0.9fr] gap-5"
+          >
+            <div class="border-2 border-white/50 bg-black/35 p-4 flex flex-col">
+              <div class="flex items-start justify-between gap-3 mb-4">
+                <div>
+                  <p class="text-white/80 text-sm font-bold uppercase">
+                    Perfil Akasha
+                  </p>
+                  <h2
+                    id="akasha-name"
+                    class="font-black text-4xl lg:text-5xl leading-none tracking-tight"
+                  >
+                    Usuario
+                  </h2>
+                  <p
+                    id="akasha-faculty"
+                    class="mt-2 inline-block text-xs font-black uppercase bg-[#d7fd48] text-black border-2 border-black px-2 py-1"
+                  >
+                    Sin Facultad
+                  </p>
+                </div>
+                <div class="text-right font-black">
+                  <p class="text-xs uppercase text-white/70">Niv.</p>
+                  <p id="akasha-level" class="text-3xl text-[#d7fd48]">1</p>
+                </div>
+              </div>
+
+              <div
+                class="relative grow min-h-68 md:min-h-80 border-2 border-black bg-black/40 overflow-hidden"
+              >
+                <div
+                  class="absolute inset-0 bg-linear-to-br from-green-500/20 via-transparent to-cyan-300/20"
+                >
+                </div>
+                <img
+                  id="akasha-avatar"
+                  src="https://api.dicebear.com/7.x/avataaars/svg?seed=capy"
+                  crossorigin="anonymous"
+                  class="absolute bottom-0 left-1/2 -translate-x-1/2 w-52 h-52 md:w-64 md:h-64 object-cover drop-shadow-[0_10px_15px_rgba(0,0,0,0.5)]"
+                />
+                <div
+                  class="absolute left-3 right-3 bottom-3 bg-black/70 border-2 border-white/50 p-2"
+                >
+                  <div
+                    class="flex justify-between text-xs font-black uppercase mb-1"
+                  >
+                    <span>Progreso XP</span>
+                    <span id="akasha-xp">0</span>
+                  </div>
+                  <div class="h-3 border border-white/70 bg-white/20">
+                    <div
+                      id="akasha-xp-bar"
+                      class="h-full bg-[#d7fd48] transition-all duration-500"
+                      style="width: 35%;"
+                    >
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="border-2 border-white/50 bg-black/35 p-4">
+              <h3 class="font-black text-xl uppercase text-[#d7fd48] mb-3">
+                Estadísticas
+              </h3>
+              <div class="space-y-2 text-sm md:text-base font-bold">
+                <div class="flex justify-between border-b border-white/30 pb-1">
+                  <span>Ranking Global</span><span id="akasha-rank">#--</span>
+                </div>
+                <div class="flex justify-between border-b border-white/30 pb-1">
+                  <span>Misiones</span><span id="akasha-missions">0</span>
+                </div>
+                <div class="flex justify-between border-b border-white/30 pb-1">
+                  <span>Racha Activa</span><span id="akasha-streak"
+                    >0 días</span>
+                </div>
+                <div class="flex justify-between border-b border-white/30 pb-1">
+                  <span>Contribución Facult.</span><span id="akasha-contrib"
+                    >0%</span>
+                </div>
+                <div class="flex justify-between border-b border-white/30 pb-1">
+                  <span>Actividad Semanal</span><span id="akasha-activity"
+                    >Media</span>
+                </div>
+              </div>
+
+              <div class="mt-4 border-2 border-white/40 p-3">
+                <p class="font-black uppercase text-xs text-white/70 mb-2">
+                  Hexa Poder Capy
+                </p>
+                <div class="relative w-48 h-48 mx-auto">
+                  <div
+                    class="absolute inset-0 rounded-full border border-white/20"
+                  >
+                  </div>
+                  <div
+                    class="absolute inset-4 rounded-full border border-white/20"
+                  >
+                  </div>
+                  <div
+                    class="absolute inset-8 rounded-full border border-white/20"
+                  >
+                  </div>
+                  <div class="absolute inset-0 grid place-items-center">
+                    <div
+                      class="w-36 h-36 bg-[#8CFFE1]/20 [clip-path:polygon(50%_0%,85%_20%,100%_50%,85%_80%,50%_100%,15%_80%,0%_50%,15%_20%)] border-2 border-[#8CFFE1]/70"
+                    >
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="border-2 border-white/50 bg-black/35 p-4">
+              <h3 class="font-black text-xl uppercase text-[#8CFFE1] mb-3">
+                Equipamiento Capy
+              </h3>
+              <div class="grid grid-cols-2 gap-3">
+                <div class="border-2 border-[#d7fd48] bg-black/50 p-2 min-h-20">
+                  <p class="text-[10px] uppercase font-black text-[#d7fd48]">
+                    Insignia
+                  </p>
+                  <p class="font-bold text-sm mt-2">Líder Verde</p>
+                </div>
+                <div class="border-2 border-[#8CFFE1] bg-black/50 p-2 min-h-20">
+                  <p class="text-[10px] uppercase font-black text-[#8CFFE1]">
+                    Relic
+                  </p>
+                  <p class="font-bold text-sm mt-2">Mente Productiva</p>
+                </div>
+                <div class="border-2 border-[#ff9dcf] bg-black/50 p-2 min-h-20">
+                  <p class="text-[10px] uppercase font-black text-[#ff9dcf]">
+                    Título
+                  </p>
+                  <p class="font-bold text-sm mt-2">Capy Ciudadano</p>
+                </div>
+                <div class="border-2 border-white bg-black/50 p-2 min-h-20">
+                  <p class="text-[10px] uppercase font-black text-white">
+                    Estado
+                  </p>
+                  <p class="font-bold text-sm mt-2">Activo</p>
+                </div>
+              </div>
+
+              <div class="mt-4 border-2 border-white/40 p-3 bg-black/40">
+                <p class="text-xs font-black uppercase text-white/70">
+                  Posición regional
+                </p>
+                <p
+                  class="font-black text-2xl text-[#d7fd48]"
+                  id="akasha-regional"
+                >
+                  Top 1%
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button
+          id="download-akasha"
+          class="w-full bg-[#8CFFE1] mt-6 py-4 font-black text-lg uppercase border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-y-1 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all flex justify-center items-center gap-2"
         >
-          XP ACUMULADA
-        </p>
-        <p
-          id="user-points-footer"
-          class="font-black text-3xl sm:text-4xl leading-none"
-        >
-          0
-        </p>
+          📸 DESCARGAR TARJETA
+        </button>
       </div>
     </div>
+
+    <!-- Sticky Bottom Card: TU POSICIÓN -->
+    <div
+      class="fixed bottom-20 md:bottom-8 right-4 md:right-8 z-50 transform hover:-translate-y-2 transition-transform"
+    >
+      <div
+        id="sticky-trigger"
+        class="bg-black border-4 border-white shadow-[8px_8px_0px_0px_rgba(139,92,246,1)] p-4 sm:p-6 flex items-center gap-4 sm:gap-6 active:translate-y-1 transition-all cursor-pointer hover:shadow-[4px_4px_0px_0px_rgba(139,92,246,1)]"
+      >
+        <div class="text-white">
+          <p
+            class="font-black text-xs uppercase tracking-widest leading-none mb-2 text-[#d7fd48]"
+          >
+            TU POSICIÓN GLOBAL
+          </p>
+          <p
+            id="user-rank"
+            class="font-black text-5xl sm:text-6xl leading-none drop-shadow-[2px_2px_0px_rgba(139,92,246,1)]"
+          >
+            #--
+          </p>
+        </div>
+        <div class="h-16 sm:h-20 w-1 bg-[#d7fd48]"></div>
+        <div class="text-white hidden sm:flex flex-col">
+          <p
+            class="font-black text-xs uppercase tracking-widest leading-none mb-2 text-[#8CFFE1]"
+          >
+            XP ACUMULADA
+          </p>
+          <p
+            id="user-points-footer"
+            class="font-black text-3xl sm:text-4xl leading-none"
+          >
+            0
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      import { initRanking } from "../../utils/rankingLogic.js";
+
+      type RankingWindow = Window & {
+        estado?: {
+          datos?: {
+            users?: {
+              user?: Record<string, unknown>;
+            };
+          };
+        };
+        html2canvas?: (
+          element: HTMLElement,
+          options?: {
+            useCORS?: boolean;
+            backgroundColor?: string | null;
+            scale?: number;
+          },
+        ) => Promise<HTMLCanvasElement>;
+      };
+
+      let rankingBooted = false;
+      const setupAkasha = () => {
+        const w = window as RankingWindow;
+        const stickyCard =
+          document.getElementById("sticky-trigger") ||
+          document.querySelector(".fixed.bottom-20");
+        const modal = document.getElementById("akasha-modal");
+        const closeBtn = document.getElementById("close-akasha");
+        const downloadBtn = document.getElementById("download-akasha");
+
+        if (stickyCard && modal) {
+          stickyCard.classList.add("cursor-pointer");
+          stickyCard.onclick = () => {
+            const u = (w.estado?.datos?.users?.user || {}) as {
+              name?: string;
+              points?: number;
+              xp?: number;
+              faculty_name?: string;
+              level?: number;
+              missions_completed?: number;
+              streak_days?: number;
+              faculty_contribution?: number;
+            };
+            const xp = Number(u.points || u.xp || 0);
+            const rankText =
+              document.getElementById("user-rank")?.textContent || "#1";
+
+            const akashaName = document.getElementById("akasha-name");
+            if (akashaName) akashaName.textContent = u.name || "CapyLover";
+
+            const akashaRank = document.getElementById("akasha-rank");
+            if (akashaRank) akashaRank.textContent = rankText;
+
+            const akashaXp = document.getElementById("akasha-xp");
+            if (akashaXp) akashaXp.textContent = `${xp} XP`;
+
+            const akashaFaculty = document.getElementById("akasha-faculty");
+            if (akashaFaculty)
+              akashaFaculty.textContent = u.faculty_name || "Sin Facultad";
+
+            const akashaLevel = document.getElementById("akasha-level");
+            if (akashaLevel)
+              akashaLevel.textContent = String(
+                u.level || Math.max(1, Math.floor(xp / 150) + 1),
+              );
+
+            const akashaXpBar = document.getElementById("akasha-xp-bar");
+            if (akashaXpBar) {
+              const pct = Math.max(8, Math.min(100, ((xp % 150) / 150) * 100));
+              akashaXpBar.style.width = `${pct}%`;
+            }
+
+            const akashaMissions = document.getElementById("akasha-missions");
+            if (akashaMissions)
+              akashaMissions.textContent = String(
+                u.missions_completed || Math.floor(xp / 25),
+              );
+
+            const akashaStreak = document.getElementById("akasha-streak");
+            if (akashaStreak)
+              akashaStreak.textContent = `${u.streak_days || Math.max(1, Math.floor(xp / 100))} días`;
+
+            const akashaContrib = document.getElementById("akasha-contrib");
+            if (akashaContrib)
+              akashaContrib.textContent = `${u.faculty_contribution || Math.max(5, Math.min(95, Math.floor((xp % 500) / 5)))}%`;
+
+            const akashaActivity = document.getElementById("akasha-activity");
+            if (akashaActivity)
+              akashaActivity.textContent =
+                xp > 1200 ? "Alta" : xp > 500 ? "Media" : "Inicial";
+
+            const akashaRegional = document.getElementById("akasha-regional");
+            if (akashaRegional)
+              akashaRegional.textContent =
+                xp > 1500 ? "Top 0.5%" : xp > 800 ? "Top 3%" : "Top 10%";
+
+            const akashaAvatar = document.getElementById(
+              "akasha-avatar",
+            ) as HTMLImageElement | null;
+            if (akashaAvatar) {
+              akashaAvatar.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(u.name || "capy")}`;
+            }
+
+            modal.classList.remove("hidden");
+            modal.style.display = "flex";
+          };
+        }
+
+        if (closeBtn && modal) {
+          closeBtn.onclick = () => {
+            modal.classList.add("hidden");
+            modal.style.display = "none";
+          };
+        }
+
+        if (downloadBtn) {
+          downloadBtn.onclick = () => {
+            if (!w.html2canvas) {
+              alert("Generador de imágenes no cargado");
+              return;
+            }
+
+            const akashaCard = document.getElementById("akasha-card");
+            if (!akashaCard) return;
+
+            downloadBtn.textContent = "Generando...";
+            w
+              .html2canvas(akashaCard, {
+                useCORS: true,
+                backgroundColor: null,
+                scale: 2,
+              })
+              .then((canvas) => {
+                const link = document.createElement("a");
+                link.download = "Mi-Tarjeta-CapyPay.png";
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+                downloadBtn.textContent = "📸 DESCARGAR TARJETA";
+              })
+              .catch(() => {
+                downloadBtn.textContent = "❌ Error";
+                setTimeout(() => {
+                  downloadBtn.textContent = "📸 DESCARGAR TARJETA";
+                }, 2000);
+              });
+          };
+        }
+      };
+
+      const bootRanking = () => {
+        if (rankingBooted) return;
+        rankingBooted = true;
+        initRanking();
+      };
+
+      document.addEventListener("astro:page-load", () => {
+        bootRanking();
+        setTimeout(setupAkasha, 400);
+      });
+
+      if (
+        document.readyState === "complete" ||
+        document.readyState === "interactive"
+      ) {
+        bootRanking();
+        setTimeout(setupAkasha, 400);
+      }
+    </script>
   </div>
-
-  <script>
-    import { initRanking } from "../../utils/rankingLogic.js";
-
-    let rankingBooted = false;
-    const bootRanking = () => {
-      if (rankingBooted) return;
-      rankingBooted = true;
-      initRanking();
-    };
-
-    document.addEventListener("astro:page-load", () => {
-      bootRanking();
-    });
-
-    if (
-      document.readyState === "complete" ||
-      document.readyState === "interactive"
-    ) {
-      bootRanking();
-    }
-  </script>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"
+  ></script>
 </MainLayout>

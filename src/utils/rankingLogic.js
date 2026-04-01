@@ -1,5 +1,6 @@
 
 import { rankingService, authService, userService } from "../services/api";
+import { showToast } from "./toast";
 
 const estado = {
   vista: "users",
@@ -137,14 +138,21 @@ function renderizarFacultades() {
       listContainer.innerHTML = '<div class="p-6 text-center font-bold uppercase">Sin datos de facultades aún.</div>';
     }
     actualizarPodio([], "faculty");
-    if (battleSummary) battleSummary.style.display = "none";
+      if (battleSummary) {
+        battleSummary.style.display = "block";
+        actualizarBatallaFacultades(facultades);
+      }
     if (listTitle) listTitle.textContent = "Clasificación de Facultades";
     return;
   }
 
   actualizarPodio(facultades.slice(0, 3), "faculty");
   actualizarLista(facultades.slice(3), "faculty");
-  if (battleSummary) battleSummary.style.display = "none";
+    if (battleSummary) {
+      battleSummary.style.display = "block";
+      actualizarBatallaFacultades(facultades);
+    }
+  actualizarGiantVsBar(facultades);
   if (listTitle) listTitle.textContent = "Clasificación General";
 }
 
@@ -286,7 +294,7 @@ function actualizarBatallaFacultades(facultades) {
   const f2 = facultades[1];
 
   if (!f2) {
-    if (textEl)    textEl.textContent = `${f1.name} domina el campus`;
+    if (textEl)    textEl.textContent = `${f1.name} domina con ${f1.xp} XP per cápita`;
     if (container) container.innerHTML = `
       <div class="h-full relative group flex items-center justify-center overflow-hidden border-4 border-black" style="width: 100%; background-color: ${f1.meta?.color || "#d7fd48"}">
         <span class="text-xl font-black uppercase text-black drop-shadow-md truncate">${f1.name} IMPARABLE</span>
@@ -295,20 +303,86 @@ function actualizarBatallaFacultades(facultades) {
   }
 
   const diferencia = (f1.xp || 0) - (f2.xp || 0);
-  if (textEl) textEl.textContent = `${f1.name} +${diferencia} pts sobre ${f2.name}`;
+  if (textEl) textEl.textContent = `${f1.name} +${diferencia} XP per cápita sobre ${f2.name}`;
 
   const total = (f1.xp || 0) + (f2.xp || 0);
-  const p1    = total > 0 ? ((f1.xp || 0) / total) * 100 : 50;
-  const p2    = 100 - p1;
+  let p1 = total > 0 ? ((f1.xp || 0) / total) * 100 : 50;
+  
+  // Evitar que la barra de la facultad perdedora desaparezca por completo
+  p1 = Math.max(5, Math.min(95, p1));
+  const p2 = 100 - p1;
 
   if (container) {
     container.innerHTML = `
-      <div class="bg-[#d7fd48] h-full border-r-4 border-black flex items-center justify-end px-2 whitespace-nowrap overflow-hidden transition-all duration-1000" style="width: ${p1}%;">
-        <span class="font-black text-xl">🔥</span>
+      <div class="h-full absolute left-0 top-0 bottom-0 z-10 transition-all duration-1000" style="width: ${p1}%; background-color: ${f1.meta?.color || "#d7fd48"}"></div>
+      <div class="h-full absolute right-0 top-0 bottom-0 z-10 transition-all duration-1000" style="width: ${p2}%; background-color: ${f2.meta?.color || "#FFB800"}"></div>
+      
+      <!-- Barrera tipo relámpago intercalada -->
+      <div class="absolute top-0 bottom-0 z-20 w-12 flex items-center justify-center animate-clash-center " style="left: ${p1}%; margin-left: -24px;">
+        <svg preserveAspectRatio="none" viewBox="0 0 40 100" class="w-full h-full">
+           <!-- Polígono Izquierdo (Mismo color que f1) -->
+           <polygon points="0,0 20,0 36,25 4,50 36,75 20,100 0,100" fill="${f1.meta?.color || "#d7fd48"}" />
+           <!-- Polígono Derecho (Mismo color que f2) -->
+           <polygon points="40,0 20,0 36,25 4,50 36,75 20,100 40,100" fill="${f2.meta?.color || "#FFB800"}" />
+           <!-- Línea negra divisoria en forma de zigzag -->
+           <polyline points="20,-5 36,25 4,50 36,75 20,105" fill="none" stroke="black" stroke-width="4" stroke-linecap="square" />
+        </svg>
       </div>
-      <div class="absolute inset-0 flex items-center justify-center font-black text-xl mix-blend-difference text-white pointer-events-none">${Math.round(p1)}% / ${Math.round(p2)}%</div>
+
+      <div class="absolute inset-0 flex items-center justify-between px-3 w-full text-white font-black drop-shadow-[2px_2px_0px_rgba(0,0,0,1)] pointer-events-none z-30 text-sm sm:text-base">
+        <div class="flex-1 min-w-0 pr-2">
+           <div class="truncate text-left"><span class="text-xl mr-1">${Math.round(((f1.xp||0)/total)*100)}%</span> ${f1.name}</div>
+        </div>
+        
+        <div class="flex-1 min-w-0 pl-2">
+           <div class="truncate text-right">${f2.name} <span class="text-xl ml-1">${Math.round(((f2.xp||0)/total)*100)}%</span></div>
+        </div>
+      </div>
     `;
   }
+}
+
+function actualizarGiantVsBar(facultades) {
+  const top1Name = document.getElementById("giant-top1-name");
+  const top2Name = document.getElementById("giant-top2-name");
+  const fill1 = document.getElementById("giant-vs-bar-fill1");
+  const fill2 = document.getElementById("giant-vs-bar-fill2");
+  const pts1 = document.getElementById("giant-top1-pts");
+  const pts2 = document.getElementById("giant-top2-pts");
+
+  if (!top1Name || !top2Name || !fill1 || !fill2 || !pts1 || !pts2) return;
+
+  if (!Array.isArray(facultades) || facultades.length < 2) {
+    top1Name.textContent = "Sin datos";
+    top2Name.textContent = "Sin datos";
+    fill1.style.width = "50%";
+    fill2.style.width = "50%";
+    fill1.textContent = "50%";
+    fill2.textContent = "50%";
+    pts1.textContent = "0 XP/h";
+    pts2.textContent = "0 XP/h";
+    return;
+  }
+
+  const f1 = facultades[0];
+  const f2 = facultades[1];
+  const xp1 = Number(f1?.xp ?? f1?.total_xp ?? 0);
+  const xp2 = Number(f2?.xp ?? f2?.total_xp ?? 0);
+  const total = xp1 + xp2;
+
+  const p1 = total > 0 ? Math.max(8, Math.min(92, (xp1 / total) * 100)) : 50;
+  const p2 = 100 - p1;
+
+  top1Name.textContent = f1?.name || f1?.faculty || "Facultad A";
+  top2Name.textContent = f2?.name || f2?.faculty || "Facultad B";
+
+  fill1.style.width = `${p1}%`;
+  fill2.style.width = `${p2}%`;
+  fill1.textContent = `${Math.round(p1)}%`;
+  fill2.textContent = `${Math.round(p2)}%`;
+
+  pts1.textContent = `${xp1} XP/h`;
+  pts2.textContent = `${xp2} XP/h`;
 }
 
 function actualizarFooter() {
@@ -357,15 +431,31 @@ export async function initRanking() {
   const tabUsers     = document.getElementById("tab-users");
   const tabFaculties = document.getElementById("tab-faculties");
 
+  
   tabUsers?.addEventListener("click", () => {
-    estado.paginaActual = 1;
-    cambiarTab("users");
-  });
+      estado.paginaActual = 1;
+      cambiarTab("users");
+      cheer();
+      document.getElementById("faculties-info-sidebar")?.classList.add("hidden");
+      document.getElementById("students-info-sidebar")?.classList.remove("hidden");
+      document.getElementById("guerra-facultades-container")?.classList.remove("hidden");
+      document.getElementById("giant-vs-bar-container")?.classList.add("hidden");
+    });
+
   tabFaculties?.addEventListener("click", () => {
-    estado.paginaActual = 1;
-    cambiarTab("faculties");
-    cheer(); // Neo-brutalist interaction!
-  });
+      estado.paginaActual = 1;
+      cambiarTab("faculties");
+      cheer();
+      document.getElementById("faculties-info-sidebar")?.classList.remove("hidden");
+      document.getElementById("students-info-sidebar")?.classList.add("hidden");
+      document.getElementById("guerra-facultades-container")?.classList.add("hidden");
+      document.getElementById("giant-vs-bar-container")?.classList.remove("hidden");
+
+      if (estado.datos?.faculties) {
+        actualizarGiantVsBar(estado.datos.faculties);
+      }
+    });
+
 
   document.getElementById("pag-prev")?.addEventListener("click", () => {        
     if (estado.paginaActual > 1) {
@@ -376,6 +466,29 @@ export async function initRanking() {
   document.getElementById("pag-next")?.addEventListener("click", () => {        
     estado.paginaActual++;
     renderizar();
+  });
+
+  const btnPremios = document.getElementById("btn-ver-premios");
+  btnPremios?.addEventListener("click", () => {
+    showToast("TEMPORADA 1", "¡Los grandes premios se anunciarán pronto! Sigue acumulando XP.", "info");
+    cheer();
+  });
+
+  const btnShare = document.getElementById("btn-share-podium");
+  btnShare?.addEventListener("click", () => {
+    const textToShare = "¡Estoy compitiendo en la Copa de las Facultades de CapyPay! 🎉 ¿Tienes lo que se necesita para ser un Capy Ciudadano?";
+    navigator.clipboard.writeText(textToShare).then(() => {
+      showToast("¡LISTO PARA COMPARTIR!", "Texto copiado al portapapeles. ¡Pégalo en Instagram o TikTok!", "success");
+      cheer();
+    }).catch(err => {
+      showToast("Error", "No se pudo copiar al portapapeles", "error");
+    });
+  });
+
+  const btnBendicion = document.getElementById("btn-bendicion");
+  btnBendicion?.addEventListener("click", () => {
+    showToast("CAPY BENDICIÓN 🦫", "¡Has recibido la bendición del Capy! +0 XP pero +100 Suerte en tus parciales.", "success");
+    cheer();
   });
 
   inicializarContador();
@@ -457,3 +570,9 @@ function lanzarConfettiLocal() {
     wrapper.remove();
   }, 1400);
 }
+
+
+
+
+
+
