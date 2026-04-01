@@ -372,7 +372,8 @@ import MainLayout from "../../layouts/MainLayout.astro";
               >Total XP Facultades</span
             > / <span
               class="bg-blue-100 text-blue-600 px-1 border border-blue-600 rounded"
-              >Total Estudiantes</span>
+              >Total Estudiantes</span
+            >
           </p>
           <ul class="list-disc pl-5 mt-4 text-sm font-bold space-y-2">
             <li>La guerra se equilibra por cantidad de estudiantes.</li>
@@ -597,16 +598,18 @@ import MainLayout from "../../layouts/MainLayout.astro";
                   <span>Misiones</span><span id="akasha-missions">0</span>
                 </div>
                 <div class="flex justify-between border-b border-white/30 pb-1">
-                  <span>Racha Activa</span><span id="akasha-streak"
-                    >0 días</span>
+                  <span>Racha Activa</span><span id="akasha-streak">0 días</span
+                  >
                 </div>
                 <div class="flex justify-between border-b border-white/30 pb-1">
                   <span>Contribución Facult.</span><span id="akasha-contrib"
-                    >0%</span>
+                    >0%</span
+                  >
                 </div>
                 <div class="flex justify-between border-b border-white/30 pb-1">
                   <span>Actividad Semanal</span><span id="akasha-activity"
-                    >Media</span>
+                    >Media</span
+                  >
                 </div>
               </div>
 
@@ -857,12 +860,11 @@ import MainLayout from "../../layouts/MainLayout.astro";
             if (!akashaCard) return;
 
             downloadBtn.textContent = "Generando...";
-            w
-              .html2canvas(akashaCard, {
-                useCORS: true,
-                backgroundColor: null,
-                scale: 2,
-              })
+            w.html2canvas(akashaCard, {
+              useCORS: true,
+              backgroundColor: null,
+              scale: 2,
+            })
               .then((canvas) => {
                 const link = document.createElement("a");
                 link.download = "Mi-Tarjeta-CapyPay.png";
