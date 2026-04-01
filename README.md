@@ -13,6 +13,9 @@ Documento maestro del frontend de CapyPay.
 - TicketBus ahora usa `ticketStore` real para persistencia de tickets en cliente.
 - `SkeletonLoader` se reforzo y ya se usa en vistas reales (ej. carga inicial de historial en dashboard).
 - Se activo prefetch en navegacion principal (Sidebar y BottomNav) para mejorar cambios de pagina.
+- Se consolido el sistema de autenticacion unificado (`/auth/login` + `/auth/registro`) con widget unico.
+- Se activo refresh automatico de sesion en cliente para evitar cierres por expiracion durante navegacion normal.
+- Se agrego guardia global de sesion en layout principal y sincronizacion de logout entre pestanas.
 
 ## Estado actual
 
@@ -24,6 +27,12 @@ Durante Fase 4 y Fase 5 se consolidaron:
 - Mejoras de UX y accesibilidad en dashboard, niveles y notificaciones.
 - Integracion de QA automatizada para validar flujos criticos.
 - Estructura de documentacion centralizada en docs/.
+
+Durante el ciclo de hardening de auth tambien se consolidaron:
+
+- Manejo robusto de token JWT en cliente (validacion de expiracion + limpieza segura de sesion).
+- Renovacion de sesion transparente contra backend (`/api/session/refresh`).
+- Parametrizacion completa de auth en `.env` para operacion por equipo sin cambios de codigo.
 
 ## Documentacion centralizada
 
@@ -146,6 +155,16 @@ npm run build
 ```bash
 npm run e2e:smoke
 ```
+
+## Variables de entorno (frontend)
+
+Definir en `CapyPay-App/.env` (o copiar desde `CapyPay-App/.env.example`):
+
+- `PUBLIC_API_URL`: URL base del backend (`/api`).
+- `PUBLIC_SESSION_REFRESH_WINDOW_MINUTES`: ventana previa para renovar sesion automaticamente.
+- `PUBLIC_SESSION_REFRESH_COOLDOWN_SECONDS`: enfriamiento minimo entre refresh automaticos.
+- `PUBLIC_SESSION_REFRESH_POLL_SECONDS`: intervalo de chequeo de refresh.
+- `PUBLIC_SESSION_NOTICE_DELAY_MS`: tiempo de aviso visual antes de redirigir por sesion invalida.
 
 ## Notas
 

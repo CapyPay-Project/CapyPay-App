@@ -28,21 +28,43 @@ const { title = "CapyPay", showSidebar = false } = Astro.props;
       (function () {
         try {
           const token = localStorage.getItem("capypay_token");
-          // Quitamos slash final y usamos fallback a '/'
           const path = window.location.pathname.replace(/\/+$/, "") || "/";
-          const publicPaths = ["/", "/login", "/index", "/register"];
-
-          // Verificamos si la ruta actual está en la lista de permitidas
+          const publicPaths = ["/", "/index", "/auth/login", "/auth/registro"];
           const isPublic = publicPaths.includes(path);
 
-          if (!token && !isPublic) {
-            // NO Logueado y ruta privada -> Echar fuera
-            window.location.replace("/login");
+          const decodePayload = (rawToken) => {
+            if (!rawToken || typeof rawToken !== "string") return null;
+            const parts = rawToken.split(".");
+            if (parts.length !== 3) return null;
+            const payloadPart = parts[1].replace(/-/g, "+").replace(/_/g, "/");
+            const padded = payloadPart.padEnd(Math.ceil(payloadPart.length / 4) * 4, "=");
+            try {
+              return JSON.parse(atob(padded));
+            } catch (_err) {
+              return null;
+            }
+          };
+
+          const isExpired = (rawToken) => {
+            const payload = decodePayload(rawToken);
+            if (!payload || typeof payload.exp !== "number") return true;
+            const nowSeconds = Math.floor(Date.now() / 1000);
+            return payload.exp <= nowSeconds + 20;
+          };
+
+          const mustRedirect = !isPublic && (!token || isExpired(token));
+
+          if (mustRedirect) {
+            localStorage.removeItem("capypay_token");
+            localStorage.removeItem("capypay_user");
+            window.location.replace("/auth/login");
           }
         } catch (e) {
           /* Si falla algo, por seguridad mandamos al login */
           console.error(e);
-          window.location.replace("/login");
+          localStorage.removeItem("capypay_token");
+          localStorage.removeItem("capypay_user");
+          window.location.replace("/auth/login");
         }
       })();
     </script>
@@ -385,7 +407,8 @@ const { title = "CapyPay", showSidebar = false } = Astro.props;
           confirmBtn.onclick = () => {
             cleanup();
             localStorage.removeItem("capypay_token");
-            window.location.href = "/auth/login";
+            localStorage.removeItem("capypay_user");
+            window.location.replace("/auth/login");
           };
         };
       </script>

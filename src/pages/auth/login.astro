@@ -2,7 +2,7 @@
 import LandingLayout from "../../layouts/LandingLayout.astro";
 ---
 
-<LandingLayout title="Iniciar Sesión | CapyPay">
+<LandingLayout title="Acceso | CapyPay">
   <header class="main-header">
     <div class="header-container">
       <div class="logo">
@@ -25,22 +25,49 @@ import LandingLayout from "../../layouts/LandingLayout.astro";
   <main>
     <div class="contenedor-registro">
       <div class="texto-hero">
-        <h1 class="titulo-hackea">
+        <h1 class="titulo-hackea" id="auth-hero-title">
           REGRESA A <br />
           TU MUNDO. <br />
         </h1>
-        <p class="subtitulo-cero">CAPY WORLD</p>
+        <p class="subtitulo-cero" id="auth-hero-subtitle">CAPY WORLD</p>
       </div>
 
-      <div class="card-registro">
-        <h2>INICIAR SESIÓN</h2>
+      <div class="card-registro" id="auth-card">
+        <h2 id="auth-card-title">INICIAR SESION</h2>
 
-        <form class="form-neubrutalist" id="login-form">
+        <div class="auth-widget-wrap">
+          <div
+            class="auth-mode-switch"
+            role="tablist"
+            aria-label="Modo de acceso"
+          >
+            <button
+              id="switch-login"
+              type="button"
+              class="auth-mode-btn is-active"
+              aria-selected="true"
+            >
+              Iniciar
+            </button>
+            <button
+              id="switch-register"
+              type="button"
+              class="auth-mode-btn"
+              aria-selected="false"
+            >
+              Registrarme
+            </button>
+          </div>
+
+          <div class="auth-widget-stage">
+            <div id="auth-widget-flip" class="auth-widget-flip">
+              <section class="auth-widget-face auth-widget-face--front" aria-label="Formulario de inicio de sesion">
+                <form class="form-neubrutalist" id="login-form">
           <div class="input-group">
-            <label for="email">Correo Electrónico</label>
+            <label for="login-email">Correo Electronico</label>
             <input
               type="email"
-              id="email"
+              id="login-email"
               name="email"
               placeholder="Introduce tu correo"
               required
@@ -48,35 +75,187 @@ import LandingLayout from "../../layouts/LandingLayout.astro";
           </div>
 
           <div class="input-group">
-            <label for="password">Contraseña</label>
+            <label for="login-password">Contrasena</label>
             <input
               type="password"
-              id="password"
+              id="login-password"
               name="password"
-              placeholder="Introduce tu contraseña"
+              placeholder="Introduce tu contrasena"
               required
             />
           </div>
 
           <div
-            id="error-msg"
+            id="login-error-msg"
             style="color: red; text-align: center; font-family: 'Baloo Bhaijaan 2'; margin-bottom: 10px; display: none;"
           >
           </div>
 
-          <p class="login-link">
-            ¿No tienes una cuenta? <a
-              href="/auth/registro"
-              style="text-decoration: none; font-weight: bold;">Regístrate</a
-            >
-          </p>
-
           <button type="button" id="login-btn" class="btn-sumate"
             >¡Entrar Ahora!</button
           >
-        </form>
+                </form>
+              </section>
+
+              <section class="auth-widget-face auth-widget-face--back" aria-label="Formulario de registro">
+                <form class="form-neubrutalist" id="register-form">
+          <div class="input-group">
+            <label for="register-nombre">Nombre</label>
+            <input
+              type="text"
+              id="register-nombre"
+              placeholder="Escribe tu nombre"
+            />
+          </div>
+
+          <div class="input-group">
+            <label for="register-email">Correo Electronico</label>
+            <input
+              type="email"
+              id="register-email"
+              placeholder="Introduce tu correo electronico"
+            />
+          </div>
+
+          <div class="input-group">
+            <label for="register-cedula">Cedula (ej. V-12345678)</label>
+            <input
+              type="text"
+              id="register-cedula"
+              placeholder="Introduce tu cedula"
+            />
+          </div>
+
+          <div class="input-group">
+            <label for="register-password">Contrasena</label>
+            <input
+              type="password"
+              id="register-password"
+              placeholder="Introduce tu contrasena"
+            />
+          </div>
+
+          <div class="input-group">
+            <label for="register-tipo">Tipo de Usuario</label>
+             <select id="register-tipo">
+               <option value="estudiante">Estudiante</option>
+               <option value="profesor">Profesor</option>
+               <option value="trabajador_obrero">Trabajador/Obrero</option>
+               <option value="administrador_administracion">Administrador/Administracion</option>
+            </select>
+          </div>
+
+           <div class="input-group">
+             <label for="register-telefono">Telefono</label>
+             <input
+               type="tel"
+               id="register-telefono"
+               placeholder="Ej: 0412-1234567"
+               inputmode="tel"
+             />
+           </div>
+
+           <div class="input-group">
+             <label for="register-facultad">Facultad</label>
+             <select id="register-facultad">
+               <option value="">Selecciona una facultad/area</option>
+             </select>
+             <p class="field-help" id="register-academic-hint"></p>
+           </div>
+
+          <div class="input-group" id="register-carrera-group">
+             <label for="register-carrera">Carrera</label>
+             <select id="register-carrera" disabled>
+               <option value="">Selecciona una facultad primero</option>
+             </select>
+           </div>
+
+          <div class="input-group">
+            <label for="register-sede">Sede o Nucleo</label>
+            <select id="register-sede">
+              <option value="">Selecciona una sede/nucleo</option>
+            </select>
+          </div>
+
+           <div class="input-group">
+             <label for="register-fecha-nacimiento">Fecha de Nacimiento</label>
+             <input
+               type="date"
+               id="register-fecha-nacimiento"
+               max={new Date().toISOString().split("T")[0]}
+             />
+           </div>
+
+           <div class="input-group">
+             <label for="register-confirm-password">Confirmar Contrasena</label>
+             <input
+               type="password"
+               id="register-confirm-password"
+               placeholder="Repite tu contrasena"
+             />
+           </div>
+
+           <div class="input-group">
+             <label for="register-pin">PIN (4 o 6 digitos)</label>
+             <input
+               type="password"
+               id="register-pin"
+               placeholder="Ej: 1234"
+               inputmode="numeric"
+               maxlength="6"
+             />
+           </div>
+
+           <label class="terms-check">
+             <input type="checkbox" id="register-terms" />
+             <span>
+               Acepto los
+               <button type="button" class="terms-link" id="open-terms-dialog">
+                 Terminos y Condiciones
+               </button>
+             </span>
+           </label>
+
+          <div
+            id="register-success-msg"
+            style="color: green; text-align: center; font-family: 'Baloo Bhaijaan 2'; margin-bottom: 10px; display: none;"
+          >
+          </div>
+
+          <div
+            id="register-error-msg"
+            style="color: red; text-align: center; font-family: 'Baloo Bhaijaan 2'; margin-bottom: 10px; display: none;"
+          >
+          </div>
+
+          <button type="button" id="register-btn" class="btn-sumate"
+            >¡Sumate al Plan!</button
+          >
+                </form>
+              </section>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
+
+     <dialog id="terms-dialog" class="terms-dialog">
+       <div class="terms-dialog__content">
+         <h3>Terminos y Condiciones</h3>
+         <p>
+           Al crear tu cuenta aceptas el uso academico de CapyPay, el resguardo de tus datos
+           para fines operativos de la plataforma y la verificacion basica de identidad.
+         </p>
+         <p>
+           Tambien aceptas usar el sistema de pagos de forma responsable, sin fraude,
+           suplantacion o uso indebido de cuentas de terceros.
+         </p>
+         <div class="terms-dialog__actions">
+           <button type="button" id="close-terms-dialog" class="terms-btn terms-btn--ghost">Cerrar</button>
+           <button type="button" id="accept-terms-dialog" class="terms-btn">Aceptar</button>
+         </div>
+       </div>
+     </dialog>
 
     <!-- Usando rutas relativas a public/assets/landing/vectors -->
     <img
@@ -97,37 +276,256 @@ import LandingLayout from "../../layouts/LandingLayout.astro";
 
     <script>
       // @ts-nocheck
-      import { authService } from "../../services/api.js";
+      import { authService, fetchAPI } from "../../services/api.js";
 
-      // Obtener elementos dentro del script principal
-      const btn = document.getElementById("login-btn");
+      const loginForm = document.getElementById("login-form");
+      const registerForm = document.getElementById("register-form");
+      const switchLoginBtn = document.getElementById("switch-login");
+      const switchRegisterBtn = document.getElementById("switch-register");
 
-      const emailInput = document.getElementById("email");
-      const passInput = document.getElementById("password");
-      const errorMsg = document.getElementById("error-msg");
-      const form = document.getElementById("login-form");
+      const heroTitle = document.getElementById("auth-hero-title");
+      const heroSubtitle = document.getElementById("auth-hero-subtitle");
+      const cardTitle = document.getElementById("auth-card-title");
+      const authCard = document.getElementById("auth-card");
+      const authWidgetFlip = document.getElementById("auth-widget-flip");
+
+      const loginBtn = document.getElementById("login-btn");
+      const loginEmailInput = document.getElementById("login-email");
+      const loginPassInput = document.getElementById("login-password");
+      const loginErrorMsg = document.getElementById("login-error-msg");
+
+      const registerBtn = document.getElementById("register-btn");
+      const registerNombreInput = document.getElementById("register-nombre");
+      const registerEmailInput = document.getElementById("register-email");
+      const registerCedulaInput = document.getElementById("register-cedula");
+      const registerPassInput = document.getElementById("register-password");
+      const registerTipoSelect = document.getElementById("register-tipo");
+      const registerTelefonoInput = document.getElementById("register-telefono");
+      const registerFacultadInput = document.getElementById("register-facultad");
+      const registerAcademicHint = document.getElementById("register-academic-hint");
+      const registerCarreraInput = document.getElementById("register-carrera");
+      const registerCarreraGroup = document.getElementById("register-carrera-group");
+      const registerSedeInput = document.getElementById("register-sede");
+      const registerFechaNacimientoInput = document.getElementById("register-fecha-nacimiento");
+      const registerConfirmPassInput = document.getElementById("register-confirm-password");
+      const registerPinInput = document.getElementById("register-pin");
+      const registerTermsInput = document.getElementById("register-terms");
+      const registerSuccessMsg = document.getElementById("register-success-msg");
+      const registerErrorMsg = document.getElementById("register-error-msg");
+      const termsDialog = document.getElementById("terms-dialog");
+      const openTermsDialogBtn = document.getElementById("open-terms-dialog");
+      const closeTermsDialogBtn = document.getElementById("close-terms-dialog");
+      const acceptTermsDialogBtn = document.getElementById("accept-terms-dialog");
+
+      const modeParam = new URLSearchParams(window.location.search).get("mode");
+      let authMode = modeParam === "registro" ? "register" : "login";
+
+      const UNERG_CATALOG = {
+        "Area de Ingenieria Agronomica": [
+          "Ingenieria Agronomica de Produccion Animal",
+          "Ingenieria Agronomica de Produccion Vegetal"
+        ],
+        "Area de Ciencias de la Salud": [
+          "Medicina",
+          "Enfermeria (TSU)",
+          "Enfermeria (Licenciatura)",
+          "Radiodiagnostico e Imagenologia"
+        ],
+        "Area de Medicina Veterinaria": [
+          "Medicina Veterinaria"
+        ],
+        "Area de Odontologia": [
+          "Odontologia"
+        ],
+        "Area de Ciencias de la Educacion": [
+          "Licenciatura en Educacion Integral",
+          "Educacion Mencion Computacion",
+          "Licenciatura en Historia"
+        ],
+        "Area de Ciencias Economicas y Sociales": [
+          "Administracion Comercial",
+          "Contaduria Publica",
+          "Economia",
+          "Comunicacion Social"
+        ],
+        "Area de Ingenieria de Sistemas": [
+          "Ingenieria en Informatica",
+          "Ingenieria Electronica"
+        ],
+        "Area de Ciencias Juridicas y Politicas": [
+          "Derecho"
+        ],
+        "Area de Ingenieria, Arquitectura y Tecnologia": [
+          "Ingenieria Civil",
+          "Ingenieria Industrial",
+          "Ingenieria en Hidrocarburos Mencion Petroleo",
+          "Ingenieria en Hidrocarburos Mencion Gas",
+          "Arquitectura",
+          "Geologia"
+        ],
+        "Programas Nacionales de Formacion (PNF)": [
+          "Fisioterapia",
+          "Optometria",
+          "Nutricion y Dietetica",
+          "Terapia Ocupacional",
+          "Histocitotecnologia",
+          "Medicina Integral Comunitaria"
+        ]
+      };
+
+      const UNERG_SEDES_NUCLEOS = [
+        "Sede Principal - San Juan de los Morros",
+        "Nucleo Maturin",
+        "Nucleo Valle de la Pascua",
+        "Nucleo Zaraza",
+        "Nucleo Altagracia de Orituco",
+        "Nucleo Calabozo",
+        "Nucleo Ortiz",
+        "Nucleo El Sombrero",
+        "Nucleo Mapire"
+      ];
+
+      const fillSelectOptions = (selectEl, options, placeholder) => {
+        if (!selectEl) return;
+
+        const safePlaceholder = placeholder || "Selecciona una opcion";
+        selectEl.innerHTML = "";
+
+        const firstOption = document.createElement("option");
+        firstOption.value = "";
+        firstOption.textContent = safePlaceholder;
+        selectEl.appendChild(firstOption);
+
+        options.forEach((value) => {
+          const option = document.createElement("option");
+          option.value = value;
+          option.textContent = value;
+          selectEl.appendChild(option);
+        });
+      };
+
+      const hydrateUnergCatalog = () => {
+        const facultades = Object.keys(UNERG_CATALOG);
+        fillSelectOptions(registerFacultadInput, facultades, "Selecciona una facultad/area");
+        fillSelectOptions(registerSedeInput, UNERG_SEDES_NUCLEOS, "Selecciona una sede/nucleo");
+
+        fillSelectOptions(registerCarreraInput, [], "Selecciona una facultad primero");
+        if (registerCarreraInput) registerCarreraInput.disabled = true;
+
+        if (registerFacultadInput) {
+          registerFacultadInput.addEventListener("change", () => {
+            const selectedFaculty = registerFacultadInput.value;
+            const carreras = UNERG_CATALOG[selectedFaculty] || [];
+
+            fillSelectOptions(
+              registerCarreraInput,
+              carreras,
+              carreras.length > 0 ? "Selecciona una carrera" : "No hay carreras disponibles"
+            );
+
+            if (registerCarreraInput) {
+              const requiereCarrera = registerTipoSelect?.value === "estudiante";
+              registerCarreraInput.disabled = !requiereCarrera || carreras.length === 0;
+              registerCarreraInput.value = "";
+            }
+          });
+        }
+      };
+
+      const updateAcademicFieldsByUserType = () => {
+        const tipo = registerTipoSelect?.value || "estudiante";
+        const esEstudiante = tipo === "estudiante";
+
+        if (registerAcademicHint) {
+          registerAcademicHint.textContent = esEstudiante
+            ? "Selecciona tu area y luego tu carrera para completar el perfil academico."
+            : "Selecciona el area en la que laboras para asociarte al entorno institucional.";
+        }
+
+        if (registerCarreraGroup) {
+          registerCarreraGroup.style.display = esEstudiante ? "flex" : "none";
+        }
+
+        if (registerCarreraInput) {
+          if (!esEstudiante) {
+            registerCarreraInput.value = "";
+            registerCarreraInput.disabled = true;
+            return;
+          }
+
+          const selectedFaculty = registerFacultadInput?.value || "";
+          const carreras = UNERG_CATALOG[selectedFaculty] || [];
+          registerCarreraInput.disabled = carreras.length === 0;
+        }
+      };
+
+      const setFormEnabled = (formEl, enabled) => {
+        if (!formEl) return;
+        formEl.querySelectorAll("input, select, textarea, button").forEach((el) => {
+          el.disabled = !enabled;
+        });
+      };
+
+      const setAuthMode = (nextMode) => {
+        authMode = nextMode;
+
+        const loginActive = nextMode === "login";
+
+        if (switchLoginBtn) {
+          switchLoginBtn.setAttribute("aria-selected", loginActive ? "true" : "false");
+          switchLoginBtn.classList.toggle("is-active", loginActive);
+        }
+
+        if (switchRegisterBtn) {
+          switchRegisterBtn.setAttribute("aria-selected", loginActive ? "false" : "true");
+          switchRegisterBtn.classList.toggle("is-active", !loginActive);
+        }
+
+        if (authCard) {
+          authCard.classList.toggle("is-register-mode", !loginActive);
+          authCard.classList.toggle("mode-login", loginActive);
+          authCard.classList.toggle("mode-register", !loginActive);
+        }
+
+        if (authWidgetFlip) {
+          authWidgetFlip.classList.toggle("is-register", !loginActive);
+        }
+
+        setFormEnabled(loginForm, loginActive);
+        setFormEnabled(registerForm, !loginActive);
+
+        if (heroTitle) {
+          heroTitle.innerHTML = loginActive
+            ? "REGRESA A <br />TU MUNDO. <br />"
+            : "HACKEA EL <br />SEMESTRE. <br />PAGA EN SEGUNDOS!";
+        }
+
+        if (heroSubtitle) heroSubtitle.textContent = loginActive ? "CAPY WORLD" : "CERO ESTRES";
+        if (cardTitle) cardTitle.textContent = loginActive ? "INICIAR SESION" : "CREAR CUENTA";
+      };
 
       const handleLogin = async () => {
+        if (!loginBtn) return;
         // UI Update
-        const originalText = btn.innerText;
-        btn.disabled = true;
-        btn.innerText = "Conectando...";
-        btn.style.opacity = "0.7";
+        const originalText = loginBtn.innerText;
+        loginBtn.disabled = true;
+        loginBtn.innerText = "Conectando...";
+        loginBtn.style.opacity = "0.7";
 
-        if (errorMsg) errorMsg.style.display = "none";
-        if (errorMsg) errorMsg.innerText = "";
+        if (loginErrorMsg) loginErrorMsg.style.display = "none";
+        if (loginErrorMsg) loginErrorMsg.innerText = "";
 
-        const email = emailInput?.value;
-        const password = passInput?.value;
+        const email = loginEmailInput?.value;
+        const password = loginPassInput?.value;
 
         if (!email || !password) {
-          if (errorMsg) {
-            errorMsg.innerText = "Por favor completa todos los campos";
-            errorMsg.style.display = "block";
+          if (loginErrorMsg) {
+            loginErrorMsg.innerText = "Por favor completa todos los campos";
+            loginErrorMsg.style.display = "block";
           }
-          btn.disabled = false;
-          btn.innerText = originalText;
-          btn.style.opacity = "1";
+          loginBtn.disabled = false;
+          loginBtn.innerText = originalText;
+          loginBtn.style.opacity = "1";
           return;
         }
 
@@ -137,35 +535,236 @@ import LandingLayout from "../../layouts/LandingLayout.astro";
           console.log("Respuesta login:", response);
 
           // Éxito
-          btn.innerText = "¡Éxito! Redirigiendo...";
+          loginBtn.innerText = "¡Exito! Redirigiendo...";
 
           setTimeout(() => {
             window.location.href = "/dashboard";
           }, 500);
         } catch (error) {
           console.error(error);
-          if (errorMsg) {
-            errorMsg.innerText =
+          if (loginErrorMsg) {
+            loginErrorMsg.innerText =
               error.message || "Error al conectar con el servidor";
-            errorMsg.style.display = "block";
+            loginErrorMsg.style.display = "block";
           }
 
           // Reset botón
-          btn.disabled = false;
-          btn.innerText = originalText;
-          btn.style.opacity = "1";
+          loginBtn.disabled = false;
+          loginBtn.innerText = originalText;
+          loginBtn.style.opacity = "1";
         }
       };
 
-      if (btn) btn.addEventListener("click", handleLogin);
-      // Allow Enter key to submit
-      if (form)
-        form.addEventListener("keydown", (e) => {
+      const handleRegistro = async () => {
+        if (!registerBtn) return;
+
+        const originalText = registerBtn.innerText;
+        registerBtn.disabled = true;
+        registerBtn.innerText = "Registrando...";
+        registerBtn.style.opacity = "0.7";
+
+        if (registerSuccessMsg) registerSuccessMsg.style.display = "none";
+        if (registerErrorMsg) {
+          registerErrorMsg.style.display = "none";
+          registerErrorMsg.innerText = "";
+        }
+
+        const nombre = registerNombreInput?.value;
+        const email = registerEmailInput?.value;
+        const cedula = registerCedulaInput?.value;
+        const password = registerPassInput?.value;
+        const confirmPassword = registerConfirmPassInput?.value;
+        const tipo = registerTipoSelect?.value || "cliente";
+        const telefono = registerTelefonoInput?.value?.trim() || "";
+        const facultad = registerFacultadInput?.value?.trim() || "";
+        const carrera = registerCarreraInput?.value?.trim() || "";
+        const sedeNucleo = registerSedeInput?.value?.trim() || "";
+        const fechaNacimiento = registerFechaNacimientoInput?.value || "";
+        const pin = registerPinInput?.value?.trim() || "";
+        const aceptoTerminos = Boolean(registerTermsInput?.checked);
+
+        const esEstudiante = tipo === "estudiante";
+
+        if (!nombre || !email || !cedula || !password || !telefono || !facultad || !sedeNucleo || !fechaNacimiento || !pin) {
+          if (registerErrorMsg) {
+            registerErrorMsg.innerText = "Por favor completa todos los campos";
+            registerErrorMsg.style.display = "block";
+          }
+          registerBtn.disabled = false;
+          registerBtn.innerText = originalText;
+          registerBtn.style.opacity = "1";
+          return;
+        }
+
+        if (esEstudiante && !carrera) {
+          if (registerErrorMsg) {
+            registerErrorMsg.innerText = "Selecciona tu carrera para continuar";
+            registerErrorMsg.style.display = "block";
+          }
+          registerBtn.disabled = false;
+          registerBtn.innerText = originalText;
+          registerBtn.style.opacity = "1";
+          return;
+        }
+
+        if (password !== confirmPassword) {
+          if (registerErrorMsg) {
+            registerErrorMsg.innerText = "La confirmacion de contrasena no coincide";
+            registerErrorMsg.style.display = "block";
+          }
+          registerBtn.disabled = false;
+          registerBtn.innerText = originalText;
+          registerBtn.style.opacity = "1";
+          return;
+        }
+
+        if (!/^\d{4}$|^\d{6}$/.test(pin)) {
+          if (registerErrorMsg) {
+            registerErrorMsg.innerText = "El PIN debe tener 4 o 6 digitos numericos";
+            registerErrorMsg.style.display = "block";
+          }
+          registerBtn.disabled = false;
+          registerBtn.innerText = originalText;
+          registerBtn.style.opacity = "1";
+          return;
+        }
+
+        if (!/^\+?[0-9\-\s]{10,16}$/.test(telefono)) {
+          if (registerErrorMsg) {
+            registerErrorMsg.innerText = "Telefono invalido. Usa entre 10 y 16 caracteres numericos";
+            registerErrorMsg.style.display = "block";
+          }
+          registerBtn.disabled = false;
+          registerBtn.innerText = originalText;
+          registerBtn.style.opacity = "1";
+          return;
+        }
+
+        if (!aceptoTerminos) {
+          if (registerErrorMsg) {
+            registerErrorMsg.innerText = "Debes aceptar los terminos y condiciones";
+            registerErrorMsg.style.display = "block";
+          }
+          registerBtn.disabled = false;
+          registerBtn.innerText = originalText;
+          registerBtn.style.opacity = "1";
+          return;
+        }
+
+        try {
+          const registroResponse = await authService.register({
+            nombre,
+            email,
+            password,
+            cedula,
+            tipo,
+            telefono,
+            facultad,
+            carrera: esEstudiante ? carrera : null,
+            sedeNucleo,
+            fechaNacimiento,
+            pin,
+            aceptaTerminos: aceptoTerminos
+          });
+
+          const newUserId = registroResponse?.usuario?.id;
+          if (newUserId && pin) {
+            try {
+              await fetchAPI(`/usuario/${newUserId}/pin`, {
+                method: "PUT",
+                body: JSON.stringify({ pin })
+              });
+            } catch (pinError) {
+              console.warn("No se pudo guardar PIN en registro:", pinError);
+            }
+          }
+
+          registerBtn.innerText = "¡Exito!";
+
+          if (registerSuccessMsg) {
+            registerSuccessMsg.innerText = "Registro exitoso. Inicia sesion para continuar.";
+            registerSuccessMsg.style.display = "block";
+          }
+
+          setTimeout(() => {
+            setAuthMode("login");
+            if (loginEmailInput) loginEmailInput.value = String(email);
+            if (registerBtn) {
+              registerBtn.disabled = false;
+              registerBtn.innerText = originalText;
+              registerBtn.style.opacity = "1";
+            }
+          }, 900);
+        } catch (error) {
+          console.error(error);
+          if (registerErrorMsg) {
+            registerErrorMsg.innerText =
+              error.message || "Error al conectar con el servidor";
+            registerErrorMsg.style.display = "block";
+          }
+
+          registerBtn.disabled = false;
+          registerBtn.innerText = originalText;
+          registerBtn.style.opacity = "1";
+        }
+      };
+
+      if (switchLoginBtn) switchLoginBtn.addEventListener("click", () => setAuthMode("login"));
+      if (switchRegisterBtn) switchRegisterBtn.addEventListener("click", () => setAuthMode("register"));
+
+      if (loginBtn) loginBtn.addEventListener("click", handleLogin);
+      if (registerBtn) registerBtn.addEventListener("click", handleRegistro);
+
+      if (loginForm)
+        loginForm.addEventListener("keydown", (e) => {
           if (e.key === "Enter") {
             e.preventDefault();
             handleLogin();
           }
         });
+
+      if (registerForm)
+        registerForm.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            handleRegistro();
+          }
+        });
+
+      if (openTermsDialogBtn) {
+        openTermsDialogBtn.addEventListener("click", () => {
+          if (termsDialog && typeof termsDialog.showModal === "function") {
+            termsDialog.showModal();
+          }
+        });
+      }
+
+      if (closeTermsDialogBtn) {
+        closeTermsDialogBtn.addEventListener("click", () => {
+          if (termsDialog) termsDialog.close();
+        });
+      }
+
+      if (acceptTermsDialogBtn) {
+        acceptTermsDialogBtn.addEventListener("click", () => {
+          if (registerTermsInput) registerTermsInput.checked = true;
+          if (termsDialog) termsDialog.close();
+        });
+      }
+
+      hydrateUnergCatalog();
+
+      if (registerTipoSelect) {
+        registerTipoSelect.addEventListener("change", updateAcademicFieldsByUserType);
+      }
+
+      if (registerFacultadInput) {
+        registerFacultadInput.addEventListener("change", updateAcademicFieldsByUserType);
+      }
+
+      updateAcademicFieldsByUserType();
+
+      setAuthMode(authMode);
     </script>
   </main>
 </LandingLayout>

@@ -2,6 +2,27 @@
 
 const API_URL = import.meta.env.PUBLIC_API_URL || (typeof window !== 'undefined' ? `http://${window.location.hostname}:3000/api` : 'http://localhost:3000/api');
 
+const AUTH_TOKEN_KEY = 'capypay_token';
+const AUTH_USER_KEY = 'capypay_user';
+const TOKEN_EXP_SKEW_SECONDS = 20;
+const isBrowser = typeof window !== 'undefined';
+let authStorageSyncBound = false;
+let sessionRefreshBound = false;
+let sessionRefreshInFlight = null;
+let lastSessionRefreshAt = 0;
+
+function readPublicPositiveNumberEnv(key, fallback) {
+  const raw = import.meta.env?.[key];
+  const parsed = Number(raw);
+  if (Number.isFinite(parsed) && parsed > 0) return parsed;
+  return fallback;
+}
+
+const SESSION_REFRESH_WINDOW_MS = readPublicPositiveNumberEnv('PUBLIC_SESSION_REFRESH_WINDOW_MINUTES', 15) * 60 * 1000;
+const SESSION_REFRESH_COOLDOWN_MS = readPublicPositiveNumberEnv('PUBLIC_SESSION_REFRESH_COOLDOWN_SECONDS', 60) * 1000;
+const SESSION_REFRESH_POLL_MS = readPublicPositiveNumberEnv('PUBLIC_SESSION_REFRESH_POLL_SECONDS', 60) * 1000;
+const SESSION_NOTICE_DELAY_MS = readPublicPositiveNumberEnv('PUBLIC_SESSION_NOTICE_DELAY_MS', 900);
+
 const gmClientCache = new Map();
 const gmClientInflight = new Map();
 
@@ -105,12 +126,267 @@ function invalidateGamificationClientCache(userId) {
   });
 }
 
+function readStorage(key) {
+  if (!isBrowser) return null;
+  try {
+    return window.localStorage.getItem(key);
+  } catch (_error) {
+    return null;
+  }
+}
+
+function writeStorage(key, value) {
+  if (!isBrowser) return;
+  try {
+    window.localStorage.setItem(key, value);
+  } catch (_error) {
+    // Ignorar fallos de storage para no romper la UX.
+  }
+}
+
+function removeStorage(key) {
+  if (!isBrowser) return;
+  try {
+    window.localStorage.removeItem(key);
+  } catch (_error) {
+    // Ignorar fallos de storage para no romper la UX.
+  }
+}
+
+function parseJsonSafely(raw, fallback = null) {
+  if (!raw) return fallback;
+  try {
+    return JSON.parse(raw);
+  } catch (_error) {
+    return fallback;
+  }
+}
+
+function decodeJwtPayload(token) {
+  if (!token || typeof token !== 'string') return null;
+  const parts = token.split('.');
+  if (parts.length !== 3) return null;
+
+  const payloadPart = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+  const padded = payloadPart.padEnd(Math.ceil(payloadPart.length / 4) * 4, '=');
+
+  try {
+    const json = atob(padded);
+    return parseJsonSafely(json, null);
+  } catch (_error) {
+    return null;
+  }
+}
+
+function isTokenExpired(token, skewSeconds = TOKEN_EXP_SKEW_SECONDS) {
+  const payload = decodeJwtPayload(token);
+  if (!payload || typeof payload.exp !== 'number') {
+    return true;
+  }
+  const nowSeconds = Math.floor(Date.now() / 1000);
+  return payload.exp <= nowSeconds + Number(skewSeconds || 0);
+}
+
+function getTokenExpiryMs(token) {
+  const payload = decodeJwtPayload(token);
+  if (!payload || typeof payload.exp !== 'number') return 0;
+  return payload.exp * 1000;
+}
+
+function shouldRefreshSoon(token) {
+  const expiryMs = getTokenExpiryMs(token);
+  if (!expiryMs) return false;
+  const remainingMs = expiryMs - Date.now();
+  return remainingMs > 0 && remainingMs <= SESSION_REFRESH_WINDOW_MS;
+}
+
+function clearAuthSession({ redirect = false, replace = true } = {}) {
+  removeStorage(AUTH_TOKEN_KEY);
+  removeStorage(AUTH_USER_KEY);
+
+  if (!redirect || !isBrowser) return;
+
+  const currentPath = String(window.location?.pathname || '');
+  if (currentPath.startsWith('/auth/login')) return;
+
+  if (replace) {
+    window.location.replace('/auth/login');
+  } else {
+    window.location.href = '/auth/login';
+  }
+}
+
+function showSessionNotice(message) {
+  if (!isBrowser || !message) return;
+
+  const existing = document.getElementById('capypay-session-notice');
+  if (existing) existing.remove();
+
+  const node = document.createElement('div');
+  node.id = 'capypay-session-notice';
+  node.textContent = message;
+  node.setAttribute('role', 'status');
+  node.style.position = 'fixed';
+  node.style.top = '18px';
+  node.style.left = '50%';
+  node.style.transform = 'translateX(-50%)';
+  node.style.zIndex = '99999';
+  node.style.padding = '10px 14px';
+  node.style.border = '3px solid #292929';
+  node.style.borderRadius = '14px';
+  node.style.background = '#ffe08a';
+  node.style.color = '#1f1f1f';
+  node.style.fontFamily = "'Baloo Bhaijaan 2', sans-serif";
+  node.style.fontWeight = '800';
+  node.style.fontSize = '14px';
+  node.style.boxShadow = '5px 5px 0 #292929';
+  node.style.opacity = '0';
+  node.style.transition = 'opacity 120ms ease';
+  document.body.appendChild(node);
+
+  requestAnimationFrame(() => {
+    node.style.opacity = '1';
+  });
+}
+
+function clearAuthSessionWithNotice(message, { replace = true, delayMs = 900 } = {}) {
+  clearAuthSession({ redirect: false, replace });
+
+  if (!isBrowser) return;
+  showSessionNotice(message);
+
+  window.setTimeout(() => {
+    const currentPath = String(window.location?.pathname || '');
+    if (currentPath.startsWith('/auth/login')) return;
+    if (replace) {
+      window.location.replace('/auth/login');
+    } else {
+      window.location.href = '/auth/login';
+    }
+  }, delayMs);
+}
+
+function bindAuthStorageSync() {
+  if (!isBrowser || authStorageSyncBound) return;
+  authStorageSyncBound = true;
+
+  window.addEventListener('storage', (event) => {
+    if (event.key !== AUTH_TOKEN_KEY) return;
+
+    if (!event.newValue) {
+      clearAuthSessionWithNotice('La sesion se cerro en otra pestana.', { replace: true, delayMs: Math.min(750, SESSION_NOTICE_DELAY_MS) });
+      return;
+    }
+
+    if (isTokenExpired(event.newValue)) {
+      clearAuthSessionWithNotice('La sesion expiro. Inicia sesion nuevamente.', { replace: true, delayMs: SESSION_NOTICE_DELAY_MS });
+    }
+  });
+}
+
+if (isBrowser) {
+  bindAuthStorageSync();
+}
+
+async function refreshSessionToken({ force = false } = {}) {
+  if (!isBrowser) return null;
+
+  const currentToken = readStorage(AUTH_TOKEN_KEY);
+  if (!currentToken || isTokenExpired(currentToken)) return null;
+
+  if (!force && !shouldRefreshSoon(currentToken)) {
+    return currentToken;
+  }
+
+  if (!force && Date.now() - lastSessionRefreshAt < SESSION_REFRESH_COOLDOWN_MS) {
+    return currentToken;
+  }
+
+  if (sessionRefreshInFlight) {
+    return sessionRefreshInFlight;
+  }
+
+  sessionRefreshInFlight = (async () => {
+    try {
+      const response = await fetch(`${API_URL}/session/refresh`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${currentToken}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        if (response.status === 401 || response.status === 403) {
+          clearAuthSessionWithNotice('Tu sesion ya no es valida. Vuelve a iniciar sesion.', { replace: true, delayMs: 900 });
+        }
+        return null;
+      }
+
+      const payload = await response.json().catch(() => null);
+      const refreshedToken = payload?.token;
+
+      if (!refreshedToken || isTokenExpired(refreshedToken, 0)) {
+        clearAuthSessionWithNotice('No se pudo renovar la sesion. Inicia sesion nuevamente.', { replace: true, delayMs: SESSION_NOTICE_DELAY_MS });
+        return null;
+      }
+
+      writeStorage(AUTH_TOKEN_KEY, refreshedToken);
+      lastSessionRefreshAt = Date.now();
+      return refreshedToken;
+    } catch (_error) {
+      return currentToken;
+    } finally {
+      sessionRefreshInFlight = null;
+    }
+  })();
+
+  return sessionRefreshInFlight;
+}
+
+function bindSessionAutoRefresh() {
+  if (!isBrowser || sessionRefreshBound) return;
+  sessionRefreshBound = true;
+
+  const runRefreshCheck = () => {
+    refreshSessionToken({ force: false }).catch(() => null);
+  };
+
+  window.setInterval(runRefreshCheck, SESSION_REFRESH_POLL_MS);
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') runRefreshCheck();
+  });
+  window.addEventListener('focus', runRefreshCheck);
+
+  runRefreshCheck();
+}
+
+if (isBrowser) {
+  bindSessionAutoRefresh();
+}
+
+function getValidToken() {
+  const token = readStorage(AUTH_TOKEN_KEY);
+  if (!token) return null;
+
+  if (isTokenExpired(token)) {
+    clearAuthSessionWithNotice('La sesion expiro. Inicia sesion nuevamente.', { replace: true, delayMs: SESSION_NOTICE_DELAY_MS });
+    return null;
+  }
+
+  if (shouldRefreshSoon(token)) {
+    refreshSessionToken({ force: false }).catch(() => null);
+  }
+
+  return token;
+}
+
 /**
  * Función genérica para hacer peticiones al backend
  * Maneja automáticamente el token de autenticación si existe
  */
 export async function fetchAPI(endpoint, options = {}) {
-  const token = localStorage.getItem('capypay_token');
+  const token = getValidToken();
 
   const method = String(options.method || 'GET').toUpperCase();
   const hasBody = options.body !== undefined && options.body !== null && method !== 'GET' && method !== 'HEAD';
@@ -135,9 +411,7 @@ export async function fetchAPI(endpoint, options = {}) {
     
     // Si el token expiró (401), redirigir al login
     if (response.status === 401) {
-      localStorage.removeItem('capypay_token');
-      localStorage.removeItem('capypay_user');
-      window.location.href = '/auth/login'; 
+      clearAuthSessionWithNotice('Tu sesion ya no es valida. Vuelve a iniciar sesion.', { replace: true, delayMs: SESSION_NOTICE_DELAY_MS });
       return null;
     }
 
@@ -187,9 +461,15 @@ export const authService = {
     
     // Guardamos el token y el usuario si el login es exitoso
     // Asumimos que la respuesta trae { token, user: { id, ... } }
-    if (response.token) {
-      localStorage.setItem('capypay_token', response.token);
+    if (!response?.token) {
+      throw new Error('Respuesta de login invalida: token ausente');
     }
+
+    if (isTokenExpired(response.token, 0)) {
+      throw new Error('Token recibido invalido o expirado');
+    }
+
+    writeStorage(AUTH_TOKEN_KEY, response.token);
     
     // IMPORTANTE: Tu backend devuelve 'usuarioId', no 'user' o 'id' suelto
     if (response.usuarioId) {
@@ -203,11 +483,11 @@ export const authService = {
           avatar_url: response.avatar_url || null,
             last_login: response.last_login // Nuevo campo
         };
-        localStorage.setItem('capypay_user', JSON.stringify(userToSave));
+          writeStorage(AUTH_USER_KEY, JSON.stringify(userToSave));
     } else if (response.user || response.usuario || response.id) {
        // Fallback por si cambia la estructura
        const userToSave = response.user || response.usuario || response;
-       localStorage.setItem('capypay_user', JSON.stringify(userToSave));
+         writeStorage(AUTH_USER_KEY, JSON.stringify(userToSave));
     }
     
     return response;
@@ -225,7 +505,7 @@ export const authService = {
     // Si no se pasa userId, intentar leer del localStorage
     let id = userId;
     if (!id) {
-        const localUser = JSON.parse(localStorage.getItem('capypay_user') || '{}');
+      const localUser = parseJsonSafely(readStorage(AUTH_USER_KEY), {});
         id = localUser.id;
     }
 
@@ -235,27 +515,33 @@ export const authService = {
     
     // Actualizar caché local
     if (response) {
-        const localUser = JSON.parse(localStorage.getItem('capypay_user') || '{}');
+      const localUser = parseJsonSafely(readStorage(AUTH_USER_KEY), {});
         const updatedUser = { ...localUser, ...response };
         // Aseguramos que XP esté presente si no viene (aunque debería venir)
         if (updatedUser.xp === undefined) updatedUser.xp = 0;
         
-        localStorage.setItem('capypay_user', JSON.stringify(updatedUser));
+      writeStorage(AUTH_USER_KEY, JSON.stringify(updatedUser));
     }
     
     return response;
   },
   
   logout: () => {
-    localStorage.removeItem('capypay_token');
-    localStorage.removeItem('capypay_user');
-    window.location.replace('/auth/login'); // Replace para que no pueda volver atrás
+    clearAuthSession({ redirect: true, replace: true }); // Replace para que no pueda volver atrás
   },
 
   // Helper para obtener el usuario guardado
   getCurrentUser: () => {
-    const user = localStorage.getItem('capypay_user');
-    return user ? JSON.parse(user) : null;
+    const token = getValidToken();
+    if (!token) return null;
+
+    const user = parseJsonSafely(readStorage(AUTH_USER_KEY), null);
+    if (!user || typeof user !== 'object') {
+      clearAuthSession({ redirect: true, replace: true });
+      return null;
+    }
+
+    return user;
   }
 };
 
