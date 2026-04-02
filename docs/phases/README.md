@@ -7,6 +7,8 @@ Este directorio tenia multiples archivos por fase. Para simplificar navegacion, 
 - Fase 6: `FASE6.md`
 - Fase 7: `FASE7.md`
 - Fase 8: `FASE8.md`
+- Fase 9: `FASE9.md`
+- Fase 10: `FASE10.md`
 
 ## Politica de documentacion
 
@@ -38,6 +40,14 @@ Este directorio tenia multiples archivos por fase. Para simplificar navegacion, 
 - `archive/fase8/FASE8_ANEXO_PLAN_EJECUTABLE.md`
 - `archive/fase8/FASE8_ANEXO_BACKLOG.md`
 - `archive/fase8/FASE8_ANEXO_RESULTADOS.md`
+
+## Anexos Fase 9
+
+- `archive/fase9/FASE9_ANEXO_BACKLOG_EJECUTABLE.md`
+
+## Anexos Fase 10
+
+- Sin anexos todavia.
 
 ## Trazabilidad de nombres (legacy -> actual)
 

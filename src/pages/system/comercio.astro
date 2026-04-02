@@ -1,0 +1,1501 @@
+---
+import LandingLayout from "../../layouts/LandingLayout.astro";
+---
+
+<LandingLayout title="CapyPay Commerce System">
+  <main class="system-page comercio-theme">
+    <a href="/" class="system-back">Volver al landing</a>
+
+    <section class="system-hero">
+      <p class="system-kicker">System</p>
+      <h1>Comercio</h1>
+      <p class="system-lead">
+        Centro administrativo para dueños de cantinas dentro del ecosistema CapyPay.
+      </p>
+    </section>
+
+    <section class="system-grid">
+      <article class="system-card system-card-wide">
+        <h2>Mis Cantinas</h2>
+        <p class="system-hint">Gestiona tus cantinas activas y su estado operativo.</p>
+        <div id="cantinas-list" class="cantinas-list">
+          <p class="system-empty">Cargando cantinas...</p>
+        </div>
+      </article>
+
+      <article class="system-card">
+        <h2>Nueva Cantina</h2>
+        <form id="cantina-form" class="cantina-form">
+          <label>
+            Nombre
+            <input id="cantina-name" required maxlength="80" />
+          </label>
+          <label>
+            Facultad ID
+            <input id="cantina-faculty" required />
+          </label>
+          <label>
+            Ubicacion
+            <input id="cantina-location" maxlength="120" />
+          </label>
+          <button type="submit">Crear cantina</button>
+        </form>
+      </article>
+
+      <article class="system-card system-card-wide">
+        <h2>Menu Administrativo</h2>
+        <p class="system-hint">Selecciona una cantina para crear productos y gestionar disponibilidad/stock.</p>
+        <div class="menu-toolbar">
+          <label>
+            Cantina
+            <select id="menu-cantina-select"></select>
+          </label>
+          <button id="menu-refresh-btn" type="button">Recargar menu</button>
+        </div>
+
+        <form id="menu-product-form" class="cantina-form menu-form">
+          <label>
+            Nombre del producto
+            <input id="menu-product-name" required maxlength="80" />
+          </label>
+          <label>
+            Precio Bs
+            <input id="menu-product-price-bs" type="number" min="0" step="0.01" value="0" />
+          </label>
+          <label>
+            Precio Capys
+            <input id="menu-product-price-capys" type="number" min="0" step="1" value="0" />
+          </label>
+          <label>
+            Stock (deja vacio para ilimitado)
+            <input id="menu-product-stock" type="number" min="0" step="1" />
+          </label>
+          <button type="submit">Crear producto</button>
+        </form>
+
+        <div id="menu-products-list" class="products-list">
+          <p class="system-empty">Selecciona una cantina para ver su menu.</p>
+        </div>
+      </article>
+
+      <article class="system-card system-card-wide">
+        <h2>Ordenes de Cantina</h2>
+        <p class="system-hint">Monitorea ordenes y actualiza su estado operativo.</p>
+        <div class="orders-toolbar">
+          <label>
+            Cantina
+            <select id="orders-cantina-select"></select>
+          </label>
+          <label>
+            Estado
+            <select id="orders-status-filter">
+              <option value="">Todos</option>
+              <option value="pending">Pending</option>
+              <option value="preparing">Preparing</option>
+              <option value="ready">Ready</option>
+              <option value="completed">Completed</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+          </label>
+          <button id="orders-refresh-btn" type="button">Recargar ordenes</button>
+        </div>
+        <div id="orders-list" class="orders-list">
+          <p class="system-empty">Selecciona una cantina para ver sus ordenes.</p>
+        </div>
+      </article>
+
+      <article class="system-card system-card-wide">
+        <h2>Finanzas y Retiros</h2>
+        <p class="system-hint">Consulta metricas y gestiona retiros de forma trazable.</p>
+
+        <div class="finance-toolbar">
+          <label>
+            Cantina
+            <select id="finance-cantina-select"></select>
+          </label>
+          <label>
+            Rango
+            <select id="finance-range-select">
+              <option value="daily">Daily</option>
+              <option value="weekly" selected>Weekly</option>
+              <option value="monthly">Monthly</option>
+              <option value="quarterly">Quarterly</option>
+            </select>
+          </label>
+          <button id="finance-refresh-btn" type="button">Recargar finanzas</button>
+        </div>
+
+        <div id="finance-kpis" class="finance-kpis">
+          <p class="system-empty">Selecciona una cantina para cargar metricas.</p>
+        </div>
+
+        <div id="finance-series" class="finance-series"></div>
+
+        <form id="payout-account-form" class="cantina-form payout-form">
+          <h3>Cuenta bancaria de retiro</h3>
+          <label>
+            Banco
+            <input id="payout-bank-name" required maxlength="80" />
+          </label>
+          <label>
+            Numero de cuenta
+            <input id="payout-account-number" required maxlength="40" />
+          </label>
+          <label>
+            Titular
+            <input id="payout-account-holder" required maxlength="120" />
+          </label>
+          <label>
+            Identificacion
+            <input id="payout-identification" required maxlength="40" />
+          </label>
+          <button type="submit">Guardar cuenta bancaria</button>
+        </form>
+
+        <form id="withdrawal-form" class="cantina-form payout-form">
+          <h3>Solicitar retiro</h3>
+          <label>
+            Monto (Capys)
+            <input id="withdrawal-amount" type="number" min="0" step="0.01" required />
+          </label>
+          <button type="submit">Solicitar retiro</button>
+        </form>
+
+        <div id="withdrawals-list" class="withdrawals-list">
+          <p class="system-empty">Sin retiros cargados.</p>
+        </div>
+      </article>
+    </section>
+
+    <dialog id="product-edit-dialog" class="edit-dialog">
+      <form id="product-edit-form" class="edit-form" method="dialog">
+        <h3>Editar Producto</h3>
+        <label>
+          Nombre
+          <input id="edit-product-name" required maxlength="80" />
+        </label>
+        <label>
+          Descripcion
+          <input id="edit-product-description" maxlength="200" />
+        </label>
+        <label>
+          Precio Bs
+          <input id="edit-product-price-bs" type="number" min="0" step="0.01" required />
+        </label>
+        <label>
+          Precio Capys
+          <input id="edit-product-price-capys" type="number" min="0" step="1" required />
+        </label>
+        <label>
+          Stock (vacio = ilimitado)
+          <input id="edit-product-stock" type="number" min="0" step="1" />
+        </label>
+        <label class="checkbox-row">
+          <input id="edit-product-available" type="checkbox" /> Disponible
+        </label>
+        <div class="edit-actions">
+          <button type="button" id="edit-product-cancel">Cancelar</button>
+          <button type="submit" id="edit-product-save">Guardar cambios</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="order-detail-dialog" class="edit-dialog">
+      <div class="edit-form order-detail-body">
+        <h3>Detalle de Orden</h3>
+        <p id="order-detail-meta" class="order-detail-meta">Sin informacion</p>
+        <div id="order-detail-items" class="order-detail-items"></div>
+        <div class="edit-actions">
+          <button type="button" id="order-detail-close">Cerrar</button>
+        </div>
+      </div>
+    </dialog>
+
+    <p class="system-note">Sprint 9.6 en progreso: finanzas, metricas y retiros v1.</p>
+  </main>
+
+  <script>
+    // @ts-nocheck
+    import { authService, comercioSystemService } from "../../services/api";
+    import { showToast } from "../../utils/toast";
+
+    const listEl = document.getElementById("cantinas-list");
+    const formEl = document.getElementById("cantina-form");
+    const nameEl = document.getElementById("cantina-name");
+    const facultyEl = document.getElementById("cantina-faculty");
+    const locationEl = document.getElementById("cantina-location");
+    const menuCantinaSelectEl = document.getElementById("menu-cantina-select");
+    const menuRefreshBtnEl = document.getElementById("menu-refresh-btn");
+    const menuProductFormEl = document.getElementById("menu-product-form");
+    const menuProductNameEl = document.getElementById("menu-product-name");
+    const menuProductPriceBsEl = document.getElementById("menu-product-price-bs");
+    const menuProductPriceCapysEl = document.getElementById("menu-product-price-capys");
+    const menuProductStockEl = document.getElementById("menu-product-stock");
+    const menuProductsListEl = document.getElementById("menu-products-list");
+    const ordersCantinaSelectEl = document.getElementById("orders-cantina-select");
+    const ordersStatusFilterEl = document.getElementById("orders-status-filter");
+    const ordersRefreshBtnEl = document.getElementById("orders-refresh-btn");
+    const ordersListEl = document.getElementById("orders-list");
+    const productEditDialogEl = document.getElementById("product-edit-dialog");
+    const productEditFormEl = document.getElementById("product-edit-form");
+    const editProductNameEl = document.getElementById("edit-product-name");
+    const editProductDescriptionEl = document.getElementById("edit-product-description");
+    const editProductPriceBsEl = document.getElementById("edit-product-price-bs");
+    const editProductPriceCapysEl = document.getElementById("edit-product-price-capys");
+    const editProductStockEl = document.getElementById("edit-product-stock");
+    const editProductAvailableEl = document.getElementById("edit-product-available");
+    const editProductCancelEl = document.getElementById("edit-product-cancel");
+    const orderDetailDialogEl = document.getElementById("order-detail-dialog");
+    const orderDetailMetaEl = document.getElementById("order-detail-meta");
+    const orderDetailItemsEl = document.getElementById("order-detail-items");
+    const orderDetailCloseEl = document.getElementById("order-detail-close");
+    const financeCantinaSelectEl = document.getElementById("finance-cantina-select");
+    const financeRangeSelectEl = document.getElementById("finance-range-select");
+    const financeRefreshBtnEl = document.getElementById("finance-refresh-btn");
+    const financeKpisEl = document.getElementById("finance-kpis");
+    const financeSeriesEl = document.getElementById("finance-series");
+    const payoutAccountFormEl = document.getElementById("payout-account-form");
+    const payoutBankNameEl = document.getElementById("payout-bank-name");
+    const payoutAccountNumberEl = document.getElementById("payout-account-number");
+    const payoutAccountHolderEl = document.getElementById("payout-account-holder");
+    const payoutIdentificationEl = document.getElementById("payout-identification");
+    const withdrawalFormEl = document.getElementById("withdrawal-form");
+    const withdrawalAmountEl = document.getElementById("withdrawal-amount");
+    const withdrawalsListEl = document.getElementById("withdrawals-list");
+
+    let currentCantinas = [];
+    let currentOrders = [];
+    let editingProduct = null;
+    const ORDER_STATUSES = ["pending", "preparing", "ready", "completed", "cancelled"];
+    const ORDER_STATUS_TRANSITIONS = {
+      pending: ["preparing", "cancelled"],
+      preparing: ["ready", "cancelled"],
+      ready: ["completed", "cancelled"],
+      completed: [],
+      cancelled: [],
+    };
+
+    function getUserRole(user) {
+      return String(user?.user_type || user?.tipo || "").trim().toLowerCase();
+    }
+
+    function renderAccessDenied() {
+      if (!listEl) return;
+      listEl.innerHTML = '<p class="system-empty">Acceso restringido. Solo usuarios comerciantes pueden acceder a este sistema.</p>';
+      if (menuProductsListEl) {
+        menuProductsListEl.innerHTML = '<p class="system-empty">Acceso restringido.</p>';
+      }
+      if (ordersListEl) {
+        ordersListEl.innerHTML = '<p class="system-empty">Acceso restringido.</p>';
+      }
+      if (formEl) {
+        formEl.classList.add("hidden");
+      }
+      if (menuProductFormEl) {
+        menuProductFormEl.classList.add("hidden");
+      }
+    }
+
+    function renderCantinaOptions(cantinas = []) {
+      if (!menuCantinaSelectEl) return;
+
+      if (!cantinas.length) {
+        menuCantinaSelectEl.innerHTML = '<option value="">Sin cantinas disponibles</option>';
+        menuCantinaSelectEl.disabled = true;
+        if (ordersCantinaSelectEl) {
+          ordersCantinaSelectEl.innerHTML = '<option value="">Sin cantinas disponibles</option>';
+          ordersCantinaSelectEl.disabled = true;
+        }
+        if (financeCantinaSelectEl) {
+          financeCantinaSelectEl.innerHTML = '<option value="">Sin cantinas disponibles</option>';
+          financeCantinaSelectEl.disabled = true;
+        }
+        return;
+      }
+
+      menuCantinaSelectEl.innerHTML = cantinas
+        .map((c) => `<option value="${c.id}">${c.name || "Cantina sin nombre"}</option>`)
+        .join("");
+      menuCantinaSelectEl.disabled = false;
+
+      if (ordersCantinaSelectEl) {
+        ordersCantinaSelectEl.innerHTML = menuCantinaSelectEl.innerHTML;
+        ordersCantinaSelectEl.disabled = false;
+      }
+
+      if (financeCantinaSelectEl) {
+        financeCantinaSelectEl.innerHTML = menuCantinaSelectEl.innerHTML;
+        financeCantinaSelectEl.disabled = false;
+      }
+    }
+
+    function renderFinanceOverview(metricsPayload, walletPayload) {
+      if (!financeKpisEl) return;
+
+      const kpis = metricsPayload?.kpis || {};
+      const wallet = walletPayload?.wallet || {};
+      financeKpisEl.innerHTML = `
+        <article class="kpi-card"><strong>Ventas Capys</strong><span>${Number(kpis.gross_capys || 0).toFixed(2)}</span></article>
+        <article class="kpi-card"><strong>Ordenes</strong><span>${Number(kpis.orders_total || 0)}</span></article>
+        <article class="kpi-card"><strong>Ticket Promedio</strong><span>${Number(kpis.avg_ticket_capys || 0).toFixed(2)}</span></article>
+        <article class="kpi-card"><strong>Clientes Unicos</strong><span>${Number(kpis.unique_clients || 0)}</span></article>
+        <article class="kpi-card"><strong>Disponible</strong><span>${Number(wallet.available || 0).toFixed(2)}</span></article>
+        <article class="kpi-card"><strong>En Proceso</strong><span>${Number(wallet.in_process || 0).toFixed(2)}</span></article>
+      `;
+
+      if (financeSeriesEl) {
+        const series = Array.isArray(metricsPayload?.series) ? metricsPayload.series : [];
+        if (!series.length) {
+          financeSeriesEl.innerHTML = '<p class="system-empty">Sin series para el rango seleccionado.</p>';
+        } else {
+          financeSeriesEl.innerHTML = series
+            .map((row) => `<p><strong>${row.label}</strong> · ${Number(row.total_capys || 0).toFixed(2)} Capys · ${Number(row.orders || 0)} ordenes</p>`)
+            .join("");
+        }
+      }
+    }
+
+    function renderWithdrawals(withdrawals = []) {
+      if (!withdrawalsListEl) return;
+
+      if (!withdrawals.length) {
+        withdrawalsListEl.innerHTML = '<p class="system-empty">No hay retiros registrados para esta cantina.</p>';
+        return;
+      }
+
+      withdrawalsListEl.innerHTML = withdrawals
+        .map((row) => {
+          const requested = row?.requested_at ? new Date(row.requested_at).toLocaleString() : "-";
+          return `<p><strong>${String(row.status || 'pending').toUpperCase()}</strong> · ${Number(row.amount || 0).toFixed(2)} Capys · ${requested}</p>`;
+        })
+        .join("");
+    }
+
+    async function loadFinanceForSelectedCantina() {
+      if (!financeCantinaSelectEl) return;
+
+      const cantinaId = String(financeCantinaSelectEl.value || "");
+      if (!cantinaId) {
+        if (financeKpisEl) financeKpisEl.innerHTML = '<p class="system-empty">Selecciona una cantina para cargar metricas.</p>';
+        if (financeSeriesEl) financeSeriesEl.innerHTML = '';
+        if (withdrawalsListEl) withdrawalsListEl.innerHTML = '<p class="system-empty">Sin retiros cargados.</p>';
+        return;
+      }
+
+      try {
+        const range = String(financeRangeSelectEl?.value || 'weekly');
+        const [metrics, wallet, account, withdrawals] = await Promise.all([
+          comercioSystemService.getCantinaMetrics(cantinaId, range),
+          comercioSystemService.getCantinaWallet(cantinaId),
+          comercioSystemService.getPayoutAccount(cantinaId),
+          comercioSystemService.getWithdrawals(cantinaId),
+        ]);
+
+        renderFinanceOverview(metrics, wallet);
+        renderWithdrawals(withdrawals?.withdrawals || []);
+
+        const acc = account?.account || null;
+        if (acc) {
+          if (payoutBankNameEl) payoutBankNameEl.value = String(acc.bank_name || '');
+          if (payoutAccountHolderEl) payoutAccountHolderEl.value = String(acc.account_holder || '');
+          if (payoutIdentificationEl) payoutIdentificationEl.value = String(acc.identification || '');
+          if (payoutAccountNumberEl) payoutAccountNumberEl.value = '';
+          payoutAccountNumberEl?.setAttribute('placeholder', String(acc.account_number_masked || '****'));
+        }
+      } catch (error) {
+        if (financeKpisEl) financeKpisEl.innerHTML = `<p class="system-empty">${error?.message || 'No se pudieron cargar finanzas.'}</p>`;
+      }
+    }
+
+    function openEditProductDialog(product) {
+      if (!productEditDialogEl || !productEditFormEl) return;
+      editingProduct = product;
+
+      if (editProductNameEl) editProductNameEl.value = String(product?.name || "");
+      if (editProductDescriptionEl) editProductDescriptionEl.value = String(product?.description || "");
+      if (editProductPriceBsEl) editProductPriceBsEl.value = String(Number(product?.price_bs || 0));
+      if (editProductPriceCapysEl) editProductPriceCapysEl.value = String(Number(product?.price_capys || 0));
+      if (editProductStockEl) editProductStockEl.value = product?.stock === null || product?.stock === undefined ? "" : String(product.stock);
+      if (editProductAvailableEl) editProductAvailableEl.checked = product?.is_available !== false;
+
+      if (typeof productEditDialogEl.showModal === "function") {
+        productEditDialogEl.showModal();
+      }
+    }
+
+    function renderProducts(products = []) {
+      if (!menuProductsListEl) return;
+
+      if (!products.length) {
+        menuProductsListEl.innerHTML = '<p class="system-empty">No hay productos en esta cantina.</p>';
+        return;
+      }
+
+      menuProductsListEl.innerHTML = products
+        .map((p) => {
+          const stock = p.stock === null || p.stock === undefined ? "Ilimitado" : String(p.stock);
+          const available = p.is_available !== false;
+          return `
+            <article class="product-row">
+              <div>
+                <h3>${p.name || "Producto sin nombre"}</h3>
+                <p>Bs ${Number(p.price_bs || 0).toFixed(2)} · Capys ${Number(p.price_capys || 0).toFixed(0)} · Stock: ${stock}</p>
+              </div>
+              <div class="product-actions">
+                <button type="button" class="product-toggle" data-product-id="${p.id}" data-next-state="${available ? "false" : "true"}">
+                  ${available ? "Desactivar" : "Activar"}
+                </button>
+                <button type="button" class="product-stock" data-product-id="${p.id}">Ajustar stock</button>
+                <button type="button" class="product-edit" data-product-id="${p.id}">Editar</button>
+              </div>
+            </article>
+          `;
+        })
+        .join("");
+
+      menuProductsListEl.querySelectorAll(".product-toggle").forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          const productId = btn.dataset.productId;
+          const nextState = btn.dataset.nextState === "true";
+          try {
+            await comercioSystemService.updateCantinaProduct(productId, { is_available: nextState });
+            showToast("Comercio", `Producto ${nextState ? "activado" : "desactivado"}`, "success");
+            await loadProductsForSelectedCantina();
+          } catch (error) {
+            showToast("Comercio", error.message || "No se pudo actualizar el producto", "error");
+          }
+        });
+      });
+
+      menuProductsListEl.querySelectorAll(".product-stock").forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          const productId = btn.dataset.productId;
+          const input = window.prompt("Nuevo stock (deja vacio para ilimitado):", "");
+          if (input === null) return;
+          const nextStock = input.trim() === "" ? null : Number(input);
+
+          if (nextStock !== null && (!Number.isInteger(nextStock) || nextStock < 0)) {
+            showToast("Comercio", "El stock debe ser entero >= 0", "error");
+            return;
+          }
+
+          try {
+            await comercioSystemService.updateCantinaProduct(productId, { stock: nextStock });
+            showToast("Comercio", "Stock actualizado", "success");
+            await loadProductsForSelectedCantina();
+          } catch (error) {
+            showToast("Comercio", error.message || "No se pudo actualizar stock", "error");
+          }
+        });
+      });
+
+      menuProductsListEl.querySelectorAll(".product-edit").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const productId = btn.dataset.productId;
+          const product = products.find((p) => String(p.id) === String(productId));
+          if (!product) return;
+          openEditProductDialog(product);
+        });
+      });
+    }
+
+    function renderOrders(orders = []) {
+      if (!ordersListEl) return;
+      currentOrders = Array.isArray(orders) ? orders : [];
+
+      if (!orders.length) {
+        ordersListEl.innerHTML = '<p class="system-empty">No hay ordenes para los filtros seleccionados.</p>';
+        return;
+      }
+
+      ordersListEl.innerHTML = orders
+        .map((order) => {
+          const customer = order?.profile?.name || "Cliente";
+          const cedula = order?.profile?.cedula || "-";
+          const itemsCount = Array.isArray(order?.items) ? order.items.reduce((acc, item) => acc + Number(item?.quantity || 0), 0) : 0;
+          const status = String(order?.status || "pending").toLowerCase();
+          const nextStatuses = ORDER_STATUS_TRANSITIONS[status] || [];
+          const selectableStatuses = [status, ...nextStatuses];
+          const canTransition = nextStatuses.length > 0;
+
+          return `
+            <article class="order-row">
+              <div>
+                <h3>Orden #${order.id}</h3>
+                <p>${customer} · ${cedula}</p>
+                <p>${itemsCount} items · Capys ${Number(order.total_capys || 0).toFixed(0)} · Bs ${Number(order.total_bs || 0).toFixed(2)}</p>
+              </div>
+              <div class="order-actions">
+                <button type="button" class="order-view" data-order-id="${order.id}">Ver detalle</button>
+                <select class="order-status-select" data-order-id="${order.id}">
+                  ${selectableStatuses.map((item) => `<option value="${item}" ${item === status ? "selected" : ""}>${item}</option>`).join("")}
+                </select>
+                <button type="button" class="order-status-save" data-order-id="${order.id}" ${canTransition ? "" : "disabled"}>Actualizar</button>
+              </div>
+            </article>
+          `;
+        })
+        .join("");
+
+      ordersListEl.querySelectorAll(".order-view").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const orderId = btn.dataset.orderId;
+          const order = currentOrders.find((item) => String(item?.id) === String(orderId));
+          if (!order) return;
+          openOrderDetailDialog(order);
+        });
+      });
+
+      ordersListEl.querySelectorAll(".order-status-save").forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          if (btn.disabled) return;
+          const orderId = btn.dataset.orderId;
+          const statusSelect = ordersListEl.querySelector(`.order-status-select[data-order-id=\"${orderId}\"]`);
+          const status = String(statusSelect?.value || "");
+
+          if (!ORDER_STATUSES.includes(status)) {
+            showToast("Comercio", "Estado de orden invalido", "error");
+            return;
+          }
+
+          try {
+            await comercioSystemService.updateCantinaOrderStatus(orderId, status);
+            showToast("Comercio", "Estado de orden actualizado", "success");
+            await loadOrdersForSelectedCantina();
+          } catch (error) {
+            showToast("Comercio", error.message || "No se pudo actualizar la orden", "error");
+          }
+        });
+      });
+    }
+
+    function openOrderDetailDialog(order) {
+      if (!orderDetailDialogEl || !orderDetailMetaEl || !orderDetailItemsEl) return;
+
+      const customer = order?.profile?.name || "Cliente";
+      const cedula = order?.profile?.cedula || "-";
+      const created = order?.created_at ? new Date(order.created_at).toLocaleString() : "-";
+      const status = String(order?.status || "pending").toLowerCase();
+
+      orderDetailMetaEl.textContent = `Orden #${order?.id || "-"} · ${status} · ${customer} (${cedula}) · ${created}`;
+
+      const items = Array.isArray(order?.items) ? order.items : [];
+      if (!items.length) {
+        orderDetailItemsEl.innerHTML = '<p class="system-empty">Esta orden no tiene items visibles.</p>';
+      } else {
+        orderDetailItemsEl.innerHTML = items
+          .map((item) => {
+            const productName = item?.product?.name || "Producto";
+            const qty = Number(item?.quantity || 0);
+            const priceCapys = Number(item?.price_at_time_capys || 0);
+            const priceBs = Number(item?.price_at_time_bs || 0);
+            return `<p>${productName} · x${qty} · ${priceCapys.toFixed(0)} Capys · ${priceBs.toFixed(2)} Bs</p>`;
+          })
+          .join("");
+      }
+
+      if (typeof orderDetailDialogEl.showModal === "function") {
+        orderDetailDialogEl.showModal();
+      }
+    }
+
+    async function loadOrdersForSelectedCantina() {
+      if (!ordersCantinaSelectEl || !ordersListEl) return;
+
+      const cantinaId = String(ordersCantinaSelectEl.value || "");
+      if (!cantinaId) {
+        ordersListEl.innerHTML = '<p class="system-empty">Selecciona una cantina para ver sus ordenes.</p>';
+        return;
+      }
+
+      ordersListEl.innerHTML = '<p class="system-empty">Cargando ordenes...</p>';
+
+      try {
+        const status = String(ordersStatusFilterEl?.value || "");
+        const response = await comercioSystemService.getCantinaOrders(cantinaId, status);
+        renderOrders(response?.orders || []);
+      } catch (_error) {
+        ordersListEl.innerHTML = '<p class="system-empty">No se pudieron cargar las ordenes.</p>';
+      }
+    }
+
+    async function loadProductsForSelectedCantina() {
+      if (!menuCantinaSelectEl || !menuProductsListEl) return;
+
+      const cantinaId = String(menuCantinaSelectEl.value || "");
+      if (!cantinaId) {
+        menuProductsListEl.innerHTML = '<p class="system-empty">Selecciona una cantina para ver su menu.</p>';
+        return;
+      }
+
+      menuProductsListEl.innerHTML = '<p class="system-empty">Cargando menu...</p>';
+
+      try {
+        const response = await comercioSystemService.getCantinaProducts(cantinaId);
+        renderProducts(response?.products || []);
+      } catch (error) {
+        menuProductsListEl.innerHTML = '<p class="system-empty">No se pudo cargar el menu de esta cantina.</p>';
+      }
+    }
+
+    function renderCantinas(cantinas = []) {
+      if (!listEl) return;
+
+      if (!cantinas.length) {
+        listEl.innerHTML = '<p class="system-empty">No tienes cantinas asociadas todavia.</p>';
+        return;
+      }
+
+      listEl.innerHTML = cantinas
+        .map((c) => {
+          const open = c.is_active !== false;
+          return `
+            <article class="cantina-row">
+              <div>
+                <h3>${c.name || "Cantina sin nombre"}</h3>
+                <p>Facultad: ${c.faculty_id || "-"} · ${c.location || "Sin ubicacion"}</p>
+              </div>
+              <button class="cantina-toggle" data-cantina-id="${c.id}" data-next-state="${open ? "false" : "true"}">
+                ${open ? "Cerrar" : "Abrir"}
+              </button>
+            </article>
+          `;
+        })
+        .join("");
+
+      listEl.querySelectorAll(".cantina-toggle").forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          const cantinaId = btn.dataset.cantinaId;
+          const nextState = btn.dataset.nextState === "true";
+          try {
+            await comercioSystemService.updateCantina(cantinaId, { is_active: nextState });
+            showToast("Comercio", `Cantina ${nextState ? "abierta" : "cerrada"} correctamente`, "success");
+            await loadCantinas();
+          } catch (error) {
+            showToast("Comercio", error.message || "No se pudo actualizar la cantina", "error");
+          }
+        });
+      });
+    }
+
+    async function loadCantinas() {
+      if (!listEl) return;
+      try {
+        const me = authService.getCurrentUser();
+        if (!me) {
+          window.location.href = "/auth/login?redirect=/system/comercio&system=comercio";
+          return;
+        }
+
+        if (getUserRole(me) !== "comerciante") {
+          renderAccessDenied();
+          return;
+        }
+
+        const response = await comercioSystemService.getMyCantinas();
+        currentCantinas = response?.cantinas || [];
+        renderCantinas(currentCantinas);
+        renderCantinaOptions(currentCantinas);
+        await loadProductsForSelectedCantina();
+        await loadOrdersForSelectedCantina();
+        await loadFinanceForSelectedCantina();
+      } catch (error) {
+        const msg = String(error?.message || "").toLowerCase();
+        if (msg.includes("no autorizado") || msg.includes("autorizado")) {
+          renderAccessDenied();
+          return;
+        }
+        listEl.innerHTML = '<p class="system-empty">No se pudo cargar la data de comercio.</p>';
+      }
+    }
+
+    async function handleCreateCantina(event) {
+      event.preventDefault();
+      try {
+        await comercioSystemService.createCantina({
+          name: nameEl?.value?.trim(),
+          faculty_id: facultyEl?.value?.trim(),
+          location: locationEl?.value?.trim(),
+          is_active: true,
+        });
+        showToast("Comercio", "Cantina creada correctamente", "success");
+        formEl?.reset();
+        await loadCantinas();
+      } catch (error) {
+        showToast("Comercio", error.message || "No se pudo crear la cantina", "error");
+      }
+    }
+
+    async function handleCreateProduct(event) {
+      event.preventDefault();
+      const cantinaId = String(menuCantinaSelectEl?.value || "");
+      if (!cantinaId) {
+        showToast("Comercio", "Selecciona una cantina primero", "error");
+        return;
+      }
+
+      try {
+        const stockRaw = menuProductStockEl?.value;
+        const stockValue = stockRaw === "" || stockRaw === null || stockRaw === undefined
+          ? null
+          : Number(stockRaw);
+
+        await comercioSystemService.createCantinaProduct(cantinaId, {
+          name: menuProductNameEl?.value?.trim(),
+          price_bs: Number(menuProductPriceBsEl?.value || 0),
+          price_capys: Number(menuProductPriceCapysEl?.value || 0),
+          stock: stockValue,
+          is_available: true,
+        });
+        showToast("Comercio", "Producto creado correctamente", "success");
+        menuProductFormEl?.reset();
+        if (menuProductPriceBsEl) menuProductPriceBsEl.value = "0";
+        if (menuProductPriceCapysEl) menuProductPriceCapysEl.value = "0";
+        await loadProductsForSelectedCantina();
+      } catch (error) {
+        showToast("Comercio", error.message || "No se pudo crear el producto", "error");
+      }
+    }
+
+    if (formEl) {
+      formEl.addEventListener("submit", handleCreateCantina);
+    }
+
+    if (menuProductFormEl) {
+      menuProductFormEl.addEventListener("submit", handleCreateProduct);
+    }
+
+    if (menuCantinaSelectEl) {
+      menuCantinaSelectEl.addEventListener("change", loadProductsForSelectedCantina);
+    }
+
+    if (menuRefreshBtnEl) {
+      menuRefreshBtnEl.addEventListener("click", loadProductsForSelectedCantina);
+    }
+
+    if (ordersCantinaSelectEl) {
+      ordersCantinaSelectEl.addEventListener("change", loadOrdersForSelectedCantina);
+    }
+
+    if (ordersStatusFilterEl) {
+      ordersStatusFilterEl.addEventListener("change", loadOrdersForSelectedCantina);
+    }
+
+    if (ordersRefreshBtnEl) {
+      ordersRefreshBtnEl.addEventListener("click", loadOrdersForSelectedCantina);
+    }
+
+    if (financeCantinaSelectEl) {
+      financeCantinaSelectEl.addEventListener("change", loadFinanceForSelectedCantina);
+    }
+
+    if (financeRangeSelectEl) {
+      financeRangeSelectEl.addEventListener("change", loadFinanceForSelectedCantina);
+    }
+
+    if (financeRefreshBtnEl) {
+      financeRefreshBtnEl.addEventListener("click", loadFinanceForSelectedCantina);
+    }
+
+    if (payoutAccountFormEl) {
+      payoutAccountFormEl.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const cantinaId = String(financeCantinaSelectEl?.value || "");
+        if (!cantinaId) {
+          showToast("Comercio", "Selecciona una cantina para guardar cuenta bancaria", "error");
+          return;
+        }
+
+        try {
+          await comercioSystemService.upsertPayoutAccount(cantinaId, {
+            bank_name: payoutBankNameEl?.value?.trim(),
+            account_number: payoutAccountNumberEl?.value?.trim(),
+            account_holder: payoutAccountHolderEl?.value?.trim(),
+            identification: payoutIdentificationEl?.value?.trim(),
+          });
+          showToast("Comercio", "Cuenta bancaria guardada", "success");
+          await loadFinanceForSelectedCantina();
+        } catch (error) {
+          showToast("Comercio", error.message || "No se pudo guardar la cuenta", "error");
+        }
+      });
+    }
+
+    if (withdrawalFormEl) {
+      withdrawalFormEl.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const cantinaId = String(financeCantinaSelectEl?.value || "");
+        const amount = Number(withdrawalAmountEl?.value || 0);
+        if (!cantinaId) {
+          showToast("Comercio", "Selecciona una cantina para solicitar retiro", "error");
+          return;
+        }
+
+        try {
+          await comercioSystemService.createWithdrawal(cantinaId, amount);
+          showToast("Comercio", "Solicitud de retiro creada", "success");
+          withdrawalFormEl.reset();
+          await loadFinanceForSelectedCantina();
+        } catch (error) {
+          showToast("Comercio", error.message || "No se pudo crear la solicitud de retiro", "error");
+        }
+      });
+    }
+
+    if (productEditFormEl) {
+      productEditFormEl.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        if (!editingProduct?.id) return;
+
+        const stockRaw = String(editProductStockEl?.value || "").trim();
+        const nextStock = stockRaw === "" ? null : Number(stockRaw);
+        if (nextStock !== null && (!Number.isInteger(nextStock) || nextStock < 0)) {
+          showToast("Comercio", "Stock invalido", "error");
+          return;
+        }
+
+        try {
+          await comercioSystemService.updateCantinaProduct(editingProduct.id, {
+            name: editProductNameEl?.value?.trim(),
+            description: editProductDescriptionEl?.value?.trim() || null,
+            price_bs: Number(editProductPriceBsEl?.value || 0),
+            price_capys: Number(editProductPriceCapysEl?.value || 0),
+            stock: nextStock,
+            is_available: Boolean(editProductAvailableEl?.checked),
+          });
+          showToast("Comercio", "Producto actualizado", "success");
+          productEditDialogEl?.close();
+          await loadProductsForSelectedCantina();
+        } catch (error) {
+          showToast("Comercio", error.message || "No se pudo actualizar el producto", "error");
+        }
+      });
+    }
+
+    if (editProductCancelEl) {
+      editProductCancelEl.addEventListener("click", () => {
+        if (productEditDialogEl) productEditDialogEl.close();
+      });
+    }
+
+    if (orderDetailCloseEl) {
+      orderDetailCloseEl.addEventListener("click", () => {
+        if (orderDetailDialogEl) orderDetailDialogEl.close();
+      });
+    }
+
+    document.addEventListener("astro:page-load", loadCantinas);
+    if (document.readyState === "complete" || document.readyState === "interactive") {
+      loadCantinas();
+    }
+  </script>
+</LandingLayout>
+
+<style>
+  .system-page {
+    min-height: 100vh;
+    padding: 28px 20px 60px;
+    background: #f8f5ff;
+    color: #292929;
+  }
+
+  .system-back {
+    display: inline-block;
+    text-decoration: none;
+    font-family: "Baloo Bhaijaan 2", sans-serif;
+    font-weight: 800;
+    color: #292929;
+    background: #d7fd49;
+    border: 4px solid #292929;
+    border-radius: 14px;
+    padding: 8px 16px;
+    box-shadow: 6px 6px 0 #292929;
+  }
+
+  .system-back:active {
+    transform: translate(4px, 4px);
+    box-shadow: 2px 2px 0 #292929;
+  }
+
+  .system-hero {
+    margin-top: 26px;
+    border: 6px solid #292929;
+    border-radius: 20px;
+    padding: 26px;
+    background: #8cffe1;
+    box-shadow: 12px 12px 0 #292929;
+  }
+
+  .system-kicker {
+    margin: 0;
+    text-transform: uppercase;
+    font-family: "Anton", sans-serif;
+    font-size: 22px;
+    letter-spacing: 1px;
+  }
+
+  h1 {
+    margin: 6px 0 8px;
+    font-family: "Anton", sans-serif;
+    font-size: clamp(44px, 8vw, 86px);
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  .system-lead {
+    margin: 0;
+    font-family: "Baloo Bhaijaan 2", sans-serif;
+    font-weight: 700;
+    font-size: clamp(18px, 2.8vw, 26px);
+    max-width: 900px;
+  }
+
+  .system-grid {
+    margin-top: 28px;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 16px;
+  }
+
+  .system-card-wide {
+    min-height: 420px;
+  }
+
+  .system-hint {
+    margin: 0 0 12px;
+    font-family: "Baloo Bhaijaan 2", sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  .cantinas-list {
+    display: grid;
+    gap: 10px;
+  }
+
+  .cantina-row {
+    border: 3px solid #292929;
+    background: #fff9f0;
+    box-shadow: 6px 6px 0 #292929;
+    padding: 12px;
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .cantina-row h3 {
+    margin: 0;
+    font-family: "Staatliches", sans-serif;
+    font-size: 28px;
+    letter-spacing: 0.5px;
+  }
+
+  .cantina-row p {
+    margin: 0;
+    font-family: "Baloo Bhaijaan 2", sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .cantina-toggle,
+  .cantina-form button,
+  .product-actions button,
+  .menu-toolbar button,
+  .finance-toolbar button {
+    border: 3px solid #292929;
+    background: #d7fd49;
+    box-shadow: 5px 5px 0 #292929;
+    cursor: pointer;
+    font-family: "Baloo Bhaijaan 2", sans-serif;
+    font-size: 14px;
+    font-weight: 800;
+    text-transform: uppercase;
+    padding: 8px 12px;
+  }
+
+  .cantina-toggle:active,
+  .cantina-form button:active,
+  .product-actions button:active,
+  .menu-toolbar button:active,
+  .finance-toolbar button:active {
+    transform: translate(3px, 3px);
+    box-shadow: 2px 2px 0 #292929;
+  }
+
+  .cantina-form {
+    display: grid;
+    gap: 10px;
+  }
+
+  .cantina-form label {
+    display: grid;
+    gap: 4px;
+    font-family: "Baloo Bhaijaan 2", sans-serif;
+    font-size: 14px;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+
+  .cantina-form input {
+    border: 3px solid #292929;
+    background: #fff;
+    padding: 8px;
+    font-family: "Baloo Bhaijaan 2", sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  .menu-toolbar {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 10px;
+    margin-bottom: 12px;
+    align-items: end;
+  }
+
+  .orders-toolbar {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    margin-bottom: 12px;
+    align-items: end;
+  }
+
+  .finance-toolbar {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    margin-bottom: 12px;
+    align-items: end;
+  }
+
+  .finance-toolbar label {
+    display: grid;
+    gap: 4px;
+    font-family: "Baloo Bhaijaan 2", sans-serif;
+    font-size: 14px;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+
+  .finance-toolbar select {
+    border: 3px solid #292929;
+    background: #fff;
+    padding: 8px;
+    font-family: "Baloo Bhaijaan 2", sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  .finance-kpis {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .kpi-card {
+    border: 3px solid #292929;
+    background: #fff9f0;
+    box-shadow: 5px 5px 0 #292929;
+    padding: 10px;
+    display: grid;
+    gap: 6px;
+    font-family: "Baloo Bhaijaan 2", sans-serif;
+    font-weight: 800;
+  }
+
+  .kpi-card strong {
+    font-size: 12px;
+    text-transform: uppercase;
+  }
+
+  .kpi-card span {
+    font-size: 20px;
+    line-height: 1;
+  }
+
+  .finance-series {
+    display: grid;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .finance-series p {
+    margin: 0;
+    border: 2px solid #292929;
+    background: #fff;
+    padding: 8px;
+    font-family: "Baloo Bhaijaan 2", sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .payout-form {
+    margin-bottom: 12px;
+  }
+
+  .payout-form h3 {
+    margin: 0;
+    font-family: "Staatliches", sans-serif;
+    font-size: 28px;
+    letter-spacing: 0.5px;
+    color: #292929;
+  }
+
+  .withdrawals-list {
+    display: grid;
+    gap: 8px;
+  }
+
+  .withdrawals-list p {
+    margin: 0;
+    border: 2px solid #292929;
+    background: #fff;
+    padding: 8px;
+    font-family: "Baloo Bhaijaan 2", sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .orders-toolbar label {
+    display: grid;
+    gap: 4px;
+    font-family: "Baloo Bhaijaan 2", sans-serif;
+    font-size: 14px;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+
+  .orders-toolbar select {
+    border: 3px solid #292929;
+    background: #fff;
+    padding: 8px;
+    font-family: "Baloo Bhaijaan 2", sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  .menu-toolbar label {
+    display: grid;
+    gap: 4px;
+    font-family: "Baloo Bhaijaan 2", sans-serif;
+    font-size: 14px;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+
+  .menu-toolbar select {
+    border: 3px solid #292929;
+    background: #fff;
+    padding: 8px;
+    font-family: "Baloo Bhaijaan 2", sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  .menu-form {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-bottom: 12px;
+  }
+
+  .menu-form button {
+    grid-column: 1 / -1;
+  }
+
+  .products-list {
+    display: grid;
+    gap: 10px;
+  }
+
+  .orders-list {
+    display: grid;
+    gap: 10px;
+  }
+
+  .product-row {
+    border: 3px solid #292929;
+    background: #fff9f0;
+    box-shadow: 6px 6px 0 #292929;
+    padding: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .product-row h3 {
+    margin: 0;
+    font-family: "Staatliches", sans-serif;
+    font-size: 24px;
+    letter-spacing: 0.5px;
+  }
+
+  .product-row p {
+    margin: 0;
+    font-family: "Baloo Bhaijaan 2", sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .product-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .order-row {
+    border: 3px solid #292929;
+    background: #fff;
+    box-shadow: 6px 6px 0 #292929;
+    padding: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .order-row h3 {
+    margin: 0;
+    font-family: "Staatliches", sans-serif;
+    font-size: 24px;
+    letter-spacing: 0.5px;
+  }
+
+  .order-row p {
+    margin: 0;
+    font-family: "Baloo Bhaijaan 2", sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .order-actions {
+    display: grid;
+    gap: 8px;
+    justify-items: end;
+  }
+
+  .order-view {
+    border: 3px solid #292929;
+    background: #8cffe1;
+    box-shadow: 5px 5px 0 #292929;
+    cursor: pointer;
+    font-family: "Baloo Bhaijaan 2", sans-serif;
+    font-size: 14px;
+    font-weight: 800;
+    text-transform: uppercase;
+    padding: 8px 12px;
+  }
+
+  .order-status-select {
+    border: 3px solid #292929;
+    background: #fff;
+    padding: 8px;
+    font-family: "Baloo Bhaijaan 2", sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    min-width: 170px;
+  }
+
+  .order-status-save {
+    border: 3px solid #292929;
+    background: #d7fd49;
+    box-shadow: 5px 5px 0 #292929;
+    cursor: pointer;
+    font-family: "Baloo Bhaijaan 2", sans-serif;
+    font-size: 14px;
+    font-weight: 800;
+    text-transform: uppercase;
+    padding: 8px 12px;
+  }
+
+  .order-status-save:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+    box-shadow: none;
+  }
+
+  .edit-dialog {
+    border: 4px solid #292929;
+    padding: 0;
+    max-width: 560px;
+    width: calc(100% - 24px);
+    box-shadow: 12px 12px 0 #292929;
+  }
+
+  .edit-form {
+    margin: 0;
+    padding: 18px;
+    display: grid;
+    gap: 10px;
+    background: #fff9f0;
+  }
+
+  .edit-form h3 {
+    margin: 0;
+    font-family: "Staatliches", sans-serif;
+    letter-spacing: 1px;
+    font-size: 32px;
+    color: #292929;
+  }
+
+  .order-detail-body {
+    max-height: 70vh;
+    overflow: auto;
+  }
+
+  .order-detail-meta {
+    margin: 0;
+    font-family: "Baloo Bhaijaan 2", sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .order-detail-items {
+    display: grid;
+    gap: 8px;
+  }
+
+  .order-detail-items p {
+    margin: 0;
+    border: 2px solid #292929;
+    background: #fff;
+    padding: 8px;
+    font-family: "Baloo Bhaijaan 2", sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .edit-form label {
+    display: grid;
+    gap: 4px;
+    font-family: "Baloo Bhaijaan 2", sans-serif;
+    font-size: 14px;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+
+  .edit-form input {
+    border: 3px solid #292929;
+    background: #fff;
+    padding: 8px;
+    font-family: "Baloo Bhaijaan 2", sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  .checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .edit-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+
+  .edit-actions button {
+    border: 3px solid #292929;
+    background: #d7fd49;
+    box-shadow: 5px 5px 0 #292929;
+    cursor: pointer;
+    font-family: "Baloo Bhaijaan 2", sans-serif;
+    font-size: 14px;
+    font-weight: 800;
+    text-transform: uppercase;
+    padding: 8px 12px;
+  }
+
+  .edit-actions button:active,
+  .order-status-save:active,
+  .order-view:active {
+    transform: translate(3px, 3px);
+    box-shadow: 2px 2px 0 #292929;
+  }
+
+  .system-empty {
+    border: 3px solid #292929;
+    background: #fff;
+    padding: 12px;
+    font-family: "Baloo Bhaijaan 2", sans-serif;
+    font-weight: 700;
+  }
+
+  .system-card {
+    border: 5px solid #292929;
+    border-radius: 18px;
+    padding: 18px;
+    background: #ffffff;
+    box-shadow: 10px 10px 0 #292929;
+  }
+
+  .system-card h2 {
+    margin: 0 0 8px;
+    font-family: "Staatliches", sans-serif;
+    letter-spacing: 1px;
+    font-size: 34px;
+    color: #8362e8;
+  }
+
+  .system-card ul {
+    margin: 0;
+    padding-left: 20px;
+    font-family: "Baloo Bhaijaan 2", sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1.25;
+  }
+
+  .system-note {
+    margin: 22px 0 0;
+    font-family: "Baloo Bhaijaan 2", sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  @media (max-width: 960px) {
+    .system-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .menu-form {
+      grid-template-columns: 1fr;
+    }
+
+    .orders-toolbar {
+      grid-template-columns: 1fr;
+    }
+
+    .finance-toolbar {
+      grid-template-columns: 1fr;
+    }
+
+    .finance-kpis {
+      grid-template-columns: 1fr;
+    }
+
+    .product-row {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .order-row {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .order-actions {
+      width: 100%;
+      justify-items: stretch;
+    }
+
+    .order-status-select,
+    .order-status-save {
+      width: 100%;
+    }
+  }
+</style>

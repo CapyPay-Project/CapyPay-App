@@ -266,27 +266,35 @@ import { cartItems, clearCart } from "../../store/cartStore";
             );
           }
 
-          // Determine if order is for Comedor or Cantina
-          // We can guess by checking if the items have a 'cantina_id' or by checking the URL they came from.
-          // Since our current cart implementation doesn't store 'type', we'll check if the item has `priceCapys` (Cantina) or relies purely on `price`.
-          // For a robust solution, we assume if ANY item is from a Cantina (we can check by checking the API error or by adding a flag).
-          // Let's add a heuristic: Cantina items have UUIDs as IDs, Comedor items usually have INTEGER IDs.
-          // Temp workaround: Find cantina_id by scanning products
-          const productId = validItems[0].id;
-          const tempCantinaReq = await fetchAPI(`/cantinas`);
-          let cantinaId = null;
-          if (tempCantinaReq && tempCantinaReq.cantinas) {
-            tempCantinaReq.cantinas.forEach((c) => {
-              const pMatch = c.products.find(
-                (p) => String(p.id) === String(productId),
-              );
-              if (pMatch) cantinaId = c.id;
-            });
+          // Priorizar cantinaId guardado en carrito para evitar inferencia por producto.
+          const cantinaIds = Array.from(
+            new Set(
+              validItems
+                .map((item) => item.cantinaId || item.cantina_id)
+                .filter(Boolean)
+                .map((id) => String(id)),
+            ),
+          );
+
+          let cantinaId = cantinaIds.length === 1 ? cantinaIds[0] : null;
+
+          // Fallback legacy para items antiguos en localStorage sin cantinaId.
+          if (!cantinaId) {
+            const productId = validItems[0].id;
+            const tempCantinaReq = await fetchAPI(`/cantinas`);
+            if (tempCantinaReq && tempCantinaReq.cantinas) {
+              tempCantinaReq.cantinas.forEach((c) => {
+                const pMatch = c.products.find(
+                  (p) => String(p.id) === String(productId),
+                );
+                if (pMatch) cantinaId = c.id;
+              });
+            }
           }
 
           if (!cantinaId)
             throw new Error(
-              "No se pudo identificar a qué cantina pertenece el producto.",
+              "No se pudo identificar la cantina del pedido.",
             );
 
           // 4. Transformar items al formato del backend

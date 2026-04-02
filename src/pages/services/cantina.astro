@@ -498,7 +498,11 @@ import FloatingActions from "../../components/widgets/comedor/FloatingActions.as
     import { addItemToCart, isCartOpen, cartItems } from "../../store/cartStore";
 
     function handlePurchase(baseItem) {
-      const item = { ...baseItem, type: 'cantina' };
+      const item = {
+        ...baseItem,
+        type: 'cantina',
+        cantinaId: currentCantina?.id || null,
+      };
       addItemToCart(item);
       
       isCartOpen.set(true);

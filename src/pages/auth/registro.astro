@@ -13,6 +13,8 @@ import LandingLayout from "../../layouts/LandingLayout.astro";
   </main>
 
   <script>
-    window.location.replace("/auth/login?mode=registro");
+    const params = new URLSearchParams(window.location.search);
+    params.set("mode", "registro");
+    window.location.replace(`/auth/login?${params.toString()}`);
   </script>
 </LandingLayout>

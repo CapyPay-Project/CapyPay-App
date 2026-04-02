@@ -2,8 +2,15 @@
 
 Documento maestro del frontend de CapyPay.
 
-- Ultima actualizacion: 2026-04-01
+- Ultima actualizacion: 2026-04-02
 - Ambito: arquitectura, rutas, scripts y estado operativo de CapyPay-App
+
+## Actualizacion al 2026-04-02
+
+- Fase 9 cerrada con el sistema Comercio v1 operativo en `/system/comercio`.
+- Login y registro respetan contexto de sistema desde el landing (`usuario`, `comercio`, `transporte`).
+- Comercio incluye gestion de cantinas, menu administrativo, ordenes, finanzas y retiros.
+- El recibo de orden en `/services/order` sincroniza el estado con el backend para mantener coherencia operativa.
 
 ## Actualizacion al 2026-03-31
 
@@ -43,6 +50,13 @@ Durante el ciclo de hardening de auth tambien se consolidaron:
 - Manejo robusto de token JWT en cliente (validacion de expiracion + limpieza segura de sesion).
 - Renovacion de sesion transparente contra backend (`/api/session/refresh`).
 - Parametrizacion completa de auth en `.env` para operacion por equipo sin cambios de codigo.
+
+Durante Fase 9 tambien se consolidaron:
+
+- Registro por rol con `comerciante` y `transportista`.
+- Redireccion contextual post-login desde la landing.
+- Panel `/system/comercio` con gestion de cantinas, productos, ordenes, finanzas y retiros.
+- Sincronizacion del recibo de orden con estados operativos de comercio.
 
 ## Documentacion centralizada
 
@@ -89,8 +103,10 @@ Convencion de equipo:
 - /services/order: detalle y seguimiento de una orden puntual.
 - /services/orders: listado historico de ordenes del usuario.
 - /services/ticketbus: modulo de ticketing/transporte dentro de servicios.
+- /system/comercio: panel administrativo para cantinas, menu, ordenes, finanzas y retiros.
+- /system/transporte: panel inicial administrativo para el sistema de transporte.
 
-Rutas activas compiladas actualmente: 18.
+Rutas activas compiladas actualmente: 20.
 
 ## Flujos recomendados (referencia rapida)
 
@@ -98,6 +114,8 @@ Rutas activas compiladas actualmente: 18.
 - Flujo de progreso gamificado: /dashboard -> /account/niveles -> /account/ranking.
 - Flujo de recarga y control: /finance/recarga -> /finance/history.
 - Flujo de pedido en servicios: /services/cantina o /services/comedor -> /services/checkout-cantina o /services/checkout -> /services/order -> /services/orders.
+- Flujo de comercio: /auth/login?system=comercio -> /system/comercio -> gestion de cantinas, menu, ordenes y finanzas.
+- Flujo de transporte: /auth/login?system=transporte -> /system/transporte.
 
 ## Estructura del proyecto
 
@@ -150,19 +168,19 @@ CapyPay-App/
 npm install
 ```
 
-2. Iniciar desarrollo:
+1. Iniciar desarrollo:
 
 ```bash
 npm run dev
 ```
 
-3. Build de produccion:
+1. Build de produccion:
 
 ```bash
 npm run build
 ```
 
-4. Validacion smoke E2E:
+1. Validacion smoke E2E:
 
 ```bash
 npm run e2e:smoke

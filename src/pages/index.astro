@@ -20,19 +20,6 @@ import LandingLayout from "../layouts/LandingLayout.astro";
         />
       </div>
 
-      <div class="header-buttons">
-        <a
-          href="/auth/login"
-          class="btn-login f-texto"
-          style="text-decoration: none; display: flex; align-items: center;"
-          >Iniciar Sesión</a
-        >
-        <a
-          href="/auth/registro"
-          class="btn-registro f-texto"
-          style="text-decoration: none;">Regístrate</a
-        >
-      </div>
     </div>
   </header>
 
@@ -62,11 +49,12 @@ import LandingLayout from "../layouts/LandingLayout.astro";
       </div>
 
       <div class="contenedor-boton-hero">
-        <a
-          href="/auth/login"
-          class="btn-comenzar f-texto"
-          style="text-decoration: none;">Comenzar Ahora</a
+        <button
+          class="open-access-modal btn-comenzar f-texto"
+          type="button"
         >
+          Comenzar Ahora
+        </button>
       </div>
       <div class="contenedor-animacion-choque">
         <img
@@ -328,12 +316,7 @@ import LandingLayout from "../layouts/LandingLayout.astro";
             <span class="palabra-comenzar">comenzar?</span>
           </p>
         </div>
-        <a
-          href="/auth/login"
-          class="boton-unete"
-          style="text-decoration: none; display: flex; align-items: center; justify-content: center;"
-          >Únete ahora!</a
-        >
+        <button type="button" class="open-access-modal boton-unete">Únete ahora!</button>
       </div>
 
       <img
@@ -344,11 +327,48 @@ import LandingLayout from "../layouts/LandingLayout.astro";
     </section>
   </main>
 
+  <div
+    class="modal-acceso"
+    id="accessModal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="accessModalTitle"
+  >
+    <div class="modal-acceso-contenido">
+      <button
+        type="button"
+        class="modal-acceso-cerrar"
+        id="closeAccessModal"
+        aria-label="Cerrar modal"
+      >
+        ✕
+      </button>
+
+      <h3 class="modal-acceso-titulo" id="accessModalTitle">ELIGE TU SISTEMA CAPYPAY</h3>
+      <p class="modal-acceso-subtitulo f-texto">Selecciona el acceso que deseas usar ahora.</p>
+
+      <div class="modal-acceso-botones">
+        <a href="/auth/login?system=comercio" class="modal-acceso-btn comercio f-texto">Comercio</a>
+        <a href="/auth/login?system=usuario" class="modal-acceso-btn usuario f-texto">Usuario</a>
+        <a href="/auth/login?system=transporte" class="modal-acceso-btn transporte f-texto">Transporte</a>
+      </div>
+    </div>
+  </div>
+
   <script>
     // Funcionalidad del menú hamburguesa
     const menuBtn = document.getElementById("menuBtn");
     const menuDesplegable = document.getElementById("menuDesplegable");
     const menuCerrar = document.getElementById("menuCerrar");
+    const openAccessModalButtons = document.querySelectorAll(".open-access-modal");
+    const accessModal = document.getElementById("accessModal");
+    const closeAccessModal = document.getElementById("closeAccessModal");
+
+    const setAccessModal = (isOpen) => {
+      if (!accessModal) return;
+      accessModal.classList.toggle("active", isOpen);
+      document.body.classList.toggle("modal-open", isOpen);
+    };
 
     if (menuBtn && menuDesplegable && menuCerrar) {
       menuBtn.addEventListener("click", () => {
@@ -373,6 +393,30 @@ import LandingLayout from "../layouts/LandingLayout.astro";
           menuDesplegable.classList.contains("active")
         ) {
           menuDesplegable.classList.remove("active");
+        }
+      });
+    }
+
+    if (openAccessModalButtons.length && accessModal && closeAccessModal) {
+      openAccessModalButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          setAccessModal(true);
+        });
+      });
+
+      closeAccessModal.addEventListener("click", () => {
+        setAccessModal(false);
+      });
+
+      accessModal.addEventListener("click", (e) => {
+        if (e.target === accessModal) {
+          setAccessModal(false);
+        }
+      });
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && accessModal.classList.contains("active")) {
+          setAccessModal(false);
         }
       });
     }

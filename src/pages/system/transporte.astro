@@ -1,0 +1,183 @@
+---
+import LandingLayout from "../../layouts/LandingLayout.astro";
+---
+
+<LandingLayout title="CapyPay Transport System">
+  <main class="system-page transporte-theme">
+    <a href="/" class="system-back">Volver al landing</a>
+
+    <section class="system-hero">
+      <p class="system-kicker">System</p>
+      <h1>Transporte</h1>
+      <p class="system-lead">
+        Panel administrativo para control de rutas, unidades y operacion de transportistas.
+      </p>
+    </section>
+
+    <section class="system-grid">
+      <article class="system-card">
+        <h2>Rutas y estado</h2>
+        <ul>
+          <li>Alta y baja de rutas de transporte.</li>
+          <li>Gestion de estado de rutas en tiempo real.</li>
+          <li>Visibilidad de rutas activas e inactivas.</li>
+        </ul>
+      </article>
+
+      <article class="system-card">
+        <h2>Unidades de bus</h2>
+        <ul>
+          <li>Registrar nuevas unidades al sistema.</li>
+          <li>Eliminar o suspender unidades existentes.</li>
+          <li>Asignar unidad por ruta y operador.</li>
+        </ul>
+      </article>
+
+      <article class="system-card">
+        <h2>Panel transportista</h2>
+        <ul>
+          <li>Reportar estado de unidad: lleno, normal o vacio.</li>
+          <li>Controlar unidad activa o inactiva.</li>
+          <li>Preparado para futuras metricas operativas.</li>
+        </ul>
+      </article>
+    </section>
+
+    <p class="system-note">Vista inicial en construccion. Proxima fase: gestion operativa completa por transportista.</p>
+  </main>
+
+  <script>
+    // @ts-nocheck
+    import { authService } from "../../services/api";
+
+    function renderDenied() {
+      const container = document.querySelector(".system-grid");
+      if (container) {
+        container.innerHTML = '<article class="system-card"><h2>Acceso restringido</h2><ul><li>Solo usuarios transportistas pueden acceder a este sistema.</li></ul></article>';
+      }
+    }
+
+    function enforceRole() {
+      const user = authService.getCurrentUser();
+      if (!user) {
+        window.location.href = "/auth/login?redirect=/system/transporte&system=transporte";
+        return;
+      }
+
+      const role = String(user.user_type || user.tipo || "").trim().toLowerCase();
+      if (role !== "transportista") {
+        renderDenied();
+      }
+    }
+
+    document.addEventListener("astro:page-load", enforceRole);
+    if (document.readyState === "complete" || document.readyState === "interactive") {
+      enforceRole();
+    }
+  </script>
+</LandingLayout>
+
+<style>
+  .system-page {
+    min-height: 100vh;
+    padding: 28px 20px 60px;
+    background: #f8f5ff;
+    color: #292929;
+  }
+
+  .system-back {
+    display: inline-block;
+    text-decoration: none;
+    font-family: "Baloo Bhaijaan 2", sans-serif;
+    font-weight: 800;
+    color: #292929;
+    background: #d7fd49;
+    border: 4px solid #292929;
+    border-radius: 14px;
+    padding: 8px 16px;
+    box-shadow: 6px 6px 0 #292929;
+  }
+
+  .system-back:active {
+    transform: translate(4px, 4px);
+    box-shadow: 2px 2px 0 #292929;
+  }
+
+  .system-hero {
+    margin-top: 26px;
+    border: 6px solid #292929;
+    border-radius: 20px;
+    padding: 26px;
+    background: #e4c1f9;
+    box-shadow: 12px 12px 0 #292929;
+  }
+
+  .system-kicker {
+    margin: 0;
+    text-transform: uppercase;
+    font-family: "Anton", sans-serif;
+    font-size: 22px;
+    letter-spacing: 1px;
+  }
+
+  h1 {
+    margin: 6px 0 8px;
+    font-family: "Anton", sans-serif;
+    font-size: clamp(44px, 8vw, 86px);
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  .system-lead {
+    margin: 0;
+    font-family: "Baloo Bhaijaan 2", sans-serif;
+    font-weight: 700;
+    font-size: clamp(18px, 2.8vw, 26px);
+    max-width: 900px;
+  }
+
+  .system-grid {
+    margin-top: 28px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .system-card {
+    border: 5px solid #292929;
+    border-radius: 18px;
+    padding: 18px;
+    background: #ffffff;
+    box-shadow: 10px 10px 0 #292929;
+  }
+
+  .system-card h2 {
+    margin: 0 0 8px;
+    font-family: "Staatliches", sans-serif;
+    letter-spacing: 1px;
+    font-size: 34px;
+    color: #8362e8;
+  }
+
+  .system-card ul {
+    margin: 0;
+    padding-left: 20px;
+    font-family: "Baloo Bhaijaan 2", sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1.25;
+  }
+
+  .system-note {
+    margin: 22px 0 0;
+    font-family: "Baloo Bhaijaan 2", sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  @media (max-width: 960px) {
+    .system-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

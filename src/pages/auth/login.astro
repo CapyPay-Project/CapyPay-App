@@ -138,6 +138,8 @@ import LandingLayout from "../../layouts/LandingLayout.astro";
           <div class="input-group">
             <label for="register-tipo">Tipo de Usuario</label>
              <select id="register-tipo">
+               <option value="comerciante">Comerciante</option>
+               <option value="transportista">Transportista</option>
                <option value="estudiante">Estudiante</option>
                <option value="profesor">Profesor</option>
                <option value="trabajador_obrero">Trabajador/Obrero</option>
@@ -155,7 +157,7 @@ import LandingLayout from "../../layouts/LandingLayout.astro";
              />
            </div>
 
-           <div class="input-group">
+           <div class="input-group" id="register-facultad-group">
              <label for="register-facultad">Facultad</label>
              <select id="register-facultad">
                <option value="">Selecciona una facultad/area</option>
@@ -170,7 +172,7 @@ import LandingLayout from "../../layouts/LandingLayout.astro";
              </select>
            </div>
 
-          <div class="input-group">
+          <div class="input-group" id="register-sede-group">
             <label for="register-sede">Sede o Nucleo</label>
             <select id="register-sede">
               <option value="">Selecciona una sede/nucleo</option>
@@ -302,10 +304,12 @@ import LandingLayout from "../../layouts/LandingLayout.astro";
       const registerTipoSelect = document.getElementById("register-tipo");
       const registerTelefonoInput = document.getElementById("register-telefono");
       const registerFacultadInput = document.getElementById("register-facultad");
+      const registerFacultadGroup = document.getElementById("register-facultad-group");
       const registerAcademicHint = document.getElementById("register-academic-hint");
       const registerCarreraInput = document.getElementById("register-carrera");
       const registerCarreraGroup = document.getElementById("register-carrera-group");
       const registerSedeInput = document.getElementById("register-sede");
+      const registerSedeGroup = document.getElementById("register-sede-group");
       const registerFechaNacimientoInput = document.getElementById("register-fecha-nacimiento");
       const registerConfirmPassInput = document.getElementById("register-confirm-password");
       const registerPinInput = document.getElementById("register-pin");
@@ -317,8 +321,48 @@ import LandingLayout from "../../layouts/LandingLayout.astro";
       const closeTermsDialogBtn = document.getElementById("close-terms-dialog");
       const acceptTermsDialogBtn = document.getElementById("accept-terms-dialog");
 
-      const modeParam = new URLSearchParams(window.location.search).get("mode");
+      const queryParams = new URLSearchParams(window.location.search);
+      const modeParam = queryParams.get("mode");
+      const systemParam = String(queryParams.get("system") || "usuario").trim().toLowerCase();
+      const redirectParam = String(queryParams.get("redirect") || "").trim();
       let authMode = modeParam === "registro" ? "register" : "login";
+
+      const CONTEXT_ROLES = {
+        usuario: null,
+        comercio: "comerciante",
+        transporte: "transportista"
+      };
+
+      const CONTEXT_REDIRECTS = {
+        usuario: "/dashboard",
+        comercio: "/system/comercio",
+        transporte: "/system/transporte"
+      };
+
+      const selectedContext = Object.prototype.hasOwnProperty.call(CONTEXT_ROLES, systemParam)
+        ? systemParam
+        : "usuario";
+
+      const getUserRole = (userLike = null) => {
+        const src = userLike || authService.getCurrentUser() || {};
+        return String(src.user_type || src.tipo || "").trim().toLowerCase();
+      };
+
+      const inferRedirectByRole = (role) => {
+        if (role === "comerciante") return CONTEXT_REDIRECTS.comercio;
+        if (role === "transportista") return CONTEXT_REDIRECTS.transporte;
+        return CONTEXT_REDIRECTS.usuario;
+      };
+
+      const getPostLoginRedirect = (role) => {
+        if (redirectParam.startsWith("/")) return redirectParam;
+
+        if (selectedContext === "usuario" || selectedContext === "comercio" || selectedContext === "transporte") {
+          return CONTEXT_REDIRECTS[selectedContext];
+        }
+
+        return inferRedirectByRole(role);
+      };
 
       const UNERG_CATALOG = {
         "Area de Ingenieria Agronomica": [
@@ -435,15 +479,36 @@ import LandingLayout from "../../layouts/LandingLayout.astro";
       const updateAcademicFieldsByUserType = () => {
         const tipo = registerTipoSelect?.value || "estudiante";
         const esEstudiante = tipo === "estudiante";
+        const requiereAcademico = tipo !== "comerciante" && tipo !== "transportista";
 
         if (registerAcademicHint) {
-          registerAcademicHint.textContent = esEstudiante
+          registerAcademicHint.textContent = !requiereAcademico
+            ? "Para este tipo de usuario no se solicitan datos academicos en esta fase."
+            : esEstudiante
             ? "Selecciona tu area y luego tu carrera para completar el perfil academico."
             : "Selecciona el area en la que laboras para asociarte al entorno institucional.";
         }
 
+        if (registerFacultadGroup) {
+          registerFacultadGroup.style.display = requiereAcademico ? "flex" : "none";
+        }
+
+        if (registerSedeGroup) {
+          registerSedeGroup.style.display = requiereAcademico ? "flex" : "none";
+        }
+
         if (registerCarreraGroup) {
-          registerCarreraGroup.style.display = esEstudiante ? "flex" : "none";
+          registerCarreraGroup.style.display = requiereAcademico && esEstudiante ? "flex" : "none";
+        }
+
+        if (!requiereAcademico) {
+          if (registerFacultadInput) registerFacultadInput.value = "";
+          if (registerSedeInput) registerSedeInput.value = "";
+          if (registerCarreraInput) {
+            registerCarreraInput.value = "";
+            registerCarreraInput.disabled = true;
+          }
+          return;
         }
 
         if (registerCarreraInput) {
@@ -533,12 +598,14 @@ import LandingLayout from "../../layouts/LandingLayout.astro";
           console.log("Iniciando login con:", email);
           const response = await authService.login(email, password);
           console.log("Respuesta login:", response);
+          const role = getUserRole(response) || getUserRole();
+          const redirectTo = getPostLoginRedirect(role);
 
           // Éxito
           loginBtn.innerText = "¡Exito! Redirigiendo...";
 
           setTimeout(() => {
-            window.location.href = "/dashboard";
+            window.location.href = redirectTo;
           }, 500);
         } catch (error) {
           console.error(error);
@@ -584,10 +651,22 @@ import LandingLayout from "../../layouts/LandingLayout.astro";
         const aceptoTerminos = Boolean(registerTermsInput?.checked);
 
         const esEstudiante = tipo === "estudiante";
+        const requiereAcademico = tipo !== "comerciante" && tipo !== "transportista";
 
-        if (!nombre || !email || !cedula || !password || !telefono || !facultad || !sedeNucleo || !fechaNacimiento || !pin) {
+        if (!nombre || !email || !cedula || !password || !telefono || !fechaNacimiento || !pin) {
           if (registerErrorMsg) {
             registerErrorMsg.innerText = "Por favor completa todos los campos";
+            registerErrorMsg.style.display = "block";
+          }
+          registerBtn.disabled = false;
+          registerBtn.innerText = originalText;
+          registerBtn.style.opacity = "1";
+          return;
+        }
+
+        if (requiereAcademico && (!facultad || !sedeNucleo)) {
+          if (registerErrorMsg) {
+            registerErrorMsg.innerText = "Completa facultad y sede para continuar";
             registerErrorMsg.style.display = "block";
           }
           registerBtn.disabled = false;
@@ -659,9 +738,9 @@ import LandingLayout from "../../layouts/LandingLayout.astro";
             cedula,
             tipo,
             telefono,
-            facultad,
-            carrera: esEstudiante ? carrera : null,
-            sedeNucleo,
+            facultad: requiereAcademico ? facultad : null,
+            carrera: requiereAcademico && esEstudiante ? carrera : null,
+            sedeNucleo: requiereAcademico ? sedeNucleo : null,
             fechaNacimiento,
             pin,
             aceptaTerminos: aceptoTerminos
@@ -682,19 +761,14 @@ import LandingLayout from "../../layouts/LandingLayout.astro";
           registerBtn.innerText = "¡Exito!";
 
           if (registerSuccessMsg) {
-            registerSuccessMsg.innerText = "Registro exitoso. Inicia sesion para continuar.";
+            registerSuccessMsg.innerText = "Registro exitoso. Iniciando sesion...";
             registerSuccessMsg.style.display = "block";
           }
 
-          setTimeout(() => {
-            setAuthMode("login");
-            if (loginEmailInput) loginEmailInput.value = String(email);
-            if (registerBtn) {
-              registerBtn.disabled = false;
-              registerBtn.innerText = originalText;
-              registerBtn.style.opacity = "1";
-            }
-          }, 900);
+          const loginResponse = await authService.login(email, password);
+          const role = getUserRole(loginResponse) || getUserRole({ user_type: tipo });
+          const redirectTo = getPostLoginRedirect(role);
+          window.location.href = redirectTo;
         } catch (error) {
           console.error(error);
           if (registerErrorMsg) {
@@ -753,6 +827,11 @@ import LandingLayout from "../../layouts/LandingLayout.astro";
       }
 
       hydrateUnergCatalog();
+
+      const contextRole = CONTEXT_ROLES[selectedContext];
+      if (contextRole && registerTipoSelect) {
+        registerTipoSelect.value = contextRole;
+      }
 
       if (registerTipoSelect) {
         registerTipoSelect.addEventListener("change", updateAcademicFieldsByUserType);

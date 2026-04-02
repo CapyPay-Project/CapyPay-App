@@ -487,6 +487,8 @@ export const authService = {
             id: response.usuarioId,
             nombre: response.nombre,
             cedula: response.cedula,
+            tipo: response.tipo || response.user_type || null,
+            user_type: response.user_type || response.tipo || null,
             balance: response.balance,
             xp: response.xp || 0,
           avatar_url: response.avatar_url || null,
@@ -549,6 +551,10 @@ export const authService = {
       clearAuthSession({ redirect: true, replace: true });
       return null;
     }
+
+      if (!user.user_type && user.tipo) {
+        user.user_type = user.tipo;
+      }
 
     return user;
   }
@@ -931,4 +937,62 @@ export const cantinaService = {
       })
     });
   }
+};
+
+export const comercioSystemService = {
+  getMyCantinas: () => fetchAPI('/system/comercio/me/cantinas'),
+
+  createCantina: (payload) => fetchAPI('/system/comercio/cantinas', {
+    method: 'POST',
+    body: JSON.stringify(payload)
+  }),
+
+  updateCantina: (cantinaId, payload) => fetchAPI(`/system/comercio/cantinas/${cantinaId}`, {
+    method: 'PATCH',
+    body: JSON.stringify(payload)
+  }),
+
+  getCantinaProducts: (cantinaId) => fetchAPI(`/system/comercio/cantinas/${cantinaId}/products`),
+
+  createCantinaProduct: (cantinaId, payload) => fetchAPI(`/system/comercio/cantinas/${cantinaId}/products`, {
+    method: 'POST',
+    body: JSON.stringify(payload)
+  }),
+
+  updateCantinaProduct: (productId, payload) => fetchAPI(`/system/comercio/products/${productId}`, {
+    method: 'PATCH',
+    body: JSON.stringify(payload)
+  }),
+
+  getCantinaOrders: (cantinaId, status = '') => {
+    const q = status ? `?status=${encodeURIComponent(status)}` : '';
+    return fetchAPI(`/system/comercio/cantinas/${cantinaId}/orders${q}`);
+  },
+
+  updateCantinaOrderStatus: (orderId, status) => fetchAPI(`/system/comercio/orders/${orderId}/status`, {
+    method: 'PATCH',
+    body: JSON.stringify({ status })
+  }),
+
+  getCantinaMetrics: (cantinaId, range = 'weekly') =>
+    fetchAPI(`/system/comercio/cantinas/${cantinaId}/metrics?range=${encodeURIComponent(range)}`),
+
+  getCantinaWallet: (cantinaId) =>
+    fetchAPI(`/system/comercio/cantinas/${cantinaId}/wallet`),
+
+  getPayoutAccount: (cantinaId) =>
+    fetchAPI(`/system/comercio/cantinas/${cantinaId}/payout-accounts`),
+
+  upsertPayoutAccount: (cantinaId, payload) => fetchAPI(`/system/comercio/cantinas/${cantinaId}/payout-accounts`, {
+    method: 'POST',
+    body: JSON.stringify(payload)
+  }),
+
+  createWithdrawal: (cantinaId, amount) => fetchAPI(`/system/comercio/cantinas/${cantinaId}/withdrawals`, {
+    method: 'POST',
+    body: JSON.stringify({ amount })
+  }),
+
+  getWithdrawals: (cantinaId) =>
+    fetchAPI(`/system/comercio/cantinas/${cantinaId}/withdrawals`)
 };

@@ -75,12 +75,67 @@ import MainLayout from "../../layouts/MainLayout.astro";
     // @ts-nocheck
     import { comedorService, cantinaService } from "../../services/api";
 
+    const ORDER_STATUS_REFRESH_MS = 20000;
+
+    function formatOrderStatus(rawStatus) {
+      const status = String(rawStatus || "").trim().toLowerCase();
+      if (status === "pre arrival" || status === "preparing" || status === "pending") {
+        return { label: "PRE-ARRIVAL", tone: "yellow" };
+      }
+      if (status === "ready") {
+        return { label: "LISTO", tone: "blue" };
+      }
+      if (status === "completed") {
+        return { label: "COMPLETADO", tone: "green" };
+      }
+      if (status === "cancelled") {
+        return { label: "CANCELADO", tone: "red" };
+      }
+      return { label: String(rawStatus || "-").toUpperCase(), tone: "neutral" };
+    }
+
+    function getStatusBadgeClass(tone) {
+      if (tone === "green") return "bg-[#d7fd48] text-black";
+      if (tone === "yellow") return "bg-black text-[#d7fd48]";
+      if (tone === "blue") return "bg-[#8b5cf6] text-white";
+      if (tone === "red") return "bg-red-500 text-white";
+      return "bg-black text-white";
+    }
+
+    async function fetchOrderById(orderId) {
+      let orderObj = null;
+      let source = null;
+
+      try {
+        const comedorRes = await comedorService.getOrder(orderId);
+        if (comedorRes?.order) {
+          orderObj = comedorRes.order;
+          source = "comedor";
+        }
+      } catch (_error) {}
+
+      if (!orderObj) {
+        const cantinaRes = await cantinaService.getOrder(orderId);
+        if (cantinaRes?.order) {
+          orderObj = cantinaRes.order;
+          source = "cantina";
+        }
+      }
+
+      if (!orderObj) {
+        throw new Error("Orden no encontrada");
+      }
+
+      return { order: orderObj, source };
+    }
+
     async function loadOrder() {
       const container = document.getElementById("receipt-container");
       const receiptCard = document.getElementById("receipt-card");
       const loader = document.getElementById("loader");
       const errorState = document.getElementById("error-state");
       const actions = document.getElementById("actions");
+      const statusDot = document.getElementById("status-last-sync");
 
       if (!container || !receiptCard || !loader || !errorState || !actions) return;
 
@@ -92,20 +147,8 @@ import MainLayout from "../../layouts/MainLayout.astro";
 
         const minTime = new Promise((resolve) => setTimeout(resolve, 800));
         
-        let orderObj = null;
-        try {
-           const [comedorRes] = await Promise.all([comedorService.getOrder(orderId), minTime]);
-           if (comedorRes && comedorRes.order) orderObj = comedorRes.order;
-        } catch (e) {}
-        
-        if (!orderObj) {
-           const [cantinaRes] = await Promise.all([cantinaService.getOrder(orderId), minTime]);
-           if (cantinaRes && cantinaRes.order) orderObj = cantinaRes.order;
-        }
-
-        if (!orderObj) throw new Error("Orden no encontrada");
-
-        const order = orderObj;
+          const [orderPayload] = await Promise.all([fetchOrderById(orderId), minTime]);
+          const order = orderPayload.order;
         const items = order.order_items || order.items || [];
 
         const date = new Date(order.created_at).toLocaleString("es-VE", {
@@ -137,6 +180,9 @@ import MainLayout from "../../layouts/MainLayout.astro";
         
         const ticketNum = String(order.id).replace(/\D/g, '').slice(-3) || '000';
 
+        const statusInfo = formatOrderStatus(order.status);
+        const statusBadgeClass = getStatusBadgeClass(statusInfo.tone);
+
         receiptCard.innerHTML = `
                 <h1 class="absolute -top-4 left-6 bg-[#8CFFE1] border-[3px] border-black px-6 py-2 text-2xl font-black uppercase tracking-tighter shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transform -rotate-3 z-10">RECIBO OFICIAL</h1>
                 
@@ -158,9 +204,13 @@ import MainLayout from "../../layouts/MainLayout.astro";
                     </div>
                     <div class="flex justify-between text-sm md:text-base text-black font-bold uppercase border-t-[2px] border-black pt-2 items-center">
                         <span>Estado</span>
-                        <span class="bg-black text-[#d7fd48] px-3 py-1 font-black tracking-widest text-xs">
-                            ${order.status === 'pre arrival' || order.status === 'preparing' || order.status === 'pending' ? 'PRE-ARRIVAL' : order.status === 'completed' ? 'COMPLETADO' : order.status}
+                      <span id="order-status-badge" class="${statusBadgeClass} px-3 py-1 font-black tracking-widest text-xs">
+                        ${statusInfo.label}
                         </span>
+                    </div>
+                    <div class="flex justify-between text-[11px] md:text-xs text-black/70 font-bold uppercase border-t-[2px] border-black pt-2 mt-2 items-center">
+                      <span>Ultima sincronizacion</span>
+                      <span id="status-last-sync">${new Date().toLocaleTimeString("es-VE")}</span>
                     </div>
                 </div>
 
@@ -194,6 +244,34 @@ import MainLayout from "../../layouts/MainLayout.astro";
         setTimeout(() => {
           actions.classList.remove("opacity-0", "translate-y-4");
         }, 50);
+
+        const syncStatusOnly = async () => {
+          try {
+            const latest = await fetchOrderById(orderId);
+            const latestStatus = formatOrderStatus(latest.order?.status);
+            const badge = document.getElementById("order-status-badge");
+            const syncLabel = document.getElementById("status-last-sync");
+
+            if (badge) {
+              badge.textContent = latestStatus.label;
+              badge.className = `${getStatusBadgeClass(latestStatus.tone)} px-3 py-1 font-black tracking-widest text-xs`;
+            }
+
+            if (syncLabel) {
+              syncLabel.textContent = new Date().toLocaleTimeString("es-VE");
+            }
+          } catch (_error) {
+            // No interrumpir UX del recibo si falla una sincronizacion puntual.
+          }
+        };
+
+        const intervalId = window.setInterval(syncStatusOnly, ORDER_STATUS_REFRESH_MS);
+        window.addEventListener("beforeunload", () => window.clearInterval(intervalId), { once: true });
+        document.addEventListener("visibilitychange", () => {
+          if (document.visibilityState === "visible") {
+            syncStatusOnly();
+          }
+        });
 
       } catch (error) {
         console.error("Order Fetch Error:", error);
