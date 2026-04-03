@@ -1,6 +1,5 @@
 <script>
   import { onMount, onDestroy, createEventDispatcher } from "svelte";
-  import { fade } from "svelte/transition";
   import { addItemToCart } from "../../../store/cartStore.js";
   import { showToast } from "../../../utils/toast.js";
   import { Flame, Clock3, Sparkles } from "lucide-svelte";
@@ -11,6 +10,9 @@
 
   let index = 0;
   let rotation = null;
+  let swapPulse = false;
+  let lastIndex = 0;
+  let pulseTimer = null;
 
   $: safeItems = Array.isArray(items) ? items.slice(0, 3) : [];
   $: current = safeItems[index] || null;
@@ -47,7 +49,17 @@
 
   onDestroy(() => {
     if (rotation) clearInterval(rotation);
+    if (pulseTimer) clearTimeout(pulseTimer);
   });
+
+  $: if (index !== lastIndex) {
+    lastIndex = index;
+    swapPulse = true;
+    if (pulseTimer) clearTimeout(pulseTimer);
+    pulseTimer = setTimeout(() => {
+      swapPulse = false;
+    }, 260);
+  }
 </script>
 
 {#if current}
@@ -66,11 +78,10 @@
       </div>
     </div>
 
-    {#key `${current.id || current.name || index}`}
-      <div transition:fade={{ duration: 320 }} class="grid grid-cols-1 md:grid-cols-[1.1fr_0.9fr] min-h-125 md:min-h-90">
+    <div class="grid grid-cols-1 md:grid-cols-[1.1fr_0.9fr] min-h-125 md:min-h-90">
         <div class="p-5 md:p-6 border-b-4 md:border-b-0 md:border-r-4 border-black flex flex-col gap-3 bg-[radial-gradient(circle_at_top_left,#ffffff_0%,#fffdf8_55%,#fff4d6_100%)]">
           <p class="text-xs font-black uppercase tracking-[0.2em] text-black/50">Destacado {index + 1} de {safeItems.length}</p>
-          <h3 class="font-black text-3xl uppercase tracking-tighter leading-none line-clamp-2 min-h-16">{current.name}</h3>
+          <h3 class={`font-black text-3xl uppercase tracking-tighter leading-none line-clamp-2 min-h-16 ${swapPulse ? "promo-swap" : ""}`}>{current.name}</h3>
           <p class="font-bold uppercase text-sm leading-tight text-black/75 line-clamp-2 min-h-11">{current.description}</p>
 
           <div class="flex items-center gap-2 flex-wrap mt-1">
@@ -108,7 +119,7 @@
           </div>
         </div>
 
-        <div class="h-full bg-[#ede7ff] border-black relative overflow-hidden">
+        <div class={`h-full bg-[#ede7ff] border-black relative overflow-hidden ${swapPulse ? "promo-swap" : ""}`}>
           <div class="absolute inset-0 bg-[radial-gradient(circle_at_20%_15%,rgba(255,255,255,0.3),transparent_45%)] z-1"></div>
           <img
             src={current.image_url}
@@ -122,7 +133,6 @@
           </div>
         </div>
       </div>
-    {/key}
 
     <div class="px-4 py-3 border-t-4 border-black bg-white flex items-center justify-between gap-4">
       <div class="flex items-center gap-2">
@@ -143,3 +153,20 @@
     </div>
   </section>
 {/if}
+
+<style>
+  .promo-swap {
+    animation: promoSwapIn 260ms ease-out;
+  }
+
+  @keyframes promoSwapIn {
+    0% {
+      opacity: 0.9;
+      transform: translateY(2px) scale(0.995);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+</style>
