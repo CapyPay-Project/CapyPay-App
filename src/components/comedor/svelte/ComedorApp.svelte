@@ -4,12 +4,12 @@
   import PlatoDelDiaHero from "./PlatoDelDiaHero.svelte";
   import CategoriaTabs from "./CategoriaTabs.svelte";
   import ProductCarousel from "./ProductCarousel.svelte";
+  import MainPushDeck from "./MainPushDeck.svelte";
   import LiveQueue from "./LiveQueue.svelte";
   import TimerWidget from "./TimerWidget.svelte";
   import CapyTip from "./CapyTip.svelte";
   import { isCartOpen } from "../../../store/cartStore.js";
   import CarritoSidebar from "./CarritoSidebar.svelte";
-  import { Trophy, ArrowRight, Star } from "lucide-svelte";
 
   const categories = [
     { id: "all", label: "Todo" },
@@ -17,40 +17,6 @@
     { id: "desayuno", label: "Desayunos" },
     { id: "snack", label: "Snacks" },
     { id: "bebida", label: "Bebidas" },
-  ];
-
-  const devShowcaseItems = [
-    {
-      id: "demo-desayuno-capy",
-      name: "Desayuno Capy",
-      description:
-        "Arepa dorada, huevo perico y queso fresco para arrancar con energía.",
-      price: 18,
-      image_url: "/images/cantina/sandwich.jpg",
-    },
-    {
-      id: "demo-almuerzo-power",
-      name: "Almuerzo Power",
-      description:
-        "Proteína, arroz, ensalada y guarnición para el combo más completo.",
-      price: 36,
-      image_url: "/images/cantina/empanadas.webp",
-    },
-    {
-      id: "demo-snack-crunch",
-      name: "Snack Crunch",
-      description: "Crujiente, rápido y con el balance justo para la tarde.",
-      price: 14,
-      image_url: "/images/cantina/empanada.jpg",
-    },
-    {
-      id: "demo-bebida-fresh",
-      name: "Bebida Fresh",
-      description:
-        "Fría, liviana y pensada para acompañar el menú completo.",
-      price: 10,
-      image_url: "/images/cantina/sandwich.jpg",
-    },
   ];
 
   let activeCategory = "all";
@@ -77,36 +43,61 @@
 
   let realtimeInterval = null;
 
-  $: activeCategoryLabel =
-    categories.find((category) => category.id === activeCategory)?.label ||
-    "Todo";
+  $: fallbackPromotedItems = [
+    {
+      id: "fallback-1",
+      name: "Combo Bandeja Plus",
+      description: "Proteina + arroz + jugo con salida prioritaria.",
+      price: 35,
+      category: "almuerzo",
+      image_url: "/images/cantina/empanadas.webp",
+    },
+    {
+      id: "fallback-2",
+      name: "Desayuno Turbo",
+      description: "Arepa rellena + bebida caliente para primera hora.",
+      price: 20,
+      category: "desayuno",
+      image_url: "/images/cantina/sandwich.jpg",
+    },
+    {
+      id: "fallback-3",
+      name: "Snack Reload",
+      description: "Mini combo para recargar energia antes de clase.",
+      price: 14,
+      category: "snack",
+      image_url: "/images/cantina/empanada.jpg",
+    },
+  ];
 
-  $: visibleMenuItems = Array.isArray(menuData?.items) ? menuData.items : [];
+  $: promotedItems = (() => {
+    const source = [
+      ...(Array.isArray(menuData?.popularItems) ? menuData.popularItems : []),
+      ...(Array.isArray(menuData?.items) ? menuData.items : []),
+    ];
 
-  $: showcaseMenuItems = (() => {
-    const baseItems = [...visibleMenuItems];
+    const unique = [];
+    const seen = new Set();
 
-    if (!import.meta.env.DEV || baseItems.length >= 8) {
-      return baseItems;
+    for (const item of source) {
+      const key = String(item?.id || item?.name || "");
+      if (!key || seen.has(key)) continue;
+      seen.add(key);
+      unique.push(item);
+      if (unique.length >= 3) break;
     }
 
-    for (const sample of devShowcaseItems) {
-      if (!baseItems.some((item) => item.id === sample.id)) {
-        baseItems.push(sample);
-      }
+    if (unique.length >= 3) return unique;
 
-      if (baseItems.length >= 8) {
-        break;
-      }
+    for (const fallback of fallbackPromotedItems) {
+      const key = String(fallback.id);
+      if (seen.has(key)) continue;
+      unique.push(fallback);
+      if (unique.length >= 3) break;
     }
 
-    return baseItems;
+    return unique;
   })();
-
-  $: showcaseAddedCount = Math.max(
-    0,
-    showcaseMenuItems.length - visibleMenuItems.length,
-  );
 
   function normalizeOrderStatus(rawStatus) {
     return String(rawStatus || "").toLowerCase();
@@ -279,6 +270,13 @@
     loadMenu(activeCategory);
   }
 
+  function handleMainPushCategory(e) {
+    const category = e?.detail?.category;
+    if (!category || category === activeCategory) return;
+    activeCategory = category;
+    loadMenu(category);
+  }
+
   function toggleCart() {
     $isCartOpen = !$isCartOpen;
   }
@@ -385,42 +383,7 @@
       />
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-      <div class="border-4 border-black bg-white p-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-        <p class="text-xs font-black uppercase tracking-[0.25em] text-black/50">
-          Categoría activa
-        </p>
-        <p class="mt-2 text-3xl font-black uppercase tracking-tighter">
-          {activeCategoryLabel}
-        </p>
-      </div>
-
-      <div class="border-4 border-black bg-[#f9f7ff] p-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-        <p class="text-xs font-black uppercase tracking-[0.25em] text-black/50">
-          Platos visibles
-        </p>
-        <p class="mt-2 text-3xl font-black uppercase tracking-tighter">
-          {visibleMenuItems.length}
-        </p>
-      </div>
-
-      <div class="border-4 border-black bg-[#f5fdf2] p-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-        <p class="text-xs font-black uppercase tracking-[0.25em] text-black/50">
-          Destacados
-        </p>
-        <p class="mt-2 text-3xl font-black uppercase tracking-tighter">
-          {menuData?.popularItems?.length || 0}
-        </p>
-      </div>
-    </div>
-
-    {#if isRefreshingMenu}
-      <div class="mb-4 border-4 border-black bg-brand-lime px-4 py-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-        <span class="font-black uppercase tracking-tighter text-sm sm:text-base">
-          Actualizando {activeCategoryLabel.toLowerCase()} sin mover la vista
-        </span>
-      </div>
-    {/if}
+    <MainPushDeck items={promotedItems} on:pickCategory={handleMainPushCategory} />
 
     {#if showDebugPanel}
       <div
@@ -486,16 +449,13 @@
     />
 
     {#if menuData?.popularItems?.length > 0}
-      <ProductCarousel title="Lo Más Popular" items={menuData.popularItems} />
+      <ProductCarousel title="Lo Más Popular" items={menuData.popularItems} variant="popular" />
     {/if}
 
     {#if menuData?.items?.length > 0}
-      <ProductCarousel title="Todo el Menú" items={menuData.items} />
+      <ProductCarousel title="Todo el Menú" items={menuData.items} variant="menu" />
     {/if}
 
-    {#if showcaseAddedCount > 0}
-      <ProductCarousel title="Muestra extendida" items={showcaseMenuItems} />
-    {/if}
   {/if}
 </div>
 
