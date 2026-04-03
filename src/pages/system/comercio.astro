@@ -279,6 +279,11 @@ import LandingLayout from "../../layouts/LandingLayout.astro";
       return String(user?.user_type || user?.tipo || "").trim().toLowerCase();
     }
 
+    function canAccessCommerce(user) {
+      const role = getUserRole(user);
+      return role === "comerciante" || role === "staff" || role === "developer";
+    }
+
     function renderAccessDenied() {
       if (!listEl) return;
       listEl.innerHTML = '<p class="system-empty">Acceso restringido. Solo usuarios comerciantes pueden acceder a este sistema.</p>';
@@ -687,7 +692,7 @@ import LandingLayout from "../../layouts/LandingLayout.astro";
           return;
         }
 
-        if (getUserRole(me) !== "comerciante") {
+        if (!canAccessCommerce(me)) {
           renderAccessDenied();
           return;
         }

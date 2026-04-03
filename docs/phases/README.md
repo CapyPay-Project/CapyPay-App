@@ -47,7 +47,9 @@ Este directorio tenia multiples archivos por fase. Para simplificar navegacion, 
 
 ## Anexos Fase 10
 
-- Sin anexos todavia.
+- `archive/fase10/FASE10_ANEXO_BACKLOG_EJECUTABLE.md`
+- `archive/fase10/FASE10_ANEXO_QA_COEXISTENCIA.md`
+- `archive/fase10/FASE10_ANEXO_CIERRE.md`
 
 ## Trazabilidad de nombres (legacy -> actual)
 

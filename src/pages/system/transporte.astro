@@ -7,72 +7,581 @@ import LandingLayout from "../../layouts/LandingLayout.astro";
     <a href="/" class="system-back">Volver al landing</a>
 
     <section class="system-hero">
-      <p class="system-kicker">System</p>
-      <h1>Transporte</h1>
-      <p class="system-lead">
-        Panel administrativo para control de rutas, unidades y operacion de transportistas.
-      </p>
+      <div>
+        <p class="system-kicker">System</p>
+        <h1>Transporte</h1>
+        <p class="system-lead">
+          Panel operativo para rutas, paradas y unidades. El acceso queda abierto para transportista y cuentas internas.
+        </p>
+      </div>
+      <div class="hero-status" id="transport-status-pill" role="status" aria-live="polite">Cargando sistema...</div>
     </section>
 
-    <section class="system-grid">
-      <article class="system-card">
-        <h2>Rutas y estado</h2>
-        <ul>
-          <li>Alta y baja de rutas de transporte.</li>
-          <li>Gestion de estado de rutas en tiempo real.</li>
-          <li>Visibilidad de rutas activas e inactivas.</li>
-        </ul>
+    <section class="stats-grid" id="transport-stats">
+      <article class="stat-card"><span>Rutas</span><strong>0</strong></article>
+      <article class="stat-card"><span>Paradas</span><strong>0</strong></article>
+      <article class="stat-card"><span>Unidades</span><strong>0</strong></article>
+      <article class="stat-card"><span>Asignaciones</span><strong>0</strong></article>
+    </section>
+
+    <section class="panel-grid">
+      <article class="system-card form-card">
+        <h2>Rutas</h2>
+        <form id="route-form" class="stack-form">
+          <div class="grid-two">
+            <label>ID para editar<input type="text" name="id" placeholder="opcional" /></label>
+            <label>Estado
+              <select name="status">
+                <option value="activa">Activa</option>
+                <option value="saturada">Saturada</option>
+                <option value="inactiva">Inactiva</option>
+              </select>
+            </label>
+          </div>
+          <div class="grid-two">
+            <label>Código<input type="text" name="code" /></label>
+            <label>Nombre<input type="text" name="name" required /></label>
+          </div>
+          <div class="grid-two">
+            <label>Origen<input type="text" name="origin" /></label>
+            <label>Destino<input type="text" name="destination" /></label>
+          </div>
+          <label>Color<input type="text" name="color" placeholder="#d7fd49" /></label>
+          <label>Descripción<textarea name="description" rows="3"></textarea></label>
+          <button type="submit" class="action-button">Guardar ruta</button>
+        </form>
       </article>
 
-      <article class="system-card">
-        <h2>Unidades de bus</h2>
-        <ul>
-          <li>Registrar nuevas unidades al sistema.</li>
-          <li>Eliminar o suspender unidades existentes.</li>
-          <li>Asignar unidad por ruta y operador.</li>
-        </ul>
+      <article class="system-card form-card">
+        <h2>Paradas</h2>
+        <form id="stop-form" class="stack-form">
+          <div class="grid-two">
+            <label>ID para editar<input type="text" name="id" placeholder="opcional" /></label>
+            <label>Estado
+              <select name="status">
+                <option value="activa">Activa</option>
+                <option value="inactiva">Inactiva</option>
+              </select>
+            </label>
+          </div>
+          <div class="grid-two">
+            <label>Código<input type="text" name="code" /></label>
+            <label>Nombre<input type="text" name="name" required /></label>
+          </div>
+          <div class="grid-two">
+            <label>Campus<input type="text" name="campus" /></label>
+            <label>Latitud<input type="number" step="any" name="latitude" /></label>
+          </div>
+          <div class="grid-two">
+            <label>Longitud<input type="number" step="any" name="longitude" /></label>
+            <label>Descripción<input type="text" name="description" /></label>
+          </div>
+          <button type="submit" class="action-button">Guardar parada</button>
+        </form>
       </article>
 
-      <article class="system-card">
-        <h2>Panel transportista</h2>
-        <ul>
-          <li>Reportar estado de unidad: lleno, normal o vacio.</li>
-          <li>Controlar unidad activa o inactiva.</li>
-          <li>Preparado para futuras metricas operativas.</li>
+      <article class="system-card form-card">
+        <h2>Unidades</h2>
+        <form id="unit-form" class="stack-form">
+          <div class="grid-two">
+            <label>ID para editar<input type="text" name="id" placeholder="opcional" /></label>
+            <label>Estado
+              <select name="status">
+                <option value="normal">Normal</option>
+                <option value="vacio">Vacio</option>
+                <option value="lleno">Lleno</option>
+                <option value="mantenimiento">Mantenimiento</option>
+                <option value="inactiva">Inactiva</option>
+              </select>
+            </label>
+          </div>
+          <div class="grid-two">
+            <label>Código<input type="text" name="code" /></label>
+            <label>Placa<input type="text" name="plate" /></label>
+          </div>
+          <div class="grid-two">
+            <label>Conductor<input type="text" name="driver_name" /></label>
+            <label>Capacidad<input type="number" name="capacity" min="0" /></label>
+          </div>
+          <div class="grid-two">
+            <label>Marca<input type="text" name="brand" /></label>
+            <label>Modelo<input type="text" name="model" /></label>
+          </div>
+          <label>Observaciones<textarea name="notes" rows="3"></textarea></label>
+          <button type="submit" class="action-button">Guardar unidad</button>
+        </form>
+      </article>
+
+      <article class="system-card form-card">
+        <h2>Asignacion</h2>
+        <form id="assignment-form" class="stack-form">
+          <div class="grid-two">
+            <label>Unidad<input type="text" name="unit_id" required /></label>
+            <label>Ruta<select name="route_id" id="assignment-route-select" required></select></label>
+          </div>
+          <div class="grid-two">
+            <label>Estado
+              <select name="status">
+                <option value="normal">Normal</option>
+                <option value="vacio">Vacio</option>
+                <option value="lleno">Lleno</option>
+                <option value="mantenimiento">Mantenimiento</option>
+              </select>
+            </label>
+            <label>Parada actual<input type="text" name="current_stop_id" placeholder="opcional" /></label>
+          </div>
+          <label>Notas<textarea name="notes" rows="3"></textarea></label>
+          <button type="submit" class="action-button">Asignar unidad</button>
+        </form>
+      </article>
+
+      <article class="system-card form-card wide-card">
+        <h2>Vincular parada a ruta</h2>
+        <form id="route-stop-form" class="stack-form">
+          <div class="grid-two">
+            <label>Ruta<select name="route_id" id="route-stop-route-select" required></select></label>
+            <label>Parada<select name="stop_id" id="route-stop-stop-select" required></select></label>
+          </div>
+          <div class="grid-two">
+            <label>Orden<input type="number" name="order_index" min="0" value="0" /></label>
+            <label>Terminal
+              <select name="is_terminal">
+                <option value="false">No</option>
+                <option value="true">Si</option>
+              </select>
+            </label>
+          </div>
+          <button type="submit" class="action-button">Vincular parada</button>
+        </form>
+      </article>
+
+      <article class="system-card form-card wide-card">
+        <h2>Guía operativa rápida</h2>
+        <ul class="help-list">
+          <li>Usa estados rápidos en tarjetas para operación diaria sin editar formularios.</li>
+          <li>Marca rutas como saturadas para priorizar decisiones en TicketBus.</li>
+          <li>Revisa Auditoría operativa para confirmar cambios y reasignaciones recientes.</li>
         </ul>
       </article>
     </section>
 
-    <p class="system-note">Vista inicial en construccion. Proxima fase: gestion operativa completa por transportista.</p>
+    <section class="lists-grid">
+      <article class="system-card list-card">
+        <h2>Rutas registradas</h2>
+        <div id="routes-list" class="data-list"></div>
+      </article>
+      <article class="system-card list-card">
+        <h2>Paradas registradas</h2>
+        <div id="stops-list" class="data-list"></div>
+      </article>
+      <article class="system-card list-card">
+        <h2>Unidades registradas</h2>
+        <div id="units-list" class="data-list"></div>
+      </article>
+      <article class="system-card list-card wide-card">
+        <h2>Auditoria operativa</h2>
+        <div id="audit-list" class="data-list" role="log" aria-live="polite"></div>
+      </article>
+    </section>
+
+    <p class="system-note" id="system-note" role="status" aria-live="polite">Sprint 10.6 en cierre final.</p>
   </main>
 
   <script>
     // @ts-nocheck
-    import { authService } from "../../services/api";
+    import { authService, transporteSystemService } from "../../services/api";
+
+    const INTERNAL_ACCESS_ROLES = new Set(["staff", "developer"]);
+    const state = { dashboard: null, audit: [] };
+    let booted = false;
+
+    const statusPill = document.getElementById('transport-status-pill');
+    const systemNote = document.getElementById('system-note');
+    const transportStats = document.getElementById('transport-stats');
+    const routesList = document.getElementById('routes-list');
+    const stopsList = document.getElementById('stops-list');
+    const unitsList = document.getElementById('units-list');
+    const auditList = document.getElementById('audit-list');
+    const routeSelect = document.getElementById('route-stop-route-select');
+    const stopSelect = document.getElementById('route-stop-stop-select');
+    const assignmentRouteSelect = document.getElementById('assignment-route-select');
+
+    function normalizeRole(user) {
+      return String(user?.user_type || user?.tipo || '').trim().toLowerCase();
+    }
 
     function renderDenied() {
-      const container = document.querySelector(".system-grid");
-      if (container) {
-        container.innerHTML = '<article class="system-card"><h2>Acceso restringido</h2><ul><li>Solo usuarios transportistas pueden acceder a este sistema.</li></ul></article>';
-      }
+      const main = document.querySelector('.system-page');
+      if (!main) return;
+
+      main.innerHTML = '<a href="/" class="system-back">Volver al landing</a><section class="system-hero"><div><p class="system-kicker">System</p><h1>Transporte</h1><p class="system-lead">Acceso restringido para esta cuenta.</p></div></section><section class="system-grid"><article class="system-card"><h2>Acceso restringido</h2><ul><li>Solo usuarios transportistas o cuentas internas pueden entrar.</li></ul></article></section>';
     }
 
     function enforceRole() {
       const user = authService.getCurrentUser();
       if (!user) {
-        window.location.href = "/auth/login?redirect=/system/transporte&system=transporte";
-        return;
+        window.location.href = '/auth/login?redirect=/system/transporte&system=transporte';
+        return false;
       }
 
-      const role = String(user.user_type || user.tipo || "").trim().toLowerCase();
-      if (role !== "transportista") {
+      const role = normalizeRole(user);
+      if (role !== 'transportista' && !INTERNAL_ACCESS_ROLES.has(role)) {
         renderDenied();
+        return false;
+      }
+
+      return true;
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
+    }
+
+    function setStatus(message) {
+      if (statusPill) statusPill.textContent = message;
+    }
+
+    function renderStats(stats) {
+      if (!transportStats) return;
+      const values = [stats.routes, stats.stops, stats.units, stats.assignments];
+      transportStats.querySelectorAll('.stat-card strong').forEach((item, index) => {
+        item.textContent = String(values[index] ?? 0);
+      });
+    }
+
+    function renderSelectOptions(select, options, placeholder) {
+      if (!select) return;
+      const currentValue = select.value;
+      select.innerHTML = [`<option value="">${placeholder}</option>`]
+        .concat(options.map((option) => `<option value="${escapeHtml(option.value)}">${escapeHtml(option.label)}</option>`))
+        .join('');
+      if (currentValue) select.value = currentValue;
+    }
+
+    function renderDashboard() {
+      const dashboard = state.dashboard || { routes: [], stops: [], units: [], stats: { routes: 0, stops: 0, units: 0, assignments: 0 } };
+      renderStats(dashboard.stats || {});
+
+      const routeOptions = (dashboard.routes || []).map((route) => ({ value: route.id, label: `${route.name} (${route.status || 'activa'})` }));
+      const stopOptions = (dashboard.stops || []).map((stop) => ({ value: stop.id, label: `${stop.name} (${stop.status || 'activa'})` }));
+      renderSelectOptions(routeSelect, routeOptions, 'Selecciona una ruta');
+      renderSelectOptions(assignmentRouteSelect, routeOptions, 'Selecciona una ruta');
+      renderSelectOptions(stopSelect, stopOptions, 'Selecciona una parada');
+
+      if (routesList) {
+        routesList.innerHTML = (dashboard.routes || []).map((route) => {
+          const stops = (route.stops || []).map((link) => {
+            const stopName = link.stop?.name || link.stop_id || 'Parada';
+            return `<span class="chip">${escapeHtml(String(link.order_index ?? 0))}. ${escapeHtml(stopName)}</span>`;
+          }).join('');
+
+          const units = (dashboard.units || []).filter((unit) => String(unit.current_route_id || '') === String(route.id));
+
+          return `
+            <article class="data-card">
+              <header>
+                <strong>${escapeHtml(route.name)}</strong>
+                <span class="chip chip-status">${escapeHtml(route.status || 'activa')}</span>
+              </header>
+              <p>${escapeHtml(route.origin || 'Sin origen')} - ${escapeHtml(route.destination || 'Sin destino')}</p>
+              <p class="muted">Código: ${escapeHtml(route.code || 'N/A')} | Paradas: ${escapeHtml(route.stops_count ?? 0)} | Unidades: ${escapeHtml(route.units_count ?? 0)}</p>
+              <div class="chip-row">${stops || '<span class="chip empty">Sin paradas</span>'}</div>
+              <div class="chip-row">${units.length ? units.map((unit) => `<span class="chip">${escapeHtml(unit.code || unit.plate || unit.id)}</span>`).join('') : '<span class="chip empty">Sin unidades</span>'}</div>
+              <div class="actions-row">
+                <button type="button" class="mini-action" onclick="window.quickRouteStatus('${escapeHtml(route.id)}', 'activa')">Activa</button>
+                <button type="button" class="mini-action" onclick="window.quickRouteStatus('${escapeHtml(route.id)}', 'saturada')">Saturada</button>
+                <button type="button" class="mini-action danger" onclick="window.quickRouteStatus('${escapeHtml(route.id)}', 'inactiva')">Inactiva</button>
+              </div>
+              <span class="small-id">ID: ${escapeHtml(route.id)}</span>
+            </article>
+          `;
+        }).join('') || '<p class="empty-state">No hay rutas registradas.</p>';
+      }
+
+      if (stopsList) {
+        stopsList.innerHTML = (dashboard.stops || []).map((stop) => `
+          <article class="data-card compact-card">
+            <header>
+              <strong>${escapeHtml(stop.name)}</strong>
+              <span class="chip chip-status">${escapeHtml(stop.status || 'activa')}</span>
+            </header>
+            <p>${escapeHtml(stop.campus || 'Sin campus')}</p>
+            <p class="muted">Código: ${escapeHtml(stop.code || 'N/A')} | Lat: ${escapeHtml(stop.latitude ?? '--')} | Lon: ${escapeHtml(stop.longitude ?? '--')}</p>
+            <div class="actions-row">
+              <button type="button" class="mini-action" onclick="window.quickStopStatus('${escapeHtml(stop.id)}', 'activa')">Activa</button>
+              <button type="button" class="mini-action danger" onclick="window.quickStopStatus('${escapeHtml(stop.id)}', 'inactiva')">Baja logica</button>
+            </div>
+            <span class="small-id">ID: ${escapeHtml(stop.id)}</span>
+          </article>
+        `).join('') || '<p class="empty-state">No hay paradas registradas.</p>';
+      }
+
+      if (unitsList) {
+        unitsList.innerHTML = (dashboard.units || []).map((unit) => {
+          const assignedRoute = (dashboard.routes || []).find((route) => String(route.id) === String(unit.current_route_id));
+          return `
+            <article class="data-card compact-card">
+              <header>
+                <strong>${escapeHtml(unit.code || unit.plate || unit.id)}</strong>
+                <span class="chip chip-status">${escapeHtml(unit.status || 'normal')}</span>
+              </header>
+              <p>${escapeHtml(unit.driver_name || 'Sin conductor')} | Capacidad: ${escapeHtml(unit.capacity ?? 0)}</p>
+              <p class="muted">Ruta: ${escapeHtml(assignedRoute?.name || 'Sin ruta')} | Ocupacion: ${escapeHtml(unit.occupancy ?? 0)}</p>
+              <div class="actions-row">
+                <button type="button" class="mini-action" onclick="window.quickUnitStatus('${escapeHtml(unit.id)}', 'vacio', 20)">Vacio</button>
+                <button type="button" class="mini-action" onclick="window.quickUnitStatus('${escapeHtml(unit.id)}', 'normal', 55)">Normal</button>
+                <button type="button" class="mini-action" onclick="window.quickUnitStatus('${escapeHtml(unit.id)}', 'lleno', 90)">Lleno</button>
+                <button type="button" class="mini-action" onclick="window.quickUnitStatus('${escapeHtml(unit.id)}', 'mantenimiento')">Mantenimiento</button>
+              </div>
+              <span class="small-id">ID: ${escapeHtml(unit.id)}</span>
+            </article>
+          `;
+        }).join('') || '<p class="empty-state">No hay unidades registradas.</p>';
       }
     }
 
-    document.addEventListener("astro:page-load", enforceRole);
-    if (document.readyState === "complete" || document.readyState === "interactive") {
-      enforceRole();
+    function renderAudit() {
+      if (!auditList) return;
+      const rows = Array.isArray(state.audit) ? state.audit : [];
+
+      auditList.innerHTML = rows.length
+        ? rows.map((row) => {
+            const type = escapeHtml(String(row.type || 'evento').toUpperCase());
+            const action = escapeHtml(String(row.action || 'actualizacion').replaceAll('_', ' '));
+            const at = new Date(row.at || row.created_at || Date.now());
+            const atLabel = Number.isNaN(at.getTime()) ? 'Sin fecha' : at.toLocaleString('es-ES');
+            const detail = row.detail || {};
+            const name = escapeHtml(String(detail.name || detail.code || detail.plate || detail.id || 'sin detalle'));
+
+            return `
+              <article class="data-card compact-card">
+                <header>
+                  <strong>${type}</strong>
+                  <span class="chip chip-status">${action}</span>
+                </header>
+                <p>${name}</p>
+                <p class="muted">${escapeHtml(atLabel)}</p>
+              </article>
+            `;
+          }).join('')
+        : '<p class="empty-state">Sin eventos recientes.</p>';
+    }
+
+    async function loadDashboard() {
+      setStatus('Cargando datos...');
+      try {
+        state.dashboard = await transporteSystemService.getDashboard();
+        renderDashboard();
+        setStatus('Sistema listo');
+        if (systemNote) systemNote.textContent = 'Sprint 10.6 activo: cierre visual, textos y validacion final.';
+      } catch (error) {
+        setStatus('Error de carga');
+        if (systemNote) systemNote.textContent = error?.message || 'No se pudo cargar el panel de transporte.';
+      }
+    }
+
+    async function loadAudit() {
+      try {
+        const payload = await transporteSystemService.getOperationalAudit();
+        state.audit = Array.isArray(payload?.records) ? payload.records : [];
+        renderAudit();
+      } catch (_error) {
+        state.audit = [];
+        renderAudit();
+      }
+    }
+
+    function readFormData(form) {
+      return Object.fromEntries(new FormData(form).entries());
+    }
+
+    async function submitRouteForm(event) {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const data = readFormData(form);
+      const payload = {
+        name: data.name,
+        code: data.code,
+        origin: data.origin,
+        destination: data.destination,
+        description: data.description,
+        color: data.color,
+        status: data.status
+      };
+
+      try {
+        const routeId = String(data.id || '').trim();
+        if (routeId) {
+          await transporteSystemService.updateRoute(routeId, payload);
+        } else {
+          await transporteSystemService.createRoute(payload);
+        }
+        form.reset();
+        await loadDashboard();
+        await loadAudit();
+      } catch (error) {
+        alert(error?.message || 'No se pudo guardar la ruta');
+      }
+    }
+
+    async function submitStopForm(event) {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const data = readFormData(form);
+      const payload = {
+        name: data.name,
+        code: data.code,
+        campus: data.campus,
+        description: data.description,
+        latitude: data.latitude,
+        longitude: data.longitude,
+        status: data.status
+      };
+
+      try {
+        const stopId = String(data.id || '').trim();
+        if (stopId) {
+          await transporteSystemService.updateStop(stopId, payload);
+        } else {
+          await transporteSystemService.createStop(payload);
+        }
+        form.reset();
+        await loadDashboard();
+        await loadAudit();
+      } catch (error) {
+        alert(error?.message || 'No se pudo guardar la parada');
+      }
+    }
+
+    async function submitUnitForm(event) {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const data = readFormData(form);
+      const payload = {
+        code: data.code,
+        plate: data.plate,
+        driver_name: data.driver_name,
+        capacity: data.capacity,
+        brand: data.brand,
+        model: data.model,
+        notes: data.notes,
+        status: data.status
+      };
+
+      try {
+        const unitId = String(data.id || '').trim();
+        if (unitId) {
+          await transporteSystemService.updateUnit(unitId, payload);
+        } else {
+          await transporteSystemService.createUnit(payload);
+        }
+        form.reset();
+        await loadDashboard();
+        await loadAudit();
+      } catch (error) {
+        alert(error?.message || 'No se pudo guardar la unidad');
+      }
+    }
+
+    async function submitAssignmentForm(event) {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const data = readFormData(form);
+
+      try {
+        await transporteSystemService.assignUnitToRoute(data.unit_id, {
+          route_id: data.route_id,
+          notes: data.notes,
+          status: data.status,
+          current_stop_id: data.current_stop_id
+        });
+        form.reset();
+        await loadDashboard();
+        await loadAudit();
+      } catch (error) {
+        alert(error?.message || 'No se pudo asignar la unidad');
+      }
+    }
+
+    async function submitRouteStopForm(event) {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const data = readFormData(form);
+
+      try {
+        await transporteSystemService.addStopToRoute(data.route_id, {
+          stop_id: data.stop_id,
+          order_index: data.order_index,
+          is_terminal: data.is_terminal
+        });
+        form.reset();
+        await loadDashboard();
+        await loadAudit();
+      } catch (error) {
+        alert(error?.message || 'No se pudo vincular la parada');
+      }
+    }
+
+    window.quickRouteStatus = async (routeId, status) => {
+      try {
+        const active = status !== 'inactiva';
+        await transporteSystemService.updateRouteStatus(routeId, status, active);
+        await loadDashboard();
+        await loadAudit();
+      } catch (error) {
+        alert(error?.message || 'No se pudo actualizar estado de ruta');
+      }
+    };
+
+    window.quickStopStatus = async (stopId, status) => {
+      try {
+        const active = status !== 'inactiva';
+        await transporteSystemService.updateStopStatus(stopId, status, active);
+        await loadDashboard();
+        await loadAudit();
+      } catch (error) {
+        alert(error?.message || 'No se pudo actualizar estado de parada');
+      }
+    };
+
+    window.quickUnitStatus = async (unitId, status, occupancy = undefined) => {
+      try {
+        const active = status !== 'inactiva';
+        await transporteSystemService.updateUnitStatus(unitId, status, active, occupancy);
+        await loadDashboard();
+        await loadAudit();
+      } catch (error) {
+        alert(error?.message || 'No se pudo actualizar estado de unidad');
+      }
+    };
+
+    async function boot() {
+      if (booted) return;
+      booted = true;
+
+      if (!enforceRole()) return;
+
+      document.getElementById('route-form')?.addEventListener('submit', submitRouteForm);
+      document.getElementById('stop-form')?.addEventListener('submit', submitStopForm);
+      document.getElementById('unit-form')?.addEventListener('submit', submitUnitForm);
+      document.getElementById('assignment-form')?.addEventListener('submit', submitAssignmentForm);
+      document.getElementById('route-stop-form')?.addEventListener('submit', submitRouteStopForm);
+
+      await loadDashboard();
+      await loadAudit();
+    }
+
+    document.addEventListener('astro:page-load', () => {
+      void boot();
+    });
+
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+      void boot();
     }
   </script>
 </LandingLayout>
@@ -98,18 +607,29 @@ import LandingLayout from "../../layouts/LandingLayout.astro";
     box-shadow: 6px 6px 0 #292929;
   }
 
-  .system-back:active {
-    transform: translate(4px, 4px);
-    box-shadow: 2px 2px 0 #292929;
-  }
-
   .system-hero {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    align-items: flex-start;
     margin-top: 26px;
     border: 6px solid #292929;
     border-radius: 20px;
     padding: 26px;
     background: #e4c1f9;
     box-shadow: 12px 12px 0 #292929;
+  }
+
+  .hero-status {
+    min-width: 180px;
+    text-align: center;
+    font-family: "Baloo Bhaijaan 2", sans-serif;
+    font-weight: 800;
+    border: 4px solid #292929;
+    border-radius: 16px;
+    padding: 12px 16px;
+    background: #d7fd49;
+    box-shadow: 5px 5px 0 #292929;
   }
 
   .system-kicker {
@@ -136,13 +656,28 @@ import LandingLayout from "../../layouts/LandingLayout.astro";
     max-width: 900px;
   }
 
-  .system-grid {
-    margin-top: 28px;
+  .stats-grid,
+  .panel-grid,
+  .lists-grid {
+    margin-top: 18px;
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 16px;
   }
 
+  .panel-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .lists-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .wide-card {
+    grid-column: 1 / -1;
+  }
+
+  .stat-card,
   .system-card {
     border: 5px solid #292929;
     border-radius: 18px;
@@ -151,32 +686,211 @@ import LandingLayout from "../../layouts/LandingLayout.astro";
     box-shadow: 10px 10px 0 #292929;
   }
 
-  .system-card h2 {
-    margin: 0 0 8px;
-    font-family: "Staatliches", sans-serif;
-    letter-spacing: 1px;
-    font-size: 34px;
-    color: #8362e8;
+  .stat-card span {
+    display: block;
+    font-family: "Baloo Bhaijaan 2", sans-serif;
+    font-weight: 800;
+    text-transform: uppercase;
   }
 
-  .system-card ul {
+  .stat-card strong {
+    display: block;
+    margin-top: 8px;
+    font-family: "Anton", sans-serif;
+    font-size: 42px;
+  }
+
+  .form-card h2,
+  .list-card h2 {
+    margin-bottom: 14px;
+  }
+
+  .stack-form {
+    display: grid;
+    gap: 12px;
+  }
+
+  .grid-two {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  label {
+    display: grid;
+    gap: 6px;
+    font-family: "Baloo Bhaijaan 2", sans-serif;
+    font-size: 15px;
+    font-weight: 800;
+  }
+
+  input,
+  select,
+  textarea {
+    width: 100%;
+    border: 3px solid #292929;
+    border-radius: 12px;
+    padding: 10px 12px;
+    font-family: "Baloo Bhaijaan 2", sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    background: #fefefe;
+  }
+
+  textarea {
+    resize: vertical;
+  }
+
+  .action-button {
+    border: 4px solid #292929;
+    border-radius: 14px;
+    padding: 12px 16px;
+    background: #d7fd49;
+    font-family: "Baloo Bhaijaan 2", sans-serif;
+    font-size: 16px;
+    font-weight: 900;
+    box-shadow: 5px 5px 0 #292929;
+  }
+
+  .system-back:active,
+  .action-button:active {
+    transform: translate(4px, 4px);
+    box-shadow: 2px 2px 0 #292929;
+  }
+
+  .system-back:focus-visible,
+  .action-button:focus-visible,
+  .mini-action:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: 3px solid #1f1f1f;
+    outline-offset: 2px;
+  }
+
+  .data-list {
+    display: grid;
+    gap: 12px;
+  }
+
+  .data-card {
+    border: 3px solid #292929;
+    border-radius: 16px;
+    padding: 14px;
+    background: #fffef8;
+  }
+
+  .data-card header {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .data-card strong {
+    font-family: "Baloo Bhaijaan 2", sans-serif;
+    font-size: 18px;
+    font-weight: 900;
+  }
+
+  .chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    border: 2px solid #292929;
+    border-radius: 999px;
+    padding: 4px 10px;
+    background: #e4c1f9;
+    font-family: "Baloo Bhaijaan 2", sans-serif;
+    font-size: 13px;
+    font-weight: 800;
+  }
+
+  .chip-status {
+    background: #d7fd49;
+  }
+
+  .chip.empty {
+    background: #f3f3f3;
+  }
+
+  .actions-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .mini-action {
+    border: 2px solid #292929;
+    border-radius: 10px;
+    padding: 4px 10px;
+    background: #d7fd49;
+    font-family: "Baloo Bhaijaan 2", sans-serif;
+    font-size: 12px;
+    font-weight: 900;
+    min-height: 34px;
+  }
+
+  .mini-action.danger {
+    background: #fecaca;
+  }
+
+  .help-list {
     margin: 0;
     padding-left: 20px;
     font-family: "Baloo Bhaijaan 2", sans-serif;
-    font-size: 20px;
-    font-weight: 600;
-    line-height: 1.25;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.35;
+  }
+
+  .muted,
+  .small-id,
+  .empty-state,
+  .system-note {
+    font-family: "Baloo Bhaijaan 2", sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: #4d4d4d;
   }
 
   .system-note {
     margin: 22px 0 0;
-    font-family: "Baloo Bhaijaan 2", sans-serif;
     font-size: 18px;
-    font-weight: 700;
+    color: #292929;
+  }
+
+  @media (max-width: 1100px) {
+    .stats-grid,
+    .panel-grid,
+    .lists-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .system-hero {
+      flex-direction: column;
+    }
   }
 
   @media (max-width: 960px) {
-    .system-grid {
+    .grid-two {
+      grid-template-columns: 1fr;
+    }
+
+    .mini-action {
+      width: 100%;
+    }
+
+    .actions-row {
+      display: grid;
       grid-template-columns: 1fr;
     }
   }

@@ -996,3 +996,78 @@ export const comercioSystemService = {
   getWithdrawals: (cantinaId) =>
     fetchAPI(`/system/comercio/cantinas/${cantinaId}/withdrawals`)
 };
+
+export const transporteSystemService = {
+  getPublicOverview: () => fetchAPI('/system/transporte/public/overview'),
+
+  getDashboard: () => fetchAPI('/system/transporte/dashboard'),
+
+  getOperationalAudit: () => fetchAPI('/system/transporte/audit'),
+
+  getRoutes: () => fetchAPI('/system/transporte/routes'),
+
+  createRoute: (payload) => fetchAPI('/system/transporte/routes', {
+    method: 'POST',
+    body: JSON.stringify(payload)
+  }),
+
+  updateRoute: (routeId, payload) => fetchAPI(`/system/transporte/routes/${routeId}`, {
+    method: 'PATCH',
+    body: JSON.stringify(payload)
+  }),
+
+  updateRouteStatus: (routeId, status, active) => fetchAPI(`/system/transporte/routes/${routeId}/status`, {
+    method: 'PATCH',
+    body: JSON.stringify({ status, active })
+  }),
+
+  addStopToRoute: (routeId, payload) => fetchAPI(`/system/transporte/routes/${routeId}/stops`, {
+    method: 'POST',
+    body: JSON.stringify(payload)
+  }),
+
+  removeStopFromRoute: (routeId, stopId) => fetchAPI(`/system/transporte/routes/${routeId}/stops/${stopId}`, {
+    method: 'DELETE'
+  }),
+
+  getStops: () => fetchAPI('/system/transporte/stops'),
+
+  createStop: (payload) => fetchAPI('/system/transporte/stops', {
+    method: 'POST',
+    body: JSON.stringify(payload)
+  }),
+
+  updateStop: (stopId, payload) => fetchAPI(`/system/transporte/stops/${stopId}`, {
+    method: 'PATCH',
+    body: JSON.stringify(payload)
+  }),
+
+  updateStopStatus: (stopId, status, active) => fetchAPI(`/system/transporte/stops/${stopId}/status`, {
+    method: 'PATCH',
+    body: JSON.stringify({ status, active })
+  }),
+
+  getUnits: () => fetchAPI('/system/transporte/units'),
+
+  createUnit: (payload) => fetchAPI('/system/transporte/units', {
+    method: 'POST',
+    body: JSON.stringify(payload)
+  }),
+
+  updateUnit: (unitId, payload) => fetchAPI(`/system/transporte/units/${unitId}`, {
+    method: 'PATCH',
+    body: JSON.stringify(payload)
+  }),
+
+  updateUnitStatus: (unitId, status, active, occupancy) => fetchAPI(`/system/transporte/units/${unitId}/status`, {
+    method: 'PATCH',
+    body: JSON.stringify({ status, active, occupancy })
+  }),
+
+  assignUnitToRoute: (unitId, payload) => fetchAPI(`/system/transporte/units/${unitId}/assignments`, {
+    method: 'POST',
+    body: JSON.stringify(payload)
+  }),
+
+  getAssignments: () => fetchAPI('/system/transporte/assignments')
+};
