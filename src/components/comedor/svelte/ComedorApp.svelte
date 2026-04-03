@@ -9,7 +9,7 @@
   import LiveQueue from "./LiveQueue.svelte";
   import TimerWidget from "./TimerWidget.svelte";
   import CapyTip from "./CapyTip.svelte";
-  import { isCartOpen } from "../../../store/cartStore.js";
+  import { isCartOpen, cartItems } from "../../../store/cartStore.js";
   import CarritoSidebar from "./CarritoSidebar.svelte";
 
   const categories = [
@@ -104,6 +104,15 @@
     activeCategory === "all"
       ? menuItems
       : menuItems.filter((item) => item?.category === activeCategory);
+  $: cartItemsArray = Object.values($cartItems || {});
+  $: cartCount = cartItemsArray.reduce(
+    (acc, item) => acc + Number(item?.quantity || 0),
+    0,
+  );
+  $: cartTotal = cartItemsArray.reduce(
+    (acc, item) => acc + Number(item?.price || 0) * Number(item?.quantity || 0),
+    0,
+  );
 
   function normalizeOrderStatus(rawStatus) {
     return String(rawStatus || "").toLowerCase();
@@ -452,5 +461,33 @@
 
   {/if}
 </div>
+
+{#if cartCount > 0 && !$isCartOpen}
+  <button
+    type="button"
+    on:click={toggleCart}
+    class="fixed z-30 bottom-5 left-4 right-4 md:left-auto md:right-6 md:bottom-6 md:w-auto bg-brand-lime border-4 border-black px-4 py-3 shadow-[5px_5px_0px_0px_rgba(0,0,0,1)] hover:bg-[#c4ec35] active:translate-y-0.5 transition-all"
+    aria-label="Abrir carrito"
+  >
+    <div class="flex items-center justify-between gap-4 md:min-w-[17rem]">
+      <div class="flex items-center gap-2">
+        <span
+          class="material-symbols-outlined shrink-0 text-black font-black"
+          style="font-variation-settings: 'FILL' 1, 'wght' 700;"
+        >
+          shopping_cart
+        </span>
+        <span class="font-black uppercase text-sm tracking-tight">Ver carrito</span>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <span class="bg-black text-white border-2 border-black px-2 py-0.5 font-black text-xs uppercase">
+          {cartCount} item{cartCount === 1 ? "" : "s"}
+        </span>
+        <span class="font-black text-base">${cartTotal.toFixed(2)}</span>
+      </div>
+    </div>
+  </button>
+{/if}
 
 <CarritoSidebar on:checkout_success={handleCheckoutSuccess} />
