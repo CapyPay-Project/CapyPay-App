@@ -314,7 +314,7 @@
       </p>
     </div>
 
-    <!-- FIX: Visible on ALL screens now, not just mobile -->
+    <!-- Header actions -->
     <div class="flex items-center gap-2 sm:gap-3">
       <a
         href="/services/orders"
@@ -327,22 +327,6 @@
           >Ordenes</span
         >
       </a>
-
-      <button
-        on:click={toggleCart}
-        class="bg-brand-lime border-4 border-black p-3 px-6 hover:bg-[#c4ec35] active:translate-y-1 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex items-center justify-center gap-2"
-      >
-        <span
-          class="material-symbols-outlined shrink-0 text-black font-black"
-          style="font-variation-settings: 'FILL' 1, 'wght' 700;"
-        >
-          shopping_cart
-        </span>
-        <span
-          class="font-black text-xl uppercase tracking-tighter hidden sm:inline"
-          >Carrito</span
-        >
-      </button>
     </div>
   </div>
 
@@ -441,10 +425,17 @@
       />
     </div>
 
-    <MainPushDeck items={promotedItems} on:pickCategory={handleMainPushCategory} />
+    <MainPushDeck
+      items={promotedItems}
+      on:pickCategory={handleMainPushCategory}
+    />
 
     {#if menuData?.popularItems?.length > 0}
-      <ProductCarousel title="Lo Más Popular" items={menuData.popularItems} variant="popular" />
+      <ProductCarousel
+        title="Lo Más Popular"
+        items={menuData.popularItems}
+        variant="popular"
+      />
     {/if}
 
     {#if menuData?.platoDia}
@@ -458,7 +449,6 @@
     />
 
     <MenuGrid title="Todo el Menú" items={filteredMenuItems} />
-
   {/if}
 </div>
 
@@ -466,27 +456,30 @@
   <button
     type="button"
     on:click={toggleCart}
-    class="fixed z-30 bottom-5 left-4 right-4 md:left-auto md:right-6 md:bottom-6 md:w-auto bg-brand-lime border-4 border-black px-4 py-3 shadow-[5px_5px_0px_0px_rgba(0,0,0,1)] hover:bg-[#c4ec35] active:translate-y-0.5 transition-all"
+    class="fixed z-30 bottom-4 right-4 md:bottom-6 md:right-6 bg-brand-lime border-4 border-black px-3 py-2 rounded-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:bg-[#c4ec35] active:translate-y-0.5 transition-all"
     aria-label="Abrir carrito"
+    title="Abrir carrito"
   >
-    <div class="flex items-center justify-between gap-4 md:min-w-68">
-      <div class="flex items-center gap-2">
-        <span
-          class="material-symbols-outlined shrink-0 text-black font-black"
-          style="font-variation-settings: 'FILL' 1, 'wght' 700;"
-        >
-          shopping_cart
-        </span>
-        <span class="font-black uppercase text-sm tracking-tight">Ver carrito</span>
-      </div>
-
-      <div class="flex items-center gap-2">
-        <span class="bg-black text-white border-2 border-black px-2 py-0.5 font-black text-xs uppercase">
-          {cartCount} item{cartCount === 1 ? "" : "s"}
-        </span>
-        <span class="font-black text-base">${cartTotal.toFixed(2)}</span>
-      </div>
+    <div class="flex items-center gap-2">
+      <span
+        class="material-symbols-outlined shrink-0 text-black font-black"
+        style="font-variation-settings: 'FILL' 1, 'wght' 700;"
+      >
+        shopping_cart
+      </span>
+      <span class="font-black text-sm tracking-tight">${cartTotal.toFixed(2)}</span>
     </div>
+
+    <span
+      class="absolute -top-2 -right-2 min-w-6 h-6 px-1 bg-black text-white border-2 border-black rounded-full font-black text-[10px] leading-none flex items-center justify-center"
+      aria-hidden="true"
+    >
+      {cartCount}
+    </span>
+
+    <span class="sr-only">
+      Abrir carrito con {cartCount} item{cartCount === 1 ? "" : "s"}, total ${cartTotal.toFixed(2)}
+    </span>
   </button>
 {/if}
 
