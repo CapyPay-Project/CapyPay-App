@@ -13,6 +13,7 @@
 
   $: safeItems = Array.isArray(items) ? items.slice(0, 3) : [];
   $: current = safeItems[index] || null;
+  $: socialProofCount = Number(current?.sales_count || 0);
 
   function next() {
     if (safeItems.length === 0) return;
@@ -82,7 +83,16 @@
             <Sparkles size={12} strokeWidth={2.6} />
             Recomendado por la casa
           </span>
+          <span class="border-2 border-black px-2 py-1 bg-[#fff4d6] font-black text-xs uppercase">
+            {socialProofCount > 0 ? `${socialProofCount}+ pedidos` : "alta demanda"}
+          </span>
         </div>
+
+        <p class="text-xs font-bold uppercase text-black/65">
+          {socialProofCount > 0
+            ? "Este push se está moviendo rápido hoy"
+            : "Rotación fuerte en horas pico"}
+        </p>
 
         <div class="mt-auto flex items-center justify-between gap-3 pt-3">
           <p class="font-black text-3xl tracking-tight">${Number(current.price || 0).toFixed(2)}</p>
