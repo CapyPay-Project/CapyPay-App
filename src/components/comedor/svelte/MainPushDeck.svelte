@@ -37,7 +37,7 @@
   function pushToCart() {
     if (!current) return;
     addItemToCart(current);
-    showToast("Main push activado", `${current.name} fue añadido al carrito.`, "success");
+    showToast("Promocion activada", `${current.name} fue añadido al carrito.`, "success");
   }
 
   onMount(() => {
@@ -50,11 +50,11 @@
 </script>
 
 {#if current}
-  <section class="border-4 border-black bg-white shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] overflow-hidden">
+  <section class="border-4 border-black bg-white shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] overflow-hidden h-[540px] md:h-[390px]">
     <div class="px-4 py-2 border-b-4 border-black bg-[#fff4d6] flex items-center justify-between gap-3">
       <div class="flex items-center gap-2">
         <Flame size={17} strokeWidth={2.8} />
-        <p class="font-black uppercase tracking-tight">Main Push Promocionado</p>
+        <p class="font-black uppercase tracking-tight">Promocion destacada</p>
       </div>
       <div class="flex items-center gap-2 text-xs font-black uppercase">
         <span class="border-2 border-black px-2 py-0.5 bg-[#d7fd48]">Top elegido</span>
@@ -65,11 +65,11 @@
       </div>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2">
-      <div class="p-5 md:p-6 border-b-4 md:border-b-0 md:border-r-4 border-black flex flex-col gap-3">
-        <p class="text-xs font-black uppercase tracking-[0.2em] text-black/50">Push {index + 1} de {safeItems.length}</p>
+    <div class="grid grid-cols-1 md:grid-cols-2 h-[430px] md:h-[278px]">
+      <div class="p-5 md:p-6 border-b-4 md:border-b-0 md:border-r-4 border-black flex flex-col gap-3 overflow-hidden">
+        <p class="text-xs font-black uppercase tracking-[0.2em] text-black/50">Destacado {index + 1} de {safeItems.length}</p>
         <h3 class="font-black text-3xl uppercase tracking-tighter leading-none">{current.name}</h3>
-        <p class="font-bold uppercase text-sm leading-tight text-black/75">{current.description}</p>
+        <p class="font-bold uppercase text-sm leading-tight text-black/75 line-clamp-2 min-h-[2.8rem]">{current.description}</p>
 
         <div class="flex items-center gap-2 flex-wrap mt-1">
           <button
@@ -90,7 +90,7 @@
 
         <p class="text-xs font-bold uppercase text-black/65">
           {socialProofCount > 0
-            ? "Este push se está moviendo rápido hoy"
+            ? "Esta promocion se está moviendo rápido hoy"
             : "Rotación fuerte en horas pico"}
         </p>
 
@@ -101,12 +101,12 @@
             on:click={pushToCart}
             class="border-4 border-black bg-brand-lime px-4 py-2 font-black uppercase hover:bg-[#c4ec35] active:translate-y-0.5 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]"
           >
-            Agregar push
+            Agregar promo
           </button>
         </div>
       </div>
 
-      <div class="h-64 md:h-auto bg-[#ede7ff] border-black relative overflow-hidden">
+      <div class="h-full bg-[#ede7ff] border-black relative overflow-hidden">
         <img
           src={current.image_url}
           alt={current.name}

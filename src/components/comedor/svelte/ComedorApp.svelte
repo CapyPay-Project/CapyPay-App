@@ -5,6 +5,7 @@
   import CategoriaTabs from "./CategoriaTabs.svelte";
   import ProductCarousel from "./ProductCarousel.svelte";
   import MainPushDeck from "./MainPushDeck.svelte";
+  import MenuGrid from "./MenuGrid.svelte";
   import LiveQueue from "./LiveQueue.svelte";
   import TimerWidget from "./TimerWidget.svelte";
   import CapyTip from "./CapyTip.svelte";
@@ -22,7 +23,6 @@
   let activeCategory = "all";
   let menuData = null;
   let loading = true;
-  let isRefreshingMenu = false;
   let error = null;
 
   // State Management
@@ -99,6 +99,12 @@
     return unique;
   })();
 
+  $: menuItems = Array.isArray(menuData?.items) ? menuData.items : [];
+  $: filteredMenuItems =
+    activeCategory === "all"
+      ? menuItems
+      : menuItems.filter((item) => item?.category === activeCategory);
+
   function normalizeOrderStatus(rawStatus) {
     return String(rawStatus || "").toLowerCase();
   }
@@ -140,25 +146,17 @@
     return "FLUIDO";
   }
 
-  async function loadMenu(category) {
-    const hasExistingMenu = Boolean(menuData);
-
-    if (hasExistingMenu) {
-      isRefreshingMenu = true;
-    } else {
-      loading = true;
-    }
+  async function loadMenu() {
+    loading = true;
 
     error = null;
     try {
-      const qs = category && category !== "all" ? `?category=${category}` : "";
-      const response = await fetchAPI(`/comedor/menu${qs}`);
+      const response = await fetchAPI(`/comedor/menu`);
       menuData = response;
     } catch (err) {
       error = err.message || "Error al cargar menú";
     } finally {
       loading = false;
-      isRefreshingMenu = false;
     }
   }
 
@@ -252,7 +250,7 @@
           "1");
 
     queueMicrotask(() => {
-      loadMenu(activeCategory);
+      loadMenu();
       loadRealtimeWidgets();
 
       realtimeInterval = setInterval(() => {
@@ -267,14 +265,12 @@
 
   function handleCategoryChange(e) {
     activeCategory = e.detail.category;
-    loadMenu(activeCategory);
   }
 
   function handleMainPushCategory(e) {
     const category = e?.detail?.category;
     if (!category || category === activeCategory) return;
     activeCategory = category;
-    loadMenu(category);
   }
 
   function toggleCart() {
@@ -442,19 +438,17 @@
       <PlatoDelDiaHero item={menuData.platoDia} />
     {/if}
 
+    {#if menuData?.popularItems?.length > 0}
+      <ProductCarousel title="Lo Más Popular" items={menuData.popularItems} variant="popular" />
+    {/if}
+
     <CategoriaTabs
       {categories}
       {activeCategory}
       on:change={handleCategoryChange}
     />
 
-    {#if menuData?.popularItems?.length > 0}
-      <ProductCarousel title="Lo Más Popular" items={menuData.popularItems} variant="popular" />
-    {/if}
-
-    {#if menuData?.items?.length > 0}
-      <ProductCarousel title="Todo el Menú" items={menuData.items} variant="menu" />
-    {/if}
+    <MenuGrid title="Todo el Menú" items={filteredMenuItems} />
 
   {/if}
 </div>
