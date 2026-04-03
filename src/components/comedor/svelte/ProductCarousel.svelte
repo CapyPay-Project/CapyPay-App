@@ -6,24 +6,10 @@
 
   export let items = [];
   export let title = "Catálogo";
-  export let variant = "menu";
 
   let emblaApi;
   const options = { dragFree: true, containScroll: "trimSnaps" };
-  $: autoplayDelay = variant === "popular" ? 2200 : 4200;
-  $: plugins = [Autoplay({ delay: autoplayDelay, stopOnInteraction: true })];
-  $: wrapperClass =
-    variant === "popular"
-      ? "overflow-hidden cursor-grab active:cursor-grabbing border-4 border-black bg-[#fff9f0]"
-      : "overflow-hidden cursor-grab active:cursor-grabbing border-4 border-black bg-white";
-  $: cardClass =
-    variant === "popular"
-      ? "flex-[0_0_80%] md:flex-[0_0_42%] lg:flex-[0_0_30%] min-w-0 p-4 border-r-4 border-black last:border-r-0 flex flex-col justify-between bg-[#fffef8]"
-      : "flex-[0_0_80%] md:flex-[0_0_40%] lg:flex-[0_0_30%] min-w-0 p-4 border-r-4 border-black last:border-r-0 flex flex-col justify-between";
-  $: imageClass =
-    variant === "popular"
-      ? "w-full h-full object-cover group-hover:scale-110 group-hover:rotate-1 transition-transform duration-500 transform-gpu will-change-transform"
-      : "w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 transform-gpu will-change-transform";
+  const plugins = [Autoplay({ delay: 3000, stopOnInteraction: true })];
 
   let selectedIndex = 0;
   let scrollSnaps = [];
@@ -71,7 +57,7 @@
   </div>
 
   <div
-    class={wrapperClass}
+    class="overflow-hidden cursor-grab active:cursor-grabbing border-4 border-black bg-white"
     use:emblaCarouselSvelte={{ options, plugins }}
     on:emblaInit={onInit}
     style="transform: translateZ(0);"
@@ -82,7 +68,7 @@
     >
       {#each items as item}
         <div
-          class={cardClass}
+          class="flex-[0_0_80%] md:flex-[0_0_40%] lg:flex-[0_0_30%] min-w-0 p-4 border-r-4 border-black last:border-r-0 flex flex-col justify-between"
         >
           <div>
             <div
@@ -93,7 +79,7 @@
                 alt={item.name}
                 loading="lazy"
                 decoding="async"
-                class={imageClass}
+                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 transform-gpu will-change-transform"
               />
             </div>
             <h4
@@ -115,7 +101,7 @@
             <button
               on:click={() => handleAdd(item)}
               title="Añadir a carrito"
-              class="w-10 h-10 flex items-center justify-center bg-brand-lime border-4 border-black hover:bg-[#c4ec35] hover:scale-110 active:scale-90 active:bg-black active:text-brand-lime shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-y-0.5 transition-all"
+              class="w-10 h-10 flex items-center justify-center bg-brand-lime border-4 border-black hover:bg-[#c4ec35] hover:scale-110 active:scale-90 active:bg-black active:text-brand-lime shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-y-[2px] transition-all"
             >
               <span class="font-black text-xl leading-none">+</span>
             </button>
