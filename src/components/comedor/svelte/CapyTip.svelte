@@ -1,4 +1,6 @@
 <script>
+  import { onMount, onDestroy } from "svelte";
+
   export let tips = [
     {
       icon: "💡",
@@ -40,8 +42,20 @@
           },
         ];
 
-  // Keep one stable tip rendered to avoid page jumps caused by changing line wraps.
-  const currentTipIndex = 0;
+  let currentTipIndex = 0;
+  let interval;
+
+  $: if (currentTipIndex >= safeTips.length) currentTipIndex = 0;
+
+  onMount(() => {
+    interval = setInterval(() => {
+      currentTipIndex = (currentTipIndex + 1) % safeTips.length;
+    }, 6500);
+  });
+
+  onDestroy(() => {
+    if (interval) clearInterval(interval);
+  });
 </script>
 
 <div

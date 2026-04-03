@@ -434,12 +434,12 @@
 
     <MainPushDeck items={promotedItems} on:pickCategory={handleMainPushCategory} />
 
-    {#if menuData?.platoDia}
-      <PlatoDelDiaHero item={menuData.platoDia} />
-    {/if}
-
     {#if menuData?.popularItems?.length > 0}
       <ProductCarousel title="Lo Más Popular" items={menuData.popularItems} variant="popular" />
+    {/if}
+
+    {#if menuData?.platoDia}
+      <PlatoDelDiaHero item={menuData.platoDia} />
     {/if}
 
     <CategoriaTabs
