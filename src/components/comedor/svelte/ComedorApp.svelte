@@ -9,7 +9,7 @@
   import CapyTip from "./CapyTip.svelte";
   import { isCartOpen } from "../../../store/cartStore.js";
   import CarritoSidebar from "./CarritoSidebar.svelte";
-  import { Trophy, ArrowRight, Star } from "lucide-svelte";
+  import { Sparkles, Flame, UtensilsCrossed } from "lucide-svelte";
 
   const categories = [
     { id: "all", label: "Todo" },
@@ -19,44 +19,30 @@
     { id: "bebida", label: "Bebidas" },
   ];
 
-  const devShowcaseItems = [
+  const mainPushes = [
     {
-      id: "demo-desayuno-capy",
-      name: "Desayuno Capy",
-      description:
-        "Arepa dorada, huevo perico y queso fresco para arrancar con energía.",
-      price: 18,
-      image_url: "/images/cantina/sandwich.jpg",
+      id: "almuerzo",
+      title: "Main Push Almuerzo",
+      subtitle: "Platos fuertes del día",
+      icon: UtensilsCrossed,
     },
     {
-      id: "demo-almuerzo-power",
-      name: "Almuerzo Power",
-      description:
-        "Proteína, arroz, ensalada y guarnición para el combo más completo.",
-      price: 36,
-      image_url: "/images/cantina/empanadas.webp",
+      id: "desayuno",
+      title: "Main Push Desayuno",
+      subtitle: "Arranque rápido y completo",
+      icon: Sparkles,
     },
     {
-      id: "demo-snack-crunch",
-      name: "Snack Crunch",
-      description: "Crujiente, rápido y con el balance justo para la tarde.",
-      price: 14,
-      image_url: "/images/cantina/empanada.jpg",
-    },
-    {
-      id: "demo-bebida-fresh",
-      name: "Bebida Fresh",
-      description:
-        "Fría, liviana y pensada para acompañar el menú completo.",
-      price: 10,
-      image_url: "/images/cantina/sandwich.jpg",
+      id: "snack",
+      title: "Main Push Snack",
+      subtitle: "Combos ligeros para seguir",
+      icon: Flame,
     },
   ];
 
   let activeCategory = "all";
   let menuData = null;
   let loading = true;
-  let isRefreshingMenu = false;
   let error = null;
 
   // State Management
@@ -76,37 +62,6 @@
   let hydrated = false;
 
   let realtimeInterval = null;
-
-  $: activeCategoryLabel =
-    categories.find((category) => category.id === activeCategory)?.label ||
-    "Todo";
-
-  $: visibleMenuItems = Array.isArray(menuData?.items) ? menuData.items : [];
-
-  $: showcaseMenuItems = (() => {
-    const baseItems = [...visibleMenuItems];
-
-    if (!import.meta.env.DEV || baseItems.length >= 8) {
-      return baseItems;
-    }
-
-    for (const sample of devShowcaseItems) {
-      if (!baseItems.some((item) => item.id === sample.id)) {
-        baseItems.push(sample);
-      }
-
-      if (baseItems.length >= 8) {
-        break;
-      }
-    }
-
-    return baseItems;
-  })();
-
-  $: showcaseAddedCount = Math.max(
-    0,
-    showcaseMenuItems.length - visibleMenuItems.length,
-  );
 
   function normalizeOrderStatus(rawStatus) {
     return String(rawStatus || "").toLowerCase();
@@ -150,13 +105,7 @@
   }
 
   async function loadMenu(category) {
-    const hasExistingMenu = Boolean(menuData);
-
-    if (hasExistingMenu) {
-      isRefreshingMenu = true;
-    } else {
-      loading = true;
-    }
+    loading = !menuData;
 
     error = null;
     try {
@@ -167,7 +116,6 @@
       error = err.message || "Error al cargar menú";
     } finally {
       loading = false;
-      isRefreshingMenu = false;
     }
   }
 
@@ -279,6 +227,11 @@
     loadMenu(activeCategory);
   }
 
+  function activateMainPush(categoryId) {
+    activeCategory = categoryId;
+    loadMenu(categoryId);
+  }
+
   function toggleCart() {
     $isCartOpen = !$isCartOpen;
   }
@@ -385,42 +338,26 @@
       />
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-      <div class="border-4 border-black bg-white p-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-        <p class="text-xs font-black uppercase tracking-[0.25em] text-black/50">
-          Categoría activa
-        </p>
-        <p class="mt-2 text-3xl font-black uppercase tracking-tighter">
-          {activeCategoryLabel}
-        </p>
-      </div>
-
-      <div class="border-4 border-black bg-[#f9f7ff] p-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-        <p class="text-xs font-black uppercase tracking-[0.25em] text-black/50">
-          Platos visibles
-        </p>
-        <p class="mt-2 text-3xl font-black uppercase tracking-tighter">
-          {visibleMenuItems.length}
-        </p>
-      </div>
-
-      <div class="border-4 border-black bg-[#f5fdf2] p-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-        <p class="text-xs font-black uppercase tracking-[0.25em] text-black/50">
-          Destacados
-        </p>
-        <p class="mt-2 text-3xl font-black uppercase tracking-tighter">
-          {menuData?.popularItems?.length || 0}
-        </p>
+    <div class="mb-2">
+      <p class="font-black text-lg uppercase tracking-tight mb-3">Main Pushes</p>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+        {#each mainPushes as push}
+          <button
+            type="button"
+            on:click={() => activateMainPush(push.id)}
+            class="border-4 border-black bg-[#fffbe8] hover:bg-[#d7fd48] px-4 py-3 text-left shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-0.5 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all"
+          >
+            <div class="flex items-start justify-between gap-3">
+              <div>
+                <p class="font-black uppercase tracking-tight text-base">{push.title}</p>
+                <p class="font-bold uppercase text-xs text-black/70 mt-1">{push.subtitle}</p>
+              </div>
+              <svelte:component this={push.icon} size={20} strokeWidth={2.8} class="shrink-0" />
+            </div>
+          </button>
+        {/each}
       </div>
     </div>
-
-    {#if isRefreshingMenu}
-      <div class="mb-4 border-4 border-black bg-brand-lime px-4 py-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-        <span class="font-black uppercase tracking-tighter text-sm sm:text-base">
-          Actualizando {activeCategoryLabel.toLowerCase()} sin mover la vista
-        </span>
-      </div>
-    {/if}
 
     {#if showDebugPanel}
       <div
@@ -486,15 +423,15 @@
     />
 
     {#if menuData?.popularItems?.length > 0}
-      <ProductCarousel title="Lo Más Popular" items={menuData.popularItems} />
+      <ProductCarousel
+        title="Lo Más Popular"
+        items={menuData.popularItems}
+        variant="popular"
+      />
     {/if}
 
     {#if menuData?.items?.length > 0}
-      <ProductCarousel title="Todo el Menú" items={menuData.items} />
-    {/if}
-
-    {#if showcaseAddedCount > 0}
-      <ProductCarousel title="Muestra extendida" items={showcaseMenuItems} />
+      <ProductCarousel title="Todo el Menú" items={menuData.items} variant="menu" />
     {/if}
   {/if}
 </div>
