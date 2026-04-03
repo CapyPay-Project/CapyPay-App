@@ -357,30 +357,6 @@
       >
     </div>
   {:else}
-    <!-- Comedor Top Widgets -->
-    <CapyTip />
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-      <LiveQueue
-        {diningState}
-        capacity={queueCapacity}
-        currentLoad={queueCurrentLoad}
-        occupancyPercent={queueOccupancyPercent}
-        occupancyLabel={queueLabel}
-        occupancyDetail={queueDetail}
-      />
-      <TimerWidget
-        {diningState}
-        {activeOrder}
-        {waitRange}
-        {nextTicket}
-        {turnsAhead}
-        on:confirmArrival={handleConfirmArrival}
-      />
-    </div>
-
-    <MainPushDeck items={promotedItems} on:pickCategory={handleMainPushCategory} />
-
     {#if showDebugPanel}
       <div
         class="mb-6 border-4 border-black bg-white p-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
@@ -433,6 +409,30 @@
         </button>
       </div>
     {/if}
+
+    <!-- Comedor Top Widgets -->
+    <CapyTip />
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+      <LiveQueue
+        {diningState}
+        capacity={queueCapacity}
+        currentLoad={queueCurrentLoad}
+        occupancyPercent={queueOccupancyPercent}
+        occupancyLabel={queueLabel}
+        occupancyDetail={queueDetail}
+      />
+      <TimerWidget
+        {diningState}
+        {activeOrder}
+        {waitRange}
+        {nextTicket}
+        {turnsAhead}
+        on:confirmArrival={handleConfirmArrival}
+      />
+    </div>
+
+    <MainPushDeck items={promotedItems} on:pickCategory={handleMainPushCategory} />
 
     {#if menuData?.platoDia}
       <PlatoDelDiaHero item={menuData.platoDia} />

@@ -50,8 +50,8 @@
 </script>
 
 {#if current}
-  <section class="border-4 border-black bg-white shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] overflow-hidden h-[540px] md:h-[390px]">
-    <div class="px-4 py-2 border-b-4 border-black bg-[#fff4d6] flex items-center justify-between gap-3">
+  <section class="border-4 border-black bg-white shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] overflow-hidden">
+    <div class="px-4 py-2 border-b-4 border-black bg-[linear-gradient(90deg,#fff4d6_0%,#ffe98b_100%)] flex items-center justify-between gap-3">
       <div class="flex items-center gap-2">
         <Flame size={17} strokeWidth={2.8} />
         <p class="font-black uppercase tracking-tight">Promocion destacada</p>
@@ -65,10 +65,10 @@
       </div>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 h-[430px] md:h-[278px]">
-      <div class="p-5 md:p-6 border-b-4 md:border-b-0 md:border-r-4 border-black flex flex-col gap-3 overflow-hidden">
+    <div class="grid grid-cols-1 md:grid-cols-[1.1fr_0.9fr] min-h-125 md:min-h-90">
+      <div class="p-5 md:p-6 border-b-4 md:border-b-0 md:border-r-4 border-black flex flex-col gap-3 bg-[radial-gradient(circle_at_top_left,#ffffff_0%,#fffdf8_55%,#fff4d6_100%)]">
         <p class="text-xs font-black uppercase tracking-[0.2em] text-black/50">Destacado {index + 1} de {safeItems.length}</p>
-        <h3 class="font-black text-3xl uppercase tracking-tighter leading-none">{current.name}</h3>
+        <h3 class="font-black text-3xl uppercase tracking-tighter leading-none line-clamp-2 min-h-16">{current.name}</h3>
         <p class="font-bold uppercase text-sm leading-tight text-black/75 line-clamp-2 min-h-[2.8rem]">{current.description}</p>
 
         <div class="flex items-center gap-2 flex-wrap mt-1">
@@ -94,12 +94,12 @@
             : "Rotación fuerte en horas pico"}
         </p>
 
-        <div class="mt-auto flex items-center justify-between gap-3 pt-3">
+        <div class="mt-auto flex items-center justify-between gap-3 pt-4 border-t-2 border-dashed border-black/40">
           <p class="font-black text-3xl tracking-tight">${Number(current.price || 0).toFixed(2)}</p>
           <button
             type="button"
             on:click={pushToCart}
-            class="border-4 border-black bg-brand-lime px-4 py-2 font-black uppercase hover:bg-[#c4ec35] active:translate-y-0.5 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]"
+            class="border-4 border-black bg-brand-lime px-4 py-2 min-w-40 font-black uppercase hover:bg-[#c4ec35] active:translate-y-0.5 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]"
           >
             Agregar promo
           </button>
@@ -107,6 +107,7 @@
       </div>
 
       <div class="h-full bg-[#ede7ff] border-black relative overflow-hidden">
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_20%_15%,rgba(255,255,255,0.3),transparent_45%)] z-1"></div>
         <img
           src={current.image_url}
           alt={current.name}
@@ -114,6 +115,9 @@
           loading="lazy"
           decoding="async"
         />
+        <div class="absolute bottom-3 right-3 z-2 border-2 border-black bg-white/90 px-2 py-1 text-[10px] font-black uppercase tracking-wide">
+          Cupos volando
+        </div>
       </div>
     </div>
 
@@ -128,7 +132,7 @@
           <button
             type="button"
             on:click={() => goTo(i)}
-            aria-label={`Ver push ${i + 1}`}
+            aria-label={`Ver promo ${i + 1}`}
             class={`w-3 h-3 border-2 border-black ${i === index ? "bg-black" : "bg-transparent"}`}
           ></button>
         {/each}
