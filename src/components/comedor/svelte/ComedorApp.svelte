@@ -469,7 +469,7 @@
     class="fixed z-30 bottom-5 left-4 right-4 md:left-auto md:right-6 md:bottom-6 md:w-auto bg-brand-lime border-4 border-black px-4 py-3 shadow-[5px_5px_0px_0px_rgba(0,0,0,1)] hover:bg-[#c4ec35] active:translate-y-0.5 transition-all"
     aria-label="Abrir carrito"
   >
-    <div class="flex items-center justify-between gap-4 md:min-w-[17rem]">
+    <div class="flex items-center justify-between gap-4 md:min-w-68">
       <div class="flex items-center gap-2">
         <span
           class="material-symbols-outlined shrink-0 text-black font-black"
