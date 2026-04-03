@@ -81,9 +81,7 @@
       style="backface-visibility: hidden; -webkit-backface-visibility: hidden;"
     >
       {#each items as item}
-        <div
-          class={cardClass}
-        >
+        <div class={cardClass}>
           <div>
             <div
               class="h-32 bg-gray-200 border-4 border-black mb-4 overflow-hidden relative group"

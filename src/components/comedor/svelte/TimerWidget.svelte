@@ -1,33 +1,20 @@
 <script>
-  import { onMount, onDestroy, createEventDispatcher } from "svelte";
+  import { createEventDispatcher } from "svelte";
 
   const dispatch = createEventDispatcher();
 
-  export let waitTimeMinutes = 12;
   export let activeOrder = null;
   export let diningState = "browsing";
+  export let waitRange = "-- min";
+  export let nextTicket = "---";
+  export let turnsAhead = null;
 
-  let currentTurn = 440;
+  $: ticketLabel = String(activeOrder?.id ?? "12345").slice(0, 5);
 
-  // Timer Simulation
-  let secondsLeft = waitTimeMinutes * 60;
-  let timerInterval;
-
-  $: minutes = Math.floor(secondsLeft / 60);
-  $: seconds = secondsLeft % 60;
-  $: formattedTime = `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
-
-  onMount(() => {
-    timerInterval = setInterval(() => {
-      if (secondsLeft > 0) {
-        secondsLeft--;
-      }
-    }, 1000);
-  });
-
-  onDestroy(() => {
-    clearInterval(timerInterval);
-  });
+  $: currentTurnLabel =
+    turnsAhead === null || turnsAhead === undefined
+      ? "--"
+      : `T-${String(Math.max(0, Number(turnsAhead))).padStart(4, "0")}`;
 
   function confirmArrival() {
     dispatch("confirmArrival");
@@ -52,7 +39,7 @@
     <div
       class="text-6xl md:text-7xl font-black tracking-tighter tabular-nums z-10 bg-black px-4 py-2 border-4 border-white mb-4"
     >
-      {formattedTime}
+      {waitRange}
     </div>
 
     <button
@@ -61,7 +48,7 @@
       }}
       class="w-full bg-brand-lime text-black border-4 border-black font-black uppercase py-3 hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all z-10"
     >
-      Ver Menú Completo
+      Próximo: {nextTicket}
     </button>
   {:else if diningState === "pre_arrival"}
     <h3
@@ -69,7 +56,7 @@
     >
       Ticket <span
         class="bg-black text-[#8CFFE1] px-2 py-0.5 border-2 border-white mx-1"
-        >#{activeOrder?.id?.slice(0, 5) || "12345"}</span
+        >#{ticketLabel}</span
       > Creado
     </h3>
     <button
@@ -92,18 +79,14 @@
     >
       <div class="flex flex-col">
         <span class="text-xs font-bold uppercase text-gray-500">Tu Ticket</span>
-        <span class="font-black text-2xl"
-          >#{activeOrder?.id?.slice(0, 5) || "12345"}</span
-        >
+        <span class="font-black text-2xl">#{ticketLabel}</span>
       </div>
       <div class="h-full w-1.5 bg-black"></div>
       <div class="flex flex-col text-right">
         <span class="text-xs font-bold uppercase text-gray-500"
           >Turno Actual</span
         >
-        <span class="font-black text-2xl"
-          >T-{currentTurn.toString().padStart(4, "0")}</span
-        >
+        <span class="font-black text-2xl">{currentTurnLabel}</span>
       </div>
     </div>
   {:else if diningState === "ready"}
@@ -120,7 +103,7 @@
       <div
         class="bg-white text-black border-4 border-black font-black text-2xl px-6 py-2"
       >
-        Ticket: #{activeOrder?.id?.slice(0, 5) || "12345"}
+        Ticket: #{ticketLabel}
       </div>
     </div>
   {/if}

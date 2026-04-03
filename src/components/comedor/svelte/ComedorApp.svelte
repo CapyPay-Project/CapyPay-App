@@ -467,7 +467,9 @@
       >
         shopping_cart
       </span>
-      <span class="font-black text-sm tracking-tight">${cartTotal.toFixed(2)}</span>
+      <span class="font-black text-sm tracking-tight"
+        >${cartTotal.toFixed(2)}</span
+      >
     </div>
 
     <span
@@ -478,7 +480,9 @@
     </span>
 
     <span class="sr-only">
-      Abrir carrito con {cartCount} item{cartCount === 1 ? "" : "s"}, total ${cartTotal.toFixed(2)}
+      Abrir carrito con {cartCount} item{cartCount === 1 ? "" : "s"}, total ${cartTotal.toFixed(
+        2,
+      )}
     </span>
   </button>
 {/if}

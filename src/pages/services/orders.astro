@@ -2,67 +2,172 @@
 import MainLayout from "../../layouts/MainLayout.astro";
 ---
 
-<MainLayout title="Mis Órdenes | CapyPay" showSidebar={true}>
-  <div class="max-w-3xl mx-auto px-4 py-8">
-    <div class="flex items-center justify-between mb-8">
-      <h1 class="text-3xl font-black text-white">Mis Órdenes</h1>
-      <a
-        href="javascript:history.back()"
-        class="p-2 bg-white border-2 border-black -full hover:bg-white border-2 border-black transition-colors"
+<MainLayout title="Mis Ordenes | CapyPay" showSidebar={true}>
+  <section class="w-full max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-10">
+    <header class="mb-8 md:mb-10">
+      <div
+        class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between"
       >
-        <svg
-          class="w-6 h-6 text-white"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          ><path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M6 18L18 6M6 6l12 12"></path></svg
+        <div>
+          <p
+            class="inline-flex w-max items-center gap-2 text-[10px] md:text-xs font-black uppercase tracking-[0.2em] bg-[#8CFFE1] border-4 border-black px-3 py-1 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+          >
+            Historial Unificado
+          </p>
+          <h1
+            class="mt-4 text-4xl md:text-6xl font-black uppercase tracking-tight text-black drop-shadow-[2px_2px_0px_#fff]"
+          >
+            Mis Ordenes
+          </h1>
+          <p
+            class="mt-2 text-sm md:text-base font-bold text-black/70 uppercase tracking-wide"
+          >
+            Comedor y cantina en una sola vista
+          </p>
+        </div>
+
+        <a
+          href="/services/comedor"
+          class="inline-flex items-center justify-center gap-2 bg-[#d7fd48] text-black font-black uppercase tracking-wide border-4 border-black px-5 py-3 shadow-[5px_5px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-y-1 transition-all"
         >
-      </a>
-    </div>
-
-    <!-- Filtros Estado -->
-    <div class="flex gap-2 mb-6 overflow-x-auto pb-2 scrollbar-hide">
-      <button
-        class="filter-btn active px-4 py-2 -full bg-brand-lime text-black font-bold text-sm"
-        data-status="all">Todas</button
-      >
-      <button
-        class="filter-btn px-4 py-2 -full bg-white border-2 border-black text-white/60 font-medium text-sm border-4 border-black"
-        data-status="preparing">Preparando</button
-      >
-      <button
-        class="filter-btn px-4 py-2 -full bg-white border-2 border-black text-white/60 font-medium text-sm border-4 border-black"
-        data-status="ready">Listas</button
-      >
-      <button
-        class="filter-btn px-4 py-2 -full bg-white border-2 border-black text-white/60 font-medium text-sm border-4 border-black"
-        data-status="delivered">Entregadas</button
-      >
-    </div>
-
-    <!-- Orders List -->
-    <div id="orders-list" class="space-y-4 min-h-[50vh]">
-      <!-- Loading -->
-      <div class="animate-pulse space-y-4">
-        <div class="h-24 bg-white border-2 border-black -2xl"></div>
-        <div class="h-24 bg-white border-2 border-black -2xl"></div>
-        <div class="h-24 bg-white border-2 border-black -2xl"></div>
+          <span class="material-symbols-outlined">arrow_back</span>
+          Volver a Comedor
+        </a>
       </div>
+    </header>
+
+    <div class="mb-8 flex flex-wrap gap-2 md:gap-3">
+      <button class="filter-btn active" data-status="all">Todas</button>
+      <button class="filter-btn" data-status="pending">Pendientes</button>
+      <button class="filter-btn" data-status="preparing">Preparando</button>
+      <button class="filter-btn" data-status="ready">Listas</button>
+      <button class="filter-btn" data-status="delivered">Entregadas</button>
+      <button class="filter-btn" data-status="cancelled">Canceladas</button>
     </div>
-  </div>
+
+    <div
+      id="orders-stats"
+      class="mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3"
+      style="display: none;"
+    >
+    </div>
+
+    <div
+      id="orders-list"
+      class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5 min-h-[40vh]"
+    >
+      <div class="animate-pulse h-48 bg-white border-4 border-black"></div>
+      <div class="animate-pulse h-48 bg-white border-4 border-black"></div>
+      <div class="animate-pulse h-48 bg-white border-4 border-black"></div>
+    </div>
+  </section>
+
+  <style>
+    .filter-btn {
+      border: 3px solid #111;
+      background: #fff;
+      color: #111;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-size: 11px;
+      padding: 0.55rem 0.9rem;
+      box-shadow: 3px 3px 0 0 #111;
+      transition: all 160ms ease;
+    }
+
+    .filter-btn:hover {
+      transform: translateY(1px);
+      box-shadow: none;
+    }
+
+    .filter-btn.active {
+      background: #d7fd48;
+      color: #111;
+    }
+  </style>
 
   <script>
     // @ts-nocheck
-    import { comedorService } from "../../services/api";
+    import { comedorService, cantinaService } from "../../services/api";
 
     const container = document.getElementById("orders-list");
+    const statsContainer = document.getElementById("orders-stats");
     const filterBtns = document.querySelectorAll(".filter-btn");
 
     let allOrders = [];
+
+    function normalizeStatus(rawStatus) {
+      const status = String(rawStatus || "").toLowerCase();
+      if (status === "pre arrival") return "preparing";
+      if (status === "completed") return "delivered";
+      return status || "pending";
+    }
+
+    function normalizeComedorOrder(order) {
+      return {
+        id: order.id,
+        source: "comedor",
+        status: normalizeStatus(order.status),
+        created_at: order.created_at,
+        total: Number(order.total ?? 0),
+        itemsCount: order.order_items?.length || 0,
+        itemNames: (order.order_items || [])
+          .map((i) => i.menu_items?.name)
+          .filter(Boolean),
+      };
+    }
+
+    function normalizeCantinaOrder(order) {
+      return {
+        id: order.id,
+        source: "cantina",
+        status: normalizeStatus(order.status),
+        created_at: order.created_at,
+        total: Number(order.total_capys ?? order.total ?? 0),
+        itemsCount: order.items?.length || 0,
+        itemNames: (order.items || [])
+          .map((i) => i.product?.name)
+          .filter(Boolean),
+      };
+    }
+
+    function renderStats() {
+      if (!statsContainer) return;
+
+      const totalOrders = allOrders.length;
+      const totalSpent = allOrders.reduce(
+        (acc, order) => acc + Number(order.total || 0),
+        0,
+      );
+      const delivered = allOrders.filter(
+        (o) => normalizeStatus(o.status) === "delivered",
+      ).length;
+      const inProgress = allOrders.filter((o) =>
+        ["pending", "preparing", "ready"].includes(normalizeStatus(o.status)),
+      ).length;
+
+      statsContainer.innerHTML = `
+        <div class="bg-white border-4 border-black p-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+          <p class="text-xs font-black uppercase text-black/60">Total Ordenes</p>
+          <p class="text-3xl font-black text-black mt-2">${totalOrders}</p>
+        </div>
+        <div class="bg-white border-4 border-black p-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+          <p class="text-xs font-black uppercase text-black/60">En Proceso</p>
+          <p class="text-3xl font-black text-black mt-2">${inProgress}</p>
+        </div>
+        <div class="bg-white border-4 border-black p-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+          <p class="text-xs font-black uppercase text-black/60">Entregadas</p>
+          <p class="text-3xl font-black text-black mt-2">${delivered}</p>
+        </div>
+        <div class="bg-white border-4 border-black p-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+          <p class="text-xs font-black uppercase text-black/60">Total Gastado</p>
+          <p class="text-3xl font-black text-black mt-2">${totalSpent.toFixed(2)}</p>
+        </div>
+      `;
+
+      statsContainer.style.display = "grid";
+    }
 
     async function fetchOrders() {
       try {
@@ -74,17 +179,38 @@ import MainLayout from "../../layouts/MainLayout.astro";
         const user = JSON.parse(userStr);
         const userId = user.id || user.usuarioId;
 
-        const response = await comedorService.getMyOrders(userId);
+        const [comedorRes, cantinaRes] = await Promise.all([
+          comedorService.getMyOrders(userId),
+          cantinaService.getUserOrders(userId),
+        ]);
 
-        if (response && response.orders) {
-          allOrders = response.orders;
-          renderOrders("all");
-        } else {
-          renderEmpty("No tienes órdenes registradas");
+        const comedorOrders = (comedorRes?.orders || []).map(
+          normalizeComedorOrder,
+        );
+        const cantinaOrders = (cantinaRes?.orders || []).map(
+          normalizeCantinaOrder,
+        );
+
+        allOrders = [...comedorOrders, ...cantinaOrders].sort(
+          (a, b) =>
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+        );
+
+        renderStats();
+
+        if (allOrders.length === 0) {
+          renderEmpty(
+            "Aun no tienes ordenes. Cuando compres en comedor o cantina apareceran aqui.",
+          );
+          return;
         }
+
+        renderOrders("all");
       } catch (error) {
         console.error(error);
-        renderEmpty("Error al cargar órdenes");
+        renderEmpty(
+          "No se pudieron cargar tus ordenes. Intenta nuevamente en unos segundos.",
+        );
       }
     }
 
@@ -94,13 +220,13 @@ import MainLayout from "../../layouts/MainLayout.astro";
       const filtered =
         filterStatus === "all"
           ? allOrders
-          : allOrders.filter((o) => o.status === filterStatus);
+          : allOrders.filter((o) => normalizeStatus(o.status) === filterStatus);
 
       if (filtered.length === 0) {
         renderEmpty(
           filterStatus === "all"
-            ? "Sin órdenes"
-            : `No hay órdenes ${translateStatus(filterStatus)}`,
+            ? "No tienes ordenes registradas"
+            : `No hay ordenes en estado ${translateStatus(filterStatus).toLowerCase()}`,
         );
         return;
       }
@@ -113,84 +239,91 @@ import MainLayout from "../../layouts/MainLayout.astro";
             hour: "2-digit",
             minute: "2-digit",
           });
-          const itemCount = order.order_items?.length || 0;
+
+          const itemCount = order.itemsCount || 0;
+          const itemPreviewSource = (order.itemNames || []).join(", ");
           const itemPreview =
-            order.order_items
-              ?.map((i) => i.menu_items?.name)
-              .join(", ")
-              .substring(0, 30) + (order.order_items?.length > 1 ? "..." : "");
+            itemPreviewSource.length > 48
+              ? `${itemPreviewSource.substring(0, 48)}...`
+              : itemPreviewSource || "Sin detalle de items";
+          const sourceLabel =
+            order.source === "cantina" ? "Cantina" : "Comedor";
 
           return `
-            <a href="/services/order?id=${order.id}" class="block bg-[#1a1a1a] border-4 border-black hover:border-brand-lime/30 -2xl p-4 transition-all active:scale-[0.98]">
-               <div class="flex justify-between items-start mb-2">
-                   <div class="flex items-center gap-2">
-                       <span class="text-xs font-mono text-white/40">#${String(order.id).split("-")[0]}</span>
-                       <span class="px-2 py-0.5  text-[10px] font-bold uppercase tracking-wide border ${getStatusColor(order.status)}">
-                          ${translateStatus(order.status)}
-                       </span>
-                   </div>
-                   <span class="text-xs text-brand-lime font-bold">${parseFloat(order.total).toFixed(2)} BARAS</span>
-               </div>
-               <div class="flex justify-between items-end">
-                   <div>
-                       <h3 class="text-white font-bold text-sm">${itemCount} Items</h3>
-                       <p class="text-white/50 text-xs mt-0.5">${itemPreview}</p>
-                   </div>
-                   <span class="text-[10px] text-white/30">${date}</span>
-               </div>
+            <a href="/services/order?id=${order.id}" class="group block bg-white border-4 border-black p-5 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-y-1 transition-all min-h-[210px] overflow-hidden">
+              <div class="flex items-start justify-between gap-3 mb-4">
+                <div class="min-w-0 flex flex-wrap items-center gap-2">
+                  <span class="text-[10px] font-black uppercase tracking-widest text-black/50 break-all">#${String(order.id).split("-")[0]}</span>
+                  <span class="px-2 py-1 text-[10px] font-black uppercase border-2 border-black bg-black text-white tracking-wide">${sourceLabel}</span>
+                  <span class="px-2 py-1 text-[10px] font-black uppercase border-2 ${getStatusColor(order.status)} tracking-wide">${translateStatus(order.status)}</span>
+                </div>
+                <span class="text-lg font-black text-black shrink-0 whitespace-nowrap">${Number(order.total || 0).toFixed(2)} B</span>
+              </div>
+
+              <div class="mb-5 min-w-0">
+                <p class="text-2xl font-black text-black leading-none">${itemCount} item${itemCount === 1 ? "" : "s"}</p>
+                <p class="mt-2 text-sm font-bold text-black/70 leading-snug break-words line-clamp-3">${itemPreview}</p>
+              </div>
+
+              <div class="pt-3 border-t-2 border-dashed border-black/40 flex items-center justify-between gap-3">
+                <span class="text-xs font-black uppercase tracking-wide text-black/50 truncate min-w-0">${date}</span>
+                <span class="inline-flex items-center gap-1 text-xs font-black uppercase tracking-wide text-black shrink-0 whitespace-nowrap">
+                  Ver ticket
+                  <span class="material-symbols-outlined" style="font-size:16px">arrow_forward</span>
+                </span>
+              </div>
             </a>
-            `;
+          `;
         })
         .join("");
     }
 
     function renderEmpty(msg) {
-      if (container)
-        container.innerHTML = `<div class="text-center py-10 text-white/30">${msg}</div>`;
+      if (!container) return;
+      container.innerHTML = `
+        <div class="col-span-full bg-white border-4 border-black p-10 text-center shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+          <p class="text-black font-black uppercase tracking-wide text-lg">${msg}</p>
+        </div>
+      `;
     }
 
     function getStatusColor(status) {
-      switch (status) {
+      switch (normalizeStatus(status)) {
+        case "pending":
+          return "bg-amber-100 text-amber-900 border-black";
         case "preparing":
-          return "bg-yellow-500/10 text-yellow-500 border-yellow-500/20";
+          return "bg-yellow-200 text-black border-black";
         case "ready":
-          return "bg-green-500/10 text-green-500 border-green-500/20";
+          return "bg-green-200 text-black border-black";
         case "delivered":
-          return "bg-blue-500/10 text-blue-500 border-blue-500/20";
+          return "bg-sky-200 text-black border-black";
+        case "cancelled":
+          return "bg-rose-200 text-black border-black";
         default:
-          return "bg-gray-500/10 text-gray-500 border-gray-500/20";
+          return "bg-gray-100 text-black border-black";
       }
     }
 
     function translateStatus(status) {
       const dog = {
+        pending: "Pendiente",
         preparing: "Preparando",
-        ready: "Listo",
+        ready: "Lista",
         delivered: "Entregada",
         cancelled: "Cancelada",
       };
-      return dog[status] || status;
+      return dog[normalizeStatus(status)] || status;
     }
 
-    // Filter Logic
     filterBtns.forEach((btn) => {
       btn.addEventListener("click", (e) => {
-        // UI Update
-        filterBtns.forEach((b) => {
-          b.classList.remove("bg-brand-lime", "text-black");
-          b.classList.add("bg-white border-2 border-black", "text-white/60");
-        });
-        const target = e.currentTarget as HTMLElement;
-        target.classList.remove("bg-white border-2 border-black", "text-white/60");
-        target.classList.add("bg-brand-lime", "text-black");
-
-        // Filter
-        const status = target.dataset.status;
-        renderOrders(status);
+        filterBtns.forEach((b) => b.classList.remove("active"));
+        const target = e.currentTarget;
+        target.classList.add("active");
+        renderOrders(target.dataset.status);
       });
     });
 
-    // Init
     fetchOrders();
   </script>
 </MainLayout>

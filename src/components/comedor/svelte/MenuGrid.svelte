@@ -18,7 +18,10 @@
 
   $: if (lazyReveal) {
     // Reset reveal when item set changes (e.g., category change).
-    visibleCount = Math.min(Math.max(BATCH_SIZE, visibleCount), safeItems.length || BATCH_SIZE);
+    visibleCount = Math.min(
+      Math.max(BATCH_SIZE, visibleCount),
+      safeItems.length || BATCH_SIZE,
+    );
   }
 
   // Ensure first render after a filter switch starts from the first batch.
@@ -45,7 +48,7 @@
           revealMore();
         }
       },
-      { rootMargin: "220px 0px" }
+      { rootMargin: "220px 0px" },
     );
 
     if (sentinelEl) observer.observe(sentinelEl);
@@ -67,12 +70,16 @@
   {#if safeItems.length === 0}
     <div class="border-4 border-black bg-white p-8 text-center">
       <p class="font-black uppercase">Sin platos para este filtro</p>
-      <p class="font-bold text-xs uppercase text-black/60 mt-2">Prueba otra categoría</p>
+      <p class="font-bold text-xs uppercase text-black/60 mt-2">
+        Prueba otra categoría
+      </p>
     </div>
   {:else}
     <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
       {#each visibleItems as item}
-        <article class="border-4 border-black bg-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] p-4 flex flex-col gap-3 min-h-90">
+        <article
+          class="border-4 border-black bg-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] p-4 flex flex-col gap-3 min-h-90"
+        >
           <div class="h-36 bg-gray-200 border-4 border-black overflow-hidden">
             <img
               src={item.image_url}
@@ -83,11 +90,21 @@
             />
           </div>
 
-          <h4 class="font-black text-xl uppercase tracking-tight leading-none line-clamp-2 min-h-[3.2rem]">{item.name}</h4>
-          <p class="font-bold text-sm uppercase text-black/70 leading-tight line-clamp-2 min-h-11">{item.description}</p>
+          <h4
+            class="font-black text-xl uppercase tracking-tight leading-none line-clamp-2 min-h-[3.2rem]"
+          >
+            {item.name}
+          </h4>
+          <p
+            class="font-bold text-sm uppercase text-black/70 leading-tight line-clamp-2 min-h-11"
+          >
+            {item.description}
+          </p>
 
           <div class="mt-auto flex items-center justify-between gap-3">
-            <span class="font-black text-2xl">${Number(item.price).toFixed(2)}</span>
+            <span class="font-black text-2xl"
+              >${Number(item.price).toFixed(2)}</span
+            >
             <button
               type="button"
               on:click={() => handleAdd(item)}

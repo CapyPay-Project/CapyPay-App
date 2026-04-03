@@ -1,6 +1,6 @@
 // src/services/api.js
 
-const API_URL = import.meta.env.PUBLIC_API_URL || (typeof window !== 'undefined' ? `http://${window.location.hostname}:3000/api` : 'http://localhost:3000/api');
+const API_URL = import.meta.env.PUBLIC_API_URL || (typeof window !== 'undefined' ? '/api' : 'http://localhost:3000/api');
 
 const AUTH_TOKEN_KEY = 'capypay_token';
 const AUTH_USER_KEY = 'capypay_user';
@@ -911,6 +911,9 @@ export const pinService = {
 export const cantinaService = {
   // Backend route: GET /api/cantinas/order/:id
   getOrder: (orderId) => fetchAPI(`/cantinas/order/${orderId}`),
+
+  // Backend route: GET /api/cantinas/orders/:userId
+  getUserOrders: (userId) => fetchAPI(`/cantinas/orders/${userId}`),
 
   // Backend route: GET /api/cantinas/faculties
   getAreas: () => fetchAPI('/cantinas/faculties'),
