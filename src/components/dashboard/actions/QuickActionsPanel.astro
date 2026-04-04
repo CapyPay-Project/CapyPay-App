@@ -50,111 +50,263 @@
   class="fixed inset-0 z-9999 hidden items-center justify-center m-0 p-4 pointer-events-none"
 >
   <div
-    class="bg-white border-4 border-black box-shadow-brutal w-full max-w-sm p-6 transform scale-95 opacity-0 transition-all duration-300 relative pointer-events-auto flex flex-col"
+    id="qp-transfer-success"
+    class="hidden absolute inset-0 z-[10001] items-center justify-center bg-black/80 backdrop-blur-md opacity-0 transition-opacity duration-300 pointer-events-auto"
+  >
+    <div
+      class="bg-[#d7fd48] border-4 border-black shadow-[10px_10px_0_0_#000] px-8 py-10 text-center max-w-md w-[calc(100%-2rem)] mx-4 transform scale-95 transition-transform duration-300"
+    >
+      <div
+        class="w-20 h-20 mx-auto mb-4 bg-black border-4 border-black flex items-center justify-center text-[#d7fd48] text-4xl"
+      >
+        ✓
+      </div>
+      <p
+        class="text-xs font-black uppercase tracking-[0.35em] text-black/60 mb-2"
+      >
+        Transferencia exitosa
+      </p>
+      <h4 class="text-2xl font-black uppercase leading-tight text-black">
+        Dinero enviado
+      </h4>
+      <p class="text-sm font-bold text-black mt-3">
+        Tu saldo se actualizó y la operación quedó registrada.
+      </p>
+      <button
+        id="qp-transfer-success-continue"
+        type="button"
+        class="mt-6 w-full border-4 border-black bg-white px-5 py-3 font-black uppercase text-sm hover:bg-gray-100"
+      >
+        Continuar
+      </button>
+    </div>
+  </div>
+
+  <div
+    class="bg-white border-4 border-black box-shadow-brutal w-full max-w-6xl h-[88vh] max-h-190 p-0 transform scale-95 opacity-0 transition-all duration-300 relative pointer-events-auto overflow-hidden"
     id="modal-enviar-content"
   >
     <button
       onclick="window.closeModal('modal-enviar')"
-      class="absolute top-2 right-2 hover:bg-gray-200 p-1"
+      class="absolute top-3 right-3 hover:bg-gray-200 p-1 z-20 border-2 border-black bg-white"
     >
       <span class="material-symbols-outlined font-black text-xl">close</span>
     </button>
-    <div class="flex items-center gap-2 mb-4 text-[#8b5cf6]">
-      <span class="material-symbols-outlined">send</span>
-      <h3 class="text-xl font-black uppercase">ENVIAR</h3>
-    </div>
 
-    <!-- STEP 1: FORMULARIO -->
-    <div id="enviar-step-1" class="flex-1">
-      <div class="mb-4 relative">
-        <label class="block text-xs font-black uppercase mb-1"
-          >USUARIO DESTINO (C.I.)</label
-        >
-        <div class="relative">
+    <div class="h-full grid grid-cols-1 lg:grid-cols-[340px_1fr]">
+      <!-- COLUMNA CONTACTOS -->
+      <aside class="border-r-4 border-black bg-[#f7f2ff] flex flex-col min-h-0">
+        <div class="px-4 py-4 border-b-4 border-black bg-[#ede1ff]">
+          <div class="flex items-center gap-2 text-[#5b21b6] mb-3">
+            <span class="material-symbols-outlined">groups</span>
+            <h3 class="text-sm font-black uppercase tracking-widest">
+              Contactos rápidos
+            </h3>
+          </div>
+
+          <label
+            for="qp-contacts-filter"
+            class="block text-[10px] font-black uppercase mb-1"
+            >Filtrar mis contactos</label
+          >
           <input
             type="text"
-            id="qp-enviar-cedula"
-            class="w-full border-4 border-black p-3 font-bold uppercase focus:outline-none focus:bg-gray-50"
-            placeholder="Ej: 30123456"
+            id="qp-contacts-filter"
+            class="w-full border-4 border-black p-3 font-bold text-sm focus:outline-none bg-white"
+            placeholder="Ej: anyo"
             autocomplete="off"
           />
+        </div>
 
-          <!-- Dropdown Autocomplete -->
-          <div
-            id="qp-autocomplete"
-            class="absolute left-0 right-0 top-full mt-1 bg-white border-4 border-black box-shadow-brutal hidden flex-col max-h-40 overflow-y-auto z-10000"
-          >
+        <div
+          class="flex-1 min-h-0 overflow-y-auto p-3 flex flex-col gap-3 custom-scrollbar"
+        >
+          <div>
+            <p
+              class="text-[10px] font-black uppercase tracking-widest text-black/60 mb-2"
+            >
+              Favoritos
+            </p>
+            <div id="qp-favorites-list" class="flex flex-col gap-2"></div>
+          </div>
+
+          <div>
+            <p
+              class="text-[10px] font-black uppercase tracking-widest text-black/60 mb-2"
+            >
+              Todos los contactos
+            </p>
+            <div id="qp-contacts-list" class="flex flex-col gap-2"></div>
           </div>
         </div>
-        <p
-          id="enviar-selected-name"
-          class="text-xs font-bold text-green-600 mt-2 hidden uppercase tracking-wide"
-        >
-        </p>
-      </div>
+      </aside>
 
-      <div class="mb-6">
-        <label class="block text-xs font-black uppercase mb-1"
-          >MONTO A ENVIAR</label
+      <!-- COLUMNA TRANSFERENCIA -->
+      <section class="bg-white h-full min-h-0 flex flex-col">
+        <div
+          class="px-6 py-4 border-b-4 border-black flex items-center gap-2 text-[#8b5cf6]"
         >
-        <div class="flex items-center border-4 border-black p-2 bg-white">
-          <span class="font-black text-xl ml-2 mr-2">$</span>
-          <input
-            type="number"
-            id="qp-enviar-monto"
-            class="w-full text-xl font-black focus:outline-none"
-            placeholder="0.00"
-          />
+          <span class="material-symbols-outlined">send</span>
+          <h3 class="text-xl font-black uppercase tracking-tight">
+            Enviar dinero
+          </h3>
         </div>
-      </div>
-      <div class="mb-6">
-        <label class="block text-xs font-black uppercase mb-1"
-          >CONCEPTO (OPCIONAL)</label
-        >
-        <input
-          type="text"
-          id="qp-enviar-concepto"
-          class="w-full border-4 border-black p-3 font-bold uppercase focus:outline-none focus:bg-gray-50 bg-white"
-          placeholder="Ej: PAGO COMEDOR"
-        />
-      </div>
 
-      <button
-        id="btn-pre-enviar"
-        class="w-full bg-black text-white font-black uppercase p-4 border-4 border-black hover:bg-gray-800 transition-colors"
-      >
-        SIGUIENTE
-      </button>
-    </div>
-
-    <!-- STEP 2: CONFIRMAR CON PIN -->
-    <div id="enviar-step-2" class="hidden flex-col items-center flex-1">
-      <p class="font-bold text-center text-sm uppercase mb-4 text-black">
-        INGRESA TU PIN DE SEGURIDAD
-      </p>
-      <input
-        type="password"
-        id="qp-enviar-pin"
-        maxlength="6"
-        class="w-32 border-4 border-black p-3 font-black text-2xl tracking-widest text-center focus:outline-none bg-gray-50 mb-6"
-        placeholder="****"
-      />
-      <button
-        id="btn-confirm-enviar"
-        class="w-full bg-[#8b5cf6] text-white font-black uppercase p-4 border-4 border-black hover:bg-[#7c3aed] transition-colors relative flex items-center justify-center"
-      >
-        <span id="btn-confirm-text">CONFIRMAR ENVÍO</span>
-        <span
-          id="btn-confirm-spinner"
-          class="hidden material-symbols-outlined animate-spin absolute right-4"
-          >refresh</span
+        <!-- STEP 1 -->
+        <div
+          id="enviar-step-1"
+          class="flex-1 min-h-0 overflow-y-auto p-6 grid grid-cols-1 xl:grid-cols-[1fr_360px] gap-5 custom-scrollbar"
         >
-      </button>
-      <button
-        onclick="window.qpEnviargotoStep1()"
-        class="mt-4 text-xs font-black text-gray-500 uppercase hover:text-black"
-        >CANCELAR Y VOLVER</button
-      >
+          <div class="flex flex-col gap-5 min-w-0">
+            <div class="relative">
+              <label
+                for="qp-enviar-query"
+                class="block text-xs font-black uppercase mb-1"
+                >Buscar persona (fuera de mis contactos)</label
+              >
+              <input
+                type="text"
+                id="qp-enviar-query"
+                class="w-full border-4 border-black p-3 font-bold text-sm focus:outline-none bg-white"
+                placeholder="Ej: maria@ucv.edu o maria"
+                autocomplete="off"
+              />
+              <div
+                id="qp-autocomplete"
+                class="absolute left-0 right-0 top-full mt-1 bg-[#0f172a] text-white border-4 border-black hidden flex-col max-h-56 overflow-y-auto z-10000 custom-scrollbar"
+              >
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-black uppercase mb-1"
+                >Monto a enviar</label
+              >
+              <div class="flex items-center border-4 border-black p-2 bg-white">
+                <span class="font-black text-xl ml-2 mr-2">$</span>
+                <input
+                  type="number"
+                  id="qp-enviar-monto"
+                  class="w-full text-xl font-black focus:outline-none"
+                  placeholder="0.00"
+                />
+              </div>
+              <p
+                id="qp-balance-preview"
+                class="text-[11px] font-black uppercase mt-2 text-black/70"
+              >
+                Saldo restante estimado: --
+              </p>
+            </div>
+
+            <div>
+              <label class="block text-xs font-black uppercase mb-1"
+                >Concepto (opcional)</label
+              >
+              <input
+                type="text"
+                id="qp-enviar-concepto"
+                class="w-full border-4 border-black p-3 font-bold uppercase focus:outline-none focus:bg-gray-50 bg-white"
+                placeholder="Ej: pago comedor"
+              />
+            </div>
+
+            <div
+              id="qp-save-contact-container"
+              class="border-4 border-black bg-[#fff7d6] p-3"
+            >
+              <label class="flex items-center gap-2 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  id="qp-save-contact-toggle"
+                  class="w-5 h-5 border-2 border-black accent-black"
+                />
+                <span class="text-xs font-black uppercase"
+                  >Guardar este destinatario en mis contactos</span
+                >
+              </label>
+              <div id="qp-save-contact-fields" class="hidden mt-3">
+                <label
+                  for="qp-contact-alias"
+                  class="block text-[10px] font-black uppercase mb-1"
+                  >Alias (opcional)</label
+                >
+                <input
+                  type="text"
+                  id="qp-contact-alias"
+                  class="w-full border-4 border-black p-2 font-bold uppercase text-sm bg-white"
+                  placeholder="Ej: comedor pana"
+                />
+              </div>
+            </div>
+
+            <button
+              id="btn-pre-enviar"
+              class="w-full bg-black text-white font-black uppercase p-4 border-4 border-black hover:bg-gray-800 transition-colors"
+            >
+              Continuar con pin
+            </button>
+          </div>
+
+          <div class="flex flex-col gap-4 min-w-0 xl:sticky xl:top-0 h-fit">
+            <div
+              class="border-4 border-black bg-[radial-gradient(circle_at_top_left,#ffffff_0%,#ede9fe_70%,#ddd6fe_100%)] p-4 min-h-80"
+            >
+              <p
+                class="text-[11px] font-black uppercase tracking-widest text-black/60 mb-2"
+              >
+                Destinatario seleccionado
+              </p>
+              <div
+                id="qp-recipient-card"
+                class="border-4 border-dashed border-black p-4 bg-white h-[calc(100%-1.5rem)] min-h-65"
+              >
+                <p class="font-black uppercase text-sm">
+                  Aún no seleccionas destinatario
+                </p>
+                <p class="text-xs font-bold uppercase text-black/60 mt-1">
+                  Busca por correo o nombre y selecciónalo.
+                </p>
+              </div>
+            </div>
+
+            <div id="qp-save-contact-box" class="hidden"></div>
+          </div>
+        </div>
+
+        <!-- STEP 2 -->
+        <div
+          id="enviar-step-2"
+          class="hidden h-full flex-col items-center justify-center p-6"
+        >
+          <p class="font-bold text-center text-sm uppercase mb-4 text-black">
+            Ingresa tu pin de seguridad
+          </p>
+          <input
+            type="password"
+            id="qp-enviar-pin"
+            maxlength="6"
+            class="w-36 border-4 border-black p-3 font-black text-2xl tracking-widest text-center focus:outline-none bg-gray-50 mb-6"
+            placeholder="****"
+          />
+          <button
+            id="btn-confirm-enviar"
+            class="w-full max-w-sm bg-[#8b5cf6] text-white font-black uppercase p-4 border-4 border-black hover:bg-[#7c3aed] transition-colors relative flex items-center justify-center"
+          >
+            <span id="btn-confirm-text">Confirmar envío</span>
+            <span
+              id="btn-confirm-spinner"
+              class="hidden material-symbols-outlined animate-spin absolute right-4"
+              >refresh</span
+            >
+          </button>
+          <button
+            onclick="window.qpEnviargotoStep1()"
+            class="mt-4 text-xs font-black text-gray-500 uppercase hover:text-black"
+            >Cancelar y volver</button
+          >
+        </div>
+      </section>
     </div>
   </div>
 </div>
@@ -284,6 +436,25 @@
   .box-shadow-brutal {
     box-shadow: 6px 6px 0px 0px rgba(0, 0, 0, 1);
   }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: #f3f4f6;
+    border: 2px solid #000;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #8b5cf6;
+    border: 2px solid #000;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #7c3aed;
+  }
 </style>
 
 <script>
@@ -291,12 +462,329 @@
   import {
     authService,
     userService,
+    contactService,
     transactionService,
     pinService,
   } from "../../../services/api.js";
   import { updateUserLevel } from "../../../store/userStore.js";
 
   let searchTimeout = null;
+  let selectedRecipient = null;
+  let contactsCache = [];
+  let currentUserBalance = 0;
+
+  const byId = (id) => document.getElementById(id);
+
+  const initialsOf = (value) =>
+    String(value || "U")
+      .split(" ")
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((part) => part[0])
+      .join("")
+      .toUpperCase() || "U";
+
+  const normalizeRecipient = (raw, fromContact = false) => {
+    if (!raw) return null;
+    const name = raw.nombre || raw.name || "Usuario";
+    return {
+      id: raw.contact_id || raw.id,
+      contactRelationId: fromContact ? raw.id : null,
+      name,
+      alias: raw.alias || null,
+      email: raw.email || "",
+      cedula: raw.cedula || "",
+      userType: raw.user_type || "",
+      avatarUrl: raw.avatar_url || null,
+      isFavorite: Boolean(raw.is_favorite),
+    };
+  };
+
+  const findSavedContact = (recipient) => {
+    if (!recipient) return null;
+
+    return (
+      contactsCache.find((contact) => {
+        const sameRelation =
+          recipient.contactRelationId &&
+          String(contact.id) === String(recipient.contactRelationId);
+        const sameProfile =
+          recipient.id && String(contact.contact_id) === String(recipient.id);
+        const sameCedula =
+          recipient.cedula &&
+          contact.cedula &&
+          String(contact.cedula).trim() === String(recipient.cedula).trim();
+        const sameEmail =
+          recipient.email &&
+          contact.email &&
+          String(contact.email).trim().toLowerCase() ===
+            String(recipient.email).trim().toLowerCase();
+        return sameRelation || sameProfile || sameCedula || sameEmail;
+      }) || null
+    );
+  };
+
+  const updateBalancePreview = () => {
+    const amountInput = byId("qp-enviar-monto");
+    const preview = byId("qp-balance-preview");
+    if (!preview || !amountInput) return;
+
+    const amount = Number(amountInput.value || 0);
+    const remaining = Number(
+      (Number(currentUserBalance || 0) - amount).toFixed(2),
+    );
+    const safeRemaining = Number.isFinite(remaining)
+      ? remaining
+      : Number(currentUserBalance || 0);
+
+    preview.textContent = `Saldo restante estimado: $${safeRemaining.toFixed(2)}`;
+    preview.className = `text-[11px] font-black uppercase mt-2 ${safeRemaining < 0 ? "text-red-600" : "text-black/70"}`;
+  };
+
+  const syncSaveContactUI = () => {
+    const saveContainer = byId("qp-save-contact-container");
+    const saveToggle = byId("qp-save-contact-toggle");
+    const saveFields = byId("qp-save-contact-fields");
+    const aliasInput = byId("qp-contact-alias");
+
+    if (!saveContainer) return;
+
+    if (!selectedRecipient) {
+      saveContainer.classList.add("hidden");
+      if (saveToggle) saveToggle.checked = false;
+      if (saveFields) saveFields.classList.add("hidden");
+      if (aliasInput) aliasInput.value = "";
+      return;
+    }
+
+    const alreadySaved = Boolean(findSavedContact(selectedRecipient));
+    if (alreadySaved) {
+      saveContainer.classList.add("hidden");
+      if (saveToggle) saveToggle.checked = false;
+      if (saveFields) saveFields.classList.add("hidden");
+      if (aliasInput) aliasInput.value = "";
+      return;
+    }
+
+    saveContainer.classList.remove("hidden");
+  };
+
+  const renderRecipientCard = () => {
+    const card = byId("qp-recipient-card");
+    if (!card) return;
+
+    if (!selectedRecipient) {
+      card.className = "border-4 border-dashed border-black p-4 bg-white";
+      card.innerHTML = `
+        <p class="font-black uppercase text-sm">Aún no seleccionas destinatario</p>
+        <p class="text-xs font-bold uppercase text-black/60 mt-1">Busca por correo o nombre y selecciónalo.</p>
+      `;
+      syncSaveContactUI();
+      return;
+    }
+
+    const initials = initialsOf(
+      selectedRecipient.alias || selectedRecipient.name,
+    );
+    const role = selectedRecipient.userType
+      ? String(selectedRecipient.userType).replace(/_/g, " ")
+      : "usuario";
+
+    card.className = "border-4 border-black p-0 bg-white overflow-hidden";
+    card.innerHTML = `
+      <div class="h-full flex flex-col">
+        <div class="h-20 border-b-4 border-black bg-[linear-gradient(90deg,#8b5cf6_0%,#c4b5fd_100%)]"></div>
+        <div class="p-4 -mt-10">
+          <div class="flex items-start gap-3">
+            ${
+              selectedRecipient.avatarUrl
+                ? `<img src="${selectedRecipient.avatarUrl}" alt="Avatar" class="w-20 h-20 border-4 border-black object-cover bg-white" />`
+                : `<div class="w-20 h-20 border-4 border-black bg-[#d7fd48] flex items-center justify-center font-black text-2xl">${initials}</div>`
+            }
+            <div class="flex-1 min-w-0 pt-9">
+              <p class="font-black uppercase text-lg leading-tight">${selectedRecipient.alias || selectedRecipient.name}</p>
+              <p class="text-[11px] font-bold uppercase text-black/60 truncate">${selectedRecipient.email || "Sin correo"}</p>
+            </div>
+          </div>
+
+          <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <div class="border-2 border-black bg-[#f8fafc] px-2 py-2">
+              <p class="text-[9px] font-black uppercase text-black/50">Usuario</p>
+              <p class="text-[11px] font-black uppercase truncate">@${selectedRecipient.name}</p>
+            </div>
+            <div class="border-2 border-black bg-[#f8fafc] px-2 py-2">
+              <p class="text-[9px] font-black uppercase text-black/50">Tipo</p>
+              <p class="text-[11px] font-black uppercase truncate">${role}</p>
+            </div>
+            <div class="border-2 border-black bg-[#f8fafc] px-2 py-2 sm:col-span-2">
+              <p class="text-[9px] font-black uppercase text-black/50">Identificador</p>
+              <p class="text-[11px] font-black uppercase truncate">${selectedRecipient.cedula || selectedRecipient.email || "Sin dato"}</p>
+            </div>
+          </div>
+
+          <div class="mt-3 border-2 border-black bg-[#fff7d6] px-3 py-2">
+            <p class="text-[10px] font-black uppercase">Vista dinámica preparada para themes de perfil</p>
+          </div>
+        </div>
+      </div>
+    `;
+    syncSaveContactUI();
+  };
+
+  const renderAutocomplete = (users = []) => {
+    const box = byId("qp-autocomplete");
+    if (!box) return;
+
+    box.innerHTML = "";
+    if (!users.length) {
+      box.classList.add("hidden");
+      return;
+    }
+
+    users.forEach((u) => {
+      const recipient = normalizeRecipient(u, false);
+      const row = document.createElement("button");
+      row.type = "button";
+      row.className =
+        "w-full text-left px-3 py-2 border-b border-white/20 hover:bg-white/10 flex items-center gap-2";
+      row.innerHTML = `
+        <div class="w-9 h-9 border-2 border-white/80 bg-[#8b5cf6] text-white flex items-center justify-center font-black text-xs shrink-0">
+          ${initialsOf(recipient.name)}
+        </div>
+        <div class="min-w-0">
+          <p class="font-black uppercase text-xs truncate">${recipient.name}</p>
+          <p class="text-[10px] font-bold uppercase text-white/70 truncate">${recipient.email || "Sin correo"}</p>
+        </div>
+      `;
+      row.onclick = () => {
+        selectedRecipient = recipient;
+        const queryInput = byId("qp-enviar-query");
+        if (queryInput) queryInput.value = recipient.email || recipient.name;
+        box.classList.add("hidden");
+        renderRecipientCard();
+      };
+      box.appendChild(row);
+    });
+
+    box.classList.remove("hidden");
+    box.classList.add("flex");
+  };
+
+  const renderContactLists = (contacts = [], filterTerm = "") => {
+    const favList = byId("qp-favorites-list");
+    const allList = byId("qp-contacts-list");
+    if (!favList || !allList) return;
+
+    favList.innerHTML = "";
+    allList.innerHTML = "";
+
+    const needle = String(filterTerm || "")
+      .trim()
+      .toLowerCase();
+    const filtered = !needle
+      ? contacts
+      : contacts.filter((c) => {
+          const hay =
+            `${c.alias || ""} ${c.nombre || ""} ${c.email || ""} ${c.cedula || ""}`.toLowerCase();
+          return hay.includes(needle);
+        });
+
+    const favorites = filtered.filter((c) => c.is_favorite);
+    const others = filtered.filter((c) => !c.is_favorite);
+
+    const buildContactCard = (contact) => {
+      const recipient = normalizeRecipient(contact, true);
+      const card = document.createElement("div");
+      card.className =
+        "border-2 border-black bg-white p-2 flex items-center gap-2 hover:-translate-y-0.5 transition-transform";
+
+      const mainBtn = document.createElement("button");
+      mainBtn.type = "button";
+      mainBtn.className = "flex items-center gap-2 min-w-0 flex-1 text-left";
+      mainBtn.innerHTML = `
+        <div class="w-8 h-8 border-2 border-black bg-[#d7fd48] flex items-center justify-center font-black text-[10px] shrink-0">${initialsOf(contact.alias || contact.nombre)}</div>
+        <div class="min-w-0">
+          <p class="font-black uppercase text-[11px] leading-none truncate">${contact.alias || contact.nombre || "Contacto"}</p>
+          <p class="text-[9px] font-bold uppercase text-black/60 truncate">${contact.email || contact.cedula || "Sin identificador"}</p>
+        </div>
+      `;
+      mainBtn.onclick = () => {
+        selectedRecipient = recipient;
+        const queryInput = byId("qp-enviar-query");
+        if (queryInput) queryInput.value = recipient.email || recipient.name;
+        renderRecipientCard();
+      };
+
+      const favBtn = document.createElement("button");
+      favBtn.type = "button";
+      favBtn.className =
+        "border-2 border-black w-7 h-7 flex items-center justify-center bg-white hover:bg-[#fff7d6]";
+      favBtn.innerHTML = `<span class="material-symbols-outlined text-sm ${contact.is_favorite ? "text-[#f59e0b]" : "text-black"}">star</span>`;
+      favBtn.onclick = async () => {
+        const prev = Boolean(contact.is_favorite);
+        contact.is_favorite = !prev;
+        renderContactLists(
+          contactsCache,
+          byId("qp-contacts-filter")?.value || "",
+        );
+
+        try {
+          await contactService.toggleFavorite(contact.id, contact.is_favorite);
+          await loadContacts();
+          if (
+            selectedRecipient &&
+            String(selectedRecipient.id) === String(contact.contact_id)
+          ) {
+            selectedRecipient = {
+              ...selectedRecipient,
+              isFavorite: contact.is_favorite,
+            };
+            renderRecipientCard();
+          }
+        } catch (err) {
+          contact.is_favorite = prev;
+          renderContactLists(
+            contactsCache,
+            byId("qp-contacts-filter")?.value || "",
+          );
+          alert(err?.message || "No se pudo actualizar favorito");
+        }
+      };
+
+      card.appendChild(mainBtn);
+      card.appendChild(favBtn);
+      return card;
+    };
+
+    if (!favorites.length) {
+      favList.innerHTML =
+        '<p class="text-[10px] font-bold uppercase text-black/50">Sin favoritos aún</p>';
+    } else {
+      favorites.forEach((c) => favList.appendChild(buildContactCard(c)));
+    }
+
+    if (!others.length) {
+      allList.innerHTML =
+        '<p class="text-[10px] font-bold uppercase text-black/50">Sin contactos guardados</p>';
+    } else {
+      others.forEach((c) => allList.appendChild(buildContactCard(c)));
+    }
+  };
+
+  const loadContacts = async () => {
+    try {
+      const currentUser = authService.getCurrentUser();
+      if (!currentUser?.id) return;
+      contactsCache = await contactService.getContacts(currentUser.id);
+      renderContactLists(
+        contactsCache,
+        byId("qp-contacts-filter")?.value || "",
+      );
+      renderRecipientCard();
+    } catch (err) {
+      console.error("Error cargando contactos", err);
+    }
+  };
 
   // Global functions for modals
   window.openModal = (id) => {
@@ -315,6 +803,44 @@
       if (u && u.cedula) {
         document.getElementById("recibir-cedula-display").innerText = u.cedula;
       }
+    }
+
+    if (id === "modal-enviar") {
+      selectedRecipient = null;
+      const currentUser = authService.getCurrentUser();
+      currentUserBalance = Number(currentUser?.balance || 0);
+      const queryInput = byId("qp-enviar-query");
+      const contactsFilter = byId("qp-contacts-filter");
+      const amountInput = byId("qp-enviar-monto");
+      const conceptInput = byId("qp-enviar-concepto");
+      const pinInput = byId("qp-enviar-pin");
+      const aliasInput = byId("qp-contact-alias");
+      const saveToggle = byId("qp-save-contact-toggle");
+      const saveFields = byId("qp-save-contact-fields");
+      const autoBox = byId("qp-autocomplete");
+
+      if (queryInput) queryInput.value = "";
+      if (contactsFilter) contactsFilter.value = "";
+      if (amountInput) amountInput.value = "";
+      if (conceptInput) conceptInput.value = "";
+      if (pinInput) pinInput.value = "";
+      if (aliasInput) aliasInput.value = "";
+      if (saveToggle) saveToggle.checked = false;
+      if (saveFields) saveFields.classList.add("hidden");
+      if (autoBox) autoBox.classList.add("hidden");
+
+      const successOverlay = byId("qp-transfer-success");
+      if (successOverlay) {
+        successOverlay.classList.remove("flex");
+        successOverlay.classList.add("hidden", "opacity-0");
+        successOverlay.querySelector("div")?.classList.add("scale-95");
+        successOverlay.querySelector("div")?.classList.remove("scale-100");
+      }
+
+      window.qpEnviargotoStep1();
+      renderRecipientCard();
+      updateBalancePreview();
+      loadContacts();
     }
 
     requestAnimationFrame(() => {
@@ -336,12 +862,31 @@
 
     if (id === "modal-enviar") {
       window.qpEnviargotoStep1();
-      const c = document.getElementById("qp-enviar-cedula");
+      const c = document.getElementById("qp-enviar-query");
+      const f = document.getElementById("qp-contacts-filter");
       const mm = document.getElementById("qp-enviar-monto");
-      const n = document.getElementById("enviar-selected-name");
+      const n = document.getElementById("qp-autocomplete");
+      const saveToggle = byId("qp-save-contact-toggle");
+      const saveFields = byId("qp-save-contact-fields");
+      const aliasInput = byId("qp-contact-alias");
       if (c) c.value = "";
+      if (f) f.value = "";
       if (mm) mm.value = "";
       if (n) n.classList.add("hidden");
+      if (saveToggle) saveToggle.checked = false;
+      if (saveFields) saveFields.classList.add("hidden");
+      if (aliasInput) aliasInput.value = "";
+
+      const successOverlay = byId("qp-transfer-success");
+      if (successOverlay) {
+        successOverlay.classList.remove("flex");
+        successOverlay.classList.add("hidden", "opacity-0");
+        successOverlay.querySelector("div")?.classList.add("scale-95");
+        successOverlay.querySelector("div")?.classList.remove("scale-100");
+      }
+
+      selectedRecipient = null;
+      renderRecipientCard();
     }
 
     setTimeout(() => {
@@ -377,14 +922,48 @@
       if (el) document.body.appendChild(el);
     });
 
-    const cInput = document.getElementById("qp-enviar-cedula");
+    const cInput = document.getElementById("qp-enviar-query");
+    const contactsFilterInput = document.getElementById("qp-contacts-filter");
     const autoBox = document.getElementById("qp-autocomplete");
-    const nameBox = document.getElementById("enviar-selected-name");
+    const amountInput = document.getElementById("qp-enviar-monto");
+    const saveToggle = document.getElementById("qp-save-contact-toggle");
+    const saveFields = document.getElementById("qp-save-contact-fields");
+    const successContinueBtn = document.getElementById(
+      "qp-transfer-success-continue",
+    );
+
+    if (contactsFilterInput) {
+      contactsFilterInput.addEventListener("input", (e) => {
+        renderContactLists(contactsCache, e.target.value || "");
+      });
+    }
+
+    if (amountInput) {
+      amountInput.addEventListener("input", () => updateBalancePreview());
+    }
+
+    if (saveToggle && saveFields) {
+      saveToggle.addEventListener("change", () => {
+        if (saveToggle.checked) {
+          saveFields.classList.remove("hidden");
+        } else {
+          saveFields.classList.add("hidden");
+          const aliasInput = byId("qp-contact-alias");
+          if (aliasInput) aliasInput.value = "";
+        }
+      });
+    }
+
+    if (successContinueBtn) {
+      successContinueBtn.addEventListener("click", () => {
+        window.closeModal("modal-enviar");
+        window.location.reload();
+      });
+    }
 
     if (cInput) {
       cInput.addEventListener("input", (e) => {
         const val = e.target.value.trim();
-        nameBox.classList.add("hidden");
 
         if (val.length < 2) {
           autoBox.classList.add("hidden");
@@ -395,26 +974,7 @@
         searchTimeout = setTimeout(async () => {
           try {
             const results = await userService.searchUsers(val);
-            autoBox.innerHTML = "";
-            if (results && results.length > 0) {
-              results.forEach((u) => {
-                const div = document.createElement("div");
-                div.className =
-                  "p-3 border-b-2 border-black hover:bg-gray-100 cursor-pointer flex flex-col";
-                div.innerHTML = `<span class="font-black">${u.cedula}</span><span class="text-[10px] text-gray-500 uppercase tracking-widest">${u.nombre || u.name || "Usuario"}</span>`;
-                div.onclick = () => {
-                  cInput.value = u.cedula;
-                  autoBox.classList.add("hidden");
-                  nameBox.innerText = `DESTINATARIO: ${u.nombre || u.name || "Usuario"}`;
-                  nameBox.classList.remove("hidden");
-                };
-                autoBox.appendChild(div);
-              });
-              autoBox.classList.remove("hidden");
-              autoBox.classList.add("flex");
-            } else {
-              autoBox.classList.add("hidden");
-            }
+            renderAutocomplete(results || []);
           } catch (err) {
             console.error(err);
           }
@@ -431,10 +991,13 @@
     const preBtn = document.getElementById("btn-pre-enviar");
     if (preBtn) {
       preBtn.addEventListener("click", () => {
-        const c = document.getElementById("qp-enviar-cedula").value.trim();
         const m = parseFloat(document.getElementById("qp-enviar-monto").value);
-        if (!c || isNaN(m) || m <= 0) {
-          alert("Por favor ingrese cédula y un monto válido");
+        if (!selectedRecipient || !selectedRecipient.cedula) {
+          alert("Selecciona un destinatario válido");
+          return;
+        }
+        if (isNaN(m) || m <= 0) {
+          alert("Ingresa un monto válido");
           return;
         }
         window.qpEnviargotoStep2();
@@ -444,7 +1007,18 @@
     const confBtn = document.getElementById("btn-confirm-enviar");
     if (confBtn) {
       confBtn.addEventListener("click", async () => {
-        const c = document.getElementById("qp-enviar-cedula").value.trim();
+        const currentUser = authService.getCurrentUser();
+        if (!currentUser?.id) {
+          alert("Sesión inválida. Inicia sesión de nuevo.");
+          return;
+        }
+
+        if (!selectedRecipient?.cedula) {
+          alert("Selecciona un destinatario válido");
+          window.qpEnviargotoStep1();
+          return;
+        }
+
         const m = parseFloat(document.getElementById("qp-enviar-monto").value);
         const pin = document.getElementById("qp-enviar-pin").value.trim();
         const refText = document
@@ -458,28 +1032,66 @@
 
         const btnText = document.getElementById("btn-confirm-text");
         const btnSpin = document.getElementById("btn-confirm-spinner");
+        const successOverlay = document.getElementById("qp-transfer-success");
         btnText.innerText = "PROCESANDO...";
         btnSpin.classList.remove("hidden");
         confBtn.disabled = true;
 
         try {
-          const pinRes = await pinService.verify(pin);
-          if (pinRes && !pinRes.success && pinRes.success === false) {
-            throw new Error(pinRes.message || "PIN Incorrecto");
-          }
-
-          await transactionService.transfer({
-            receptor_cedula: c,
+          const transferResult = await transactionService.transfer({
+            emisor_id: currentUser.id,
+            cedula_receptor: selectedRecipient.cedula,
             monto: m,
             concepto: refText || "TRANSFERENCIA RAPIDA",
+            pin,
           });
 
-          alert("¡Dinero enviado con éxito!");
-          
+          const wantsSaveContact = Boolean(
+            byId("qp-save-contact-toggle")?.checked,
+          );
+          if (wantsSaveContact && selectedRecipient?.id) {
+            const alias = String(byId("qp-contact-alias")?.value || "").trim();
+            const savedContact = findSavedContact(selectedRecipient);
+            try {
+              if (savedContact) {
+                await contactService.updateAlias(
+                  savedContact.id,
+                  alias || savedContact.alias || selectedRecipient.name,
+                );
+              } else {
+                await contactService.addContact({
+                  contactId: selectedRecipient.id,
+                  cedula: selectedRecipient.cedula,
+                  alias:
+                    alias || selectedRecipient.alias || selectedRecipient.name,
+                });
+              }
+              await loadContacts();
+            } catch (_contactErr) {
+              // La transferencia ya fue exitosa; no se bloquea por fallo al guardar contacto.
+            }
+          }
+
+          if (successOverlay) {
+            successOverlay.classList.remove("hidden");
+            requestAnimationFrame(() => {
+              successOverlay.classList.add("flex");
+              successOverlay.classList.remove("opacity-0");
+              successOverlay.querySelector("div")?.classList.remove("scale-95");
+              successOverlay.querySelector("div")?.classList.add("scale-100");
+            });
+          }
+
+          if (transferResult?.saldo_restante_estimado !== undefined) {
+            const balancePreview =
+              document.getElementById("qp-balance-preview");
+            if (balancePreview) {
+              balancePreview.innerText = `Saldo restante estimado: Bs. ${Number(transferResult.saldo_restante_estimado).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+            }
+          }
+
           // Actualizar nivel después de transferencia
-          updateUserLevel();
-          
-          window.location.reload();
+          await updateUserLevel();
         } catch (error) {
           alert(error.message || "Error al procesar transferencia");
         } finally {

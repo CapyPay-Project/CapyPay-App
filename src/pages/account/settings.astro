@@ -256,23 +256,13 @@ import ProfileModals from "../../components/account/profile/ProfileModals.astro"
       btnSavePin.disabled = true;
 
       try {
-        // TODO: Mover esto a userService en api.js
-        const response = await fetch(
-          `http://localhost:3000/api/usuario/${userId}/pin`,
-          {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ pin }),
-          },
-        );
+        const response = await userService.updatePin(pin, userId);
 
-        const data = await response.json();
-
-        if (response.ok) {
+        if (response) {
           alert("PIN actualizado con éxito.");
           pinInput.value = "";
         } else {
-          alert("Error: " + (data.error || "No se pudo actualizar"));
+          alert("No se pudo actualizar el PIN");
         }
       } catch (e) {
         console.error(e);

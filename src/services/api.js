@@ -589,14 +589,24 @@ export const userService = {
   },
   
   // Backend route: GET /api/historial
-  getHistory: async (cedula) => {
-    if (!cedula) {
-        const user = authService.getCurrentUser();
-        cedula = user?.cedula;
+  getHistory: async (cedulaOrParams) => {
+    const params = typeof cedulaOrParams === 'object' && cedulaOrParams !== null
+      ? cedulaOrParams
+      : { cedula: cedulaOrParams };
+
+    if (!params.cedula && !params.userId) {
+      const user = authService.getCurrentUser();
+      params.cedula = user?.cedula || params.cedula;
+      params.userId = user?.id || params.userId;
     }
-    if (!cedula) throw new Error("Cédula requerida para historial");
-    
-    return fetchAPI(`/historial?cedula=${cedula}`);
+
+    if (!params.cedula && !params.userId) throw new Error("Cédula o usuario requerido para historial");
+
+    const query = new URLSearchParams();
+    if (params.cedula) query.set('cedula', params.cedula);
+    if (params.userId) query.set('userId', params.userId);
+
+    return fetchAPI(`/historial?${query.toString()}`);
   },
 
   searchUsers: async (query) => {
@@ -617,7 +627,70 @@ export const userService = {
         method: 'PUT',
         body: JSON.stringify({ avatar_url: avatarUrl || "" })
       });
+  },
+
+  updatePin: async (pin, userId) => {
+      let id = userId;
+      if (!id) {
+        const storedUser = authService.getCurrentUser();
+        id = storedUser?.id || storedUser?.user_id;
+      }
+      if (!id) throw new Error("ID de usuario no encontrado");
+
+      return fetchAPI(`/usuario/${id}/pin`, {
+        method: 'PUT',
+        body: JSON.stringify({ pin: String(pin || '').trim() })
+      });
   }
+};
+
+export const contactService = {
+  getContacts: async (userId) => {
+    const currentUser = authService.getCurrentUser();
+    const safeId = userId || currentUser?.id;
+    if (!safeId) throw new Error('ID de usuario no encontrado');
+    const data = await fetchAPI(`/contactos?usuario_id=${safeId}`);
+    return data?.contactos || [];
+  },
+
+  addContact: async ({ contactId, cedula, alias, userId }) => {
+    const currentUser = authService.getCurrentUser();
+    const safeId = userId || currentUser?.id;
+    if (!safeId) throw new Error('ID de usuario no encontrado');
+
+    const payload = {
+      usuario_id: safeId,
+      alias: alias || undefined,
+    };
+
+    if (contactId) payload.contact_id = contactId;
+    if (cedula) payload.cedula = cedula;
+
+    return fetchAPI('/contactos', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
+  },
+
+  toggleFavorite: async (contactRelationId, isFavorite) => {
+    return fetchAPI(`/contactos/${contactRelationId}/favorite`, {
+      method: 'PUT',
+      body: JSON.stringify({ is_favorite: Boolean(isFavorite) }),
+    });
+  },
+
+  updateAlias: async (contactRelationId, alias) => {
+    return fetchAPI(`/contactos/${contactRelationId}`, {
+      method: 'PUT',
+      body: JSON.stringify({ alias }),
+    });
+  },
+
+  removeContact: async (contactRelationId) => {
+    return fetchAPI(`/contactos/${contactRelationId}`, {
+      method: 'DELETE',
+    });
+  },
 };
 
 export const comedorService = {
