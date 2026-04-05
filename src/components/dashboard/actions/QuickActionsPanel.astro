@@ -51,18 +51,18 @@
 >
   <div
     id="qp-transfer-success"
-    class="hidden absolute inset-0 z-[10001] items-center justify-center bg-black/80 backdrop-blur-md opacity-0 transition-opacity duration-300 pointer-events-auto"
+    class="hidden absolute inset-0 z-10001 items-center justify-center bg-black/80 backdrop-blur-md opacity-0 transition-opacity duration-300 pointer-events-auto"
   >
     <div
-      class="bg-[#d7fd48] border-4 border-black shadow-[10px_10px_0_0_#000] px-8 py-10 text-center max-w-md w-[calc(100%-2rem)] mx-4 transform scale-95 transition-transform duration-300"
+      class="bg-[#f6f1e7] border-4 border-black px-8 py-10 text-center max-w-md w-[calc(100%-2rem)] mx-4 transform scale-95 transition-transform duration-300 rounded-lg"
     >
       <div
-        class="w-20 h-20 mx-auto mb-4 bg-black border-4 border-black flex items-center justify-center text-[#d7fd48] text-4xl"
+        class="w-20 h-20 mx-auto mb-4 bg-[#8b5cf6] border-4 border-black rounded-lg flex items-center justify-center text-white text-4xl"
       >
         ✓
       </div>
       <p
-        class="text-xs font-black uppercase tracking-[0.35em] text-black/60 mb-2"
+        class="text-xs font-black uppercase tracking-[0.18em] text-black/60 mb-2"
       >
         Transferencia exitosa
       </p>
@@ -75,7 +75,7 @@
       <button
         id="qp-transfer-success-continue"
         type="button"
-        class="mt-6 w-full border-4 border-black bg-white px-5 py-3 font-black uppercase text-sm hover:bg-gray-100"
+        class="mt-6 w-full border-4 border-black bg-[#d7fd48] text-black px-5 py-3 font-black uppercase tracking-wider text-sm hover:bg-[#c7f13f] rounded-md"
       >
         Continuar
       </button>
@@ -83,571 +83,746 @@
   </div>
 
   <div
-    class="bg-white border-4 border-black box-shadow-brutal w-full max-w-6xl h-[88vh] max-h-190 p-0 transform scale-95 opacity-0 transition-all duration-300 relative pointer-events-auto overflow-hidden"
+    class="bg-[#f6f1e7] border-4 border-black w-full max-w-6xl h-[86vh] max-h-320 p-0 transform scale-95 opacity-0 transition-all duration-300 relative pointer-events-auto overflow-hidden rounded-xl"
+    style="background-image: linear-gradient(rgba(0,0,0,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.06) 1px, transparent 1px); background-size: 28px 28px;"
     id="modal-enviar-content"
   >
-    <button
-      onclick="window.closeModal('modal-enviar')"
-      class="absolute top-3 right-3 hover:bg-gray-200 p-1 z-20 border-2 border-black bg-white"
-    >
-      <span class="material-symbols-outlined font-black text-xl">close</span>
-    </button>
-
-    <div class="h-full grid grid-cols-1 lg:grid-cols-[340px_1fr]">
-      <!-- COLUMNA CONTACTOS -->
-      <aside class="border-r-4 border-black bg-[#f7f2ff] flex flex-col min-h-0">
-        <div class="px-4 py-4 border-b-4 border-black bg-[#ede1ff]">
-          <div class="flex items-center gap-2 text-[#5b21b6] mb-3">
-            <span class="material-symbols-outlined">groups</span>
-            <h3 class="text-sm font-black uppercase tracking-widest">
-              Contactos rápidos
-            </h3>
-          </div>
-
-          <label
-            for="qp-contacts-filter"
-            class="block text-[10px] font-black uppercase mb-1"
-            >Filtrar mis contactos</label
+    <div class="h-full flex flex-col">
+      <div
+        class="flex items-center justify-between gap-3 px-5 lg:px-6 py-4 border-b-4 border-black bg-[#f6f1e7]"
+      >
+        <div class="flex items-center gap-3 min-w-0">
+          <div
+            class="w-10 h-10 rounded-lg bg-[#8b5cf6] text-white flex items-center justify-center shrink-0"
           >
-          <input
-            type="text"
-            id="qp-contacts-filter"
-            class="w-full border-4 border-black p-3 font-bold text-sm focus:outline-none bg-white"
-            placeholder="Ej: anyo"
-            autocomplete="off"
-          />
-        </div>
-
-        <div
-          class="flex-1 min-h-0 overflow-y-auto p-3 flex flex-col gap-3 custom-scrollbar"
-        >
-          <div>
-            <p
-              class="text-[10px] font-black uppercase tracking-widest text-black/60 mb-2"
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              width="22"
+              height="22"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
             >
-              Favoritos
-            </p>
-            <div id="qp-favorites-list" class="flex flex-col gap-2"></div>
+              <path d="M3 12h14"></path>
+              <path d="m13 5 7 7-7 7"></path>
+            </svg>
           </div>
-
-          <div>
-            <p
-              class="text-[10px] font-black uppercase tracking-widest text-black/60 mb-2"
+          <div class="min-w-0">
+            <h3
+              class="text-xl lg:text-2xl font-black tracking-tight leading-none text-[#111827]"
             >
-              Todos los contactos
+              Transferencia exprés
+            </h3>
+            <p
+              class="text-[11px] font-semibold tracking-wide text-black/55 mt-1"
+            >
+              Flujo rápido entre tus contactos y búsquedas
             </p>
-            <div id="qp-contacts-list" class="flex flex-col gap-2"></div>
           </div>
         </div>
-      </aside>
 
-      <!-- COLUMNA TRANSFERENCIA -->
-      <section class="bg-white h-full min-h-0 flex flex-col">
-        <div
-          class="px-6 py-4 border-b-4 border-black flex items-center gap-2 text-[#8b5cf6]"
-        >
-          <span class="material-symbols-outlined">send</span>
-          <h3 class="text-xl font-black uppercase tracking-tight">
-            Enviar dinero
-          </h3>
+        <div class="flex items-center gap-2">
+          <button
+            id="qp-toggle-contacts"
+            type="button"
+            class="inline-flex items-center gap-2 border-4 border-black bg-white px-3 py-2 text-[11px] font-black uppercase tracking-wider hover:bg-[#d7fd48] hover:text-black active:scale-95 transition-all duration-150 rounded-md"
+            aria-pressed="true"
+          >
+            <span class="material-symbols-outlined text-[18px]">contacts</span>
+            Contactos
+          </button>
+          <button
+            onclick="window.closeModal('modal-enviar')"
+            class="inline-flex items-center gap-2 border-4 border-black bg-white px-3 py-2 text-[11px] font-black uppercase tracking-wider hover:bg-[#fda4af] hover:text-black active:scale-95 transition-all duration-150 rounded-md"
+          >
+            <span class="material-symbols-outlined text-[18px]">close</span>
+            Cerrar
+          </button>
         </div>
+      </div>
 
-        <!-- STEP 1 -->
-        <div
-          id="enviar-step-1"
-          class="flex-1 min-h-0 overflow-y-auto p-6 grid grid-cols-1 xl:grid-cols-[1fr_360px] gap-5 custom-scrollbar"
+      <div class="h-full min-h-0 flex">
+        <!-- COLUMNA CONTACTOS -->
+        <aside
+          id="qp-contacts-sidebar"
+          class="w-[320px] opacity-100 translate-x-0 shrink-0 border-r-4 border-black bg-[#f6f1e7] flex flex-col min-h-0 overflow-hidden transition-[width,opacity,transform] duration-300 ease-out"
         >
-          <div class="flex flex-col gap-5 min-w-0">
-            <div class="relative">
-              <label
-                for="qp-enviar-query"
-                class="block text-xs font-black uppercase mb-1"
-                >Buscar persona (fuera de mis contactos)</label
-              >
-              <input
-                type="text"
-                id="qp-enviar-query"
-                class="w-full border-4 border-black p-3 font-bold text-sm focus:outline-none bg-white"
-                placeholder="Ej: maria@ucv.edu o maria"
-                autocomplete="off"
-              />
-              <div
-                id="qp-autocomplete"
-                class="absolute left-0 right-0 top-full mt-1 bg-[#0f172a] text-white border-4 border-black hidden flex-col max-h-56 overflow-y-auto z-10000 custom-scrollbar"
-              >
+          <div class="px-4 py-4 border-b-4 border-black bg-[#f6f1e7]">
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <div class="flex items-center gap-2 text-black">
+                <span class="material-symbols-outlined">groups</span>
+                <h3 class="text-sm font-black uppercase tracking-widest">
+                  Contactos rápidos
+                </h3>
               </div>
+              <button
+                id="qp-open-contact-manager"
+                type="button"
+                class="border-4 border-black bg-white px-3 py-2 text-[11px] font-black uppercase tracking-wider hover:bg-[#d7fd48] hover:text-black active:scale-95 transition-all duration-150 rounded-md"
+              >
+                Gestionar
+              </button>
             </div>
 
+            <label
+              for="qp-contacts-filter"
+              class="block text-[10px] font-black uppercase mb-2"
+              >Filtra contactos</label
+            >
+            <input
+              type="text"
+              id="qp-contacts-filter"
+              class="w-full border-4 border-black p-3 font-bold text-sm text-center placeholder:text-center focus:outline-none bg-white rounded-md"
+              placeholder="Nombre o correo"
+              autocomplete="off"
+            />
+          </div>
+
+          <div class="px-4 pt-3 pb-1">
+            <p
+              class="text-[9px] font-black uppercase tracking-[0.18em] text-black/65"
+            >
+              Tus accesos rápidos para transferir en segundos
+            </p>
+          </div>
+
+          <div
+            class="flex-1 min-h-0 overflow-y-auto p-3 flex flex-col gap-3 custom-scrollbar"
+          >
             <div>
-              <label class="block text-xs font-black uppercase mb-1"
-                >Monto a enviar</label
-              >
-              <div class="flex items-center border-4 border-black p-2 bg-white">
-                <span class="font-black text-xl ml-2 mr-2">$</span>
-                <input
-                  type="number"
-                  id="qp-enviar-monto"
-                  class="w-full text-xl font-black focus:outline-none"
-                  placeholder="0.00"
-                />
-              </div>
               <p
-                id="qp-balance-preview"
-                class="text-[11px] font-black uppercase mt-2 text-black/70"
+                class="text-[10px] font-black uppercase tracking-widest text-black/60 mb-2"
               >
-                Saldo restante estimado: --
+                Favoritos
               </p>
+              <div id="qp-favorites-list" class="flex flex-col gap-2"></div>
             </div>
 
             <div>
-              <label class="block text-xs font-black uppercase mb-1"
-                >Concepto (opcional)</label
+              <p
+                class="text-[10px] font-black uppercase tracking-widest text-black/60 mb-2"
               >
-              <input
-                type="text"
-                id="qp-enviar-concepto"
-                class="w-full border-4 border-black p-3 font-bold uppercase focus:outline-none focus:bg-gray-50 bg-white"
-                placeholder="Ej: pago comedor"
-              />
+                Todos los contactos
+              </p>
+              <div id="qp-contacts-list" class="flex flex-col gap-2"></div>
             </div>
+          </div>
+        </aside>
 
-            <div
-              id="qp-save-contact-container"
-              class="border-4 border-black bg-[#fff7d6] p-3"
-            >
-              <label class="flex items-center gap-2 cursor-pointer select-none">
-                <input
-                  type="checkbox"
-                  id="qp-save-contact-toggle"
-                  class="w-5 h-5 border-2 border-black accent-black"
-                />
-                <span class="text-xs font-black uppercase"
-                  >Guardar este destinatario en mis contactos</span
-                >
-              </label>
-              <div id="qp-save-contact-fields" class="hidden mt-3">
+        <!-- COLUMNA TRANSFERENCIA -->
+        <section class="bg-[#f6f1e7] h-full min-h-0 flex-1 flex flex-col">
+          <!-- STEP 1 -->
+          <div
+            id="enviar-step-1"
+            class="flex-1 min-h-0 overflow-y-auto p-5 lg:p-6 grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_390px] gap-4 custom-scrollbar"
+          >
+            <div class="flex flex-col gap-4 min-w-0">
+              <div class="relative p-0">
                 <label
-                  for="qp-contact-alias"
-                  class="block text-[10px] font-black uppercase mb-1"
-                  >Alias (opcional)</label
+                  for="qp-enviar-query"
+                  class="block text-xs font-black uppercase mb-2"
+                  >Buscar destinatario</label
                 >
                 <input
                   type="text"
-                  id="qp-contact-alias"
-                  class="w-full border-4 border-black p-2 font-bold uppercase text-sm bg-white"
-                  placeholder="Ej: comedor pana"
+                  id="qp-enviar-query"
+                  class="w-full border-4 border-black p-3.5 font-bold text-sm focus:outline-none bg-white rounded-md"
+                  placeholder="Username, ID o Email..."
+                  autocomplete="off"
                 />
+                <div
+                  id="qp-autocomplete"
+                  class="absolute left-0 right-0 top-full mt-1 bg-[#312e81] text-white border border-black/20 hidden flex-col max-h-56 overflow-y-auto z-10000 custom-scrollbar rounded-md"
+                >
+                </div>
               </div>
+
+              <div class="p-0">
+                <label class="block text-xs font-black uppercase mb-2"
+                  >Monto a enviar</label
+                >
+                <div
+                  class="flex items-stretch border-4 border-black bg-white overflow-hidden rounded-md"
+                >
+                  <span
+                    class="flex items-center justify-center min-w-16 px-4 border-r-4 border-black bg-[#8b5cf6] text-white font-black text-4xl"
+                  >
+                    $
+                  </span>
+                  <input
+                    type="number"
+                    id="qp-enviar-monto"
+                    class="w-full px-4 py-4 text-4xl lg:text-5xl font-black tracking-tight focus:outline-none bg-white text-[#312e81] placeholder:text-black/35"
+                    placeholder="0.00"
+                  />
+                </div>
+              </div>
+
+              <div class="p-0">
+                <label class="block text-xs font-black uppercase mb-2"
+                  >Concepto (opcional)</label
+                >
+                <textarea
+                  id="qp-enviar-concepto"
+                  rows="2"
+                  maxlength="220"
+                  class="w-full border-4 border-black p-3.5 font-bold focus:outline-none bg-white rounded-md resize-none overflow-y-auto min-h-13 max-h-36"
+                  placeholder="¿Por qué este envío?"></textarea>
+              </div>
+
+              <div id="qp-save-contact-container" class="p-0">
+                <label
+                  class="flex items-center gap-2 cursor-pointer select-none"
+                >
+                  <input
+                    type="checkbox"
+                    id="qp-save-contact-toggle"
+                    class="w-5 h-5 border-2 border-black accent-black"
+                  />
+                  <span class="text-xs font-black uppercase"
+                    >Guardar este destinatario en mis contactos</span
+                  >
+                </label>
+                <div id="qp-save-contact-fields" class="hidden mt-3">
+                  <label
+                    for="qp-contact-alias"
+                    class="block text-[10px] font-black uppercase mb-1"
+                    >Alias (opcional)</label
+                  >
+                  <input
+                    type="text"
+                    id="qp-contact-alias"
+                    class="w-full border-4 border-black p-2 font-bold uppercase text-sm bg-white"
+                    placeholder="Ej: comedor pana"
+                  />
+                </div>
+              </div>
+
+              <button
+                id="btn-pre-enviar"
+                class="w-full bg-[#d7fd48] text-black font-black uppercase tracking-wider p-4 border-4 border-black hover:bg-[#c7f13f] active:scale-[0.99] transition-all duration-150 rounded-md"
+              >
+                Continuar con el pago
+              </button>
             </div>
 
-            <button
-              id="btn-pre-enviar"
-              class="w-full bg-black text-white font-black uppercase p-4 border-4 border-black hover:bg-gray-800 transition-colors"
+            <div
+              class="flex flex-col gap-4 min-w-0 xl:sticky xl:top-0 h-full min-h-0"
             >
-              Continuar con pin
+              <div
+                class="border-4 border-black bg-white p-4 rounded-lg flex-1 min-h-0 flex flex-col"
+              >
+                <p
+                  class="text-[11px] font-black uppercase tracking-widest text-black/60 mb-2"
+                >
+                  Destinatario seleccionado
+                </p>
+                <div
+                  id="qp-recipient-card"
+                  class="border-4 border-dashed border-black p-4 bg-[#f8fafc] rounded-md flex-1 min-h-0 flex flex-col"
+                >
+                  <p class="font-black uppercase text-sm">
+                    Aún no seleccionas destinatario
+                  </p>
+                  <p class="text-xs font-bold uppercase text-black/60 mt-1">
+                    Busca por correo o nombre y selecciónalo.
+                  </p>
+                </div>
+
+                <div class="mt-3 p-0">
+                  <div
+                    class="flex items-center justify-between pb-2 text-xs font-black uppercase text-black/80"
+                  >
+                    <span>Estado de envío</span>
+                    <span class="text-[#4c1d95]">Listo</span>
+                  </div>
+                  <div
+                    class="mt-2 border-4 border-black bg-white px-3 py-2 rounded-md"
+                  >
+                    <p
+                      class="text-[9px] font-black uppercase text-[#4c1d95]/70"
+                    >
+                      Saldo estimado post-transacción
+                    </p>
+                    <p
+                      id="qp-right-balance-preview"
+                      class="text-4xl font-black text-[#312e81] leading-none mt-1 tracking-tight"
+                    >
+                      $0.00
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 2 -->
+          <div
+            id="enviar-step-2"
+            class="hidden h-full flex-col items-center justify-center p-6"
+          >
+            <p
+              class="font-bold text-center text-sm uppercase tracking-wide mb-4 text-[#312e81]"
+            >
+              Ingresa tu pin de seguridad
+            </p>
+            <input
+              type="password"
+              id="qp-enviar-pin"
+              maxlength="6"
+              class="w-40 border-4 border-black p-3 font-black text-2xl tracking-widest text-center focus:outline-none bg-white text-[#312e81] rounded-md mb-6"
+              placeholder="****"
+            />
+            <button
+              id="btn-confirm-enviar"
+              class="w-full max-w-sm bg-[#d7fd48] text-black font-black uppercase tracking-wider p-4 border-4 border-black hover:bg-[#c7f13f] transition-colors relative flex items-center justify-center rounded-md"
+            >
+              <span id="btn-confirm-text">Confirmar envío</span>
+              <span
+                id="btn-confirm-spinner"
+                class="hidden material-symbols-outlined animate-spin absolute right-4"
+                >refresh</span
+              >
+            </button>
+            <button
+              onclick="window.qpEnviargotoStep1()"
+              class="mt-4 text-xs font-black text-gray-500 uppercase hover:text-black"
+            >
+              Cancelar y volver
             </button>
           </div>
+        </section>
+      </div>
+    </div>
+  </div>
 
-          <div class="flex flex-col gap-4 min-w-0 xl:sticky xl:top-0 h-fit">
-            <div
-              class="border-4 border-black bg-[radial-gradient(circle_at_top_left,#ffffff_0%,#ede9fe_70%,#ddd6fe_100%)] p-4 min-h-80"
-            >
-              <p
-                class="text-[11px] font-black uppercase tracking-widest text-black/60 mb-2"
-              >
-                Destinatario seleccionado
-              </p>
-              <div
-                id="qp-recipient-card"
-                class="border-4 border-dashed border-black p-4 bg-white h-[calc(100%-1.5rem)] min-h-65"
-              >
-                <p class="font-black uppercase text-sm">
-                  Aún no seleccionas destinatario
-                </p>
-                <p class="text-xs font-bold uppercase text-black/60 mt-1">
-                  Busca por correo o nombre y selecciónalo.
-                </p>
-              </div>
-            </div>
+  <!-- MODAL GESTIONAR CONTACTOS -->
+  <div
+    id="modal-gestionar-contactos"
+    class="fixed inset-0 z-9999 hidden items-center justify-center m-0 p-4 pointer-events-none"
+  >
+    <div
+      id="modal-gestionar-contactos-content"
+      class="bg-[#f6f1e7] border-4 border-black w-full max-w-4xl max-h-[88vh] p-0 transform scale-95 opacity-0 transition-all duration-300 relative pointer-events-auto overflow-hidden rounded-xl"
+      style="background-image: linear-gradient(rgba(0,0,0,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.06) 1px, transparent 1px); background-size: 28px 28px;"
+    >
+      <button
+        onclick="window.closeModal('modal-gestionar-contactos')"
+        class="absolute top-3 right-3 hover:bg-[#fda4af] p-1.5 z-20 border-4 border-black bg-white rounded-md transition-colors"
+      >
+        <span class="material-symbols-outlined font-black text-xl">close</span>
+      </button>
 
-            <div id="qp-save-contact-box" class="hidden"></div>
-          </div>
+      <div class="px-5 py-4 border-b-4 border-black bg-[#f6f1e7]">
+        <div class="flex items-center gap-2 text-[#5b21b6]">
+          <span class="material-symbols-outlined">manage_accounts</span>
+          <h3 class="text-lg font-black uppercase tracking-tight">
+            Gestionar contactos rápidos
+          </h3>
         </div>
+        <p class="text-[11px] font-bold uppercase text-black/70 mt-1">
+          Edita apodos, cambia favoritos o elimina contactos guardados.
+        </p>
+      </div>
 
-        <!-- STEP 2 -->
+      <div
+        id="qp-manager-list"
+        class="p-4 max-h-[calc(88vh-7.5rem)] overflow-y-auto flex flex-col gap-3 custom-scrollbar"
+      >
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL RECIBIR -->
+  <div
+    id="modal-recibir"
+    class="fixed inset-0 z-9999 hidden items-center justify-center m-0 p-4 pointer-events-none"
+  >
+    <div
+      class="bg-white border-4 border-black box-shadow-brutal w-full max-w-sm p-8 transform scale-95 opacity-0 transition-all duration-300 relative pointer-events-auto flex flex-col items-center"
+      id="modal-recibir-content"
+    >
+      <button
+        onclick="window.closeModal('modal-recibir')"
+        class="absolute top-2 right-2 hover:bg-gray-200 p-1"
+      >
+        <span class="material-symbols-outlined font-black text-xl">close</span>
+      </button>
+      <div class="flex items-center gap-2 mb-6 text-[#10b981]">
+        <span class="material-symbols-outlined font-black">qr_code_2</span>
+        <h3 class="text-xl font-black uppercase">RECIBIR</h3>
+      </div>
+
+      <div
+        class="w-48 h-48 bg-gray-200 border-4 border-black flex items-center justify-center mb-4 relative overflow-hidden group"
+      >
         <div
-          id="enviar-step-2"
-          class="hidden h-full flex-col items-center justify-center p-6"
+          class="absolute inset-0 bg-[url('https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg')] bg-cover bg-center mix-blend-multiply opacity-80"
         >
-          <p class="font-bold text-center text-sm uppercase mb-4 text-black">
-            Ingresa tu pin de seguridad
-          </p>
-          <input
-            type="password"
-            id="qp-enviar-pin"
-            maxlength="6"
-            class="w-36 border-4 border-black p-3 font-black text-2xl tracking-widest text-center focus:outline-none bg-gray-50 mb-6"
-            placeholder="****"
-          />
-          <button
-            id="btn-confirm-enviar"
-            class="w-full max-w-sm bg-[#8b5cf6] text-white font-black uppercase p-4 border-4 border-black hover:bg-[#7c3aed] transition-colors relative flex items-center justify-center"
-          >
-            <span id="btn-confirm-text">Confirmar envío</span>
-            <span
-              id="btn-confirm-spinner"
-              class="hidden material-symbols-outlined animate-spin absolute right-4"
-              >refresh</span
-            >
-          </button>
-          <button
-            onclick="window.qpEnviargotoStep1()"
-            class="mt-4 text-xs font-black text-gray-500 uppercase hover:text-black"
-            >Cancelar y volver</button
-          >
         </div>
-      </section>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL RECIBIR -->
-<div
-  id="modal-recibir"
-  class="fixed inset-0 z-9999 hidden items-center justify-center m-0 p-4 pointer-events-none"
->
-  <div
-    class="bg-white border-4 border-black box-shadow-brutal w-full max-w-sm p-8 transform scale-95 opacity-0 transition-all duration-300 relative pointer-events-auto flex flex-col items-center"
-    id="modal-recibir-content"
-  >
-    <button
-      onclick="window.closeModal('modal-recibir')"
-      class="absolute top-2 right-2 hover:bg-gray-200 p-1"
-    >
-      <span class="material-symbols-outlined font-black text-xl">close</span>
-    </button>
-    <div class="flex items-center gap-2 mb-6 text-[#10b981]">
-      <span class="material-symbols-outlined font-black">qr_code_2</span>
-      <h3 class="text-xl font-black uppercase">RECIBIR</h3>
-    </div>
-
-    <div
-      class="w-48 h-48 bg-gray-200 border-4 border-black flex items-center justify-center mb-4 relative overflow-hidden group"
-    >
-      <div
-        class="absolute inset-0 bg-[url('https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg')] bg-cover bg-center mix-blend-multiply opacity-80"
-      >
+        <div
+          class="bg-white border-2 border-black p-2 z-10 font-black text-xs uppercase group-hover:scale-110 transition-transform"
+        >
+          ESCANEAR
+        </div>
       </div>
-      <div
-        class="bg-white border-2 border-black p-2 z-10 font-black text-xs uppercase group-hover:scale-110 transition-transform"
+
+      <p
+        class="text-xs font-black uppercase tracking-widest text-center text-gray-600 mb-2"
       >
-        ESCANEAR
+        TU CÉDULA:
+      </p>
+      <div
+        class="border-4 border-black px-4 py-2 bg-[#d7fd48] font-black text-xl tracking-widest"
+        id="recibir-cedula-display"
+      >
+        ------
       </div>
     </div>
-
-    <p
-      class="text-xs font-black uppercase tracking-widest text-center text-gray-600 mb-2"
-    >
-      TU CÉDULA:
-    </p>
-    <div
-      class="border-4 border-black px-4 py-2 bg-[#d7fd48] font-black text-xl tracking-widest"
-      id="recibir-cedula-display"
-    >
-      ------
-    </div>
   </div>
-</div>
 
-<!-- MODAL RECARGAR -->
-<div
-  id="modal-recargar"
-  class="fixed inset-0 z-9999 hidden items-center justify-center m-0 p-4 pointer-events-none"
->
+  <!-- MODAL RECARGAR -->
   <div
-    class="bg-white border-4 border-black box-shadow-brutal w-full max-w-sm p-6 transform scale-95 opacity-0 transition-all duration-300 relative pointer-events-auto"
-    id="modal-recargar-content"
+    id="modal-recargar"
+    class="fixed inset-0 z-9999 hidden items-center justify-center m-0 p-4 pointer-events-none"
   >
-    <button
-      onclick="window.closeModal('modal-recargar')"
-      class="absolute top-2 right-2 hover:bg-gray-200 p-1"
+    <div
+      class="bg-white border-4 border-black box-shadow-brutal w-full max-w-sm p-6 transform scale-95 opacity-0 transition-all duration-300 relative pointer-events-auto"
+      id="modal-recargar-content"
     >
-      <span class="material-symbols-outlined font-black text-xl">close</span>
-    </button>
-    <div class="flex items-center gap-2 mb-4">
-      <span class="material-symbols-outlined font-black">add_circle</span>
-      <h3 class="text-xl font-black uppercase">RECARGAR FONDOS</h3>
-    </div>
-
-    <div class="mb-6">
-      <label class="block text-xs font-black uppercase mb-1"
-        >MÉTODO DE PAGO</label
+      <button
+        onclick="window.closeModal('modal-recargar')"
+        class="absolute top-2 right-2 hover:bg-gray-200 p-1"
       >
-      <select
-        class="w-full border-4 border-black p-3 font-bold uppercase focus:outline-none bg-white appearance-none cursor-pointer"
-        id="qp-recargar-metodo"
-      >
-        <option value="pago_movil">PAGO MÓVIL</option>
-        <option value="zelle">ZELLE</option>
-        <option value="efectivo">EFECTIVO (CAJA)</option>
-      </select>
-    </div>
+        <span class="material-symbols-outlined font-black text-xl">close</span>
+      </button>
+      <div class="flex items-center gap-2 mb-4">
+        <span class="material-symbols-outlined font-black">add_circle</span>
+        <h3 class="text-xl font-black uppercase">RECARGAR FONDOS</h3>
+      </div>
 
-    <div class="mb-6">
-      <label class="block text-xs font-black uppercase mb-1"
-        >REFERENCIA / RECIBO</label
-      >
-      <input
-        type="text"
-        id="qp-recargar-ref"
-        class="w-full border-4 border-black p-3 font-bold uppercase focus:outline-none focus:bg-gray-50 bg-white"
-        placeholder="#1234567"
-      />
-    </div>
+      <div class="mb-6">
+        <label class="block text-xs font-black uppercase mb-1"
+          >MÉTODO DE PAGO</label
+        >
+        <select
+          class="w-full border-4 border-black p-3 font-bold uppercase focus:outline-none bg-white appearance-none cursor-pointer"
+          id="qp-recargar-metodo"
+        >
+          <option value="pago_movil">PAGO MÓVIL</option>
+          <option value="zelle">ZELLE</option>
+          <option value="efectivo">EFECTIVO (CAJA)</option>
+        </select>
+      </div>
 
-    <div class="mb-6">
-      <label class="block text-xs font-black uppercase mb-1">MONTO ($)</label>
-      <div class="flex items-center border-4 border-black p-2 bg-white">
-        <span class="font-black text-xl ml-2 mr-2">$</span>
+      <div class="mb-6">
+        <label class="block text-xs font-black uppercase mb-1"
+          >REFERENCIA / RECIBO</label
+        >
         <input
-          type="number"
-          id="qp-recargar-monto"
-          class="w-full text-xl font-black focus:outline-none"
-          placeholder="0.00"
+          type="text"
+          id="qp-recargar-ref"
+          class="w-full border-4 border-black p-3 font-bold uppercase focus:outline-none focus:bg-gray-50 bg-white"
+          placeholder="#1234567"
         />
       </div>
-    </div>
 
-    <button
-      id="btn-confirm-recargar"
-      class="w-full bg-[#d7fd48] text-black font-black uppercase p-4 border-4 border-black hover:bg-[#c4ec31] transition-colors relative flex items-center justify-center"
-    >
-      <span id="btn-recargar-text">NOTIFICAR RECARGA</span>
-      <span
-        id="btn-recargar-spinner"
-        class="hidden material-symbols-outlined animate-spin absolute right-4"
-        >refresh</span
+      <div class="mb-6">
+        <label class="block text-xs font-black uppercase mb-1">MONTO ($)</label>
+        <div class="flex items-center border-4 border-black p-2 bg-white">
+          <span class="font-black text-xl ml-2 mr-2">$</span>
+          <input
+            type="number"
+            id="qp-recargar-monto"
+            class="w-full text-xl font-black focus:outline-none"
+            placeholder="0.00"
+          />
+        </div>
+      </div>
+
+      <button
+        id="btn-confirm-recargar"
+        class="w-full bg-[#d7fd48] text-black font-black uppercase p-4 border-4 border-black hover:bg-[#c4ec31] transition-colors relative flex items-center justify-center"
       >
-    </button>
+        <span id="btn-recargar-text">NOTIFICAR RECARGA</span>
+        <span
+          id="btn-recargar-spinner"
+          class="hidden material-symbols-outlined animate-spin absolute right-4"
+          >refresh</span
+        >
+      </button>
+    </div>
   </div>
-</div>
 
-<style>
-  .box-shadow-brutal {
-    box-shadow: 6px 6px 0px 0px rgba(0, 0, 0, 1);
-  }
+  <style>
+    .box-shadow-brutal {
+      box-shadow: 6px 6px 0px 0px rgba(0, 0, 0, 1);
+    }
 
-  .custom-scrollbar::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-  }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
 
-  .custom-scrollbar::-webkit-scrollbar-track {
-    background: #f3f4f6;
-    border: 2px solid #000;
-  }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #f3f4f6;
+      border: 2px solid #000;
+    }
 
-  .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: #8b5cf6;
-    border: 2px solid #000;
-  }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #8b5cf6;
+      border: 2px solid #000;
+    }
 
-  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: #7c3aed;
-  }
-</style>
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #7c3aed;
+    }
+  </style>
 
-<script>
-  // @ts-nocheck
-  import {
-    authService,
-    userService,
-    contactService,
-    transactionService,
-    pinService,
-  } from "../../../services/api.js";
-  import { updateUserLevel } from "../../../store/userStore.js";
+  <script>
+    // @ts-nocheck
+    import {
+      authService,
+      userService,
+      contactService,
+      transactionService,
+      pinService,
+    } from "../../../services/api.js";
+    import { updateUserLevel } from "../../../store/userStore.js";
 
-  let searchTimeout = null;
-  let selectedRecipient = null;
-  let contactsCache = [];
-  let currentUserBalance = 0;
+    let searchTimeout = null;
+    let selectedRecipient = null;
+    let contactsCache = [];
+    let currentUserBalance = 0;
 
-  const byId = (id) => document.getElementById(id);
+    const byId = (id) => document.getElementById(id);
 
-  const initialsOf = (value) =>
-    String(value || "U")
-      .split(" ")
-      .filter(Boolean)
-      .slice(0, 2)
-      .map((part) => part[0])
-      .join("")
-      .toUpperCase() || "U";
+    const initialsOf = (value) =>
+      String(value || "U")
+        .split(" ")
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((part) => part[0])
+        .join("")
+        .toUpperCase() || "U";
 
-  const normalizeRecipient = (raw, fromContact = false) => {
-    if (!raw) return null;
-    const name = raw.nombre || raw.name || "Usuario";
-    return {
-      id: raw.contact_id || raw.id,
-      contactRelationId: fromContact ? raw.id : null,
-      name,
-      alias: raw.alias || null,
-      email: raw.email || "",
-      cedula: raw.cedula || "",
-      userType: raw.user_type || "",
-      avatarUrl: raw.avatar_url || null,
-      isFavorite: Boolean(raw.is_favorite),
+    const normalizeRecipient = (raw, fromContact = false) => {
+      if (!raw) return null;
+      const name = raw.nombre || raw.name || "Usuario";
+      return {
+        id: raw.contact_id || raw.id,
+        contactRelationId: fromContact ? raw.id : null,
+        name,
+        realName:
+          raw.nombre_real ||
+          raw.real_name ||
+          raw.name ||
+          raw.nombre ||
+          "Usuario",
+        alias: raw.alias || null,
+        email: raw.email || "",
+        cedula: raw.cedula || "",
+        userType: raw.user_type || "",
+        avatarUrl: raw.avatar_url || null,
+        isFavorite: Boolean(raw.is_favorite),
+      };
     };
-  };
 
-  const findSavedContact = (recipient) => {
-    if (!recipient) return null;
+    const findSavedContact = (recipient) => {
+      if (!recipient) return null;
 
-    return (
-      contactsCache.find((contact) => {
-        const sameRelation =
-          recipient.contactRelationId &&
-          String(contact.id) === String(recipient.contactRelationId);
-        const sameProfile =
-          recipient.id && String(contact.contact_id) === String(recipient.id);
-        const sameCedula =
-          recipient.cedula &&
-          contact.cedula &&
-          String(contact.cedula).trim() === String(recipient.cedula).trim();
-        const sameEmail =
-          recipient.email &&
-          contact.email &&
-          String(contact.email).trim().toLowerCase() ===
-            String(recipient.email).trim().toLowerCase();
-        return sameRelation || sameProfile || sameCedula || sameEmail;
-      }) || null
-    );
-  };
+      return (
+        contactsCache.find((contact) => {
+          const sameRelation =
+            recipient.contactRelationId &&
+            String(contact.id) === String(recipient.contactRelationId);
+          const sameProfile =
+            recipient.id && String(contact.contact_id) === String(recipient.id);
+          const sameCedula =
+            recipient.cedula &&
+            contact.cedula &&
+            String(contact.cedula).trim() === String(recipient.cedula).trim();
+          const sameEmail =
+            recipient.email &&
+            contact.email &&
+            String(contact.email).trim().toLowerCase() ===
+              String(recipient.email).trim().toLowerCase();
+          return sameRelation || sameProfile || sameCedula || sameEmail;
+        }) || null
+      );
+    };
 
-  const updateBalancePreview = () => {
-    const amountInput = byId("qp-enviar-monto");
-    const preview = byId("qp-balance-preview");
-    if (!preview || !amountInput) return;
+    const updateBalancePreview = () => {
+      const amountInput = byId("qp-enviar-monto");
+      const rightPreview = byId("qp-right-balance-preview");
+      if (!amountInput) return;
 
-    const amount = Number(amountInput.value || 0);
-    const remaining = Number(
-      (Number(currentUserBalance || 0) - amount).toFixed(2),
-    );
-    const safeRemaining = Number.isFinite(remaining)
-      ? remaining
-      : Number(currentUserBalance || 0);
+      const amount = Number(amountInput.value || 0);
+      const remaining = Number(
+        (Number(currentUserBalance || 0) - amount).toFixed(2),
+      );
+      const safeRemaining = Number.isFinite(remaining)
+        ? remaining
+        : Number(currentUserBalance || 0);
 
-    preview.textContent = `Saldo restante estimado: $${safeRemaining.toFixed(2)}`;
-    preview.className = `text-[11px] font-black uppercase mt-2 ${safeRemaining < 0 ? "text-red-600" : "text-black/70"}`;
-  };
+      if (rightPreview) {
+        rightPreview.textContent = `$${safeRemaining.toFixed(2)}`;
+        rightPreview.className = `text-4xl font-black leading-none mt-1 tracking-tight ${safeRemaining < 0 ? "text-red-500" : "text-[#312e81]"}`;
+      }
+    };
 
-  const syncSaveContactUI = () => {
-    const saveContainer = byId("qp-save-contact-container");
-    const saveToggle = byId("qp-save-contact-toggle");
-    const saveFields = byId("qp-save-contact-fields");
-    const aliasInput = byId("qp-contact-alias");
+    const syncSaveContactUI = () => {
+      const saveContainer = byId("qp-save-contact-container");
+      const saveToggle = byId("qp-save-contact-toggle");
+      const saveFields = byId("qp-save-contact-fields");
+      const aliasInput = byId("qp-contact-alias");
 
-    if (!saveContainer) return;
+      if (!saveContainer) return;
 
-    if (!selectedRecipient) {
-      saveContainer.classList.add("hidden");
-      if (saveToggle) saveToggle.checked = false;
-      if (saveFields) saveFields.classList.add("hidden");
-      if (aliasInput) aliasInput.value = "";
-      return;
-    }
+      if (!selectedRecipient) {
+        saveContainer.classList.add("hidden");
+        if (saveToggle) saveToggle.checked = false;
+        if (saveFields) saveFields.classList.add("hidden");
+        if (aliasInput) aliasInput.value = "";
+        return;
+      }
 
-    const alreadySaved = Boolean(findSavedContact(selectedRecipient));
-    if (alreadySaved) {
-      saveContainer.classList.add("hidden");
-      if (saveToggle) saveToggle.checked = false;
-      if (saveFields) saveFields.classList.add("hidden");
-      if (aliasInput) aliasInput.value = "";
-      return;
-    }
+      const alreadySaved = Boolean(findSavedContact(selectedRecipient));
+      if (alreadySaved) {
+        saveContainer.classList.add("hidden");
+        if (saveToggle) saveToggle.checked = false;
+        if (saveFields) saveFields.classList.add("hidden");
+        if (aliasInput) aliasInput.value = "";
+        return;
+      }
 
-    saveContainer.classList.remove("hidden");
-  };
+      saveContainer.classList.remove("hidden");
+    };
 
-  const renderRecipientCard = () => {
-    const card = byId("qp-recipient-card");
-    if (!card) return;
+    const updateContactsPanelState = () => {
+      const sidebar = byId("qp-contacts-sidebar");
+      if (!sidebar) return;
 
-    if (!selectedRecipient) {
-      card.className = "border-4 border-dashed border-black p-4 bg-white";
-      card.innerHTML = `
-        <p class="font-black uppercase text-sm">Aún no seleccionas destinatario</p>
-        <p class="text-xs font-bold uppercase text-black/60 mt-1">Busca por correo o nombre y selecciónalo.</p>
+      const hasSelection = Boolean(selectedRecipient);
+      sidebar.classList.toggle("opacity-80", hasSelection);
+      sidebar.classList.toggle("brightness-100", !hasSelection);
+      sidebar.classList.toggle("brightness-95", hasSelection);
+      sidebar.classList.toggle("saturate-75", hasSelection);
+    };
+
+    const setContactsSidebarOpen = (open) => {
+      const sidebar = byId("qp-contacts-sidebar");
+      const toggleBtn = byId("qp-toggle-contacts");
+      if (!sidebar) return;
+
+      const isOpen = Boolean(open);
+      sidebar.classList.toggle("w-[320px]", isOpen);
+      sidebar.classList.toggle("opacity-100", isOpen);
+      sidebar.classList.toggle("translate-x-0", isOpen);
+      sidebar.classList.toggle("pointer-events-auto", isOpen);
+      sidebar.classList.toggle("border-r", isOpen);
+
+      sidebar.classList.toggle("w-0", !isOpen);
+      sidebar.classList.toggle("opacity-0", !isOpen);
+      sidebar.classList.toggle("-translate-x-2", !isOpen);
+      sidebar.classList.toggle("pointer-events-none", !isOpen);
+      sidebar.classList.toggle("border-r-0", !isOpen);
+
+      if (toggleBtn) {
+        toggleBtn.setAttribute("aria-pressed", isOpen ? "true" : "false");
+        const icon = toggleBtn.querySelector(".material-symbols-outlined");
+        if (icon) icon.textContent = isOpen ? "contacts" : "contacts_product";
+      }
+    };
+
+    const renderRecipientCard = () => {
+      const card = byId("qp-recipient-card");
+      if (!card) return;
+
+      if (!selectedRecipient) {
+        card.className =
+          "border-4 border-dashed border-black p-4 bg-white rounded-md";
+        card.innerHTML = `
+        <p class="font-black uppercase text-sm text-[#312e81]">Aún no seleccionas destinatario</p>
+        <p class="text-xs font-bold uppercase text-black/60 mt-1">Elige un contacto o busca por correo para continuar.</p>
       `;
-      syncSaveContactUI();
-      return;
-    }
+        syncSaveContactUI();
+        updateContactsPanelState();
+        return;
+      }
 
-    const initials = initialsOf(
-      selectedRecipient.alias || selectedRecipient.name,
-    );
-    const role = selectedRecipient.userType
-      ? String(selectedRecipient.userType).replace(/_/g, " ")
-      : "usuario";
+      const initials = initialsOf(
+        selectedRecipient.alias || selectedRecipient.name,
+      );
+      const role = selectedRecipient.userType
+        ? String(selectedRecipient.userType).replace(/_/g, " ")
+        : "usuario";
+      const usernameLabel =
+        selectedRecipient.realName || selectedRecipient.name;
 
-    card.className = "border-4 border-black p-0 bg-white overflow-hidden";
-    card.innerHTML = `
-      <div class="h-full flex flex-col">
-        <div class="h-20 border-b-4 border-black bg-[linear-gradient(90deg,#8b5cf6_0%,#c4b5fd_100%)]"></div>
-        <div class="p-4 -mt-10">
+      card.className =
+        "border-4 border-black p-0 bg-[#8b5cf6] overflow-hidden flex-1 min-h-0 rounded-md";
+      card.innerHTML = `
+      <div class="h-full flex flex-col min-h-0">
+        <div class="p-4 flex-1 flex flex-col min-h-0">
           <div class="flex items-start gap-3">
             ${
               selectedRecipient.avatarUrl
-                ? `<img src="${selectedRecipient.avatarUrl}" alt="Avatar" class="w-20 h-20 border-4 border-black object-cover bg-white" />`
-                : `<div class="w-20 h-20 border-4 border-black bg-[#d7fd48] flex items-center justify-center font-black text-2xl">${initials}</div>`
+                ? `<img src="${selectedRecipient.avatarUrl}" alt="Avatar" class="w-18 h-18 border-4 border-black object-cover bg-white rounded-lg" />`
+                : `<div class="w-18 h-18 border-4 border-black bg-[#8b5cf6] text-white rounded-lg flex items-center justify-center font-black text-2xl">${initials}</div>`
             }
-            <div class="flex-1 min-w-0 pt-9">
-              <p class="font-black uppercase text-lg leading-tight">${selectedRecipient.alias || selectedRecipient.name}</p>
-              <p class="text-[11px] font-bold uppercase text-black/60 truncate">${selectedRecipient.email || "Sin correo"}</p>
+            <div class="flex-1 min-w-0 pt-1">
+              <p class="font-black uppercase text-lg leading-tight text-white">${selectedRecipient.alias || selectedRecipient.name}</p>
+              <p class="text-[11px] font-bold uppercase text-white/80 truncate">${selectedRecipient.email || "Sin correo"}</p>
             </div>
           </div>
 
           <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2">
-            <div class="border-2 border-black bg-[#f8fafc] px-2 py-2">
-              <p class="text-[9px] font-black uppercase text-black/50">Usuario</p>
-              <p class="text-[11px] font-black uppercase truncate">@${selectedRecipient.name}</p>
+            <div class="border-4 border-black bg-white px-2 py-2 rounded-md">
+              <p class="text-[9px] font-black uppercase text-black/50">Usuario real</p>
+              <p class="text-[11px] font-black uppercase truncate text-[#312e81]">${usernameLabel}</p>
             </div>
-            <div class="border-2 border-black bg-[#f8fafc] px-2 py-2">
+            <div class="border-4 border-black bg-white px-2 py-2 rounded-md">
               <p class="text-[9px] font-black uppercase text-black/50">Tipo</p>
-              <p class="text-[11px] font-black uppercase truncate">${role}</p>
+              <p class="text-[11px] font-black uppercase truncate text-[#312e81]">${role}</p>
             </div>
-            <div class="border-2 border-black bg-[#f8fafc] px-2 py-2 sm:col-span-2">
+            <div class="border-4 border-black bg-white px-2 py-2 rounded-md sm:col-span-2">
               <p class="text-[9px] font-black uppercase text-black/50">Identificador</p>
-              <p class="text-[11px] font-black uppercase truncate">${selectedRecipient.cedula || selectedRecipient.email || "Sin dato"}</p>
+              <p class="text-[11px] font-black uppercase truncate text-[#312e81]">${selectedRecipient.cedula || selectedRecipient.email || "Sin dato"}</p>
             </div>
           </div>
 
-          <div class="mt-3 border-2 border-black bg-[#fff7d6] px-3 py-2">
-            <p class="text-[10px] font-black uppercase">Vista dinámica preparada para themes de perfil</p>
+          <div class="mt-3 border-4 border-black bg-white px-3 py-2 rounded-md flex-1 min-h-0 flex items-end">
+            <p class="text-[10px] font-black uppercase text-[#312e81]">Listo para enviar. Ajusta monto y confirma con tu pin.</p>
           </div>
         </div>
       </div>
     `;
-    syncSaveContactUI();
-  };
+      syncSaveContactUI();
+      updateContactsPanelState();
+    };
 
-  const renderAutocomplete = (users = []) => {
-    const box = byId("qp-autocomplete");
-    if (!box) return;
+    const renderAutocomplete = (users = []) => {
+      const box = byId("qp-autocomplete");
+      if (!box) return;
 
-    box.innerHTML = "";
-    if (!users.length) {
-      box.classList.add("hidden");
-      return;
-    }
+      box.innerHTML = "";
+      if (!users.length) {
+        box.classList.add("hidden");
+        return;
+      }
 
-    users.forEach((u) => {
-      const recipient = normalizeRecipient(u, false);
-      const row = document.createElement("button");
-      row.type = "button";
-      row.className =
-        "w-full text-left px-3 py-2 border-b border-white/20 hover:bg-white/10 flex items-center gap-2";
-      row.innerHTML = `
+      users.forEach((u) => {
+        const recipient = normalizeRecipient(u, false);
+        const row = document.createElement("button");
+        row.type = "button";
+        row.className =
+          "w-full text-left px-3 py-2 border-b border-white/20 hover:bg-white/10 flex items-center gap-2";
+        row.innerHTML = `
         <div class="w-9 h-9 border-2 border-white/80 bg-[#8b5cf6] text-white flex items-center justify-center font-black text-xs shrink-0">
           ${initialsOf(recipient.name)}
         </div>
@@ -656,499 +831,742 @@
           <p class="text-[10px] font-bold uppercase text-white/70 truncate">${recipient.email || "Sin correo"}</p>
         </div>
       `;
-      row.onclick = () => {
-        selectedRecipient = recipient;
-        const queryInput = byId("qp-enviar-query");
-        if (queryInput) queryInput.value = recipient.email || recipient.name;
-        box.classList.add("hidden");
-        renderRecipientCard();
-      };
-      box.appendChild(row);
-    });
+        row.onclick = () => {
+          selectedRecipient = recipient;
+          const queryInput = byId("qp-enviar-query");
+          if (queryInput) queryInput.value = recipient.email || recipient.name;
+          box.classList.add("hidden");
+          renderRecipientCard();
+        };
+        box.appendChild(row);
+      });
 
-    box.classList.remove("hidden");
-    box.classList.add("flex");
-  };
+      box.classList.remove("hidden");
+      box.classList.add("flex");
+    };
 
-  const renderContactLists = (contacts = [], filterTerm = "") => {
-    const favList = byId("qp-favorites-list");
-    const allList = byId("qp-contacts-list");
-    if (!favList || !allList) return;
+    const renderContactLists = (contacts = [], filterTerm = "") => {
+      const favList = byId("qp-favorites-list");
+      const allList = byId("qp-contacts-list");
+      if (!favList || !allList) return;
 
-    favList.innerHTML = "";
-    allList.innerHTML = "";
+      favList.innerHTML = "";
+      allList.innerHTML = "";
 
-    const needle = String(filterTerm || "")
-      .trim()
-      .toLowerCase();
-    const filtered = !needle
-      ? contacts
-      : contacts.filter((c) => {
-          const hay =
-            `${c.alias || ""} ${c.nombre || ""} ${c.email || ""} ${c.cedula || ""}`.toLowerCase();
-          return hay.includes(needle);
-        });
+      const needle = String(filterTerm || "")
+        .trim()
+        .toLowerCase();
+      const filtered = !needle
+        ? contacts
+        : contacts.filter((c) => {
+            const hay =
+              `${c.alias || ""} ${c.nombre || ""} ${c.email || ""} ${c.cedula || ""}`.toLowerCase();
+            return hay.includes(needle);
+          });
 
-    const favorites = filtered.filter((c) => c.is_favorite);
-    const others = filtered.filter((c) => !c.is_favorite);
+      const favorites = filtered.filter((c) => c.is_favorite);
+      const others = filtered.filter((c) => !c.is_favorite);
 
-    const buildContactCard = (contact) => {
-      const recipient = normalizeRecipient(contact, true);
-      const card = document.createElement("div");
-      card.className =
-        "border-2 border-black bg-white p-2 flex items-center gap-2 hover:-translate-y-0.5 transition-transform";
+      const buildContactCard = (contact) => {
+        const recipient = normalizeRecipient(contact, true);
+        const card = document.createElement("div");
+        card.className =
+          "border border-black/20 bg-white p-2 rounded-md flex items-center gap-2 hover:bg-[#f8fafc] transition-colors";
 
-      const mainBtn = document.createElement("button");
-      mainBtn.type = "button";
-      mainBtn.className = "flex items-center gap-2 min-w-0 flex-1 text-left";
-      mainBtn.innerHTML = `
-        <div class="w-8 h-8 border-2 border-black bg-[#d7fd48] flex items-center justify-center font-black text-[10px] shrink-0">${initialsOf(contact.alias || contact.nombre)}</div>
+        const mainBtn = document.createElement("button");
+        mainBtn.type = "button";
+        mainBtn.className = "flex items-center gap-2 min-w-0 flex-1 text-left";
+        mainBtn.innerHTML = `
+        <div class="w-8 h-8 border border-black/10 bg-[#ede9fe] text-[#4c1d95] rounded-md flex items-center justify-center font-black text-[10px] shrink-0">${initialsOf(contact.alias || contact.nombre)}</div>
         <div class="min-w-0">
           <p class="font-black uppercase text-[11px] leading-none truncate">${contact.alias || contact.nombre || "Contacto"}</p>
           <p class="text-[9px] font-bold uppercase text-black/60 truncate">${contact.email || contact.cedula || "Sin identificador"}</p>
         </div>
       `;
-      mainBtn.onclick = () => {
-        selectedRecipient = recipient;
-        const queryInput = byId("qp-enviar-query");
-        if (queryInput) queryInput.value = recipient.email || recipient.name;
-        renderRecipientCard();
-      };
+        mainBtn.onclick = () => {
+          selectedRecipient = recipient;
+          const queryInput = byId("qp-enviar-query");
+          if (queryInput) queryInput.value = recipient.email || recipient.name;
+          renderRecipientCard();
+        };
 
-      const favBtn = document.createElement("button");
-      favBtn.type = "button";
-      favBtn.className =
-        "border-2 border-black w-7 h-7 flex items-center justify-center bg-white hover:bg-[#fff7d6]";
-      favBtn.innerHTML = `<span class="material-symbols-outlined text-sm ${contact.is_favorite ? "text-[#f59e0b]" : "text-black"}">star</span>`;
-      favBtn.onclick = async () => {
-        const prev = Boolean(contact.is_favorite);
-        contact.is_favorite = !prev;
-        renderContactLists(
-          contactsCache,
-          byId("qp-contacts-filter")?.value || "",
-        );
-
-        try {
-          await contactService.toggleFavorite(contact.id, contact.is_favorite);
-          await loadContacts();
-          if (
-            selectedRecipient &&
-            String(selectedRecipient.id) === String(contact.contact_id)
-          ) {
-            selectedRecipient = {
-              ...selectedRecipient,
-              isFavorite: contact.is_favorite,
-            };
-            renderRecipientCard();
-          }
-        } catch (err) {
-          contact.is_favorite = prev;
+        const favBtn = document.createElement("button");
+        favBtn.type = "button";
+        favBtn.className =
+          "border border-black/10 w-7 h-7 rounded-md flex items-center justify-center bg-white hover:bg-[#f5f3ff]";
+        favBtn.innerHTML = contact.is_favorite
+          ? '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="#f59e0b" stroke="#f59e0b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>'
+          : '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="rgba(0,0,0,0.72)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>';
+        favBtn.onclick = async () => {
+          const prev = Boolean(contact.is_favorite);
+          contact.is_favorite = !prev;
           renderContactLists(
             contactsCache,
             byId("qp-contacts-filter")?.value || "",
           );
-          alert(err?.message || "No se pudo actualizar favorito");
-        }
+
+          try {
+            await contactService.toggleFavorite(
+              contact.id,
+              contact.is_favorite,
+            );
+            await loadContacts();
+            if (
+              selectedRecipient &&
+              String(selectedRecipient.id) === String(contact.contact_id)
+            ) {
+              selectedRecipient = {
+                ...selectedRecipient,
+                isFavorite: contact.is_favorite,
+              };
+              renderRecipientCard();
+            }
+          } catch (err) {
+            contact.is_favorite = prev;
+            renderContactLists(
+              contactsCache,
+              byId("qp-contacts-filter")?.value || "",
+            );
+            alert(err?.message || "No se pudo actualizar favorito");
+          }
+        };
+
+        card.appendChild(mainBtn);
+        card.appendChild(favBtn);
+        return card;
       };
 
-      card.appendChild(mainBtn);
-      card.appendChild(favBtn);
-      return card;
+      if (!favorites.length) {
+        favList.innerHTML =
+          '<p class="text-[10px] font-bold uppercase text-black/50">Sin favoritos aún</p>';
+      } else {
+        favorites.forEach((c) => favList.appendChild(buildContactCard(c)));
+      }
+
+      if (!others.length) {
+        allList.innerHTML =
+          '<p class="text-[10px] font-bold uppercase text-black/50">Sin contactos guardados</p>';
+      } else {
+        others.forEach((c) => allList.appendChild(buildContactCard(c)));
+      }
     };
 
-    if (!favorites.length) {
-      favList.innerHTML =
-        '<p class="text-[10px] font-bold uppercase text-black/50">Sin favoritos aún</p>';
-    } else {
-      favorites.forEach((c) => favList.appendChild(buildContactCard(c)));
-    }
+    const renderContactManagerList = (contacts = []) => {
+      const list = byId("qp-manager-list");
+      if (!list) return;
 
-    if (!others.length) {
-      allList.innerHTML =
-        '<p class="text-[10px] font-bold uppercase text-black/50">Sin contactos guardados</p>';
-    } else {
-      others.forEach((c) => allList.appendChild(buildContactCard(c)));
-    }
-  };
+      list.innerHTML = "";
 
-  const loadContacts = async () => {
-    try {
-      const currentUser = authService.getCurrentUser();
-      if (!currentUser?.id) return;
-      contactsCache = await contactService.getContacts(currentUser.id);
-      renderContactLists(
-        contactsCache,
-        byId("qp-contacts-filter")?.value || "",
-      );
-      renderRecipientCard();
-    } catch (err) {
-      console.error("Error cargando contactos", err);
-    }
-  };
-
-  // Global functions for modals
-  window.openModal = (id) => {
-    const m = document.getElementById(id);
-    const content = document.getElementById(id + "-content");
-    const overlay = document.getElementById("qp-overlay");
-
-    if (!m || !content || !overlay) return;
-
-    m.classList.remove("hidden");
-    m.classList.add("flex");
-    overlay.classList.remove("hidden");
-
-    if (id === "modal-recibir") {
-      const u = authService.getCurrentUser();
-      if (u && u.cedula) {
-        document.getElementById("recibir-cedula-display").innerText = u.cedula;
-      }
-    }
-
-    if (id === "modal-enviar") {
-      selectedRecipient = null;
-      const currentUser = authService.getCurrentUser();
-      currentUserBalance = Number(currentUser?.balance || 0);
-      const queryInput = byId("qp-enviar-query");
-      const contactsFilter = byId("qp-contacts-filter");
-      const amountInput = byId("qp-enviar-monto");
-      const conceptInput = byId("qp-enviar-concepto");
-      const pinInput = byId("qp-enviar-pin");
-      const aliasInput = byId("qp-contact-alias");
-      const saveToggle = byId("qp-save-contact-toggle");
-      const saveFields = byId("qp-save-contact-fields");
-      const autoBox = byId("qp-autocomplete");
-
-      if (queryInput) queryInput.value = "";
-      if (contactsFilter) contactsFilter.value = "";
-      if (amountInput) amountInput.value = "";
-      if (conceptInput) conceptInput.value = "";
-      if (pinInput) pinInput.value = "";
-      if (aliasInput) aliasInput.value = "";
-      if (saveToggle) saveToggle.checked = false;
-      if (saveFields) saveFields.classList.add("hidden");
-      if (autoBox) autoBox.classList.add("hidden");
-
-      const successOverlay = byId("qp-transfer-success");
-      if (successOverlay) {
-        successOverlay.classList.remove("flex");
-        successOverlay.classList.add("hidden", "opacity-0");
-        successOverlay.querySelector("div")?.classList.add("scale-95");
-        successOverlay.querySelector("div")?.classList.remove("scale-100");
+      if (!contacts.length) {
+        list.innerHTML =
+          '<p class="text-xs font-black uppercase text-black/60">No tienes contactos guardados todavía.</p>';
+        return;
       }
 
-      window.qpEnviargotoStep1();
-      renderRecipientCard();
-      updateBalancePreview();
-      loadContacts();
-    }
+      contacts.forEach((contact) => {
+        const row = document.createElement("div");
+        row.className =
+          "border-4 border-black bg-white p-3 rounded-md grid grid-cols-1 lg:grid-cols-[1fr_220px] gap-3 items-start";
 
-    requestAnimationFrame(() => {
-      overlay.classList.remove("opacity-0");
-      content.classList.remove("opacity-0", "scale-95");
-      content.classList.add("opacity-100", "scale-100");
-    });
-  };
+        const displayName =
+          contact.alias || contact.nombre_real || contact.nombre || "Contacto";
+        const currentAlias = contact.alias || contact.nombre || "";
+        const safeInputId = `qp-manager-alias-${contact.id}`;
 
-  window.closeModal = (id) => {
-    const m = document.getElementById(id);
-    const content = document.getElementById(id + "-content");
-    const overlay = document.getElementById("qp-overlay");
-    if (!m || !content || !overlay) return;
+        row.innerHTML = `
+        <div class="min-w-0">
+          <p class="text-[10px] font-black uppercase text-black/50">Contacto</p>
+          <p class="text-sm font-black uppercase truncate">${displayName}</p>
+          <p class="text-[10px] font-bold uppercase text-black/60 truncate mt-1">${contact.email || contact.cedula || "Sin identificador"}</p>
 
-    overlay.classList.add("opacity-0");
-    content.classList.remove("opacity-100", "scale-100");
-    content.classList.add("opacity-0", "scale-95");
+          <label for="${safeInputId}" class="block mt-3 text-[10px] font-black uppercase">Apodo</label>
+          <input
+            id="${safeInputId}"
+            type="text"
+            class="mt-1 w-full border-4 border-black p-2 text-xs font-bold uppercase bg-white"
+            value="${String(currentAlias).replace(/"/g, "&quot;")}"
+            placeholder="Ej: comedor pana"
+          />
+        </div>
 
-    if (id === "modal-enviar") {
-      window.qpEnviargotoStep1();
-      const c = document.getElementById("qp-enviar-query");
-      const f = document.getElementById("qp-contacts-filter");
-      const mm = document.getElementById("qp-enviar-monto");
-      const n = document.getElementById("qp-autocomplete");
-      const saveToggle = byId("qp-save-contact-toggle");
-      const saveFields = byId("qp-save-contact-fields");
-      const aliasInput = byId("qp-contact-alias");
-      if (c) c.value = "";
-      if (f) f.value = "";
-      if (mm) mm.value = "";
-      if (n) n.classList.add("hidden");
-      if (saveToggle) saveToggle.checked = false;
-      if (saveFields) saveFields.classList.add("hidden");
-      if (aliasInput) aliasInput.value = "";
+        <div class="flex flex-col gap-2">
+          <button
+            type="button"
+            class="qp-manager-save border-4 border-black bg-[#d7fd48] px-3 py-2 text-xs font-black uppercase hover:bg-[#c4ec31] active:scale-95 transition-all duration-150"
+            data-contact-id="${contact.id}"
+          >
+            Guardar apodo
+          </button>
+          <button
+            type="button"
+            class="qp-manager-favorite border-4 border-black bg-white px-3 py-2 text-xs font-black uppercase hover:bg-[#fff7d6] active:scale-95 transition-all duration-150"
+            data-contact-id="${contact.id}"
+            data-next-favorite="${!contact.is_favorite}"
+          >
+            ${contact.is_favorite ? "Quitar favorito" : "Marcar favorito"}
+          </button>
+          <button
+            type="button"
+            class="qp-manager-delete border-4 border-black bg-[#fee2e2] px-3 py-2 text-xs font-black uppercase hover:bg-[#fda4af] active:scale-95 transition-all duration-150"
+            data-contact-id="${contact.id}"
+          >
+            Eliminar contacto
+          </button>
+        </div>
+      `;
 
-      const successOverlay = byId("qp-transfer-success");
-      if (successOverlay) {
-        successOverlay.classList.remove("flex");
-        successOverlay.classList.add("hidden", "opacity-0");
-        successOverlay.querySelector("div")?.classList.add("scale-95");
-        successOverlay.querySelector("div")?.classList.remove("scale-100");
-      }
+        const saveBtn = row.querySelector(".qp-manager-save");
+        const favBtn = row.querySelector(".qp-manager-favorite");
+        const deleteBtn = row.querySelector(".qp-manager-delete");
+        const aliasInput = row.querySelector(`#${safeInputId}`);
 
-      selectedRecipient = null;
-      renderRecipientCard();
-    }
+        if (saveBtn && aliasInput) {
+          saveBtn.addEventListener("click", async () => {
+            const nextAlias = String(aliasInput.value || "").trim();
+            if (!nextAlias) {
+              alert("El apodo no puede estar vacío");
+              return;
+            }
 
-    setTimeout(() => {
-      m.classList.add("hidden");
-      m.classList.remove("flex");
-      overlay.classList.add("hidden");
-    }, 300);
-  };
-
-  window.qpEnviargotoStep2 = () => {
-    document.getElementById("enviar-step-1").classList.add("hidden");
-    document.getElementById("enviar-step-2").classList.remove("hidden");
-    document.getElementById("enviar-step-2").classList.add("flex");
-    document.getElementById("qp-enviar-pin").value = "";
-  };
-
-  window.qpEnviargotoStep1 = () => {
-    document.getElementById("enviar-step-2").classList.add("hidden");
-    document.getElementById("enviar-step-2").classList.remove("flex");
-    document.getElementById("enviar-step-1").classList.remove("hidden");
-  };
-
-  document.addEventListener("DOMContentLoaded", () => {
-    // MOVE MODALS TO BODY FOR FULL PAGE BLUR AND POSITIONING
-    const modals = [
-      "qp-overlay",
-      "modal-enviar",
-      "modal-recibir",
-      "modal-recargar",
-    ];
-    modals.forEach((m) => {
-      const el = document.getElementById(m);
-      if (el) document.body.appendChild(el);
-    });
-
-    const cInput = document.getElementById("qp-enviar-query");
-    const contactsFilterInput = document.getElementById("qp-contacts-filter");
-    const autoBox = document.getElementById("qp-autocomplete");
-    const amountInput = document.getElementById("qp-enviar-monto");
-    const saveToggle = document.getElementById("qp-save-contact-toggle");
-    const saveFields = document.getElementById("qp-save-contact-fields");
-    const successContinueBtn = document.getElementById(
-      "qp-transfer-success-continue",
-    );
-
-    if (contactsFilterInput) {
-      contactsFilterInput.addEventListener("input", (e) => {
-        renderContactLists(contactsCache, e.target.value || "");
-      });
-    }
-
-    if (amountInput) {
-      amountInput.addEventListener("input", () => updateBalancePreview());
-    }
-
-    if (saveToggle && saveFields) {
-      saveToggle.addEventListener("change", () => {
-        if (saveToggle.checked) {
-          saveFields.classList.remove("hidden");
-        } else {
-          saveFields.classList.add("hidden");
-          const aliasInput = byId("qp-contact-alias");
-          if (aliasInput) aliasInput.value = "";
-        }
-      });
-    }
-
-    if (successContinueBtn) {
-      successContinueBtn.addEventListener("click", () => {
-        window.closeModal("modal-enviar");
-        window.location.reload();
-      });
-    }
-
-    if (cInput) {
-      cInput.addEventListener("input", (e) => {
-        const val = e.target.value.trim();
-
-        if (val.length < 2) {
-          autoBox.classList.add("hidden");
-          return;
-        }
-
-        clearTimeout(searchTimeout);
-        searchTimeout = setTimeout(async () => {
-          try {
-            const results = await userService.searchUsers(val);
-            renderAutocomplete(results || []);
-          } catch (err) {
-            console.error(err);
-          }
-        }, 300);
-      });
-
-      document.addEventListener("click", (e) => {
-        if (!cInput.contains(e.target) && !autoBox.contains(e.target)) {
-          autoBox.classList.add("hidden");
-        }
-      });
-    }
-
-    const preBtn = document.getElementById("btn-pre-enviar");
-    if (preBtn) {
-      preBtn.addEventListener("click", () => {
-        const m = parseFloat(document.getElementById("qp-enviar-monto").value);
-        if (!selectedRecipient || !selectedRecipient.cedula) {
-          alert("Selecciona un destinatario válido");
-          return;
-        }
-        if (isNaN(m) || m <= 0) {
-          alert("Ingresa un monto válido");
-          return;
-        }
-        window.qpEnviargotoStep2();
-      });
-    }
-
-    const confBtn = document.getElementById("btn-confirm-enviar");
-    if (confBtn) {
-      confBtn.addEventListener("click", async () => {
-        const currentUser = authService.getCurrentUser();
-        if (!currentUser?.id) {
-          alert("Sesión inválida. Inicia sesión de nuevo.");
-          return;
-        }
-
-        if (!selectedRecipient?.cedula) {
-          alert("Selecciona un destinatario válido");
-          window.qpEnviargotoStep1();
-          return;
-        }
-
-        const m = parseFloat(document.getElementById("qp-enviar-monto").value);
-        const pin = document.getElementById("qp-enviar-pin").value.trim();
-        const refText = document
-          .getElementById("qp-enviar-concepto")
-          .value.trim();
-
-        if (pin.length < 4 || pin.length > 6) {
-          alert("Ingrese un PIN válido de 4 a 6 dígitos");
-          return;
-        }
-
-        const btnText = document.getElementById("btn-confirm-text");
-        const btnSpin = document.getElementById("btn-confirm-spinner");
-        const successOverlay = document.getElementById("qp-transfer-success");
-        btnText.innerText = "PROCESANDO...";
-        btnSpin.classList.remove("hidden");
-        confBtn.disabled = true;
-
-        try {
-          const transferResult = await transactionService.transfer({
-            emisor_id: currentUser.id,
-            cedula_receptor: selectedRecipient.cedula,
-            monto: m,
-            concepto: refText || "TRANSFERENCIA RAPIDA",
-            pin,
-          });
-
-          const wantsSaveContact = Boolean(
-            byId("qp-save-contact-toggle")?.checked,
-          );
-          if (wantsSaveContact && selectedRecipient?.id) {
-            const alias = String(byId("qp-contact-alias")?.value || "").trim();
-            const savedContact = findSavedContact(selectedRecipient);
+            saveBtn.disabled = true;
             try {
-              if (savedContact) {
-                await contactService.updateAlias(
-                  savedContact.id,
-                  alias || savedContact.alias || selectedRecipient.name,
-                );
-              } else {
-                await contactService.addContact({
-                  contactId: selectedRecipient.id,
-                  cedula: selectedRecipient.cedula,
-                  alias:
-                    alias || selectedRecipient.alias || selectedRecipient.name,
-                });
-              }
+              await contactService.updateAlias(contact.id, nextAlias);
               await loadContacts();
-            } catch (_contactErr) {
-              // La transferencia ya fue exitosa; no se bloquea por fallo al guardar contacto.
+            } catch (err) {
+              alert(err?.message || "No se pudo actualizar el apodo");
+            } finally {
+              saveBtn.disabled = false;
             }
-          }
-
-          if (successOverlay) {
-            successOverlay.classList.remove("hidden");
-            requestAnimationFrame(() => {
-              successOverlay.classList.add("flex");
-              successOverlay.classList.remove("opacity-0");
-              successOverlay.querySelector("div")?.classList.remove("scale-95");
-              successOverlay.querySelector("div")?.classList.add("scale-100");
-            });
-          }
-
-          if (transferResult?.saldo_restante_estimado !== undefined) {
-            const balancePreview =
-              document.getElementById("qp-balance-preview");
-            if (balancePreview) {
-              balancePreview.innerText = `Saldo restante estimado: Bs. ${Number(transferResult.saldo_restante_estimado).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-            }
-          }
-
-          // Actualizar nivel después de transferencia
-          await updateUserLevel();
-        } catch (error) {
-          alert(error.message || "Error al procesar transferencia");
-        } finally {
-          btnText.innerText = "CONFIRMAR ENVÍO";
-          btnSpin.classList.add("hidden");
-          confBtn.disabled = false;
-          document.getElementById("qp-enviar-pin").value = "";
-        }
-      });
-    }
-
-    const recBtn = document.getElementById("btn-confirm-recargar");
-    if (recBtn) {
-      recBtn.addEventListener("click", async () => {
-        const metodo = document.getElementById("qp-recargar-metodo").value;
-        const refer = document.getElementById("qp-recargar-ref").value;
-        const monto = parseFloat(
-          document.getElementById("qp-recargar-monto").value,
-        );
-
-        if (!metodo || !refer || isNaN(monto) || monto <= 0) {
-          alert("Complete todos los campos para notificar.");
-          return;
-        }
-
-        const btnText = document.getElementById("btn-recargar-text");
-        const btnSpin = document.getElementById("btn-recargar-spinner");
-
-        try {
-          btnText.innerText = "NOTIFICANDO...";
-          btnSpin.classList.remove("hidden");
-          recBtn.disabled = true;
-          await transactionService.recharge({
-            metodo_pago: metodo,
-            monto_bs: monto,
-            referencia: refer,
           });
-          alert("¡Recarga notificada correctamente!");
-          window.closeModal("modal-recargar");
-        } catch (e) {
-          alert(e.message || "Error al notificar recarga");
-        } finally {
-          btnText.innerText = "NOTIFICAR RECARGA";
-          btnSpin.classList.add("hidden");
-          recBtn.disabled = false;
-          document.getElementById("qp-recargar-ref").value = "";
-          document.getElementById("qp-recargar-monto").value = "";
         }
-      });
-    }
-  });
 
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") {
-      ["modal-enviar", "modal-recibir", "modal-recargar"].forEach((id) => {
-        window.closeModal(id);
+        if (favBtn) {
+          favBtn.addEventListener("click", async () => {
+            favBtn.disabled = true;
+            try {
+              await contactService.toggleFavorite(
+                contact.id,
+                !contact.is_favorite,
+              );
+              await loadContacts();
+            } catch (err) {
+              alert(err?.message || "No se pudo actualizar favorito");
+            } finally {
+              favBtn.disabled = false;
+            }
+          });
+        }
+
+        if (deleteBtn) {
+          deleteBtn.addEventListener("click", async () => {
+            const shouldDelete = window.confirm(
+              `¿Eliminar a ${contact.alias || contact.nombre || "este contacto"} de tus contactos rápidos?`,
+            );
+            if (!shouldDelete) return;
+
+            deleteBtn.disabled = true;
+            try {
+              await contactService.removeContact(contact.id);
+
+              if (
+                selectedRecipient &&
+                String(selectedRecipient.contactRelationId) ===
+                  String(contact.id)
+              ) {
+                selectedRecipient = null;
+                const queryInput = byId("qp-enviar-query");
+                if (queryInput) queryInput.value = "";
+              }
+
+              await loadContacts();
+            } catch (err) {
+              alert(err?.message || "No se pudo eliminar el contacto");
+            } finally {
+              deleteBtn.disabled = false;
+            }
+          });
+        }
+
+        list.appendChild(row);
       });
-    }
-  });
-</script>
+    };
+
+    const loadContacts = async () => {
+      try {
+        const currentUser = authService.getCurrentUser();
+        if (!currentUser?.id) return;
+        contactsCache = await contactService.getContacts(currentUser.id);
+        renderContactLists(
+          contactsCache,
+          byId("qp-contacts-filter")?.value || "",
+        );
+        renderContactManagerList(contactsCache);
+        renderRecipientCard();
+      } catch (err) {
+        console.error("Error cargando contactos", err);
+      }
+    };
+
+    // Global functions for modals
+    window.openModal = (id) => {
+      const m = document.getElementById(id);
+      const content = document.getElementById(id + "-content");
+      const overlay = document.getElementById("qp-overlay");
+
+      if (!m || !content || !overlay) return;
+
+      m.classList.remove("hidden");
+      m.classList.add("flex");
+      overlay.classList.remove("hidden");
+
+      if (id === "modal-recibir") {
+        const u = authService.getCurrentUser();
+        if (u && u.cedula) {
+          document.getElementById("recibir-cedula-display").innerText =
+            u.cedula;
+        }
+      }
+
+      if (id === "modal-enviar") {
+        selectedRecipient = null;
+        const currentUser = authService.getCurrentUser();
+        currentUserBalance = Number(currentUser?.balance || 0);
+        const queryInput = byId("qp-enviar-query");
+        const contactsFilter = byId("qp-contacts-filter");
+        const amountInput = byId("qp-enviar-monto");
+        const conceptInput = byId("qp-enviar-concepto");
+        const pinInput = byId("qp-enviar-pin");
+        const aliasInput = byId("qp-contact-alias");
+        const saveToggle = byId("qp-save-contact-toggle");
+        const saveFields = byId("qp-save-contact-fields");
+        const autoBox = byId("qp-autocomplete");
+
+        if (queryInput) queryInput.value = "";
+        if (contactsFilter) contactsFilter.value = "";
+        if (amountInput) amountInput.value = "";
+        if (conceptInput) conceptInput.value = "";
+        if (pinInput) pinInput.value = "";
+        if (aliasInput) aliasInput.value = "";
+        if (saveToggle) saveToggle.checked = false;
+        if (saveFields) saveFields.classList.add("hidden");
+        if (autoBox) autoBox.classList.add("hidden");
+        setContactsSidebarOpen(true);
+
+        const successOverlay = byId("qp-transfer-success");
+        if (successOverlay) {
+          successOverlay.classList.remove("flex");
+          successOverlay.classList.add("hidden", "opacity-0");
+          successOverlay.querySelector("div")?.classList.add("scale-95");
+          successOverlay.querySelector("div")?.classList.remove("scale-100");
+        }
+
+        window.qpEnviargotoStep1();
+        renderRecipientCard();
+        updateBalancePreview();
+        loadContacts();
+      }
+
+      if (id === "modal-gestionar-contactos") {
+        const sendContent = byId("modal-enviar-content");
+        const sendModal = byId("modal-enviar");
+        if (
+          sendContent &&
+          sendModal &&
+          !sendModal.classList.contains("hidden")
+        ) {
+          sendContent.classList.add(
+            "blur-[2px]",
+            "saturate-75",
+            "brightness-95",
+          );
+        }
+      }
+
+      requestAnimationFrame(() => {
+        overlay.classList.remove("opacity-0");
+        content.classList.remove("opacity-0", "scale-95");
+        content.classList.add("opacity-100", "scale-100");
+      });
+    };
+
+    window.closeModal = (id) => {
+      const m = document.getElementById(id);
+      const content = document.getElementById(id + "-content");
+      const overlay = document.getElementById("qp-overlay");
+      if (!m || !content || !overlay) return;
+
+      content.classList.remove("opacity-100", "scale-100");
+      content.classList.add("opacity-0", "scale-95");
+
+      if (id === "modal-enviar") {
+        window.qpEnviargotoStep1();
+        const c = document.getElementById("qp-enviar-query");
+        const f = document.getElementById("qp-contacts-filter");
+        const mm = document.getElementById("qp-enviar-monto");
+        const n = document.getElementById("qp-autocomplete");
+        const saveToggle = byId("qp-save-contact-toggle");
+        const saveFields = byId("qp-save-contact-fields");
+        const aliasInput = byId("qp-contact-alias");
+        if (c) c.value = "";
+        if (f) f.value = "";
+        if (mm) mm.value = "";
+        if (n) n.classList.add("hidden");
+        if (saveToggle) saveToggle.checked = false;
+        if (saveFields) saveFields.classList.add("hidden");
+        if (aliasInput) aliasInput.value = "";
+
+        const successOverlay = byId("qp-transfer-success");
+        if (successOverlay) {
+          successOverlay.classList.remove("flex");
+          successOverlay.classList.add("hidden", "opacity-0");
+          successOverlay.querySelector("div")?.classList.add("scale-95");
+          successOverlay.querySelector("div")?.classList.remove("scale-100");
+        }
+
+        selectedRecipient = null;
+        renderRecipientCard();
+      }
+
+      if (id === "modal-gestionar-contactos") {
+        const sendContent = byId("modal-enviar-content");
+        if (sendContent) {
+          sendContent.classList.remove(
+            "blur-[2px]",
+            "saturate-75",
+            "brightness-95",
+          );
+        }
+      }
+
+      setTimeout(() => {
+        m.classList.add("hidden");
+        m.classList.remove("flex");
+
+        const anyModalVisible = [
+          "modal-enviar",
+          "modal-gestionar-contactos",
+          "modal-recibir",
+          "modal-recargar",
+        ].some((modalId) => {
+          const modalEl = byId(modalId);
+          return modalEl && !modalEl.classList.contains("hidden");
+        });
+
+        if (!anyModalVisible) {
+          overlay.classList.add("opacity-0");
+          overlay.classList.add("hidden");
+        }
+      }, 300);
+    };
+
+    window.qpEnviargotoStep2 = () => {
+      document.getElementById("enviar-step-1").classList.add("hidden");
+      document.getElementById("enviar-step-2").classList.remove("hidden");
+      document.getElementById("enviar-step-2").classList.add("flex");
+      document.getElementById("qp-enviar-pin").value = "";
+    };
+
+    window.qpEnviargotoStep1 = () => {
+      document.getElementById("enviar-step-2").classList.add("hidden");
+      document.getElementById("enviar-step-2").classList.remove("flex");
+      document.getElementById("enviar-step-1").classList.remove("hidden");
+    };
+
+    document.addEventListener("DOMContentLoaded", () => {
+      // MOVE MODALS TO BODY FOR FULL PAGE BLUR AND POSITIONING
+      const modals = [
+        "qp-overlay",
+        "modal-enviar",
+        "modal-gestionar-contactos",
+        "modal-recibir",
+        "modal-recargar",
+      ];
+      modals.forEach((m) => {
+        const el = document.getElementById(m);
+        if (el) document.body.appendChild(el);
+      });
+
+      const cInput = document.getElementById("qp-enviar-query");
+      const contactsFilterInput = document.getElementById("qp-contacts-filter");
+      const autoBox = document.getElementById("qp-autocomplete");
+      const amountInput = document.getElementById("qp-enviar-monto");
+      const conceptInput = document.getElementById("qp-enviar-concepto");
+      const saveToggle = document.getElementById("qp-save-contact-toggle");
+      const saveFields = document.getElementById("qp-save-contact-fields");
+      const openContactManagerBtn = document.getElementById(
+        "qp-open-contact-manager",
+      );
+      const toggleContactsBtn = document.getElementById("qp-toggle-contacts");
+      const successContinueBtn = document.getElementById(
+        "qp-transfer-success-continue",
+      );
+
+      if (toggleContactsBtn) {
+        toggleContactsBtn.addEventListener("click", () => {
+          const isPressed =
+            toggleContactsBtn.getAttribute("aria-pressed") === "true";
+          setContactsSidebarOpen(!isPressed);
+        });
+      }
+
+      if (openContactManagerBtn) {
+        openContactManagerBtn.addEventListener("click", () => {
+          renderContactManagerList(contactsCache);
+          window.openModal("modal-gestionar-contactos");
+        });
+      }
+
+      if (contactsFilterInput) {
+        contactsFilterInput.addEventListener("input", (e) => {
+          renderContactLists(contactsCache, e.target.value || "");
+        });
+      }
+
+      if (amountInput) {
+        amountInput.addEventListener("input", () => updateBalancePreview());
+      }
+
+      if (conceptInput) {
+        const MAX_CONCEPT_HEIGHT = 144;
+        const autoGrowConcept = () => {
+          conceptInput.style.height = "auto";
+          const targetHeight = Math.min(
+            Math.max(conceptInput.scrollHeight, 52),
+            MAX_CONCEPT_HEIGHT,
+          );
+          conceptInput.style.height = `${targetHeight}px`;
+          conceptInput.style.overflowY =
+            conceptInput.scrollHeight > MAX_CONCEPT_HEIGHT ? "auto" : "hidden";
+        };
+
+        conceptInput.addEventListener("input", autoGrowConcept);
+        autoGrowConcept();
+      }
+
+      if (saveToggle && saveFields) {
+        saveToggle.addEventListener("change", () => {
+          if (saveToggle.checked) {
+            saveFields.classList.remove("hidden");
+          } else {
+            saveFields.classList.add("hidden");
+            const aliasInput = byId("qp-contact-alias");
+            if (aliasInput) aliasInput.value = "";
+          }
+        });
+      }
+
+      if (successContinueBtn) {
+        successContinueBtn.addEventListener("click", () => {
+          window.closeModal("modal-enviar");
+          window.location.reload();
+        });
+      }
+
+      if (cInput) {
+        cInput.addEventListener("input", (e) => {
+          const val = e.target.value.trim();
+
+          if (val.length < 2) {
+            autoBox.classList.add("hidden");
+            return;
+          }
+
+          clearTimeout(searchTimeout);
+          searchTimeout = setTimeout(async () => {
+            try {
+              const results = await userService.searchUsers(val);
+              renderAutocomplete(results || []);
+            } catch (err) {
+              console.error(err);
+            }
+          }, 300);
+        });
+
+        document.addEventListener("click", (e) => {
+          if (!cInput.contains(e.target) && !autoBox.contains(e.target)) {
+            autoBox.classList.add("hidden");
+          }
+        });
+      }
+
+      const preBtn = document.getElementById("btn-pre-enviar");
+      if (preBtn) {
+        preBtn.addEventListener("click", () => {
+          const m = parseFloat(
+            document.getElementById("qp-enviar-monto").value,
+          );
+          if (!selectedRecipient || !selectedRecipient.cedula) {
+            alert("Selecciona un destinatario válido");
+            return;
+          }
+          if (isNaN(m) || m <= 0) {
+            alert("Ingresa un monto válido");
+            return;
+          }
+          window.qpEnviargotoStep2();
+        });
+      }
+
+      const confBtn = document.getElementById("btn-confirm-enviar");
+      if (confBtn) {
+        confBtn.addEventListener("click", async () => {
+          const currentUser = authService.getCurrentUser();
+          if (!currentUser?.id) {
+            alert("Sesión inválida. Inicia sesión de nuevo.");
+            return;
+          }
+
+          if (!selectedRecipient?.cedula) {
+            alert("Selecciona un destinatario válido");
+            window.qpEnviargotoStep1();
+            return;
+          }
+
+          const m = parseFloat(
+            document.getElementById("qp-enviar-monto").value,
+          );
+          const pin = document.getElementById("qp-enviar-pin").value.trim();
+          const refText = document
+            .getElementById("qp-enviar-concepto")
+            .value.trim();
+
+          if (pin.length < 4 || pin.length > 6) {
+            alert("Ingrese un PIN válido de 4 a 6 dígitos");
+            return;
+          }
+
+          const btnText = document.getElementById("btn-confirm-text");
+          const btnSpin = document.getElementById("btn-confirm-spinner");
+          const successOverlay = document.getElementById("qp-transfer-success");
+          btnText.innerText = "PROCESANDO...";
+          btnSpin.classList.remove("hidden");
+          confBtn.disabled = true;
+
+          try {
+            const transferResult = await transactionService.transfer({
+              emisor_id: currentUser.id,
+              cedula_receptor: selectedRecipient.cedula,
+              monto: m,
+              concepto: refText || "TRANSFERENCIA RAPIDA",
+              pin,
+            });
+
+            const wantsSaveContact = Boolean(
+              byId("qp-save-contact-toggle")?.checked,
+            );
+            if (wantsSaveContact && selectedRecipient?.id) {
+              const alias = String(
+                byId("qp-contact-alias")?.value || "",
+              ).trim();
+              const savedContact = findSavedContact(selectedRecipient);
+              try {
+                if (savedContact) {
+                  await contactService.updateAlias(
+                    savedContact.id,
+                    alias || savedContact.alias || selectedRecipient.name,
+                  );
+                } else {
+                  await contactService.addContact({
+                    contactId: selectedRecipient.id,
+                    cedula: selectedRecipient.cedula,
+                    alias:
+                      alias ||
+                      selectedRecipient.alias ||
+                      selectedRecipient.name,
+                  });
+                }
+                await loadContacts();
+              } catch (_contactErr) {
+                // La transferencia ya fue exitosa; no se bloquea por fallo al guardar contacto.
+              }
+            }
+
+            if (successOverlay) {
+              successOverlay.classList.remove("hidden");
+              requestAnimationFrame(() => {
+                successOverlay.classList.add("flex");
+                successOverlay.classList.remove("opacity-0");
+                successOverlay
+                  .querySelector("div")
+                  ?.classList.remove("scale-95");
+                successOverlay.querySelector("div")?.classList.add("scale-100");
+              });
+            }
+
+            if (transferResult?.saldo_restante_estimado !== undefined) {
+              const rightPreview = document.getElementById(
+                "qp-right-balance-preview",
+              );
+              if (rightPreview) {
+                rightPreview.innerText = `$${Number(transferResult.saldo_restante_estimado).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+              }
+            }
+
+            // Actualizar nivel después de transferencia
+            await updateUserLevel();
+          } catch (error) {
+            alert(error.message || "Error al procesar transferencia");
+          } finally {
+            btnText.innerText = "CONFIRMAR ENVÍO";
+            btnSpin.classList.add("hidden");
+            confBtn.disabled = false;
+            document.getElementById("qp-enviar-pin").value = "";
+          }
+        });
+      }
+
+      const recBtn = document.getElementById("btn-confirm-recargar");
+      if (recBtn) {
+        recBtn.addEventListener("click", async () => {
+          const metodo = document.getElementById("qp-recargar-metodo").value;
+          const refer = document.getElementById("qp-recargar-ref").value;
+          const monto = parseFloat(
+            document.getElementById("qp-recargar-monto").value,
+          );
+
+          if (!metodo || !refer || isNaN(monto) || monto <= 0) {
+            alert("Complete todos los campos para notificar.");
+            return;
+          }
+
+          const btnText = document.getElementById("btn-recargar-text");
+          const btnSpin = document.getElementById("btn-recargar-spinner");
+
+          try {
+            btnText.innerText = "NOTIFICANDO...";
+            btnSpin.classList.remove("hidden");
+            recBtn.disabled = true;
+            await transactionService.recharge({
+              metodo_pago: metodo,
+              monto_bs: monto,
+              referencia: refer,
+            });
+            alert("¡Recarga notificada correctamente!");
+            window.closeModal("modal-recargar");
+          } catch (e) {
+            alert(e.message || "Error al notificar recarga");
+          } finally {
+            btnText.innerText = "NOTIFICAR RECARGA";
+            btnSpin.classList.add("hidden");
+            recBtn.disabled = false;
+            document.getElementById("qp-recargar-ref").value = "";
+            document.getElementById("qp-recargar-monto").value = "";
+          }
+        });
+      }
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        [
+          "modal-enviar",
+          "modal-gestionar-contactos",
+          "modal-recibir",
+          "modal-recargar",
+        ].forEach((id) => {
+          window.closeModal(id);
+        });
+      }
+    });
+  </script>
+</div>
