@@ -23,6 +23,28 @@ const SESSION_REFRESH_COOLDOWN_MS = readPublicPositiveNumberEnv('PUBLIC_SESSION_
 const SESSION_REFRESH_POLL_MS = readPublicPositiveNumberEnv('PUBLIC_SESSION_REFRESH_POLL_SECONDS', 60) * 1000;
 const SESSION_NOTICE_DELAY_MS = readPublicPositiveNumberEnv('PUBLIC_SESSION_NOTICE_DELAY_MS', 900);
 
+function shouldLogClientErrors() {
+  if (!isBrowser) return false;
+
+  const forced = String(import.meta.env.PUBLIC_CLIENT_ERROR_LOGS || '').toLowerCase();
+  if (['1', 'true', 'yes', 'on'].includes(forced)) return true;
+
+  const disabled = String(import.meta.env.PUBLIC_CLIENT_ERROR_LOGS || '').toLowerCase();
+  if (['0', 'false', 'no', 'off'].includes(disabled)) return false;
+
+  return Boolean(import.meta.env.DEV) || window.location.hostname === 'localhost';
+}
+
+function emitClientErrorTelemetry(detail = {}) {
+  if (!isBrowser) return;
+  window.dispatchEvent(new CustomEvent('capypay:client-error', {
+    detail: {
+      at: new Date().toISOString(),
+      ...detail
+    }
+  }));
+}
+
 const gmClientCache = new Map();
 const gmClientInflight = new Map();
 
@@ -438,7 +460,12 @@ export async function fetchAPI(endpoint, options = {}) {
     if (!response.ok) {
       // Buscamos 'message' o 'error' porque tu backend usa ambos
       const mensaje = data?.message || data?.error || 'Error en la petición';
-      throw new Error(mensaje);
+      const requestError = new Error(mensaje);
+      requestError.status = response.status;
+      requestError.endpoint = endpoint;
+      requestError.method = method;
+      requestError.responseData = data;
+      throw requestError;
     }
 
     return data;
@@ -451,8 +478,30 @@ export async function fetchAPI(endpoint, options = {}) {
     const debugApi = typeof window !== 'undefined' &&
       (new URLSearchParams(window.location.search).get('debugApi') === '1' || window.__CAPYPAY_DEBUG_API__ === true);
 
+    const shouldLog = shouldLogClientErrors() || debugApi;
+
+    if (shouldLog) {
+      console.error('[CapyPay API Error]', {
+        endpoint,
+        method,
+        status: Number(error?.status || 0) || null,
+        message: error?.message || 'Unknown error',
+        isNetworkError,
+        at: new Date().toISOString()
+      });
+    }
+
+    emitClientErrorTelemetry({
+      source: 'fetchAPI',
+      endpoint,
+      method,
+      status: Number(error?.status || 0) || null,
+      message: error?.message || 'Unknown error',
+      isNetworkError
+    });
+
     if (debugApi) {
-      console.error('API Error:', error);
+      console.error('API Error detail:', error);
     }
 
     throw error;
