@@ -1,226 +1,367 @@
 ---
 const quickNavItems = [
-  { href: "/dashboard", label: "Inicio", icon: "dashboard", key: "dashboard" },
-  { href: "/finance/history", label: "Historial", icon: "history", key: "history" },
-  { href: "/account/profile", label: "Perfil", icon: "person", key: "profile" },
-  { href: "/account/settings", label: "Ajustes", icon: "settings", key: "settings" },
+  { href: "/dashboard", label: "Inicio", icon: "home", key: "dashboard" },
+  { href: "/finance/history", label: "Historial", icon: "bar_chart", key: "history" },
+  { href: "/finance/recarga", label: "Recarga", icon: "account_balance_wallet", key: "recarga" },
 ];
 
-const extendedNavItems = [
-  { href: "/finance/recarga", label: "Billetera", icon: "account_balance" },
+const drawerNavItems = [
+  { href: "/dashboard", label: "Inicio", icon: "home" },
+  { href: "/finance/history", label: "Historial", icon: "bar_chart" },
+  { href: "/finance/recarga", label: "Recarga", icon: "account_balance_wallet" },
+  { href: "/services/ticketbus", label: "Pasaje", icon: "confirmation_number" },
   { href: "/services/comedor", label: "Comedor", icon: "restaurant" },
-  { href: "/services/ticketbus", label: "Pasajes", icon: "confirmation_number" },
   { href: "/services/cantina", label: "Cantina", icon: "storefront" },
-  { href: "/account/ranking", label: "Clasificacion", icon: "emoji_events" },
+  { href: "/account/ranking", label: "Clasificación", icon: "emoji_events" },
 ];
-
 ---
 
-<div class="md:hidden fixed inset-x-0 bottom-0 z-50 pointer-events-none">
-  <div
-    id="mobile-nav-backdrop"
-    class="hidden absolute inset-0 bg-black/32 backdrop-blur-[2px] pointer-events-auto opacity-0 transition-opacity duration-200"
-  ></div>
+<div class="lg:hidden fixed inset-x-0 bottom-0 z-60 pointer-events-none">
+  <div id="mobile-sidebar-backdrop" class="hidden fixed inset-0 bg-black/45 backdrop-blur-[2px] opacity-0 transition-opacity duration-220 pointer-events-auto"></div>
 
-  <section
-    id="mobile-nav-panel"
-    class="hidden absolute left-0 right-0 bottom-[calc(env(safe-area-inset-bottom,0px)+76px)] bg-[#FFF9F0] border-t-4 border-black shadow-[0_-4px_12px_rgba(0,0,0,0.14)] p-3 pointer-events-auto max-h-[62vh] overflow-y-auto opacity-0 translate-y-4 transition-[opacity,transform] duration-220"
-    aria-label="Menu ampliado"
+  <aside
+    id="mobile-sidebar-drawer"
+    class="hidden fixed top-2 left-2 bottom-2 w-[84vw] max-w-[320px] mobile-sidebar-shell pointer-events-auto opacity-0 -translate-x-5 transition-[opacity,transform] duration-220"
+    aria-label="Sidebar móvil"
+    aria-hidden="true"
   >
-    <div class="w-12 h-1 rounded-full bg-black/35 mx-auto mb-2" aria-hidden="true"></div>
-    <p class="text-[10px] font-black uppercase tracking-widest text-black/70 mb-2 px-1">Mas funciones</p>
-    <div class="grid grid-cols-2 gap-2 max-w-xl mx-auto">
-      {
-        extendedNavItems.map((item) => (
-          <a
-            href={item.href}
-            data-astro-prefetch
-            class="mobile-nav-panel-link flex items-center gap-2 border-2 border-black bg-white px-3 py-2 font-black uppercase text-[11px] tracking-wide hover:-translate-y-0.5 hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all"
-            data-nav-link
-          >
-            <span class="material-symbols-outlined text-[18px]">{item.icon}</span>
-            <span class="truncate">{item.label}</span>
-          </a>
-        ))
-      }
-      <button
-        id="mobile-nav-logout"
-        class="col-span-2 flex items-center justify-center gap-2 border-2 border-black bg-[#ff4d4d] text-white px-3 py-2 font-black uppercase text-[11px] tracking-wide hover:-translate-y-0.5 hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all"
-        type="button"
-      >
-        <span class="material-symbols-outlined text-[18px]">logout</span>
-        Cerrar sesion
-      </button>
+    <div class="mobile-sidebar-inner h-full w-full flex flex-col px-3 py-3">
+      <div class="mobile-sidebar-head">
+        <img
+          src="/assets/landing/vectors/logocapinamedside.svg"
+          alt="Logo de CapyPay"
+          class="mobile-sidebar-logo"
+          loading="eager"
+          decoding="async"
+        />
+        <button id="mobile-sidebar-close" type="button" class="mobile-sidebar-close" aria-label="Cerrar menú">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <nav class="flex-1 space-y-3 overflow-y-auto pr-1 custom-scrollbar">
+        {
+          drawerNavItems.map((item) => (
+            <a href={item.href} data-astro-prefetch class="mobile-sidebar-link" data-mobile-sidebar-link>
+              <span class="material-symbols-outlined mobile-sidebar-link-icon">{item.icon}</span>
+              <span class="mobile-sidebar-link-label">{item.label}</span>
+            </a>
+          ))
+        }
+      </nav>
+
+      <div class="mobile-sidebar-actions">
+        <a href="/account/settings" data-astro-prefetch class="mobile-sidebar-action">
+          <span class="material-symbols-outlined mobile-sidebar-link-icon">settings</span>
+          <span class="mobile-sidebar-link-label">Configuración</span>
+        </a>
+        <button id="mobile-sidebar-logout" type="button" class="mobile-sidebar-action">
+          <span class="material-symbols-outlined mobile-sidebar-link-icon">logout</span>
+          <span class="mobile-sidebar-link-label">Cerrar sesión</span>
+        </button>
+      </div>
     </div>
-  </section>
+  </aside>
 
-  <nav
-    id="mobile-bottom-nav"
-    class="relative w-full bg-[#FFF9F0] border-t-4 border-black px-2 pt-4 pb-[calc(env(safe-area-inset-bottom,0px)+10px)] shadow-[0_-3px_10px_rgba(0,0,0,0.13)] pointer-events-auto"
-  >
-    <div class="grid grid-cols-4 gap-1 items-end">
+  <nav id="mobile-bottom-nav" class="mobile-bottom-shell pointer-events-auto">
+    <div class="mobile-bottom-grid">
       {
         quickNavItems.map((item) => (
-          <a
-            href={item.href}
-            data-astro-prefetch
-            class="mobile-nav-item flex flex-col items-center justify-center gap-0.5 rounded-sm text-black hover:bg-black hover:text-[#d7fd48] transition-colors min-h-12 px-1"
-            data-nav={item.key}
-          >
-            <span class="material-symbols-outlined text-[20px] leading-none">{item.icon}</span>
-            <span class="text-[9px] font-black uppercase tracking-[0.04em] leading-none truncate max-w-full">{item.label}</span>
+          <a href={item.href} data-astro-prefetch class="mobile-bottom-item" data-nav={item.key}>
+            <span class="material-symbols-outlined mobile-bottom-icon">{item.icon}</span>
+            <span class="mobile-bottom-label">{item.label}</span>
           </a>
         ))
       }
+      <button id="mobile-sidebar-open" type="button" class="mobile-bottom-menu" aria-expanded="false" aria-controls="mobile-sidebar-drawer">
+        <span class="material-symbols-outlined mobile-bottom-icon">menu</span>
+        <span class="mobile-bottom-label">Menu</span>
+      </button>
     </div>
-
-    <button
-      id="mobile-nav-more-btn"
-      class="absolute left-1/2 -translate-x-1/2 -top-7 w-13 h-13 bg-[#d7fd48] border-4 border-black shadow-[0_4px_0px_0px_rgba(0,0,0,1)] rounded-full flex flex-col items-center justify-center gap-0 text-black hover:brightness-95 transition-all"
-      type="button"
-      aria-expanded="false"
-      aria-controls="mobile-nav-panel"
-    >
-      <span class="material-symbols-outlined text-[16px] leading-none">menu_open</span>
-      <span class="text-[8px] font-black uppercase tracking-[0.04em] leading-none">Mas</span>
-    </button>
   </nav>
 </div>
 
 <style>
-  .safe-area-bottom {
-    padding-bottom: env(safe-area-inset-bottom, 20px);
+  :global(html) {
+    --cp-sidebar-bg-a: #8b5cf6;
+    --cp-sidebar-bg-b: #6d28d9;
+    --cp-sidebar-border: rgba(0, 0, 0, 0.24);
+    --cp-sidebar-item-bg: rgba(243, 232, 255, 0.86);
+    --cp-sidebar-item-border: rgba(255, 255, 255, 0.42);
+    --cp-sidebar-item-shadow: rgba(76, 29, 149, 0.2);
+    --cp-sidebar-item-text: #2e1a63;
+    --cp-sidebar-item-icon: #321c6a;
+    --cp-sidebar-active-bg: var(--color-brand-receive, #d7fd49);
+    --cp-sidebar-active-text: #181818;
+    --cp-sidebar-logo-filter: none;
   }
 
-  .mobile-nav-item.active {
-    background: #111827;
-    color: #d7fd48;
+  :global(html[data-sidebar-theme="dark"]) {
+    --cp-sidebar-bg-a: #a78bfa;
+    --cp-sidebar-bg-b: #7c3aed;
+    --cp-sidebar-border: rgba(0, 0, 0, 0.18);
+    --cp-sidebar-item-bg: rgba(238, 232, 255, 0.34);
+    --cp-sidebar-item-border: rgba(255, 255, 255, 0.26);
+    --cp-sidebar-item-shadow: rgba(76, 29, 149, 0.24);
+    --cp-sidebar-item-text: #fdfbff;
+    --cp-sidebar-item-icon: #fdfbff;
+    --cp-sidebar-active-bg: var(--color-brand-receive, #d7fd49);
+    --cp-sidebar-active-text: #181818;
+    --cp-sidebar-logo-filter: brightness(0) invert(1);
+  }
+
+  .mobile-sidebar-shell {
+    border-radius: 18px;
+    border: 1px solid var(--cp-sidebar-border);
+    background:
+      radial-gradient(circle at 14% 9%, rgba(255, 255, 255, 0.2), transparent 42%),
+      linear-gradient(170deg, var(--cp-sidebar-bg-a), var(--cp-sidebar-bg-b));
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.24),
+      0 16px 36px rgba(50, 33, 109, 0.28);
+    overflow: hidden;
+  }
+
+  .mobile-sidebar-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 4px 18px;
+  }
+
+  .mobile-sidebar-logo {
+    width: 106px;
+    height: auto;
+    filter: var(--cp-sidebar-logo-filter);
+  }
+
+  .mobile-sidebar-close {
+    width: 34px;
+    height: 34px;
+    border-radius: 999px;
+    border: 1px solid var(--cp-sidebar-item-border);
+    background: var(--cp-sidebar-item-bg);
+    color: var(--cp-sidebar-item-icon);
+    display: grid;
+    place-items: center;
+  }
+
+  .mobile-sidebar-link,
+  .mobile-sidebar-action {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    min-height: 50px;
+    border-radius: 999px;
+    border: 1px solid var(--cp-sidebar-item-border);
+    background: var(--cp-sidebar-item-bg);
+    box-shadow: 0 7px 14px var(--cp-sidebar-item-shadow);
+    color: var(--cp-sidebar-item-text);
+    padding: 0 14px;
+    text-decoration: none;
+    font-weight: 650;
+    font-size: 0.97rem;
+    transition: transform 160ms ease, box-shadow 160ms ease;
+  }
+
+  .mobile-sidebar-link:hover,
+  .mobile-sidebar-action:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 9px 18px var(--cp-sidebar-item-shadow);
+  }
+
+  .mobile-sidebar-link.is-active {
+    background: var(--cp-sidebar-active-bg);
+    color: var(--cp-sidebar-active-text);
+    border-color: rgba(99, 111, 28, 0.45);
+    box-shadow: 0 9px 20px rgba(96, 120, 22, 0.34);
+  }
+
+  .mobile-sidebar-link-icon {
+    color: var(--cp-sidebar-item-icon);
+    font-size: 20px;
+  }
+
+  .mobile-sidebar-link.is-active .mobile-sidebar-link-icon {
+    color: var(--cp-sidebar-active-text);
+  }
+
+  .mobile-sidebar-link-label {
+    line-height: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .mobile-sidebar-logout {
+    margin-top: 0;
+  }
+
+  .mobile-sidebar-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 12px;
+  }
+
+  .mobile-bottom-shell {
+    background: rgba(244, 239, 255, 0.96);
+    backdrop-filter: blur(8px);
+    border-top: 1px solid rgba(153, 135, 223, 0.42);
+    padding: 8px 8px calc(env(safe-area-inset-bottom, 0px) + 8px);
+  }
+
+  .mobile-bottom-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .mobile-bottom-item,
+  .mobile-bottom-menu {
+    min-height: 54px;
+    border-radius: 14px;
+    border: 1px solid rgba(136, 118, 212, 0.36);
+    background: #e5dcff;
+    color: #352d57;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    text-decoration: none;
+    box-shadow: 0 4px 10px rgba(97, 73, 170, 0.16);
+  }
+
+  .mobile-bottom-item.is-active,
+  .mobile-bottom-menu.is-active {
+    background: var(--color-brand-receive, #d7fd49);
+    color: #181818;
+  }
+
+  .mobile-bottom-icon {
+    font-size: 19px;
+    line-height: 1;
+  }
+
+  .mobile-bottom-label {
+    font-size: 0.67rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0.02em;
   }
 </style>
 
 <script>
-  document.addEventListener("DOMContentLoaded", () => {
+  // @ts-nocheck
+  function initMobileSidebarNav() {
+    const root = document.documentElement;
     const currentPath = window.location.pathname.replace(/\/$/, "") || "/";
 
-    const quickItems = document.querySelectorAll("a.mobile-nav-item");
-    quickItems.forEach((item) => {
-      const itemPath = item.getAttribute("href")?.replace(/\/$/, "") || "";
-      if (currentPath === itemPath) {
-        item.classList.add("active");
+    const backdrop = document.getElementById("mobile-sidebar-backdrop");
+    const drawer = document.getElementById("mobile-sidebar-drawer");
+    const openBtn = document.getElementById("mobile-sidebar-open");
+    const closeBtn = document.getElementById("mobile-sidebar-close");
+    const logoutBtn = document.getElementById("mobile-sidebar-logout");
+
+    if (!backdrop || !drawer || !openBtn || openBtn.dataset.bound === "1") return;
+    openBtn.dataset.bound = "1";
+
+    const bottomItems = document.querySelectorAll(".mobile-bottom-item");
+    bottomItems.forEach((item) => {
+      const href = item.getAttribute("href")?.replace(/\/$/, "") || "";
+      if (href && (currentPath === href || (href !== "/dashboard" && currentPath.startsWith(href)))) {
+        item.classList.add("is-active");
       }
     });
 
-    const moreBtn = document.getElementById("mobile-nav-more-btn");
-    const panel = document.getElementById("mobile-nav-panel");
-    const backdrop = document.getElementById("mobile-nav-backdrop");
-    const logoutBtn = document.getElementById("mobile-nav-logout");
-    const bottomNav = document.getElementById("mobile-bottom-nav");
+    const links = drawer.querySelectorAll(".mobile-sidebar-link");
+    links.forEach((item) => {
+      const href = item.getAttribute("href")?.replace(/\/$/, "") || "";
+      if (href && (currentPath === href || (href !== "/dashboard" && currentPath.startsWith(href)))) {
+        item.classList.add("is-active");
+      }
+      item.addEventListener("click", () => closeDrawer());
+    });
 
-    if (!moreBtn || !panel || !backdrop) return;
+    /** @type {number | null} */
+    let timer = null;
 
-    let closeTimer;
-    let navTouchStartY = 0;
-    let navTouchStartX = 0;
-    let panelTouchStartY = 0;
-    let panelTouchStartX = 0;
-
-    const clearCloseTimer = () => {
-      if (closeTimer) {
-        clearTimeout(closeTimer);
-        closeTimer = undefined;
+    const clearTimer = () => {
+      if (timer) {
+        window.clearTimeout(timer);
+        timer = null;
       }
     };
 
-    const closePanel = () => {
-      clearCloseTimer();
-      panel.classList.add("opacity-0", "translate-y-4");
-      backdrop.classList.add("opacity-0");
-      moreBtn.setAttribute("aria-expanded", "false");
-      moreBtn.classList.remove("!bg-black", "!text-[#d7fd48]");
-
-      closeTimer = window.setTimeout(() => {
-        panel.classList.add("hidden");
-        backdrop.classList.add("hidden");
-      }, 220);
+    const lockBody = (locked) => {
+      document.body.style.overflow = locked ? "hidden" : "";
     };
 
-    const openPanel = () => {
-      clearCloseTimer();
-      panel.classList.remove("hidden");
+    const openDrawer = () => {
+      clearTimer();
+      drawer.classList.remove("hidden");
       backdrop.classList.remove("hidden");
-      moreBtn.setAttribute("aria-expanded", "true");
-      moreBtn.classList.add("!bg-black", "!text-[#d7fd48]");
+      drawer.setAttribute("aria-hidden", "false");
+      openBtn.setAttribute("aria-expanded", "true");
+      openBtn.classList.add("is-active");
+      lockBody(true);
 
       requestAnimationFrame(() => {
-        panel.classList.remove("opacity-0", "translate-y-4");
+        drawer.classList.remove("opacity-0", "-translate-x-5");
         backdrop.classList.remove("opacity-0");
       });
     };
 
-    moreBtn.addEventListener("click", () => {
-      const isOpen = !panel.classList.contains("hidden");
-      if (isOpen) closePanel();
-      else openPanel();
+    const closeDrawer = () => {
+      clearTimer();
+      drawer.classList.add("opacity-0", "-translate-x-5");
+      backdrop.classList.add("opacity-0");
+      drawer.setAttribute("aria-hidden", "true");
+      openBtn.setAttribute("aria-expanded", "false");
+      openBtn.classList.remove("is-active");
+      lockBody(false);
+
+      timer = window.setTimeout(() => {
+        drawer.classList.add("hidden");
+        backdrop.classList.add("hidden");
+      }, 220);
+    };
+
+    openBtn.addEventListener("click", () => {
+      const isOpen = !drawer.classList.contains("hidden");
+      if (isOpen) closeDrawer();
+      else openDrawer();
     });
 
-    backdrop.addEventListener("click", closePanel);
-    panel.querySelectorAll("[data-nav-link]").forEach((link) => {
-      link.addEventListener("click", closePanel);
+    closeBtn?.addEventListener("click", closeDrawer);
+    backdrop.addEventListener("click", closeDrawer);
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !drawer.classList.contains("hidden")) {
+        closeDrawer();
+      }
     });
-
-    bottomNav?.addEventListener(
-      "touchstart",
-      (event) => {
-        const touch = event.touches[0];
-        navTouchStartY = touch.clientY;
-        navTouchStartX = touch.clientX;
-      },
-      { passive: true },
-    );
-
-    bottomNav?.addEventListener(
-      "touchend",
-      (event) => {
-        const touch = event.changedTouches[0];
-        const deltaY = touch.clientY - navTouchStartY;
-        const deltaX = touch.clientX - navTouchStartX;
-
-        // Swipe hacia arriba desde la barra inferior abre el panel.
-        if (deltaY < -42 && Math.abs(deltaX) < 48 && panel.classList.contains("hidden")) {
-          openPanel();
-        }
-      },
-      { passive: true },
-    );
-
-    panel.addEventListener(
-      "touchstart",
-      (event) => {
-        const touch = event.touches[0];
-        panelTouchStartY = touch.clientY;
-        panelTouchStartX = touch.clientX;
-      },
-      { passive: true },
-    );
-
-    panel.addEventListener(
-      "touchend",
-      (event) => {
-        const touch = event.changedTouches[0];
-        const deltaY = touch.clientY - panelTouchStartY;
-        const deltaX = touch.clientX - panelTouchStartX;
-
-        // Swipe hacia abajo dentro del panel lo cierra.
-        if (deltaY > 52 && Math.abs(deltaX) < 56 && !panel.classList.contains("hidden")) {
-          closePanel();
-        }
-      },
-      { passive: true },
-    );
 
     logoutBtn?.addEventListener("click", () => {
-      closePanel();
-      window.dispatchEvent(new CustomEvent("logout-requested"));
+      closeDrawer();
+      if (typeof window.openLogoutModal === "function") {
+        window.openLogoutModal();
+      } else {
+        window.dispatchEvent(new CustomEvent("logout-requested"));
+      }
     });
-  });
+
+    window.addEventListener("capypay:sidebar-theme-change", () => {
+      const theme = String(root.getAttribute("data-sidebar-theme") || "light");
+      if (!theme) {
+        root.setAttribute("data-sidebar-theme", "light");
+      }
+    });
+  }
+
+  document.addEventListener("astro:page-load", initMobileSidebarNav);
+  if (document.readyState === "complete" || document.readyState === "interactive") {
+    initMobileSidebarNav();
+  }
 </script>

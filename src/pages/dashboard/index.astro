@@ -11,7 +11,7 @@ import SkeletonLoader from "../../components/ui/SkeletonLoader.astro";
 ---
 
 <CapyPay title="Dashboard | CapyPay" showSidebar={true}>
-  <div class="flex flex-col lg:h-full w-full pb-20 lg:pb-0">
+  <div id="dashboard-theme-scope" class="flex flex-col lg:h-full w-full pb-20 lg:pb-0">
     <!-- HEADER ESCRITORIO -->
     <header
       class="hidden lg:flex justify-between items-end mb-8 animate-fade-in-down relative z-50"
@@ -144,49 +144,49 @@ import SkeletonLoader from "../../components/ui/SkeletonLoader.astro";
             id="dashboard-level-link"
             href="/account/niveles?from=dashboard"
             aria-label="Ir a niveles"
-            class="bg-[#deb2ff] border-4 border-black box-shadow-brutal p-3 sm:p-5 flex flex-col justify-between items-center text-center h-auto min-h-42.5 sm:h-full group hover:-translate-y-1 transition-transform focus:outline-none focus:ring-2 focus:ring-black"
+            class="bg-gradient-to-br from-[#a78bfa] to-[#7c3aed] border-4 border-black box-shadow-brutal p-3 sm:p-5 flex flex-col justify-between items-center text-center h-auto min-h-42.5 sm:h-full group hover:-translate-y-1 transition-transform focus:outline-none focus:ring-2 focus:ring-black"
           >
             <div class="w-full flex justify-between items-start">
               <span
-                class="material-symbols-outlined text-2xl sm:text-3xl transition-transform group-hover:scale-110"
+                class="material-symbols-outlined text-2xl sm:text-3xl text-white transition-transform group-hover:scale-110"
                 >military_tech</span
               >
               <span
-                class="bg-white border-2 border-black px-1.5 py-0.5 text-[9px] sm:text-[10px] font-black uppercase"
+                class="bg-white border-2 border-black px-1.5 py-0.5 text-[9px] sm:text-[10px] font-black uppercase text-[#4c1d95]"
                 >NIVELES</span
               >
             </div>
             <div class="mt-1 sm:mt-2 text-center w-full">
               <h3
-                class="font-black text-3xl sm:text-4xl uppercase leading-none"
+                class="font-black text-3xl sm:text-4xl uppercase leading-none text-white"
                 id="user-level"
               >
                 1
               </h3>
-              <div id="user-level-badge" class="mt-1 inline-flex items-center gap-1.5 border-2 border-black bg-white px-2 py-0.5">
+              <div id="user-level-badge" class="mt-1 inline-flex items-center gap-1.5 border-2 border-black bg-white px-2 py-0.5 shadow-[0_0_12px_rgba(255,255,255,0.18)]">
                 <span id="user-level-icon" class="inline-flex items-center justify-center w-3.5 h-3.5" aria-hidden="true">
                   <svg xmlns="http://www.w3.org/2000/svg" class="w-full h-full" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><path d="M9 9h.01"></path><path d="M15 9h.01"></path><path d="M10 3 8 8"></path><path d="M14 3 16 8"></path><path d="M3 13c0-5 4-9 9-9s9 4 9 9a9 9 0 0 1-18 0"></path></svg>
                 </span>
-                <span id="user-level-name" class="text-[10px] font-black uppercase tracking-wide">Novato</span>
+                <span id="user-level-name" class="text-[10px] font-black uppercase tracking-wide text-[#4c1d95]">Novato</span>
               </div>
-              <div class="w-full bg-white border-2 border-black h-2 mt-1">
+              <div class="w-full bg-white/85 border-2 border-black h-2 mt-1">
                 <div
-                  class="bg-[#8b5cf6] h-full transition-all duration-300"
+                  class="bg-[#d7fd48] h-full transition-all duration-300"
                   id="level-progress"
                   style="width: 0%"
                 >
                 </div>
               </div>
               <div
-                class="mt-2 flex items-center justify-center gap-2 text-[9px] sm:text-[10px] font-black uppercase text-black"
+                class="mt-2 flex items-center justify-center gap-2 text-[9px] sm:text-[10px] font-black uppercase text-white"
               >
                 <span
-                  class="border-2 border-black bg-white px-2 py-1 leading-none"
+                  class="border-2 border-black bg-white px-2 py-1 leading-none text-[#4c1d95]"
                   >🔥 <span id="streak-daily">0</span>d</span
                 >
                 <span
                   id="streak-warning"
-                  class="hidden border-2 border-black bg-[#fef08a] px-2 py-1 leading-none"
+                  class="hidden border-2 border-black bg-[#fef08a] px-2 py-1 leading-none text-black"
                   >Hoy</span
                 >
               </div>
@@ -203,6 +203,7 @@ import SkeletonLoader from "../../components/ui/SkeletonLoader.astro";
 
       <!-- RIGHT SECTION (FLUJO RECIENTE) (3 COLS) -->
       <div
+        id="history-widget"
         class="lg:col-span-4 xl:col-span-3 bg-white border-4 border-black box-shadow-brutal flex flex-col h-full max-h-full animate-fade-in-left overflow-hidden"
       >
         <!-- Header -->
@@ -217,12 +218,12 @@ import SkeletonLoader from "../../components/ui/SkeletonLoader.astro";
           >
             <button
               id="btn-hist-expenses"
-              class="px-2 py-1.5 bg-white text-black hover:bg-gray-200 transition-colors border-r-2 border-black text-center leading-none"
+              class="px-2 py-1.5 bg-[#8b5cf6] text-white hover:bg-[#7c3aed] transition-colors border-r-2 border-black text-center leading-none"
               >Egresos</button
             >
             <button
               id="btn-hist-income"
-              class="px-2 py-1.5 bg-white text-black hover:bg-gray-200 transition-colors text-center leading-none"
+              class="px-2 py-1.5 bg-[#8b5cf6] text-white hover:bg-[#7c3aed] transition-colors text-center leading-none"
               >Ingresos</button
             >
           </div>
@@ -395,6 +396,117 @@ import SkeletonLoader from "../../components/ui/SkeletonLoader.astro";
     .custom-scrollbar::-webkit-scrollbar-thumb {
       background: black;
     }
+
+    :global(html[data-sidebar-theme="dark"]) #dashboard-theme-scope h1,
+    :global(html[data-sidebar-theme="dark"]) #dashboard-theme-scope h2 {
+      color: #f8f5ff !important;
+    }
+
+    :global(html[data-sidebar-theme="dark"]) #dashboard-theme-scope header .bg-white {
+      background: #17112a !important;
+    }
+
+    :global(html[data-sidebar-theme="dark"]) #dashboard-theme-scope header .border-black {
+      border-color: rgba(248, 245, 255, 0.45) !important;
+    }
+
+    :global(html[data-sidebar-theme="dark"]) #dashboard-theme-scope {
+      --dash-dark-surface: #17122b;
+      --dash-dark-border: rgba(248, 245, 255, 0.38);
+      --dash-dark-text: #f8f5ff;
+      --dash-dark-shadow: 6px 6px 0px 0px rgba(0, 0, 0, 0.5);
+    }
+
+    :global(html[data-sidebar-theme="dark"]) #dashboard-theme-scope #wallet-card-number,
+    :global(html[data-sidebar-theme="dark"]) #dashboard-theme-scope #balance-amount,
+    :global(html[data-sidebar-theme="dark"]) #dashboard-theme-scope #balance-username,
+    :global(html[data-sidebar-theme="dark"]) #dashboard-theme-scope #wallet-card p,
+    :global(html[data-sidebar-theme="dark"]) #dashboard-theme-scope #wallet-card span {
+      color: var(--dash-dark-text) !important;
+    }
+
+    :global(html[data-sidebar-theme="dark"]) #dashboard-theme-scope #wallet-card-number,
+    :global(html[data-sidebar-theme="dark"]) #dashboard-theme-scope #wallet-card-label {
+      background: #241b3d !important;
+      border-color: var(--dash-dark-border) !important;
+    }
+
+    :global(html[data-sidebar-theme="dark"]) #dashboard-theme-scope #finance-chart-widget {
+      background: var(--dash-dark-surface) !important;
+      border-color: var(--dash-dark-border) !important;
+      box-shadow: var(--dash-dark-shadow) !important;
+    }
+
+    :global(html[data-sidebar-theme="dark"]) #dashboard-theme-scope #finance-chart-widget :is(h3, span, div, p),
+    :global(html[data-sidebar-theme="dark"]) #dashboard-theme-scope #chart-labels-container {
+      color: var(--dash-dark-text) !important;
+    }
+
+    :global(html[data-sidebar-theme="dark"]) #dashboard-theme-scope #chart-bars-container {
+      border-bottom-color: rgba(248, 245, 255, 0.58) !important;
+    }
+
+    :global(html[data-sidebar-theme="dark"]) #dashboard-theme-scope #chart-filter {
+      background: #241b3d !important;
+      border-color: var(--dash-dark-border) !important;
+      color: var(--dash-dark-text) !important;
+    }
+
+    :global(html[data-sidebar-theme="dark"]) #dashboard-theme-scope #exchange-rate-widget {
+      background: var(--dash-dark-surface) !important;
+      border-color: var(--dash-dark-border) !important;
+      box-shadow: var(--dash-dark-shadow) !important;
+    }
+
+    :global(html[data-sidebar-theme="dark"]) #dashboard-theme-scope #exchange-rate-widget :is(p, span, div) {
+      color: var(--dash-dark-text) !important;
+    }
+
+    :global(html[data-sidebar-theme="dark"]) #dashboard-theme-scope #exchange-rate-widget .bg-white {
+      background: #241b3d !important;
+      border-color: var(--dash-dark-border) !important;
+    }
+
+    :global(html[data-sidebar-theme="dark"]) #dashboard-theme-scope #missions-widget :is(h4, p, span, div) {
+      color: var(--dash-dark-text) !important;
+    }
+
+    :global(html[data-sidebar-theme="dark"]) #dashboard-theme-scope #missions-counter,
+    :global(html[data-sidebar-theme="dark"]) #dashboard-theme-scope #missions-widget #vip-chip {
+      background: #241b3d !important;
+      border-color: var(--dash-dark-border) !important;
+      color: var(--dash-dark-text) !important;
+    }
+
+    :global(html[data-sidebar-theme="dark"]) #dashboard-theme-scope #quickpay-widget button:last-child {
+      background: var(--dash-dark-surface) !important;
+      color: var(--dash-dark-text) !important;
+      border-color: var(--dash-dark-border) !important;
+      box-shadow: var(--dash-dark-shadow) !important;
+    }
+
+    :global(html[data-sidebar-theme="dark"]) #dashboard-theme-scope #quickpay-widget button:first-child {
+      color: var(--dash-dark-text) !important;
+    }
+
+    :global(html[data-sidebar-theme="dark"]) #dashboard-theme-scope #history-widget {
+      border-color: var(--dash-dark-border) !important;
+      box-shadow: var(--dash-dark-shadow) !important;
+    }
+
+    :global(html[data-sidebar-theme="dark"]) #dashboard-theme-scope #history-widget > div:first-child {
+      background: var(--dash-dark-surface) !important;
+      border-bottom-color: var(--dash-dark-border) !important;
+    }
+
+    :global(html[data-sidebar-theme="dark"]) #dashboard-theme-scope #history-widget > div:first-child h2 {
+      color: var(--dash-dark-text) !important;
+    }
+
+    :global(html[data-sidebar-theme="dark"]) #dashboard-theme-scope #history-list-container :is(h4, p, .font-black, .font-bold) {
+      color: var(--dash-dark-text) !important;
+    }
+
   </style>
 
   <script>
@@ -511,42 +623,40 @@ import SkeletonLoader from "../../components/ui/SkeletonLoader.astro";
         const isNegative = mov.es_negativo;
         const amount = mov.monto;
         const displayAmount = isNegative ? `-$${amount}` : `+$${amount}`;
-        const amountColor = isNegative ? "text-red-500" : "text-[#10b981]";
+        const amountColor = isNegative ? "text-red-200" : "text-green-900";
+        const cardBg = isNegative ? "bg-[#8b5cf6]" : "bg-brand-receive";
+        const titleColor = isNegative ? "text-white" : "text-black";
+        const dateColor = isNegative ? "text-white/75" : "text-gray-600";
 
         const descString = (mov.descripcion || mov.concept || mov.tipo || "").toLowerCase();
-        let iconBg = "bg-white";
-        let iconSvg =
-          '<span class="material-symbols-outlined font-black">receipt_long</span>';
+        let iconBg = "bg-white border-black";
+        let iconSvg = '<span class="material-symbols-outlined font-black text-black">receipt_long</span>';
 
         if (
           descString.includes("comedor") ||
           descString.includes("canteen") ||
           descString.includes("bite")
         ) {
-          iconBg = "bg-[#8b5cf6]";
-          iconSvg =
-            '<span class="material-symbols-outlined font-black text-white">lunch_dining</span>';
+          iconBg = "bg-white border-black";
+          iconSvg = '<span class="material-symbols-outlined font-black text-black">lunch_dining</span>';
         } else if (
           descString.includes("scholarship") ||
           (!isNegative && descString.includes("deposit"))
         ) {
-          iconBg = "bg-[#d7fd48]";
-          iconSvg =
-            '<span class="material-symbols-outlined font-black text-black">payments</span>';
+          iconBg = "bg-white border-black";
+          iconSvg = '<span class="material-symbols-outlined font-black text-black">payments</span>';
         } else if (
           descString.includes("ticket") ||
           descString.includes("bus")
         ) {
-          iconBg = "bg-[#8b5cf6]";
-          iconSvg =
-            '<span class="material-symbols-outlined font-black text-white">directions_bus</span>';
+          iconBg = "bg-white border-black";
+          iconSvg = '<span class="material-symbols-outlined font-black text-black">directions_bus</span>';
         } else if (
           descString.includes("press") ||
           descString.includes("book")
         ) {
-          iconBg = "bg-black";
-          iconSvg =
-            '<span class="material-symbols-outlined font-black text-white">book</span>';
+          iconBg = "bg-white border-black";
+          iconSvg = '<span class="material-symbols-outlined font-black text-black">book</span>';
         }
 
         const dateObj = new Date(mov.fecha);
@@ -560,14 +670,14 @@ import SkeletonLoader from "../../components/ui/SkeletonLoader.astro";
         });
 
         html += `
-          <div class="flex items-center justify-between p-3 border-4 border-black group hover:-translate-y-1 transition-transform box-shadow-brutal cursor-pointer bg-white">
+          <div class="flex items-center justify-between p-3 border-4 border-black group hover:-translate-y-1 transition-transform box-shadow-brutal cursor-pointer ${cardBg}">
             <div class="flex items-center gap-3 min-w-0">
-              <div class="w-12 h-12 border-2 border-black ${iconBg} flex items-center justify-center shrink-0">
+              <div class="w-12 h-12 border-2 ${iconBg} flex items-center justify-center shrink-0">
                   ${iconSvg}
               </div>
               <div class="flex flex-col min-w-0">
-                <h4 class="text-xs font-black text-black uppercase truncate leading-none mb-1">${mov.descripcion || mov.concept || mov.tipo}</h4>
-                <p class="text-[9px] font-bold text-gray-500 uppercase tracking-widest">${dateFull}, ${timeFull}</p>
+                <h4 class="text-xs font-black ${titleColor} uppercase truncate leading-none mb-1">${mov.descripcion || mov.concept || mov.tipo}</h4>
+                <p class="text-[9px] font-bold ${dateColor} uppercase tracking-widest">${dateFull}, ${timeFull}</p>
               </div>
             </div>
             <div class="font-black text-sm ${amountColor} whitespace-nowrap pl-2">
@@ -678,33 +788,44 @@ import SkeletonLoader from "../../components/ui/SkeletonLoader.astro";
       perf.mark("init-start");
       const btnExpenses = document.getElementById("btn-hist-expenses");
       const btnIncome = document.getElementById("btn-hist-income");
+      const applyHistoryFilterButtonState = () => {
+        if (!btnExpenses || !btnIncome) return;
+
+        const setInactive = (button) => {
+          button.classList.remove("bg-brand-receive", "text-black");
+          button.classList.add("bg-[#8b5cf6]", "text-white");
+        };
+
+        const setActive = (button) => {
+          button.classList.remove("bg-[#8b5cf6]", "text-white");
+          button.classList.add("bg-brand-receive", "text-black");
+        };
+
+        setInactive(btnExpenses);
+        setInactive(btnIncome);
+
+        if (currentFilter === "expenses") setActive(btnExpenses);
+        if (currentFilter === "income") setActive(btnIncome);
+      };
+
       if (btnExpenses && btnIncome) {
+        applyHistoryFilterButtonState();
         btnExpenses.onclick = () => {
           if (currentFilter === "expenses") {
             currentFilter = "all";
-            btnExpenses.classList.replace("bg-black", "bg-white");
-            btnExpenses.classList.replace("text-white", "text-black");
           } else {
             currentFilter = "expenses";
-            btnExpenses.classList.replace("bg-white", "bg-black");
-            btnExpenses.classList.replace("text-black", "text-white");
-            btnIncome.classList.replace("bg-black", "bg-white");
-            btnIncome.classList.replace("text-white", "text-black");
           }
+          applyHistoryFilterButtonState();
           renderHistoryList();
         };
         btnIncome.onclick = () => {
           if (currentFilter === "income") {
             currentFilter = "all";
-            btnIncome.classList.replace("bg-black", "bg-white");
-            btnIncome.classList.replace("text-white", "text-black");
           } else {
             currentFilter = "income";
-            btnIncome.classList.replace("bg-white", "bg-black");
-            btnIncome.classList.replace("text-black", "text-white");
-            btnExpenses.classList.replace("bg-black", "bg-white");
-            btnExpenses.classList.replace("text-white", "text-black");
           }
+          applyHistoryFilterButtonState();
           renderHistoryList();
         };
       }

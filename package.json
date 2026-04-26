@@ -15,14 +15,14 @@
     "e2e:smoke:headed": "npm run build && playwright test --config=playwright.config.ts tests/e2e/sprint5_2.smoke.spec.ts --headed"
   },
   "dependencies": {
-    "@astrojs/svelte": "^7.2.5",
+    "@astrojs/svelte": "^8.0.5",
     "@formkit/auto-animate": "^0.9.0",
     "@lucide/astro": "^1.7.0",
     "@nanostores/query": "^0.3.4",
     "@phosphor-icons/web": "^2.1.2",
     "@supabase/supabase-js": "^2.100.1",
     "@tailwindcss/vite": "^4.1.18",
-    "astro": "^5.16.11",
+    "astro": "^6.1.9",
     "canvas-confetti": "^1.9.4",
     "embla-carousel": "^8.6.0",
     "embla-carousel-autoplay": "^8.6.0",

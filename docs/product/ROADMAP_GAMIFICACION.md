@@ -26,36 +26,36 @@
 ## ✅ Fase 3 (Widgets + Notificaciones) - Implementada
 
 - **Notificación de subida de nivel** en backend para eventos de XP:
-	- Recarga
-	- Transferencia
-	- Compra en comedor
-	- Recompensa por misión completada
+  - Recarga
+  - Transferencia
+  - Compra en comedor
+  - Recompensa por misión completada
 - **Widget de Misiones mejorado** con beneficios activos:
-	- Chip de descuento aplicado por nivel
-	- Chip de estado VIP activo
+  - Chip de descuento aplicado por nivel
+  - Chip de estado VIP activo
 - **Dashboard reactivo de nivel**:
-	- Actualización de nivel y barra de progreso desde el store
-	- Refresco automático de notificaciones al subir de nivel
-	- Polling ligero de notificaciones cada 30 segundos
+  - Actualización de nivel y barra de progreso desde el store
+  - Refresco automático de notificaciones al subir de nivel
+  - Polling ligero de notificaciones cada 30 segundos
 
 ## 🧭 Fase 4 (Progresión Activa) - Definida
 
 - Especificación funcional y técnica cerrada en:
-	- `docs/phases/FASE4_SISTEMA_NIVELES_ESPECIFICACION.md`
+  - `docs/phases/FASE4_SISTEMA_NIVELES_ESPECIFICACION.md`
 - Incluye:
-	- Misiones semanales dinámicas por segmento
-	- Rachas con multiplicador y escudo semanal
-	- Recompensas reclamables (claim) idempotentes
-	- Control de economía XP (topes + anti-abuso)
-	- Métricas de retención y conversión
+  - Misiones semanales dinámicas por segmento
+  - Rachas con multiplicador y escudo semanal
+  - Recompensas reclamables (claim) idempotentes
+  - Control de economía XP (topes + anti-abuso)
+  - Métricas de retención y conversión
 
 ## ✅ Fase 5 (Estabilización + Piloto) - En marcha
 
 - Documento operativo:
-	- `docs/phases/FASE5_ESTABILIZACION_Y_PILOTO.md`
+  - `docs/phases/FASE5_ESTABILIZACION_Y_PILOTO.md`
 - Entregado hoy:
-	- Observabilidad backend (`/ops/health`, `/ops/metrics`)
-	- Logs estructurados por request y latencia p95 en memoria
-	- Base de QA con tests de servicios críticos
+  - Observabilidad backend (`/ops/health`, `/ops/metrics`)
+  - Logs estructurados por request y latencia p95 en memoria
+  - Base de QA con tests de servicios críticos
 - Siguiente paso:
-	- Smoke E2E de flujos core + piloto controlado (5-10%)
+  - Smoke E2E de flujos core + piloto controlado (5-10%)
