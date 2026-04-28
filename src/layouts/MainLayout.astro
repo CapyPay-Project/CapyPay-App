@@ -49,7 +49,10 @@ const { title = "CapyPay", showSidebar = false } = Astro.props;
             const parts = rawToken.split(".");
             if (parts.length !== 3) return null;
             const payloadPart = parts[1].replace(/-/g, "+").replace(/_/g, "/");
-            const padded = payloadPart.padEnd(Math.ceil(payloadPart.length / 4) * 4, "=");
+            const padded = payloadPart.padEnd(
+              Math.ceil(payloadPart.length / 4) * 4,
+              "=",
+            );
             try {
               return JSON.parse(atob(padded));
             } catch (_err) {
@@ -327,6 +330,48 @@ const { title = "CapyPay", showSidebar = false } = Astro.props;
       </div>
 
       <script is:inline>
+        if (!window.__CAPYPAY_GLOBAL_ERROR_HOOK__) {
+          window.__CAPYPAY_GLOBAL_ERROR_HOOK__ = true;
+
+          window.addEventListener("error", (event) => {
+            const payload = {
+              source: "window.error",
+              message: event?.message || "Unhandled runtime error",
+              filename: event?.filename || null,
+              line: Number(event?.lineno || 0) || null,
+              column: Number(event?.colno || 0) || null,
+              at: new Date().toISOString(),
+            };
+            console.error(
+              "[CapyPay Frontend Error]",
+              payload,
+              event?.error || null,
+            );
+            window.dispatchEvent(
+              new CustomEvent("capypay:client-error", { detail: payload }),
+            );
+          });
+
+          window.addEventListener("unhandledrejection", (event) => {
+            const reason = event?.reason;
+            const payload = {
+              source: "window.unhandledrejection",
+              message:
+                reason?.message ||
+                String(reason || "Unhandled promise rejection"),
+              at: new Date().toISOString(),
+            };
+            console.error(
+              "[CapyPay Frontend Rejection]",
+              payload,
+              reason || null,
+            );
+            window.dispatchEvent(
+              new CustomEvent("capypay:client-error", { detail: payload }),
+            );
+          });
+        }
+
         // Global PIN Logic
         window.requestPin = (callback) => {
           const modal = document.getElementById("pin-modal");

@@ -14,7 +14,9 @@
 <div class="flex gap-4 overflow-x-auto pb-4 pt-2 px-2 scrollbar-none snap-x">
   {#each categories as cat}
     <button
+      type="button"
       on:click={() => selectCategory(cat.id)}
+      aria-pressed={activeCategory === cat.id}
       class="snap-start shrink-0 font-bold uppercase tracking-wider px-6 py-2 border-4 border-black transition-all
              {activeCategory === cat.id
         ? 'bg-brand-purple text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -translate-y-0.5'

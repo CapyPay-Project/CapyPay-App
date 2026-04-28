@@ -89,7 +89,7 @@ async function initHistory(dom, state) {
       
       const [profileData, response] = await Promise.all([
         withTimeout(userService.getProfile(userId).catch(() => ({})), 4500, "profile").catch(() => ({})),
-        withTimeout(userService.getHistory(cedula).catch(() => null), 5500, "history").catch(() => null)
+        withTimeout(userService.getHistory({ cedula, userId }).catch(() => null), 5500, "history").catch(() => null)
       ]);
 
       const realUser = profileData?.usuario || profileData?.user || profileData || {};
@@ -104,10 +104,15 @@ async function initHistory(dom, state) {
         return;
       }
 
-      state.allMovements = response.movimientos.map((movement, index) => ({
-      ...movement,
-      uniqueId: index + 12450,
-    }));
+      state.allMovements = response.movimientos.map((movement, index) => {
+      const fallbackKey = `${movement.tipo || 'movement'}-${movement.id || index + 1}`;
+      return {
+        ...movement,
+        uniqueId: movement.uniqueId || movement.transaction_id || movement.reference_code || fallbackKey,
+        displayId: movement.transaction_id || movement.id || fallbackKey,
+        trackingCode: movement.tracking_code || movement.reference_code || fallbackKey.toUpperCase(),
+      };
+    });
 
     applyFilters(dom, state);
     perf.mark("history-fetch-end", { total: state.allMovements.length });
@@ -123,6 +128,39 @@ function showEmpty(dom, state, message) {
     dom.container.innerHTML = `<div class="flex flex-col items-center justify-center h-full p-10 opacity-50"><p class="text-center text-slate-500 text-sm">${message}</p></div>`;
   }
   updatePaginationUI(dom, state, 0);
+}
+
+function toTitleCase(value) {
+  return String(value || '')
+    .replace(/[_-]+/g, ' ')
+    .trim()
+    .toLowerCase()
+    .replace(/\b\w/g, (match) => match.toUpperCase());
+}
+
+function formatHistoryField(value, fallback = '--') {
+  const raw = String(value || '').trim();
+  if (!raw) return fallback;
+
+  const normalized = raw.toLowerCase();
+  const aliases = {
+    transactions: 'Transacción',
+    transaction: 'Transacción',
+    recharges: 'Recarga',
+    recharge: 'Recarga',
+    orders: 'Pedido Comedor',
+    cantina_orders: 'Pedido Cantina',
+    pending: 'Pendiente',
+    completed: 'Completado',
+    approved: 'Aprobado',
+    transferirsaldo: 'Transferencia',
+    pagoenviado: 'Pago Enviado',
+    pagorecibido: 'Pago Recibido',
+    comisionservicio: 'Comisión de Servicio'
+  };
+
+  if (aliases[normalized]) return aliases[normalized];
+  return toTitleCase(raw);
 }
 
 function setupFilterEvents(dom, state) {
@@ -302,10 +340,10 @@ function setupPaginationEvents(dom, state) {
 
 function setupModalEvents(dom, state) {
   window.openModal = (uniqueId) => {
-    const movement = state.allMovements.find((item) => item.uniqueId == uniqueId);
+    const movement = state.allMovements.find((item) => String(item.uniqueId) == String(uniqueId));
     if (!movement || !dom.modal) return;
 
-    document.getElementById("modal-id").innerText = `ID: #${uniqueId}`;
+    document.getElementById("modal-id").innerText = `ID: ${movement.displayId || `#${uniqueId}`}`;
 
     const isNegative = movement.es_negativo;
       const isPending = movement.estado === 'pendiente' || movement.estado === 'pending' || movement.status === 'pending';
@@ -329,14 +367,33 @@ function setupModalEvents(dom, state) {
           badgeEl.innerText = isNegative ? "GASTO" : "INGRESO";
         }
       }
+
+      const trackingEl = document.getElementById("modal-tracking");
+      if (trackingEl) trackingEl.innerText = formatHistoryField(movement.trackingCode || movement.displayId || "--");
+
+      const counterpartyEl = document.getElementById("modal-counterparty");
+      if (counterpartyEl) {
+        counterpartyEl.innerText = formatHistoryField(movement.counterparty_name || movement.receptor_name || movement.nombre_destinatario || movement.nombre_receptor || movement.usuario_receptor || movement.usuario || "No disponible");
+      }
+
+      const statusTextEl = document.getElementById("modal-status-text");
+      if (statusTextEl) {
+        statusTextEl.innerText = isPending ? "Pendiente de validación" : isNegative ? "Salida de fondos" : "Entrada de fondos";
+      }
+
+      const sourceEl = document.getElementById("modal-source");
+      if (sourceEl) sourceEl.innerText = formatHistoryField(movement.origen || movement.source || movement.category || "CapyPay");
+
+      const transferTypeEl = document.getElementById("modal-transfer-type");
+      if (transferTypeEl) transferTypeEl.innerText = formatHistoryField(movement.tipo || movement.category || "General");
         
         const dateObj = new Date(movement.fecha);
         document.getElementById("modal-date").innerText = isNaN(dateObj.getTime()) ? "--/--/----" : dateObj.toLocaleDateString();
         document.getElementById("modal-time").innerText = isNaN(dateObj.getTime()) ? "--:--" : dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        document.getElementById("modal-desc").innerText = movement.descripcion || movement.concept || "Transferencia";
-        document.getElementById("modal-type").innerText = movement.tipo || "General";
+        document.getElementById("modal-desc").innerText = formatHistoryField(movement.descripcion || movement.concept || "Transferencia");
         
     dom.modal.classList.remove("hidden");
+    dom.modal.classList.add("flex");
     // Pequeño delay para permitir que el display:block surta efecto antes de animar
     setTimeout(() => {
       dom.modal.classList.remove("opacity-0");

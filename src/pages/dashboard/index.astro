@@ -163,11 +163,31 @@ import SkeletonLoader from "../../components/ui/SkeletonLoader.astro";
               >
                 1
               </h3>
-              <div id="user-level-badge" class="mt-1 inline-flex items-center gap-1.5 border-2 border-black bg-white px-2 py-0.5 shadow-[0_0_12px_rgba(255,255,255,0.18)]">
-                <span id="user-level-icon" class="inline-flex items-center justify-center w-3.5 h-3.5" aria-hidden="true">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="w-full h-full" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><path d="M9 9h.01"></path><path d="M15 9h.01"></path><path d="M10 3 8 8"></path><path d="M14 3 16 8"></path><path d="M3 13c0-5 4-9 9-9s9 4 9 9a9 9 0 0 1-18 0"></path></svg>
+              <div
+                id="user-level-badge"
+                class="mt-1 inline-flex items-center gap-1.5 border-2 border-black bg-white px-2 py-0.5"
+              >
+                <span
+                  id="user-level-icon"
+                  class="inline-flex items-center justify-center w-3.5 h-3.5"
+                  aria-hidden="true"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="w-full h-full"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    ><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><path d="M9 9h.01"
+                    ></path><path d="M15 9h.01"></path><path d="M10 3 8 8"
+                    ></path><path d="M14 3 16 8"></path><path
+                      d="M3 13c0-5 4-9 9-9s9 4 9 9a9 9 0 0 1-18 0"></path></svg
+                  >
                 </span>
-                <span id="user-level-name" class="text-[10px] font-black uppercase tracking-wide text-[#4c1d95]">Novato</span>
+                <span id="user-level-name" class="text-[10px] font-black uppercase tracking-wide">Novato</span>
               </div>
               <div class="w-full bg-white/85 border-2 border-black h-2 mt-1">
                 <div
@@ -210,7 +230,9 @@ import SkeletonLoader from "../../components/ui/SkeletonLoader.astro";
         <div
           class="p-4 sm:p-5 border-b-4 border-black flex flex-col items-stretch shrink-0 bg-white z-10 w-full gap-3"
         >
-          <h2 class="text-lg sm:text-xl font-black text-black uppercase tracking-widest text-center lg:text-left">
+          <h2
+            class="text-lg sm:text-xl font-black text-black uppercase tracking-widest text-center lg:text-left"
+          >
             HISTORIAL
           </h2>
           <div
@@ -518,13 +540,22 @@ import SkeletonLoader from "../../components/ui/SkeletonLoader.astro";
       gamificationService,
     } from "../../services/api.js";
     import { setupPageWebVitals } from "../../utils/webVitals.js";
-    import { userProfile, fetchUserProfile, fetchGamificationSnapshot } from "../../store/userStore.js";
-    import { createPagePerf, runWhenIdle, withTimeout } from "../../utils/pagePerf.js";
+    import {
+      userProfile,
+      fetchUserProfile,
+      fetchGamificationSnapshot,
+    } from "../../store/userStore.js";
+    import {
+      createPagePerf,
+      runWhenIdle,
+      withTimeout,
+    } from "../../utils/pagePerf.js";
 
     setupPageWebVitals("dashboard");
     const perf = createPagePerf("dashboard");
     perf.mark("script-init");
-    const debugMode = new URLSearchParams(window.location.search).get("debug") === "1";
+    const debugMode =
+      new URLSearchParams(window.location.search).get("debug") === "1";
 
     function debugWarn(...args) {
       if (!debugMode) return;
@@ -585,17 +616,26 @@ import SkeletonLoader from "../../components/ui/SkeletonLoader.astro";
 
     function scheduleNotificationsRetry() {
       if (dashboardRuntime.notificationsRetryTimerId || document.hidden) return;
-      const waitMs = Math.min(60000, 5000 * Math.max(1, dashboardRuntime.notificationsFailureCount));
-      dashboardRuntime.notificationsRetryTimerId = window.setTimeout(async () => {
-        dashboardRuntime.notificationsRetryTimerId = null;
-        await refreshNotifications({ silentNetworkFailure: true });
-        if (!dashboardRuntime.notificationsPollingId && dashboardRuntime.notificationsFailureCount === 0) {
-          dashboardRuntime.notificationsPollingId = window.setInterval(
-            () => refreshNotifications({ silentNetworkFailure: true }),
-            30000,
-          );
-        }
-      }, waitMs);
+      const waitMs = Math.min(
+        60000,
+        5000 * Math.max(1, dashboardRuntime.notificationsFailureCount),
+      );
+      dashboardRuntime.notificationsRetryTimerId = window.setTimeout(
+        async () => {
+          dashboardRuntime.notificationsRetryTimerId = null;
+          await refreshNotifications({ silentNetworkFailure: true });
+          if (
+            !dashboardRuntime.notificationsPollingId &&
+            dashboardRuntime.notificationsFailureCount === 0
+          ) {
+            dashboardRuntime.notificationsPollingId = window.setInterval(
+              () => refreshNotifications({ silentNetworkFailure: true }),
+              30000,
+            );
+          }
+        },
+        waitMs,
+      );
     }
 
     function renderHistoryList() {
@@ -619,6 +659,36 @@ import SkeletonLoader from "../../components/ui/SkeletonLoader.astro";
 
       let html = '<div class="space-y-4">';
 
+      const getMovementTitle = (mov) => {
+        const rawType = String(
+          mov.tipo || mov.category || mov.descripcion || mov.concept || "",
+        ).toLowerCase();
+        const counterparty = String(
+          mov.counterparty_name ||
+            mov.receptor_name ||
+            mov.nombre_destinatario ||
+            "",
+        ).trim();
+
+        if (
+          rawType.includes("pago enviado") ||
+          rawType.includes("pago recibido") ||
+          rawType.includes("transfer")
+        ) {
+          return counterparty
+            ? `Transferencia a ${counterparty}`
+            : "Transferencia";
+        }
+
+        if (rawType.includes("recarga")) return "Recarga";
+        if (rawType.includes("pedido comedor") || rawType.includes("comedor"))
+          return "Pedido Comedor";
+        if (rawType.includes("pedido cantina") || rawType.includes("cantina"))
+          return "Pedido Cantina";
+
+        return mov.descripcion || mov.concept || mov.tipo || "Movimiento";
+      };
+
       moves.forEach((mov) => {
         const isNegative = mov.es_negativo;
         const amount = mov.monto;
@@ -629,8 +699,9 @@ import SkeletonLoader from "../../components/ui/SkeletonLoader.astro";
         const dateColor = isNegative ? "text-white/75" : "text-gray-600";
 
         const descString = (mov.descripcion || mov.concept || mov.tipo || "").toLowerCase();
-        let iconBg = "bg-white border-black";
-        let iconSvg = '<span class="material-symbols-outlined font-black text-black">receipt_long</span>';
+        let iconBg = "bg-white";
+        let iconSvg =
+          '<span class="material-symbols-outlined font-black">receipt_long</span>';
 
         if (
           descString.includes("comedor") ||
@@ -676,8 +747,8 @@ import SkeletonLoader from "../../components/ui/SkeletonLoader.astro";
                   ${iconSvg}
               </div>
               <div class="flex flex-col min-w-0">
-                <h4 class="text-xs font-black ${titleColor} uppercase truncate leading-none mb-1">${mov.descripcion || mov.concept || mov.tipo}</h4>
-                <p class="text-[9px] font-bold ${dateColor} uppercase tracking-widest">${dateFull}, ${timeFull}</p>
+                <h4 class="text-xs font-black text-black uppercase truncate leading-none mb-1">${mov.descripcion || mov.concept || mov.tipo}</h4>
+                <p class="text-[9px] font-bold text-gray-500 uppercase tracking-widest">${dateFull}, ${timeFull}</p>
               </div>
             </div>
             <div class="font-black text-sm ${amountColor} whitespace-nowrap pl-2">
@@ -690,23 +761,26 @@ import SkeletonLoader from "../../components/ui/SkeletonLoader.astro";
     }
 
     function renderNotificationBar(notifications) {
-      const badge = document.getElementById('mobile-notif-badge');
-      const notifMenuList = document.getElementById('notif-menu-list');
-      const unread = notifications.filter((n) => !n.leida && !n.read && !n.is_read).length;
+      const badge = document.getElementById("mobile-notif-badge");
+      const notifMenuList = document.getElementById("notif-menu-list");
+      const unread = notifications.filter(
+        (n) => !n.leida && !n.read && !n.is_read,
+      ).length;
 
       if (badge) {
         if (unread > 0) {
-          badge.innerText = unread > 9 ? '+9' : String(unread);
-          badge.style.display = 'flex';
+          badge.innerText = unread > 9 ? "+9" : String(unread);
+          badge.style.display = "flex";
         } else {
-          badge.style.display = 'none';
+          badge.style.display = "none";
         }
       }
 
       if (!notifMenuList) return;
 
       if (notifications.length === 0) {
-        notifMenuList.innerHTML = '<p class="text-xs text-center font-bold uppercase py-2">Sin notificaciones</p>';
+        notifMenuList.innerHTML =
+          '<p class="text-xs text-center font-bold uppercase py-2">Sin notificaciones</p>';
         return;
       }
 
@@ -714,29 +788,32 @@ import SkeletonLoader from "../../components/ui/SkeletonLoader.astro";
         .slice(0, 5)
         .map((n) => {
           const isUnread = !n.leida && !n.read && !n.is_read;
-          const dateStr = new Date(n.created_at || n.fecha || Date.now()).toLocaleDateString('es-VE');
-          const typeTag = n.type === 'level_up'
-            ? '<span class="inline-block text-[8px] px-1 py-0.5 border border-black bg-[#8b5cf6] text-white font-black uppercase">LEVEL UP</span>'
-            : n.type === 'payment_received'
-              ? '<span class="inline-block text-[8px] px-1 py-0.5 border border-black bg-[#d7fd48] text-black font-black uppercase">PAGO</span>'
-              : n.type === 'mission_complete'
-                ? '<span class="inline-block text-[8px] px-1 py-0.5 border border-black bg-[#16a34a] text-white font-black uppercase">MISION</span>'
-              : n.type === 'reward_ready'
-                ? '<span class="inline-block text-[8px] px-1 py-0.5 border border-black bg-black text-[#d7fd48] font-black uppercase">REWARD</span>'
-                : n.type === 'streak_warning'
-                  ? '<span class="inline-block text-[8px] px-1 py-0.5 border border-black bg-[#f59e0b] text-black font-black uppercase">RACHA</span>'
-              : '';
+          const dateStr = new Date(
+            n.created_at || n.fecha || Date.now(),
+          ).toLocaleDateString("es-VE");
+          const typeTag =
+            n.type === "level_up"
+              ? '<span class="inline-block text-[8px] px-1 py-0.5 border border-black bg-[#8b5cf6] text-white font-black uppercase">LEVEL UP</span>'
+              : n.type === "payment_received"
+                ? '<span class="inline-block text-[8px] px-1 py-0.5 border border-black bg-[#d7fd48] text-black font-black uppercase">PAGO</span>'
+                : n.type === "mission_complete"
+                  ? '<span class="inline-block text-[8px] px-1 py-0.5 border border-black bg-[#16a34a] text-white font-black uppercase">MISION</span>'
+                  : n.type === "reward_ready"
+                    ? '<span class="inline-block text-[8px] px-1 py-0.5 border border-black bg-black text-[#d7fd48] font-black uppercase">REWARD</span>'
+                    : n.type === "streak_warning"
+                      ? '<span class="inline-block text-[8px] px-1 py-0.5 border border-black bg-[#f59e0b] text-black font-black uppercase">RACHA</span>'
+                      : "";
           return `
-            <div class="border-2 border-black p-2 hover:bg-gray-100 transition-colors cursor-pointer ${isUnread ? 'bg-[#d7fd48]/20' : 'bg-white'}"
+            <div class="border-2 border-black p-2 hover:bg-gray-100 transition-colors cursor-pointer ${isUnread ? "bg-[#d7fd48]/20" : "bg-white"}"
                  onclick="window.handleNotificationClick('${n.id || n._id}', ${isUnread})">
               <div class="flex items-start justify-between gap-2">
-                <p class="text-[10px] font-black uppercase line-clamp-2 leading-tight">${n.message || 'Nueva notificación'}</p>
+                <p class="text-[10px] font-black uppercase line-clamp-2 leading-tight">${n.message || "Nueva notificación"}</p>
                 ${typeTag}
               </div>
               <p class="text-[9px] text-gray-600 mt-1 uppercase">${dateStr}</p>
             </div>`;
         })
-        .join('');
+        .join("");
     }
 
     // Manejador para click en notificación del dropdown
@@ -757,28 +834,34 @@ import SkeletonLoader from "../../components/ui/SkeletonLoader.astro";
         const notifsRes = await notificationService.getNotifications();
         let notifs = [];
         if (Array.isArray(notifsRes)) notifs = notifsRes;
-        else if (notifsRes && Array.isArray(notifsRes.notifications)) notifs = notifsRes.notifications;
-        else if (notifsRes && Array.isArray(notifsRes.data)) notifs = notifsRes.data;
+        else if (notifsRes && Array.isArray(notifsRes.notifications))
+          notifs = notifsRes.notifications;
+        else if (notifsRes && Array.isArray(notifsRes.data))
+          notifs = notifsRes.data;
 
         dashboardRuntime.notificationsFailureCount = 0;
         renderNotificationBar(notifs);
       } catch (err) {
-        const isNetworkFailure = Boolean(err?.isNetworkError || /failed to fetch/i.test(String(err?.message || "")));
+        const isNetworkFailure = Boolean(
+          err?.isNetworkError ||
+          /failed to fetch/i.test(String(err?.message || "")),
+        );
         if (isNetworkFailure) {
           dashboardRuntime.notificationsFailureCount += 1;
           stopNotificationsPolling();
           scheduleNotificationsRetry();
 
           if (!silentNetworkFailure) {
-            const notifMenuList = document.getElementById('notif-menu-list');
+            const notifMenuList = document.getElementById("notif-menu-list");
             if (notifMenuList) {
-              notifMenuList.innerHTML = '<p class="text-xs text-center font-bold uppercase py-2">Sin conexion de notificaciones</p>';
+              notifMenuList.innerHTML =
+                '<p class="text-xs text-center font-bold uppercase py-2">Sin conexion de notificaciones</p>';
             }
           }
           return;
         }
 
-        debugError('Error actualizando notificaciones:', err);
+        debugError("Error actualizando notificaciones:", err);
       }
     }
 
@@ -836,7 +919,9 @@ import SkeletonLoader from "../../components/ui/SkeletonLoader.astro";
 
       const cedulaFast = user?.cedula || "";
       if (cedulaFast && window.__capypayHistoryCache?.cedula === cedulaFast) {
-        cachedMovements = Array.isArray(window.__capypayHistoryCache.movimientos)
+        cachedMovements = Array.isArray(
+          window.__capypayHistoryCache.movimientos,
+        )
           ? window.__capypayHistoryCache.movimientos
           : [];
         renderHistoryList();
@@ -889,8 +974,12 @@ import SkeletonLoader from "../../components/ui/SkeletonLoader.astro";
       const missionsList = document.getElementById("missions-list");
       const missionsCounter = document.getElementById("missions-counter");
       const missionsProgress = document.getElementById("missions-progress");
-      const missionsNextAction = document.getElementById("missions-next-action");
-      const missionsModalSummary = document.getElementById("missions-modal-summary");
+      const missionsNextAction = document.getElementById(
+        "missions-next-action",
+      );
+      const missionsModalSummary = document.getElementById(
+        "missions-modal-summary",
+      );
       let lastMissionTrigger = null;
       let missionsExperimentVariant = null;
       let activeMissionCategory = "all";
@@ -919,7 +1008,9 @@ import SkeletonLoader from "../../components/ui/SkeletonLoader.astro";
       }
 
       function normalizeMissionCategory(item) {
-        const code = String(item?.missions?.code || item?.code || "").toLowerCase();
+        const code = String(
+          item?.missions?.code || item?.code || "",
+        ).toLowerCase();
 
         if (code.startsWith("general_")) return "general";
         if (code.startsWith("daily_")) return "daily";
@@ -938,12 +1029,18 @@ import SkeletonLoader from "../../components/ui/SkeletonLoader.astro";
       }
 
       function getCategoryMeta(category) {
-        if (category === "general") return { label: "Generales", accent: "#d7fd48", text: "#111827" };
-        if (category === "daily") return { label: "Diarias", accent: "#60a5fa", text: "#111827" };
-        if (category === "weekly") return { label: "Semanales", accent: "#8b5cf6", text: "#ffffff" };
-        if (category === "accumulative") return { label: "Acumulables", accent: "#14b8a6", text: "#111827" };
-        if (category === "streak") return { label: "De racha", accent: "#f59e0b", text: "#111827" };
-        if (category === "repeatable") return { label: "Repetibles", accent: "#111827", text: "#ffffff" };
+        if (category === "general")
+          return { label: "Generales", accent: "#d7fd48", text: "#111827" };
+        if (category === "daily")
+          return { label: "Diarias", accent: "#60a5fa", text: "#111827" };
+        if (category === "weekly")
+          return { label: "Semanales", accent: "#8b5cf6", text: "#ffffff" };
+        if (category === "accumulative")
+          return { label: "Acumulables", accent: "#14b8a6", text: "#111827" };
+        if (category === "streak")
+          return { label: "De racha", accent: "#f59e0b", text: "#111827" };
+        if (category === "repeatable")
+          return { label: "Repetibles", accent: "#111827", text: "#ffffff" };
         return { label: "Todas", accent: "#111827" };
       }
 
@@ -954,20 +1051,24 @@ import SkeletonLoader from "../../components/ui/SkeletonLoader.astro";
 
         return items
           .map((item) => {
-            const target = item.missions?.target_count ?? item.target_count ?? 1;
+            const target =
+              item.missions?.target_count ?? item.target_count ?? 1;
             const progress = item.progress ?? 0;
-            const percent = Math.min(100, Math.round((progress / target) * 100));
+            const percent = Math.min(
+              100,
+              Math.round((progress / target) * 100),
+            );
             const categoryMeta = getCategoryMeta(item.category);
 
             return `
               <div class="border-2 border-black bg-white p-3 rounded-lg">
                 <div class="flex justify-between items-center gap-2">
-                  <p class="font-black text-xs uppercase tracking-wider">${item.missions?.title || 'Mision'}</p>
-                  <span class="text-[10px] font-black ${item.completed ? 'text-green-700' : 'text-gray-600'}">${item.completed ? 'LISTA' : 'EN CURSO'}</span>
+                  <p class="font-black text-xs uppercase tracking-wider">${item.missions?.title || "Mision"}</p>
+                  <span class="text-[10px] font-black ${item.completed ? "text-green-700" : "text-gray-600"}">${item.completed ? "LISTA" : "EN CURSO"}</span>
                 </div>
-                <p class="text-[10px] text-gray-600 mt-1">${item.missions?.description || 'Descripcion no disponible'}</p>
+                <p class="text-[10px] text-gray-600 mt-1">${item.missions?.description || "Descripcion no disponible"}</p>
                 <div class="mt-2 flex items-center justify-between gap-2 text-[10px] font-black uppercase">
-                  <span class="border-2 border-black px-2 py-0.5" style="background:${categoryMeta.accent};color:${categoryMeta.text || '#111827'}">${categoryMeta.label}</span>
+                  <span class="border-2 border-black px-2 py-0.5" style="background:${categoryMeta.accent};color:${categoryMeta.text || "#111827"}">${categoryMeta.label}</span>
                   <span>+${item.missions?.xp_reward ?? item.xp_reward ?? 0} XP</span>
                 </div>
                 <div class="w-full bg-black/10 h-2 rounded-full mt-2 overflow-hidden border-2 border-black">
@@ -975,11 +1076,13 @@ import SkeletonLoader from "../../components/ui/SkeletonLoader.astro";
                 </div>
                 <p class="text-[10px] font-black mt-1">${progress} / ${target}</p>
                 <div class="mt-2 flex justify-end">
-                  ${item.claimed
-                    ? '<span class="inline-block px-2 py-1 text-[10px] font-black uppercase text-white bg-black rounded">Reclamada</span>'
-                    : item.completed
-                    ? `<button class="px-2 py-1 text-[10px] font-black uppercase text-white bg-green-700 border-2 border-black rounded hover:bg-green-800 transition" onclick="window.claimMissionReward('${item.id}')">Reclamar +XP</button>`
-                    : '<span class="inline-block px-2 py-1 text-[10px] font-black uppercase bg-slate-100 border-2 border-black rounded">En progreso</span>'}
+                  ${
+                    item.claimed
+                      ? '<span class="inline-block px-2 py-1 text-[10px] font-black uppercase text-white bg-black rounded">Reclamada</span>'
+                      : item.completed
+                        ? `<button class="px-2 py-1 text-[10px] font-black uppercase text-white bg-green-700 border-2 border-black rounded hover:bg-green-800 transition" onclick="window.claimMissionReward('${item.id}')">Reclamar +XP</button>`
+                        : '<span class="inline-block px-2 py-1 text-[10px] font-black uppercase bg-slate-100 border-2 border-black rounded">En progreso</span>'
+                  }
                 </div>
               </div>`;
           })
@@ -990,11 +1093,19 @@ import SkeletonLoader from "../../components/ui/SkeletonLoader.astro";
         if (!missionsList) return;
 
         if (!Array.isArray(missionCache) || missionCache.length === 0) {
-          missionsList.innerHTML = '<p class="text-sm text-center font-black uppercase text-slate-600">No hay misiones disponibles.</p>';
+          missionsList.innerHTML =
+            '<p class="text-sm text-center font-black uppercase text-slate-600">No hay misiones disponibles.</p>';
           return;
         }
 
-        const categoryOrder = ["general", "daily", "weekly", "accumulative", "streak", "repeatable"];
+        const categoryOrder = [
+          "general",
+          "daily",
+          "weekly",
+          "accumulative",
+          "streak",
+          "repeatable",
+        ];
         const groups = missionCache.reduce((acc, mission) => {
           const key = mission.category || "general";
           if (!acc[key]) acc[key] = [];
@@ -1003,7 +1114,9 @@ import SkeletonLoader from "../../components/ui/SkeletonLoader.astro";
         }, {});
 
         if (activeMissionCategory !== "all") {
-          missionsList.innerHTML = renderMissionCards(groups[activeMissionCategory] || []);
+          missionsList.innerHTML = renderMissionCards(
+            groups[activeMissionCategory] || [],
+          );
           return;
         }
 
@@ -1026,7 +1139,8 @@ import SkeletonLoader from "../../components/ui/SkeletonLoader.astro";
       function updateMissionTabs() {
         const tabButtons = document.querySelectorAll(".missions-tab-btn");
         tabButtons.forEach((button) => {
-          const isActive = button.getAttribute("data-category") === activeMissionCategory;
+          const isActive =
+            button.getAttribute("data-category") === activeMissionCategory;
           button.classList.toggle("bg-black", isActive);
           button.classList.toggle("text-white", isActive);
           button.classList.toggle("bg-white", !isActive);
@@ -1045,12 +1159,14 @@ import SkeletonLoader from "../../components/ui/SkeletonLoader.astro";
       async function fetchAndRenderMissions({ renderModal = false } = {}) {
         const currentUser = authService.getCurrentUser();
         if (!currentUser?.id) {
-          debugWarn('Usuario no autenticado para misiones');
+          debugWarn("Usuario no autenticado para misiones");
           return [];
         }
 
         try {
-          const weeklyData = await gamificationService.getWeeklyMissions(currentUser.id);
+          const weeklyData = await gamificationService.getWeeklyMissions(
+            currentUser.id,
+          );
 
           const missions = (weeklyData?.missions || []).map((item) => ({
             id: item.id,
@@ -1064,10 +1180,10 @@ import SkeletonLoader from "../../components/ui/SkeletonLoader.astro";
               title: item.title,
               description: item.description,
               target_count: item.target,
-              xp_reward: item.xpReward
+              xp_reward: item.xpReward,
             },
             expiresAt: item.expiresAt,
-            status: item.status
+            status: item.status,
           }));
 
           let completed = 0;
@@ -1092,9 +1208,10 @@ import SkeletonLoader from "../../components/ui/SkeletonLoader.astro";
           }
 
           if (missionsModalSummary) {
-            missionsModalSummary.textContent = missions.length > 0
-              ? `Llevas ${completed} de ${missions.length} misiones completadas esta semana.`
-              : "No tienes misiones activas esta semana.";
+            missionsModalSummary.textContent =
+              missions.length > 0
+                ? `Llevas ${completed} de ${missions.length} misiones completadas esta semana.`
+                : "No tienes misiones activas esta semana.";
           }
 
           missionCache = missions;
@@ -1105,9 +1222,10 @@ import SkeletonLoader from "../../components/ui/SkeletonLoader.astro";
 
           return missions;
         } catch (err) {
-          debugError('Error cargando misiones:', err);
+          debugError("Error cargando misiones:", err);
           if (renderModal && missionsList) {
-            missionsList.innerHTML = '<p class="text-sm text-center">No se pudieron cargar las misiones.</p>';
+            missionsList.innerHTML =
+              '<p class="text-sm text-center">No se pudieron cargar las misiones.</p>';
           }
           return [];
         }
@@ -1115,18 +1233,21 @@ import SkeletonLoader from "../../components/ui/SkeletonLoader.astro";
 
       async function initMissionsExperiment(currentUserId) {
         try {
-          const assignment = await gamificationService.assignExperimentVariant('missions_copy_v1', currentUserId);
-          missionsExperimentVariant = assignment?.variant || 'control';
+          const assignment = await gamificationService.assignExperimentVariant(
+            "missions_copy_v1",
+            currentUserId,
+          );
+          missionsExperimentVariant = assignment?.variant || "control";
 
           await gamificationService.trackExperimentEvent({
             userId: currentUserId,
-            experimentKey: 'missions_copy_v1',
+            experimentKey: "missions_copy_v1",
             variant: missionsExperimentVariant,
-            eventType: 'dashboard_view'
+            eventType: "dashboard_view",
           });
         } catch (error) {
-          debugWarn('No se pudo inicializar experimento de misiones:', error);
-          missionsExperimentVariant = 'control';
+          debugWarn("No se pudo inicializar experimento de misiones:", error);
+          missionsExperimentVariant = "control";
         }
       }
 
@@ -1140,28 +1261,32 @@ import SkeletonLoader from "../../components/ui/SkeletonLoader.astro";
 
         const currentUser = authService.getCurrentUser();
         if (currentUser?.id && missionsExperimentVariant) {
-          gamificationService.trackExperimentEvent({
-            userId: currentUser.id,
-            experimentKey: 'missions_copy_v1',
-            variant: missionsExperimentVariant,
-            eventType: 'missions_modal_open'
-          }).catch((err) => debugWarn('No se pudo trackear modal de misiones:', err));
+          gamificationService
+            .trackExperimentEvent({
+              userId: currentUser.id,
+              experimentKey: "missions_copy_v1",
+              variant: missionsExperimentVariant,
+              eventType: "missions_modal_open",
+            })
+            .catch((err) =>
+              debugWarn("No se pudo trackear modal de misiones:", err),
+            );
         }
 
-        missionsModal.setAttribute('aria-hidden', 'false');
-        missionsModal.classList.remove('hidden');
-        missionsModal.classList.add('flex');
+        missionsModal.setAttribute("aria-hidden", "false");
+        missionsModal.classList.remove("hidden");
+        missionsModal.classList.add("flex");
         requestAnimationFrame(() => {
-          missionsModal.classList.remove('opacity-0');
-          const modalBox = missionsModal.querySelector('div');
+          missionsModal.classList.remove("opacity-0");
+          const modalBox = missionsModal.querySelector("div");
           if (modalBox) {
-            modalBox.classList.remove('scale-95');
-            modalBox.classList.add('scale-100');
-            modalBox.classList.remove('opacity-0');
+            modalBox.classList.remove("scale-95");
+            modalBox.classList.add("scale-100");
+            modalBox.classList.remove("opacity-0");
           }
 
           const closeBtn = document.getElementById("missions-modal-close");
-          if (closeBtn && typeof closeBtn.focus === 'function') {
+          if (closeBtn && typeof closeBtn.focus === "function") {
             closeBtn.focus();
           }
         });
@@ -1178,12 +1303,16 @@ import SkeletonLoader from "../../components/ui/SkeletonLoader.astro";
           await refreshNotifications();
           await fetchAndRenderMissions({ renderModal: true });
           if (window.showToast) {
-            window.showToast('Recompensa reclamada', 'success', 'XP acreditada');
+            window.showToast(
+              "Recompensa reclamada",
+              "success",
+              "XP acreditada",
+            );
           }
         } catch (error) {
-          debugError('Error en claimMissionReward:', error);
+          debugError("Error en claimMissionReward:", error);
           if (window.showToast) {
-            window.showToast(error?.message || 'No se pudo reclamar', 'error');
+            window.showToast(error?.message || "No se pudo reclamar", "error");
           }
         }
       };
@@ -1191,30 +1320,37 @@ import SkeletonLoader from "../../components/ui/SkeletonLoader.astro";
       window.closeMissionsModal = () => {
         if (!missionsModal) return;
         const active = document.activeElement;
-        if (active && missionsModal.contains(active) && typeof active.blur === 'function') {
+        if (
+          active &&
+          missionsModal.contains(active) &&
+          typeof active.blur === "function"
+        ) {
           active.blur();
         }
 
-        missionsModal.classList.add('opacity-0');
-        const modalBox = missionsModal.querySelector('div');
+        missionsModal.classList.add("opacity-0");
+        const modalBox = missionsModal.querySelector("div");
         if (modalBox) {
-          modalBox.classList.add('scale-95');
-          modalBox.classList.remove('scale-100');
-          modalBox.classList.add('opacity-0');
+          modalBox.classList.add("scale-95");
+          modalBox.classList.remove("scale-100");
+          modalBox.classList.add("opacity-0");
         }
         setTimeout(() => {
-          missionsModal.classList.add('hidden');
-          missionsModal.classList.remove('flex');
-          missionsModal.setAttribute('aria-hidden', 'true');
+          missionsModal.classList.add("hidden");
+          missionsModal.classList.remove("flex");
+          missionsModal.setAttribute("aria-hidden", "true");
 
-          if (lastMissionTrigger && typeof lastMissionTrigger.focus === 'function') {
+          if (
+            lastMissionTrigger &&
+            typeof lastMissionTrigger.focus === "function"
+          ) {
             lastMissionTrigger.focus();
           }
         }, 300);
       };
 
       if (missionsModal) {
-        missionsModal.addEventListener('click', (e) => {
+        missionsModal.addEventListener("click", (e) => {
           if (e.target === missionsModal) {
             window.closeMissionsModal();
           }
@@ -1238,7 +1374,9 @@ import SkeletonLoader from "../../components/ui/SkeletonLoader.astro";
       window.addEventListener("capypay-level-up", async (event) => {
         const detail = event?.detail || {};
         const profile = userProfile.get();
-        const discountPct = Math.round((profile?.benefits?.descuento || 0) * 100);
+        const discountPct = Math.round(
+          (profile?.benefits?.descuento || 0) * 100,
+        );
         const vipLabel = profile?.benefits?.accesoVIP ? " + VIP" : "";
 
         if (typeof window.showToast === "function") {
@@ -1274,8 +1412,8 @@ import SkeletonLoader from "../../components/ui/SkeletonLoader.astro";
 
       function registerNivelesPrefetch(userId) {
         if (!userId) return;
-        const levelLink = document.getElementById('dashboard-level-link');
-        if (!levelLink || levelLink.dataset.prefetchBound === '1') return;
+        const levelLink = document.getElementById("dashboard-level-link");
+        if (!levelLink || levelLink.dataset.prefetchBound === "1") return;
 
         let prefetchStarted = false;
         const prefetch = () => {
@@ -1285,14 +1423,14 @@ import SkeletonLoader from "../../components/ui/SkeletonLoader.astro";
           Promise.allSettled([
             gamificationService.getWeeklySummary(userId),
             gamificationService.getWeeklyMissions(userId),
-            gamificationService.getRewards(userId, 'pending')
+            gamificationService.getRewards(userId, "pending"),
           ]).catch(() => {});
         };
 
-        levelLink.addEventListener('mouseenter', prefetch, { passive: true });
-        levelLink.addEventListener('focus', prefetch, { passive: true });
-        levelLink.addEventListener('touchstart', prefetch, { passive: true });
-        levelLink.dataset.prefetchBound = '1';
+        levelLink.addEventListener("mouseenter", prefetch, { passive: true });
+        levelLink.addEventListener("focus", prefetch, { passive: true });
+        levelLink.addEventListener("touchstart", prefetch, { passive: true });
+        levelLink.dataset.prefetchBound = "1";
       }
 
       // Fetch
@@ -1303,15 +1441,26 @@ import SkeletonLoader from "../../components/ui/SkeletonLoader.astro";
         ]);
         perf.mark("critical-user-data-ready");
         const currentUser = authService.getCurrentUser();
-        const activeUserId = currentUser?.id || currentUser?.usuarioId || currentUser?._id;
-        const activeCedula = currentUser?.cedula || userProfile.get()?.cedula || "";
+        const activeUserId =
+          currentUser?.id || currentUser?.usuarioId || currentUser?._id;
+        const activeCedula =
+          currentUser?.cedula || userProfile.get()?.cedula || "";
 
         registerNivelesPrefetch(activeUserId);
         runWhenIdle(() => {
           initMissionsExperiment(activeUserId)
-            .then(() => Promise.allSettled([fetchAndRenderMissions(), refreshNotifications()]))
+            .then(() =>
+              Promise.allSettled([
+                fetchAndRenderMissions(),
+                refreshNotifications(),
+              ]),
+            )
             .then(() => perf.mark("non-critical-ready"))
-            .catch((err) => perf.mark("non-critical-error", { message: String(err?.message || err) }));
+            .catch((err) =>
+              perf.mark("non-critical-error", {
+                message: String(err?.message || err),
+              }),
+            );
         }, 1200);
 
         if (!dashboardRuntime.notificationsPollingId) {
@@ -1323,7 +1472,9 @@ import SkeletonLoader from "../../components/ui/SkeletonLoader.astro";
 
         if (!dashboardRuntime.outsideClickBound) {
           document.addEventListener("click", (e) => {
-            const container = document.getElementById("notif-dropdown-container");
+            const container = document.getElementById(
+              "notif-dropdown-container",
+            );
             const menu = document.getElementById("notif-menu");
             if (container && menu && !container.contains(e.target)) {
               menu.classList.add("hidden");
@@ -1358,7 +1509,11 @@ import SkeletonLoader from "../../components/ui/SkeletonLoader.astro";
             return;
           }
 
-          const histRes = await withTimeout(userService.getHistory(activeCedula), 5500, "dashboard-history");
+          const histRes = await withTimeout(
+            userService.getHistory(activeCedula),
+            5500,
+            "dashboard-history",
+          );
           if (Array.isArray(histRes)) cachedMovements = histRes;
           else if (histRes && Array.isArray(histRes.movimientos))
             cachedMovements = histRes.movimientos;
@@ -1373,13 +1528,17 @@ import SkeletonLoader from "../../components/ui/SkeletonLoader.astro";
           };
 
           renderHistoryList();
-          perf.mark("history-network-render", { total: cachedMovements.length });
+          perf.mark("history-network-render", {
+            total: cachedMovements.length,
+          });
         } catch (e) {
           const container = document.getElementById("history-list-container");
           if (container)
             container.innerHTML =
               '<p class="text-center font-bold text-red-500 text-sm mt-10 uppercase">ERROR AL CARGAR</p>';
-          perf.mark("history-network-error", { message: String(e?.message || e) });
+          perf.mark("history-network-error", {
+            message: String(e?.message || e),
+          });
         }
       } catch (err) {
         debugError("DEBUG DASH:", err);
@@ -1441,11 +1600,14 @@ import SkeletonLoader from "../../components/ui/SkeletonLoader.astro";
         }
       }
 
-      const streakDailyEl = document.getElementById('streak-daily');
-      const streakWarningEl = document.getElementById('streak-warning');
-      const levelStreakSummaryEl = document.getElementById('level-streak-summary');
+      const streakDailyEl = document.getElementById("streak-daily");
+      const streakWarningEl = document.getElementById("streak-warning");
+      const levelStreakSummaryEl = document.getElementById(
+        "level-streak-summary",
+      );
 
-      if (streakDailyEl) streakDailyEl.textContent = Number(streak.currentDaily || 0);
+      if (streakDailyEl)
+        streakDailyEl.textContent = Number(streak.currentDaily || 0);
 
       if (levelStreakSummaryEl) {
         const daily = Number(streak.currentDaily || 0);
@@ -1453,18 +1615,27 @@ import SkeletonLoader from "../../components/ui/SkeletonLoader.astro";
         if (daily > 0) {
           levelStreakSummaryEl.textContent = `Racha ${daily}d · Sem ${weekly}`;
         } else {
-          levelStreakSummaryEl.textContent = 'Empieza tu racha';
+          levelStreakSummaryEl.textContent = "Empieza tu racha";
         }
       }
 
       if (streakWarningEl) {
-        const lastQualifiedAt = streak.lastQualifiedAt ? new Date(streak.lastQualifiedAt).getTime() : null;
-        const hoursSince = lastQualifiedAt ? (Date.now() - lastQualifiedAt) / (1000 * 60 * 60) : 0;
-        if (Number(streak.currentDaily || 0) > 0 && hoursSince >= 20 && hoursSince <= 48) {
-          streakWarningEl.classList.remove('hidden');
-          if (levelStreakSummaryEl) levelStreakSummaryEl.textContent = 'Racha en riesgo';
+        const lastQualifiedAt = streak.lastQualifiedAt
+          ? new Date(streak.lastQualifiedAt).getTime()
+          : null;
+        const hoursSince = lastQualifiedAt
+          ? (Date.now() - lastQualifiedAt) / (1000 * 60 * 60)
+          : 0;
+        if (
+          Number(streak.currentDaily || 0) > 0 &&
+          hoursSince >= 20 &&
+          hoursSince <= 48
+        ) {
+          streakWarningEl.classList.remove("hidden");
+          if (levelStreakSummaryEl)
+            levelStreakSummaryEl.textContent = "Racha en riesgo";
         } else {
-          streakWarningEl.classList.add('hidden');
+          streakWarningEl.classList.add("hidden");
         }
       }
     });

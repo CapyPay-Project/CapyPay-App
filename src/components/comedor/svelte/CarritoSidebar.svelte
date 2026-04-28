@@ -4,13 +4,10 @@
     removeItemFromCart,
     addItemToCart,
     isCartOpen,
-    clearCart,
   } from "../../../store/cartStore.js";
   import { fly, slide } from "svelte/transition";
   import { showToast } from "../../../utils/toast.js";
-  import { fetchAPI } from "../../../services/api.js";
   import { createEventDispatcher } from "svelte";
-  import { updateUserLevel } from "../../../store/userStore.js";
   import { userProfile } from "../../../store/userStore.js";
 
   const dispatch = createEventDispatcher();
@@ -25,56 +22,24 @@
   $: discountedSubtotal = Number(
     Math.max(0, subtotal - discountAmount).toFixed(2),
   );
-  $: serviceFee = Math.round(discountedSubtotal * 0.05);
+  $: serviceFee = Number((subtotal * 0.05).toFixed(2));
   $: total = Number((discountedSubtotal + serviceFee).toFixed(2));
-
   let isCheckingOut = false;
 
   function closeCart() {
     $isCartOpen = false;
   }
 
-  async function handleCheckout() {
+  function handleGoToCheckout() {
     if (itemsArray.length === 0) return;
     isCheckingOut = true;
-
-    try {
-      // Map formatting for backend: [{ id, quantity }]
-      const payloadItems = itemsArray.map((i) => ({
-        id: i.id,
-        quantity: i.quantity,
-      }));
-
-      const response = await fetchAPI("/comedor/order", {
-        method: "POST",
-        body: JSON.stringify({ items: payloadItems }),
-      });
-
-      if (response && (response.order || response.orderId)) {
-        showToast("¡COMPRA EXITOSA!", "Tu orden ha sido procesada.", "success");
-        clearCart();
-        closeCart();
-        // Dispatch to ComedorApp so it updates the state
-        dispatch("checkout_success", {
-          order: response.order || { id: response.orderId },
-        });
-
-        // Actualizar nivel después de compra
-        updateUserLevel();
-      } else {
-        throw new Error("Respuesta inválida del servidor");
-      }
-    } catch (err) {
-      showToast(
-        "ERROR EN LA COMPRA",
-        err.message || "Revisa tu conexión o saldo.",
-        "error",
-      );
-    } finally {
-      isCheckingOut = false;
-    }
-    // Redirigir al checkout para confirmar todo
+    dispatch("checkout_success", { order: null });
     closeCart();
+    showToast(
+      "Continuemos al checkout",
+      "Revisa y confirma tu pago antes de procesar.",
+      "info",
+    );
     window.location.href = "/services/checkout";
   }
 </script>
@@ -175,12 +140,13 @@
           >
         </div>
       </div>
+
       <button
-        on:click={handleCheckout}
+        on:click={handleGoToCheckout}
         class="w-full bg-brand-purple text-white font-black text-2xl uppercase py-4 border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-0.5 hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] active:translate-y-2 active:shadow-none transition-all disabled:opacity-50 disabled:cursor-not-allowed"
         disabled={itemsArray.length === 0 || isCheckingOut}
       >
-        {isCheckingOut ? "PROCESANDO..." : "PAGAR AHORA"}
+        {isCheckingOut ? "Abriendo checkout..." : "Ir al checkout"}
       </button>
     </div>
   </aside>

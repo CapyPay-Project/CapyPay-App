@@ -1,6 +1,6 @@
 // src/services/api.js
 
-const API_URL = import.meta.env.PUBLIC_API_URL || (typeof window !== 'undefined' ? `http://${window.location.hostname}:3000/api` : 'http://localhost:3000/api');
+const API_URL = import.meta.env.PUBLIC_API_URL || (typeof window !== 'undefined' ? '/api' : 'http://localhost:3000/api');
 
 const AUTH_TOKEN_KEY = 'capypay_token';
 const AUTH_USER_KEY = 'capypay_user';
@@ -22,6 +22,28 @@ const SESSION_REFRESH_WINDOW_MS = readPublicPositiveNumberEnv('PUBLIC_SESSION_RE
 const SESSION_REFRESH_COOLDOWN_MS = readPublicPositiveNumberEnv('PUBLIC_SESSION_REFRESH_COOLDOWN_SECONDS', 60) * 1000;
 const SESSION_REFRESH_POLL_MS = readPublicPositiveNumberEnv('PUBLIC_SESSION_REFRESH_POLL_SECONDS', 60) * 1000;
 const SESSION_NOTICE_DELAY_MS = readPublicPositiveNumberEnv('PUBLIC_SESSION_NOTICE_DELAY_MS', 900);
+
+function shouldLogClientErrors() {
+  if (!isBrowser) return false;
+
+  const forced = String(import.meta.env.PUBLIC_CLIENT_ERROR_LOGS || '').toLowerCase();
+  if (['1', 'true', 'yes', 'on'].includes(forced)) return true;
+
+  const disabled = String(import.meta.env.PUBLIC_CLIENT_ERROR_LOGS || '').toLowerCase();
+  if (['0', 'false', 'no', 'off'].includes(disabled)) return false;
+
+  return Boolean(import.meta.env.DEV) || window.location.hostname === 'localhost';
+}
+
+function emitClientErrorTelemetry(detail = {}) {
+  if (!isBrowser) return;
+  window.dispatchEvent(new CustomEvent('capypay:client-error', {
+    detail: {
+      at: new Date().toISOString(),
+      ...detail
+    }
+  }));
+}
 
 const gmClientCache = new Map();
 const gmClientInflight = new Map();
@@ -438,7 +460,12 @@ export async function fetchAPI(endpoint, options = {}) {
     if (!response.ok) {
       // Buscamos 'message' o 'error' porque tu backend usa ambos
       const mensaje = data?.message || data?.error || 'Error en la petición';
-      throw new Error(mensaje);
+      const requestError = new Error(mensaje);
+      requestError.status = response.status;
+      requestError.endpoint = endpoint;
+      requestError.method = method;
+      requestError.responseData = data;
+      throw requestError;
     }
 
     return data;
@@ -451,8 +478,30 @@ export async function fetchAPI(endpoint, options = {}) {
     const debugApi = typeof window !== 'undefined' &&
       (new URLSearchParams(window.location.search).get('debugApi') === '1' || window.__CAPYPAY_DEBUG_API__ === true);
 
+    const shouldLog = shouldLogClientErrors() || debugApi;
+
+    if (shouldLog) {
+      console.error('[CapyPay API Error]', {
+        endpoint,
+        method,
+        status: Number(error?.status || 0) || null,
+        message: error?.message || 'Unknown error',
+        isNetworkError,
+        at: new Date().toISOString()
+      });
+    }
+
+    emitClientErrorTelemetry({
+      source: 'fetchAPI',
+      endpoint,
+      method,
+      status: Number(error?.status || 0) || null,
+      message: error?.message || 'Unknown error',
+      isNetworkError
+    });
+
     if (debugApi) {
-      console.error('API Error:', error);
+      console.error('API Error detail:', error);
     }
 
     throw error;
@@ -589,14 +638,24 @@ export const userService = {
   },
   
   // Backend route: GET /api/historial
-  getHistory: async (cedula) => {
-    if (!cedula) {
-        const user = authService.getCurrentUser();
-        cedula = user?.cedula;
+  getHistory: async (cedulaOrParams) => {
+    const params = typeof cedulaOrParams === 'object' && cedulaOrParams !== null
+      ? cedulaOrParams
+      : { cedula: cedulaOrParams };
+
+    if (!params.cedula && !params.userId) {
+      const user = authService.getCurrentUser();
+      params.cedula = user?.cedula || params.cedula;
+      params.userId = user?.id || params.userId;
     }
-    if (!cedula) throw new Error("Cédula requerida para historial");
-    
-    return fetchAPI(`/historial?cedula=${cedula}`);
+
+    if (!params.cedula && !params.userId) throw new Error("Cédula o usuario requerido para historial");
+
+    const query = new URLSearchParams();
+    if (params.cedula) query.set('cedula', params.cedula);
+    if (params.userId) query.set('userId', params.userId);
+
+    return fetchAPI(`/historial?${query.toString()}`);
   },
 
   searchUsers: async (query) => {
@@ -617,7 +676,70 @@ export const userService = {
         method: 'PUT',
         body: JSON.stringify({ avatar_url: avatarUrl || "" })
       });
+  },
+
+  updatePin: async (pin, userId) => {
+      let id = userId;
+      if (!id) {
+        const storedUser = authService.getCurrentUser();
+        id = storedUser?.id || storedUser?.user_id;
+      }
+      if (!id) throw new Error("ID de usuario no encontrado");
+
+      return fetchAPI(`/usuario/${id}/pin`, {
+        method: 'PUT',
+        body: JSON.stringify({ pin: String(pin || '').trim() })
+      });
   }
+};
+
+export const contactService = {
+  getContacts: async (userId) => {
+    const currentUser = authService.getCurrentUser();
+    const safeId = userId || currentUser?.id;
+    if (!safeId) throw new Error('ID de usuario no encontrado');
+    const data = await fetchAPI(`/contactos?usuario_id=${safeId}`);
+    return data?.contactos || [];
+  },
+
+  addContact: async ({ contactId, cedula, alias, userId }) => {
+    const currentUser = authService.getCurrentUser();
+    const safeId = userId || currentUser?.id;
+    if (!safeId) throw new Error('ID de usuario no encontrado');
+
+    const payload = {
+      usuario_id: safeId,
+      alias: alias || undefined,
+    };
+
+    if (contactId) payload.contact_id = contactId;
+    if (cedula) payload.cedula = cedula;
+
+    return fetchAPI('/contactos', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
+  },
+
+  toggleFavorite: async (contactRelationId, isFavorite) => {
+    return fetchAPI(`/contactos/${contactRelationId}/favorite`, {
+      method: 'PUT',
+      body: JSON.stringify({ is_favorite: Boolean(isFavorite) }),
+    });
+  },
+
+  updateAlias: async (contactRelationId, alias) => {
+    return fetchAPI(`/contactos/${contactRelationId}`, {
+      method: 'PUT',
+      body: JSON.stringify({ alias }),
+    });
+  },
+
+  removeContact: async (contactRelationId) => {
+    return fetchAPI(`/contactos/${contactRelationId}`, {
+      method: 'DELETE',
+    });
+  },
 };
 
 export const comedorService = {
@@ -911,6 +1033,9 @@ export const pinService = {
 export const cantinaService = {
   // Backend route: GET /api/cantinas/order/:id
   getOrder: (orderId) => fetchAPI(`/cantinas/order/${orderId}`),
+
+  // Backend route: GET /api/cantinas/orders/:userId
+  getUserOrders: (userId) => fetchAPI(`/cantinas/orders/${userId}`),
 
   // Backend route: GET /api/cantinas/faculties
   getAreas: () => fetchAPI('/cantinas/faculties'),

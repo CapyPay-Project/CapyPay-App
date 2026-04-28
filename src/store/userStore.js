@@ -70,7 +70,7 @@ export async function fetchUserProfile() {
       const current = userProfile.get();
       userProfile.set({
         ...newProfile,
-        balance: current.balance !== 0 ? current.balance : newProfile.balance   // priorizamos el balance local si ya cambió
+        balance: newProfile.balance
       });
 
       // Sincronizamos el localStorage viejo que ya tenías

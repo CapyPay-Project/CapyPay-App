@@ -1,33 +1,32 @@
 <script>
-  import { onMount, onDestroy } from "svelte";
-
   export let capacity = 150;
+  export let currentLoad = 0;
+  export let occupancyPercent = 0;
+  export let occupancyLabel = "DESCONOCIDO";
+  export let occupancyDetail = "Actualizando estado del comedor";
   export let diningState = "browsing";
 
-  let currentLoad = 45;
-  let interval;
+  $: safeCapacity = Math.max(1, Number(capacity || 1));
+  $: safeCurrentLoad = Math.max(0, Number(currentLoad || 0));
+  $: inferredPercent = Math.round((safeCurrentLoad / safeCapacity) * 100);
+  $: loadPercentage = Math.max(
+    0,
+    Math.min(
+      100,
+      Number.isFinite(Number(occupancyPercent))
+        ? Number(occupancyPercent)
+        : inferredPercent,
+    ),
+  );
 
-  $: loadPercentage = Math.round((currentLoad / capacity) * 100);
+  $: normalizedLabel = String(occupancyLabel || "").toUpperCase();
 
-  $: status =
+  $: statusColor =
     loadPercentage < 40
-      ? { text: "FLUIDO", color: "bg-brand-lime" }
+      ? "bg-brand-lime"
       : loadPercentage < 80
-        ? { text: "MODERADO", color: "bg-yellow-400" }
-        : { text: "LLENO", color: "bg-red-500" };
-
-  onMount(() => {
-    // Simular actualizaciones en tiempo real (luego se cambiará a Supabase WebSockets)
-    interval = setInterval(() => {
-      // Variación aleatoria entre -3 y +5 personas
-      const variation = Math.floor(Math.random() * 9) - 3;
-      currentLoad = Math.max(0, Math.min(capacity, currentLoad + variation));
-    }, 5000);
-  });
-
-  onDestroy(() => {
-    clearInterval(interval);
-  });
+        ? "bg-yellow-400"
+        : "bg-red-500";
 </script>
 
 <div
@@ -42,15 +41,20 @@
         <h3 class="font-black uppercase tracking-tight">Estado del Comedor</h3>
       </div>
       <div
-        class="{status.color} px-3 py-1 border-2 border-black font-bold text-sm tracking-widest text-black"
+        class={`${statusColor} px-3 py-1 border-2 border-black font-bold text-sm tracking-widest text-black`}
       >
-        {status.text}
+        {normalizedLabel || "DESCONOCIDO"}
       </div>
     </div>
 
+    <p class="text-xs font-bold uppercase text-black/60 mt-1">
+      {occupancyDetail}
+    </p>
+
     <div class="flex items-end gap-1 mt-2">
-      <span class="font-black text-4xl leading-none">{currentLoad}</span>
-      <span class="font-bold text-gray-500 mb-1">/ {capacity} personas</span>
+      <span class="font-black text-4xl leading-none">{safeCurrentLoad}</span>
+      <span class="font-bold text-gray-500 mb-1">/ {safeCapacity} personas</span
+      >
     </div>
 
     <!-- Barra de progreso Neo-Brutalista -->
@@ -58,7 +62,7 @@
       class="w-full h-6 border-2 border-black bg-gray-200 mt-2 relative overflow-hidden"
     >
       <div
-        class="h-full border-r-2 border-black transition-all duration-500 {status.color}"
+        class={`${statusColor} h-full border-r-2 border-black transition-all duration-500`}
         style="width: {loadPercentage}%"
       ></div>
     </div>
