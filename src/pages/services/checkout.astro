@@ -240,7 +240,7 @@ import { cartItems, clearCart } from "../../store/cartStore";
       async function initCheckout() {
         let items = cartItems.get();
         let itemsArray = Object.values(items).filter(
-          (i) => i.type === "comedor" || !i.type,
+          (i) => i.contextType === "comedor",
         );
 
         if (itemsArray.length === 0) {
@@ -417,7 +417,7 @@ import { cartItems, clearCart } from "../../store/cartStore";
           // For a robust solution, we assume if ANY item is from a Cantina (we can check by checking the API error or by adding a flag).
           // Let's add a heuristic: Cantina items have UUIDs as IDs, Comedor items usually have INTEGER IDs.
           const validItems = currentItems.filter(
-            (i) => i.type === "comedor" || !i.type,
+            (i) => i.contextType === "comedor",
           );
           const orderItems = validItems.map((item) => ({
             id: item.id,

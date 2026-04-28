@@ -104,7 +104,7 @@
                 >{item.quantity}</span
               >
               <button
-                on:click={() => addItemToCart(item)}
+                on:click={() => addItemToCart({ ...item, contextType: item.contextType || "comedor" })}
                 class="w-8 h-8 flex items-center justify-center bg-brand-lime border-2 border-black font-bold active:translate-y-1"
                 >+</button
               >

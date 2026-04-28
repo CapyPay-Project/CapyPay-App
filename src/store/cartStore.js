@@ -3,9 +3,36 @@ import { atom, map } from 'nanostores';
 
 export const isCartOpen = atom(false);
 
+const VALID_CONTEXTS = new Set(['comedor', 'cantina']);
+
+function resolveContextType(item = {}) {
+  const explicitContext = String(item.contextType || '').trim().toLowerCase();
+  if (VALID_CONTEXTS.has(explicitContext)) return explicitContext;
+
+  // Legacy fallback for old saved carts with `type`.
+  const legacyType = String(item.type || '').trim().toLowerCase();
+  if (VALID_CONTEXTS.has(legacyType)) return legacyType;
+
+  return null;
+}
+
+function normalizeSavedCart(rawCart = {}) {
+  const normalized = {};
+  for (const [id, item] of Object.entries(rawCart || {})) {
+    const contextType = resolveContextType(item);
+    if (!contextType) continue;
+
+    normalized[id] = {
+      ...item,
+      contextType,
+    };
+  }
+  return normalized;
+}
+
 // Simple persistence manually implemented to avoid extra dependencies
 const savedCart = typeof window !== 'undefined' 
-  ? JSON.parse(localStorage.getItem('capy_cart') || '{}') 
+  ? normalizeSavedCart(JSON.parse(localStorage.getItem('capy_cart') || '{}')) 
   : {};
 
 export const cartItems = map(savedCart); 
@@ -18,6 +45,11 @@ if (typeof window !== 'undefined') {
 }
 
 export function addItemToCart(item) {
+  const contextType = resolveContextType(item);
+  if (!contextType) {
+    throw new Error('contextType inválido. Usa contextType="comedor" o contextType="cantina".');
+  }
+
   const currentItems = cartItems.get();
 
   const existingItem = currentItems[item.id];
@@ -25,11 +57,13 @@ export function addItemToCart(item) {
   if (existingItem) {
     cartItems.setKey(item.id, {
       ...existingItem,
+      contextType,
       quantity: existingItem.quantity + 1,
     });
   } else {
     cartItems.setKey(item.id, {
       ...item,
+      contextType,
       quantity: 1,
     });
   }
@@ -57,17 +91,23 @@ export function clearCart(contextType) {
     return;
   }
 
+  if (!VALID_CONTEXTS.has(String(contextType))) {
+    throw new Error('contextType inválido en clearCart');
+  }
+
   const currentItems = cartItems.get();
   const retainedItems = {};
   
   for (const key in currentItems) {
     const item = currentItems[key];
-    const isCantinaItem = item.type === 'cantina' || (item.id.toString().includes('-') && item.id.toString().length > 10);
+    const itemContextType = resolveContextType(item);
+    if (!itemContextType) continue;
     
-    if (contextType === 'cantina' && !isCantinaItem) {
-      retainedItems[key] = item; // Keep Comedor items
-    } else if (contextType === 'comedor' && isCantinaItem) {
-      retainedItems[key] = item; // Keep Cantina items
+    if (contextType !== itemContextType) {
+      retainedItems[key] = {
+        ...item,
+        contextType: itemContextType,
+      };
     }
   }
   
