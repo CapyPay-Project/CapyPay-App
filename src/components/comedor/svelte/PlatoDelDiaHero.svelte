@@ -11,14 +11,14 @@
 
   function handleAdd() {
     if (item.id || item.name !== "Cargando...") {
-      addItemToCart(item);
+      addItemToCart({ ...item, contextType: "comedor" });
       showToast("Añadido", `${item.name} añadido al carrito`, "success");
     }
   }
 </script>
 
 <div
-  class="relative overflow-hidden bg-brand-lime border-4 border-black p-6 flex flex-col md:flex-row gap-6 items-center shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[-2px] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transition-all duration-200 group"
+  class="relative overflow-hidden bg-brand-lime border-4 border-black p-6 flex flex-col md:flex-row gap-6 items-center shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-0.5 hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transition-all duration-200 group"
 >
   <div
     class="absolute top-0 right-0 bg-black text-white font-black px-4 py-1 tracking-widest text-sm border-b-4 border-l-4 border-black"

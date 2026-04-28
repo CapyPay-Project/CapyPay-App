@@ -146,9 +146,7 @@ import { cartItems, clearCart } from "../../store/cartStore";
       async function initCheckout() {
         let items = cartItems.get();
         let itemsArray = Object.values(items).filter(
-          (i) =>
-            i.type === "cantina" ||
-            (i.id.toString().includes("-") && i.id.toString().length > 10),
+          (i) => i.contextType === "cantina",
         );
 
         if (itemsArray.length === 0) {
@@ -234,9 +232,7 @@ import { cartItems, clearCart } from "../../store/cartStore";
 
           // Filtrar unicamente items de cantina
           const validItems = currentItems.filter(
-            (i) =>
-              i.type === "cantina" ||
-              (i.id.toString().includes("-") && i.id.toString().length > 10),
+            (i) => i.contextType === "cantina",
           );
 
           if (validItems.length === 0) {
@@ -303,6 +299,20 @@ import { cartItems, clearCart } from "../../store/cartStore";
             quantity: item.quantity,
           }));
 
+          const checkoutFingerprint = [
+            String(userId),
+            String(cantinaId),
+            ...validItems
+              .map((item) => `${String(item.id)}:${Number(item.quantity || 0)}`)
+              .sort(),
+          ].join("|");
+          const idempotencyStorageKey = `capypay:idem:cantina:${checkoutFingerprint}`;
+          const existingIdempotency = sessionStorage.getItem(idempotencyStorageKey);
+          const idempotencyKey = existingIdempotency || (typeof crypto !== "undefined" && crypto.randomUUID
+            ? crypto.randomUUID()
+            : `${Date.now()}-${Math.random().toString(36).slice(2)}`);
+          sessionStorage.setItem(idempotencyStorageKey, idempotencyKey);
+
           const response = await cantinaService.purchaseProducts(
             userId,
             cantinaId,
@@ -310,6 +320,7 @@ import { cartItems, clearCart } from "../../store/cartStore";
             totalLocal, // total_bs (dummy values if we only use capys)
             grandTotal, // total_capys
             Math.ceil(grandTotal * 0.1), // total_xp
+            { idempotencyKey },
           );
 
           if (!response) throw new Error("Error al crear la orden de cantina");
@@ -324,6 +335,10 @@ import { cartItems, clearCart } from "../../store/cartStore";
               `Descuento aplicado: -${Number(response.pricing.discountAmount).toFixed(2)} BARAS`,
               "success",
             );
+          }
+
+          if (response?.pricing?.total !== undefined && totalEl) {
+            totalEl.textContent = `${Number(response.pricing.total).toFixed(2)} BARAS`;
           }
 
           const userRaw = localStorage.getItem("capypay_user");
@@ -342,6 +357,7 @@ import { cartItems, clearCart } from "../../store/cartStore";
 
           // Clear cart
           clearCart("cantina");
+          sessionStorage.removeItem(idempotencyStorageKey);
 
           // Redirect to Receipt page
           // response usually contains { message, orderId, newBalance, xpGained }

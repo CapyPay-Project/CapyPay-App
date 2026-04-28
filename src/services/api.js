@@ -1043,22 +1043,27 @@ export const cantinaService = {
   // Backend route: GET /api/cantinas
   getCantinas: () => fetchAPI('/cantinas'),
   
-  purchaseProducts: (userId, cantinaId, products, totalBs, totalCapys, totalXp) => {
+  purchaseProducts: (userId, cantinaId, products, totalBs, totalCapys, totalXp, options = {}) => {
     // Backend expects items as [{ product_id, quantity }]
     const formattedItems = products.map(p => ({
       product_id: p.product_id || p.id,
       quantity: p.quantity || 1
     }));
+    const idempotencyKey = String(options?.idempotencyKey || '').trim();
     
     return fetchAPI('/cantinas/order', {
       method: 'POST',
+      headers: {
+        ...(idempotencyKey ? { 'X-Idempotency-Key': idempotencyKey } : {})
+      },
       body: JSON.stringify({
         user_id: userId,
         cantina_id: cantinaId,
         items: formattedItems, 
         total_bs: totalBs,
         total_capys: totalCapys,
-        total_xp: totalXp
+        total_xp: totalXp,
+        ...(idempotencyKey ? { idempotency_key: idempotencyKey } : {})
       })
     });
   }

@@ -500,7 +500,7 @@ import FloatingActions from "../../components/widgets/comedor/FloatingActions.as
     function handlePurchase(baseItem) {
       const item = {
         ...baseItem,
-        type: 'cantina',
+        contextType: 'cantina',
         cantinaId: currentCantina?.id || null,
       };
       addItemToCart(item);
@@ -633,7 +633,7 @@ import FloatingActions from "../../components/widgets/comedor/FloatingActions.as
     
     cartItems.subscribe((items) => {
       const count = Object.values(items)
-        .filter((i: any) => i.type === 'cantina' || (i.id.toString().includes('-') && i.id.toString().length > 10))
+        .filter((i: any) => i.contextType === 'cantina')
         .reduce((acc, item: any) => acc + item.quantity, 0);
       if (cartBadge) {
         cartBadge.textContent = count.toString();
