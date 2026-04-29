@@ -1,11 +1,16 @@
 // src/services/api.js
 
-const API_URL = import.meta.env.PUBLIC_API_URL || (typeof window !== 'undefined' ? '/api' : 'http://localhost:3000/api');
+const configuredApiUrl = String(import.meta.env.PUBLIC_API_URL || '').trim();
+const isBrowser = typeof window !== 'undefined';
+const isLocalhostBrowser = isBrowser && window.location.hostname === 'localhost';
+
+const API_URL = isLocalhostBrowser && (!configuredApiUrl || configuredApiUrl === '/api')
+  ? 'http://localhost:3000/api'
+  : (configuredApiUrl || (isBrowser ? '/api' : 'http://localhost:3000/api'));
 
 const AUTH_TOKEN_KEY = 'capypay_token';
 const AUTH_USER_KEY = 'capypay_user';
 const TOKEN_EXP_SKEW_SECONDS = 20;
-const isBrowser = typeof window !== 'undefined';
 let authStorageSyncBound = false;
 let sessionRefreshBound = false;
 let sessionRefreshInFlight = null;

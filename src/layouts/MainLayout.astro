@@ -248,41 +248,44 @@ const { title = "CapyPay", showSidebar = false } = Astro.props;
             </p>
 
             <!-- PIN INPUT -->
-            <div
-              class="flex justify-center gap-1 sm:gap-2 mb-6"
-              id="pin-inputs"
+            <form
+              id="pin-form"
+              onsubmit="event.preventDefault(); document.getElementById('confirm-pin').click();"
+              class="w-full mb-6"
             >
-              <input
-                type="password"
-                maxlength="1"
-                class="w-10 h-12 bg-slate-900 border border-white/10 rounded-xl text-center text-xl text-white font-bold focus:outline-none focus:border-brand-lime transition-colors focus:shadow-[0_0_10px_rgba(215,253,73,0.2)]"
-              />
-              <input
-                type="password"
-                maxlength="1"
-                class="w-10 h-12 bg-slate-900 border border-white/10 rounded-xl text-center text-xl text-white font-bold focus:outline-none focus:border-brand-lime transition-colors focus:shadow-[0_0_10px_rgba(215,253,73,0.2)]"
-              />
-              <input
-                type="password"
-                maxlength="1"
-                class="w-10 h-12 bg-slate-900 border border-white/10 rounded-xl text-center text-xl text-white font-bold focus:outline-none focus:border-brand-lime transition-colors focus:shadow-[0_0_10px_rgba(215,253,73,0.2)]"
-              />
-              <input
-                type="password"
-                maxlength="1"
-                class="w-10 h-12 bg-slate-900 border border-white/10 rounded-xl text-center text-xl text-white font-bold focus:outline-none focus:border-brand-lime transition-colors focus:shadow-[0_0_10px_rgba(215,253,73,0.2)]"
-              />
-              <input
-                type="password"
-                maxlength="1"
-                class="w-10 h-12 bg-slate-900 border border-white/10 rounded-xl text-center text-xl text-white font-bold focus:outline-none focus:border-brand-lime transition-colors focus:shadow-[0_0_10px_rgba(215,253,73,0.2)]"
-              />
-              <input
-                type="password"
-                maxlength="1"
-                class="w-10 h-12 bg-slate-900 border border-white/10 rounded-xl text-center text-xl text-white font-bold focus:outline-none focus:border-brand-lime transition-colors focus:shadow-[0_0_10px_rgba(215,253,73,0.2)]"
-              />
-            </div>
+              <div class="flex justify-center gap-1 sm:gap-2" id="pin-inputs">
+                <input
+                  type="password"
+                  maxlength="1"
+                  class="w-10 h-12 bg-slate-900 border border-white/10 rounded-xl text-center text-xl text-white font-bold focus:outline-none focus:border-brand-lime transition-colors focus:shadow-[0_0_10px_rgba(215,253,73,0.2)]"
+                />
+                <input
+                  type="password"
+                  maxlength="1"
+                  class="w-10 h-12 bg-slate-900 border border-white/10 rounded-xl text-center text-xl text-white font-bold focus:outline-none focus:border-brand-lime transition-colors focus:shadow-[0_0_10px_rgba(215,253,73,0.2)]"
+                />
+                <input
+                  type="password"
+                  maxlength="1"
+                  class="w-10 h-12 bg-slate-900 border border-white/10 rounded-xl text-center text-xl text-white font-bold focus:outline-none focus:border-brand-lime transition-colors focus:shadow-[0_0_10px_rgba(215,253,73,0.2)]"
+                />
+                <input
+                  type="password"
+                  maxlength="1"
+                  class="w-10 h-12 bg-slate-900 border border-white/10 rounded-xl text-center text-xl text-white font-bold focus:outline-none focus:border-brand-lime transition-colors focus:shadow-[0_0_10px_rgba(215,253,73,0.2)]"
+                />
+                <input
+                  type="password"
+                  maxlength="1"
+                  class="w-10 h-12 bg-slate-900 border border-white/10 rounded-xl text-center text-xl text-white font-bold focus:outline-none focus:border-brand-lime transition-colors focus:shadow-[0_0_10px_rgba(215,253,73,0.2)]"
+                />
+                <input
+                  type="password"
+                  maxlength="1"
+                  class="w-10 h-12 bg-slate-900 border border-white/10 rounded-xl text-center text-xl text-white font-bold focus:outline-none focus:border-brand-lime transition-colors focus:shadow-[0_0_10px_rgba(215,253,73,0.2)]"
+                />
+              </div>
+            </form>
 
             <div class="flex gap-3">
               <button

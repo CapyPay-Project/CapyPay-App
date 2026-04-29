@@ -76,7 +76,7 @@
     </div>
   {:else}
     <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-      {#each visibleItems as item}
+      {#each visibleItems as item (item.id)}
         <article
           class="border-4 border-black bg-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] p-4 flex flex-col gap-3 min-h-90"
         >
@@ -86,6 +86,10 @@
               alt={item.name}
               loading="lazy"
               decoding="async"
+              fetchpriority="low"
+              width="640"
+              height="480"
+              sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
               class="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
             />
           </div>
