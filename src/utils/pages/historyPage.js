@@ -168,18 +168,21 @@ function setupFilterEvents(dom, state) {
   dom.dateFromEl?.addEventListener("change", () => applyFilters(dom, state));
   dom.dateToEl?.addEventListener("change", () => applyFilters(dom, state));
 
+  const inactiveFilterClass =
+    "filter-btn flex-1 h-full text-xs font-bold transition-all text-white bg-[#8b5cf6] hover:bg-[#7c3aed] border-none outline-none";
+  const activeFilterClass =
+    "filter-btn flex-1 h-full text-xs font-bold transition-all text-black bg-brand-lime shadow-brutal border-2 border-black";
+
   document.querySelectorAll(".filter-btn").forEach((button) => {
     button.addEventListener("click", (event) => {
       const value = event.target.dataset.val;
       if (dom.filterType) dom.filterType.value = value;
 
       document.querySelectorAll(".filter-btn").forEach((item) => {
-        item.className =
-          "filter-btn flex-1 h-full text-xs font-bold transition-all text-gray-700 hover:text-black hover:bg-gray-200 border-none outline-none";
+        item.className = inactiveFilterClass;
       });
 
-      event.target.className =
-        "filter-btn flex-1 h-full text-xs font-bold transition-all text-black bg-brand-lime shadow-brutal border-2 border-black";
+      event.target.className = activeFilterClass;
 
       applyFilters(dom, state);
     });
@@ -241,14 +244,22 @@ function renderTable(dom, state) {
     .map((movement) => {
       const isNegative = movement.es_negativo;
         const isPending = movement.estado === 'pendiente' || movement.estado === 'pending' || movement.status === 'pending';
-        let amountColor = isNegative ? "text-red-600" : "text-green-600";
-        let iconBg = isNegative ? "bg-red-100" : "bg-green-100";
-        let iconColor = isNegative ? "text-red-600" : "text-green-600";
+        let amountColor = isNegative ? "text-red-100" : "text-green-900";
+        let iconBg = isNegative ? "bg-white/20 border-white/70" : "bg-[#15803d] border-black";
+        let iconColor = "text-white";
+        let cardBg = isNegative ? "bg-[#8b5cf6]" : "bg-brand-receive";
+        let titleColor = isNegative ? "text-white" : "text-black";
+        let metaColor = isNegative ? "text-white/75" : "text-slate-700";
+        let categoryColor = isNegative ? "text-white/80" : "text-slate-700";
         
         if (isPending) {
           amountColor = "text-slate-500";
           iconBg = "bg-slate-200";
           iconColor = "text-slate-500";
+          cardBg = "bg-white";
+          titleColor = "text-black";
+          metaColor = "text-slate-600";
+          categoryColor = "text-slate-500";
         }
         
         const sign = isNegative ? "-" : "+";
@@ -262,7 +273,7 @@ function renderTable(dom, state) {
         const amountDisplayClass = isNegative ? "text-xl sm:text-2xl font-black" : "font-bold text-lg sm:text-xl";
 
         return `
-        <div onclick="window.openModal('${movement.uniqueId}')" class="group flex items-center justify-between p-4! transition-all duration-300 cursor-pointer w-full mx-auto hover:bg-neutral-100 hover:scale-[1.01] overflow-hidden bg-white border-4 border-black box-shadow-brutal hover:-translate-y-1 rounded-none mb-3">
+        <div onclick="window.openModal('${movement.uniqueId}')" class="group flex items-center justify-between p-4! transition-all duration-300 cursor-pointer w-full mx-auto hover:scale-[1.01] overflow-hidden ${cardBg} border-4 border-black box-shadow-brutal hover:-translate-y-1 rounded-none mb-3">
           <div class="flex items-center gap-4 min-w-0 flex-1">
             <div class="w-12 h-12 rounded-full ${iconBg} border-2 border-black flex items-center justify-center ${iconColor} transition-transform shrink-0 group-hover:scale-110 group-hover:rotate-12">
               ${
@@ -274,16 +285,16 @@ function renderTable(dom, state) {
               }
             </div>
             <div class="flex flex-col min-w-0">
-              <span class="text-black font-black uppercase transition-colors truncate text-sm sm:text-base">${desc}</span>
+              <span class="${titleColor} font-black uppercase transition-colors truncate text-sm sm:text-base">${desc}</span>
               <div class="flex items-center gap-2">
-                <span class="text-xs text-slate-600 font-mono font-bold">${date}</span>
+                <span class="text-xs ${metaColor} font-mono font-bold">${date}</span>
                 ${isPending ? `<span class="bg-slate-200 text-slate-800 text-[9px] px-1.5 py-0.5 rounded font-bold border border-slate-400">PENDIENTE</span>` : ""}
               </div>
             </div>
           </div>
           <div class="text-right shrink-0">
             <p class="${amountDisplayClass} font-mono ${amountColor} group-hover:scale-110 transition-transform origin-right">${sign}${movement.monto}</p>
-            <p class="text-[10px] text-slate-500 uppercase font-black tracking-wider">${category}</p>
+            <p class="text-[10px] ${categoryColor} uppercase font-black tracking-wider">${category}</p>
           </div>
         </div>`;
     })
@@ -352,7 +363,7 @@ function setupModalEvents(dom, state) {
           badgeEl.className = `inline-block mt-2 px-4 py-1.5 rounded text-[11px] border border-slate-400 font-black uppercase bg-slate-200 text-slate-800`;
           badgeEl.innerText = "PENDIENTE";
         } else {
-          badgeEl.className = `inline-block mt-2 px-4 py-1.5 rounded text-[11px] font-black uppercase border border-black ${isNegative ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"}`;
+          badgeEl.className = `inline-block mt-2 px-4 py-1.5 rounded text-[11px] font-black uppercase border border-black ${isNegative ? "bg-[#8b5cf6] text-white" : "bg-brand-receive text-black"}`;
           badgeEl.innerText = isNegative ? "GASTO" : "INGRESO";
         }
       }

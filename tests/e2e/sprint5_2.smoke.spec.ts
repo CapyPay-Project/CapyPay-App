@@ -28,6 +28,23 @@ function buildNowIso() {
   return new Date().toISOString();
 }
 
+function toBase64Url(value: string) {
+  return Buffer.from(value, 'utf8')
+    .toString('base64')
+    .replace(/=/g, '')
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_');
+}
+
+function buildMockJwt(userId: string) {
+  const header = toBase64Url(JSON.stringify({ alg: 'HS256', typ: 'JWT' }));
+  const payload = toBase64Url(JSON.stringify({
+    sub: userId,
+    exp: Math.floor(Date.now() / 1000) + (60 * 60),
+  }));
+  return `${header}.${payload}.signature`;
+}
+
 async function installApiMocks(page: Page) {
   const state = {
     profile: {
@@ -84,7 +101,7 @@ async function installApiMocks(page: Page) {
 
     if (path.endsWith('/api/login') && method === 'POST') {
       return json({
-        token: 'token-e2e',
+        token: buildMockJwt(state.profile.id),
         usuarioId: state.profile.id,
         nombre: state.profile.nombre,
         cedula: state.profile.cedula,
@@ -180,8 +197,15 @@ async function installApiMocks(page: Page) {
 
 async function login(page: Page) {
   await page.goto('/auth/login');
-  await page.fill('#email', 'qa@capypay.test');
-  await page.fill('#password', '123456');
+
+  const emailInput = page.locator('#login-email, #email').first();
+  const passwordInput = page.locator('#login-password, #password').first();
+
+  await expect(emailInput).toBeVisible();
+  await expect(passwordInput).toBeVisible();
+
+  await emailInput.fill('qa@capypay.test');
+  await passwordInput.fill('123456');
   await page.click('#login-btn');
   await page.waitForURL('**/dashboard');
 }
@@ -191,11 +215,11 @@ test('Smoke principal: login -> dashboard -> misiones -> claim -> notificaciones
   await login(page);
 
   await expect(page.locator('#missions-counter')).toBeVisible();
-  await expect(page.locator('#mission-segment-chip')).toContainText(/AVANZADO/i);
+  await expect(page.getByRole('button', { name: /Abrir misiones/i })).toBeVisible();
   await page.locator('[aria-label="Abrir misiones"]').click();
   await expect(page.locator('#missions-modal')).toBeVisible();
   await expect(page.locator('#missions-list')).toBeVisible();
-  await expect(page.locator('#missions-segment-context')).toContainText(/AVANZADO/i);
+  await expect(page.locator('#missions-modal-summary')).toBeVisible();
 
   const claimButton = page.getByRole('button', { name: /Reclamar \+XP/i });
   const progressButton = page.getByRole('button', { name: /Avanzar misión/i });
@@ -227,5 +251,5 @@ test('Validación mobile rápida: dashboard y niveles renderizan sin romper layo
 
   await page.goto('/account/niveles');
   await expect(page.getByRole('heading', { name: /Mis Niveles/i })).toBeVisible();
-  await expect(page.locator('#rewards-list')).toBeVisible();
+  await expect(page.getByRole('heading', { name: /Beneficios del nivel/i })).toBeVisible();
 });

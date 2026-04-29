@@ -23,6 +23,18 @@ const { title = "CapyPay", showSidebar = false } = Astro.props;
     <meta name="mobile-web-app-capable" content="yes" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{title}</title>
+    <script is:inline>
+      (function () {
+        try {
+          const STORAGE_KEY = "capypay_sidebar_theme";
+          const raw = String(localStorage.getItem(STORAGE_KEY) || "").trim().toLowerCase();
+          const theme = raw === "dark" ? "dark" : "light";
+          document.documentElement.setAttribute("data-sidebar-theme", theme);
+        } catch (_error) {
+          document.documentElement.setAttribute("data-sidebar-theme", "light");
+        }
+      })();
+    </script>
     <!-- Auth Guard Anti-Flash (Improved) -->
     <script is:inline>
       (function () {
@@ -88,7 +100,7 @@ const { title = "CapyPay", showSidebar = false } = Astro.props;
     </noscript>
 
     <style>
-      body {
+      .app-shell {
         font-family: "Outfit", sans-serif;
         background-color: #fff9f0;
         background-image:
@@ -96,6 +108,23 @@ const { title = "CapyPay", showSidebar = false } = Astro.props;
           linear-gradient(90deg, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
         background-size: 20px 20px;
         background-position: center center;
+      }
+
+      html[data-sidebar-theme="dark"] .app-shell {
+        color: #f8f5ff;
+        background-color: #0e0a19;
+        background-image:
+          radial-gradient(circle at 12% 14%, rgba(139, 92, 246, 0.24), transparent 36%),
+          radial-gradient(circle at 86% 84%, rgba(99, 59, 197, 0.24), transparent 40%),
+          linear-gradient(rgba(248, 245, 255, 0.04) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(248, 245, 255, 0.04) 1px, transparent 1px),
+          linear-gradient(170deg, #120d22, #110c1f 55%, #1a1330);
+        background-size: auto, auto, 22px 22px, 22px 22px, auto;
+      }
+
+      html[data-sidebar-theme="dark"] .app-shell a,
+      html[data-sidebar-theme="dark"] .app-shell button {
+        text-shadow: none;
       }
     </style>
 
@@ -106,7 +135,7 @@ const { title = "CapyPay", showSidebar = false } = Astro.props;
     />
   </head>
   <body
-    class="flex h-screen overflow-hidden bg-[#FFF9F0] text-black safe-area-all"
+    class="app-shell flex h-screen overflow-hidden text-black safe-area-all"
   >
     <!-- 
       FONDO AMBIENTAL

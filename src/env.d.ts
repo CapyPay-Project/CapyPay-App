@@ -34,6 +34,8 @@ declare global {
 
 export {};
 
+declare module "*.css";
+
 declare module '../services/api.js' {
   export const pinService: {
     verify: (pin: string) => Promise<{ valid: boolean; success: boolean; }>;

@@ -238,7 +238,7 @@ import { cartItems, clearCart } from "../../store/cartStore";
       async function initCheckout() {
         let items = cartItems.get();
         let itemsArray = Object.values(items).filter(
-          (i) => i.type === "comedor" || !i.type,
+          (i) => i.contextType === "comedor",
         );
 
         if (itemsArray.length === 0) {

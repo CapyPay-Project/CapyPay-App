@@ -36,7 +36,7 @@
   }
 
   function handleAdd(item) {
-    addItemToCart(item);
+    addItemToCart({ ...item, contextType: "comedor" });
     showToast("Añadido", `${item.name} ha sido añadido al carrito.`, "success");
   }
 

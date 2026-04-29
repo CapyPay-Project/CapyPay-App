@@ -3,6 +3,8 @@
 /* Colores de la marca predeterminados */
 @theme {
   --color-brand-lime: #D7FD49;
+  --color-brand-receive: #D7FD49;
+  --color-brand-receive-hover: #C2F01F;
   --color-brand-black: #292929;
   --color-brand-purple: #8362E8;
   --color-brand-white: #F8F5FF;

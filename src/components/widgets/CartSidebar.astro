@@ -142,16 +142,16 @@
         price: number;
         image: string;
         quantity: number;
-        type?: string;
+        contextType: "comedor" | "cantina";
       };
 
       const allItemsArray = Object.values(items) as CartItem[];
       
       const isCantinaContext = window.location.pathname.includes('cantina');
+        const requiredContext = isCantinaContext ? 'cantina' : 'comedor';
       
       const itemsArray = allItemsArray.filter(i => {
-          if (isCantinaContext) return i.type === 'cantina' || (i.id.toString().includes('-') && i.id.toString().length > 10);
-          return i.type === 'comedor' || !i.type; // Fallback for old items
+          return i.contextType === requiredContext;
       });
 
       if (itemsArray.length === 0) {
@@ -206,7 +206,7 @@
           if (id) {
             // Need to cast items to allow index access if TS complains, or reuse casting above
             const item = (items as Record<string, CartItem>)[id];
-            if (item) addItemToCart(item); // Re-add implies increment
+            if (item) addItemToCart({ ...item, contextType: item.contextType }); // Re-add implies increment
           }
         });
       });

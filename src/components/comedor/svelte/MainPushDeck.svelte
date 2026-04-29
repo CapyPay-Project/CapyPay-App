@@ -42,7 +42,7 @@
 
   function pushToCart() {
     if (!current) return;
-    addItemToCart(current);
+    addItemToCart({ ...current, contextType: "comedor" });
     showToast(
       "Promocion activada",
       `${current.name} fue añadido al carrito.`,
