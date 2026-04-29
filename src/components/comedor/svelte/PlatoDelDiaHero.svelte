@@ -3,7 +3,7 @@
     name: "Cargando...",
     description: "Espere un momento.",
     price: 0,
-    image_url: "/images/cantina/default.png",
+    image_url: "/comedor/hamburger-sketch.jpg",
   };
 
   import { addItemToCart } from "../../../store/cartStore.js";
@@ -34,6 +34,9 @@
       alt={item.name}
       loading="eager"
       decoding="async"
+      width="480"
+      height="480"
+      sizes="(max-width: 768px) 128px, 192px"
       class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 transform-gpu will-change-transform"
       data-testid="hero-image"
     />

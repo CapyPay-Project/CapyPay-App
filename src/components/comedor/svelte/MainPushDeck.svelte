@@ -13,6 +13,9 @@
   let swapPulse = false;
   let lastIndex = 0;
   let pulseTimer = null;
+  let isReducedMotion = false;
+  let mediaQuery;
+  let rotationConfigKey = "";
 
   $: safeItems = Array.isArray(items) ? items.slice(0, 3) : [];
   $: current = safeItems[index] || null;
@@ -47,14 +50,53 @@
     );
   }
 
+  function stopRotation() {
+    if (rotation) {
+      clearInterval(rotation);
+      rotation = null;
+    }
+  }
+
+  function startRotation() {
+    stopRotation();
+    if (safeItems.length <= 1 || isReducedMotion) return;
+
+    rotation = setInterval(() => {
+      if (typeof document !== "undefined" && document.hidden) return;
+      next();
+    }, 5500);
+  }
+
+  function handleMotionPreferenceChange(event) {
+    isReducedMotion = Boolean(event?.matches);
+    startRotation();
+  }
+
   onMount(() => {
-    rotation = setInterval(next, 5500);
+    if (typeof window !== "undefined" && window.matchMedia) {
+      mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+      isReducedMotion = mediaQuery.matches;
+      mediaQuery.addEventListener("change", handleMotionPreferenceChange);
+    }
+
+    startRotation();
   });
 
   onDestroy(() => {
-    if (rotation) clearInterval(rotation);
+    stopRotation();
     if (pulseTimer) clearTimeout(pulseTimer);
+    if (mediaQuery) {
+      mediaQuery.removeEventListener("change", handleMotionPreferenceChange);
+    }
   });
+
+  $: {
+    const nextKey = `${safeItems.length}:${isReducedMotion ? "reduce" : "full"}`;
+    if (nextKey !== rotationConfigKey) {
+      rotationConfigKey = nextKey;
+      startRotation();
+    }
+  }
 
   $: if (index !== lastIndex) {
     lastIndex = index;
@@ -156,20 +198,26 @@
       </div>
 
       <div
-        class={`h-full bg-[#ede7ff] border-black relative overflow-hidden ${swapPulse ? "promo-swap" : ""}`}
+        class={`h-64 md:h-full w-full bg-[#ede7ff] border-black relative overflow-hidden ${swapPulse ? "promo-swap" : ""}`}
       >
         <div
           class="absolute inset-0 bg-[radial-gradient(circle_at_20%_15%,rgba(255,255,255,0.3),transparent_45%)] z-1"
+          style="z-index: 10; pointer-events: none;"
         ></div>
         <img
           src={current.image_url}
           alt={current.name}
-          class="w-full h-full object-cover"
+          class="absolute inset-0 w-full h-full object-cover"
           loading="lazy"
           decoding="async"
+          fetchpriority="low"
+          width="960"
+          height="720"
+          sizes="(max-width: 768px) 100vw, 45vw"
         />
         <div
-          class="absolute bottom-3 right-3 z-2 border-2 border-black bg-white/90 px-2 py-1 text-[10px] font-black uppercase tracking-wide"
+          class="absolute bottom-3 right-3 border-2 border-black bg-white/90 px-2 py-1 text-[10px] font-black uppercase tracking-wide"
+          style="z-index: 20;"
         >
           Cupos volando
         </div>

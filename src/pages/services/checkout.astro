@@ -59,9 +59,7 @@ import { cartItems, clearCart } from "../../store/cartStore";
         </div>
 
         <!-- Summary Lines -->
-        <div
-          class="border-t-4 border-black pt-6 space-y-3 mb-6 bg-gray-50 p-4"
-        >
+        <div class="border-t-4 border-black pt-6 space-y-3 mb-6 bg-gray-50 p-4">
           <div
             class="flex justify-between text-lg font-bold uppercase tracking-wide text-black"
           >
@@ -416,13 +414,24 @@ import { cartItems, clearCart } from "../../store/cartStore";
           // Since our current cart implementation doesn't store 'type', we'll check if the item has `priceCapys` (Cantina) or relies purely on `price`.
           // For a robust solution, we assume if ANY item is from a Cantina (we can check by checking the API error or by adding a flag).
           // Let's add a heuristic: Cantina items have UUIDs as IDs, Comedor items usually have INTEGER IDs.
-          const validItems = currentItems.filter(
-            (i) => i.type === "comedor" || !i.type,
-          );
+          const looksLikeComedorId = (value) =>
+            /^\d+$/.test(String(value ?? "").trim());
+
+          const validItems = currentItems.filter((item) => {
+            const hasValidQty = Number(item?.quantity) > 0;
+            const isComedorType = item?.type === "comedor" || !item?.type;
+            return isComedorType && hasValidQty && looksLikeComedorId(item?.id);
+          });
+
+          if (validItems.length === 0) {
+            throw new Error(
+              "No hay productos validos de comedor en el carrito. Vuelve a agregarlos e intenta de nuevo.",
+            );
+          }
+
           const orderItems = validItems.map((item) => ({
-            id: item.id,
-            quantity: item.quantity,
-            price: item.price,
+            id: Number(item.id),
+            quantity: Number(item.quantity),
           }));
 
           const response = await comedorService.createOrder(userId, orderItems);

@@ -1,4 +1,5 @@
 <script>
+  import { onMount, onDestroy } from "svelte";
   import { addItemToCart } from "../../../store/cartStore.js";
   import emblaCarouselSvelte from "embla-carousel-svelte";
   import Autoplay from "embla-carousel-autoplay";
@@ -9,9 +10,14 @@
   export let variant = "menu";
 
   let emblaApi;
+  let mediaQuery;
+  let prefersReducedMotion = false;
   const options = { dragFree: true, containScroll: "trimSnaps" };
   $: autoplayDelay = variant === "popular" ? 2200 : 4200;
-  $: plugins = [Autoplay({ delay: autoplayDelay, stopOnInteraction: true })];
+  $: shouldAutoplay = !prefersReducedMotion && items.length > 1;
+  $: plugins = shouldAutoplay
+    ? [Autoplay({ delay: autoplayDelay, stopOnInteraction: true })]
+    : [];
   $: wrapperClass =
     variant === "popular"
       ? "overflow-hidden cursor-grab active:cursor-grabbing border-4 border-black bg-[#fff7eb]"
@@ -47,6 +53,24 @@
       emblaApi.scrollTo(index);
     }
   }
+
+  function handleMotionPreferenceChange(event) {
+    prefersReducedMotion = Boolean(event?.matches);
+  }
+
+  onMount(() => {
+    if (typeof window !== "undefined" && window.matchMedia) {
+      mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+      prefersReducedMotion = mediaQuery.matches;
+      mediaQuery.addEventListener("change", handleMotionPreferenceChange);
+    }
+  });
+
+  onDestroy(() => {
+    if (mediaQuery) {
+      mediaQuery.removeEventListener("change", handleMotionPreferenceChange);
+    }
+  });
 </script>
 
 <div class="flex flex-col gap-4">
@@ -80,7 +104,7 @@
       class="flex will-change-transform"
       style="backface-visibility: hidden; -webkit-backface-visibility: hidden;"
     >
-      {#each items as item}
+      {#each items as item (item.id)}
         <div class={cardClass}>
           <div>
             <div
@@ -91,6 +115,10 @@
                 alt={item.name}
                 loading="lazy"
                 decoding="async"
+                fetchpriority="low"
+                width="640"
+                height="480"
+                sizes="(max-width: 768px) 80vw, (max-width: 1024px) 42vw, 30vw"
                 class={imageClass}
               />
             </div>

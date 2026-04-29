@@ -42,33 +42,10 @@
   let hydrated = false;
 
   let realtimeInterval = null;
-
-  $: fallbackPromotedItems = [
-    {
-      id: "fallback-1",
-      name: "Combo Bandeja Plus",
-      description: "Proteina + arroz + jugo con salida prioritaria.",
-      price: 35,
-      category: "almuerzo",
-      image_url: "/images/cantina/empanadas.webp",
-    },
-    {
-      id: "fallback-2",
-      name: "Desayuno Turbo",
-      description: "Arepa rellena + bebida caliente para primera hora.",
-      price: 20,
-      category: "desayuno",
-      image_url: "/images/cantina/sandwich.jpg",
-    },
-    {
-      id: "fallback-3",
-      name: "Snack Reload",
-      description: "Mini combo para recargar energia antes de clase.",
-      price: 14,
-      category: "snack",
-      image_url: "/images/cantina/empanada.jpg",
-    },
-  ];
+  let isRealtimeSyncing = false;
+  const REALTIME_POLL_ACTIVE_MS = 15000;
+  const REALTIME_POLL_HIDDEN_MS = 60000;
+  const POPULAR_ITEMS_LIMIT = 8;
 
   $: promotedItems = (() => {
     const source = [
@@ -80,24 +57,20 @@
     const seen = new Set();
 
     for (const item of source) {
-      const key = String(item?.id || item?.name || "");
-      if (!key || seen.has(key)) continue;
-      seen.add(key);
-      unique.push(item);
-      if (unique.length >= 3) break;
-    }
-
-    if (unique.length >= 3) return unique;
-
-    for (const fallback of fallbackPromotedItems) {
-      const key = String(fallback.id);
-      if (seen.has(key)) continue;
-      unique.push(fallback);
-      if (unique.length >= 3) break;
+      if (!item || !item.id) continue;
+      const key = String(item.id);
+      if (!seen.has(key)) {
+        seen.add(key);
+        unique.push(item);
+      }
     }
 
     return unique;
   })();
+
+  $: popularItemsForCarousel = Array.isArray(menuData?.popularItems)
+    ? menuData.popularItems.slice(0, POPULAR_ITEMS_LIMIT)
+    : [];
 
   $: menuItems = Array.isArray(menuData?.items) ? menuData.items : [];
   $: filteredMenuItems =
@@ -155,13 +128,74 @@
     return "FLUIDO";
   }
 
+  function resolveSketchImage(item, fallbackIndex = 0) {
+    const descriptor =
+      `${item?.name || ""} ${item?.description || ""} ${item?.category || ""}`.toLowerCase();
+
+    if (
+      descriptor.includes("cola") ||
+      descriptor.includes("bebida") ||
+      descriptor.includes("jugo") ||
+      descriptor.includes("refresco")
+    ) {
+      return "/comedor/cola-sketch.webp";
+    }
+
+    if (descriptor.includes("salad") || descriptor.includes("ensalada")) {
+      return "/comedor/salad-sketch.jpg";
+    }
+
+    if (
+      descriptor.includes("burger") ||
+      descriptor.includes("hamburg") ||
+      descriptor.includes("desay") ||
+      descriptor.includes("arepa")
+    ) {
+      return "/comedor/hamburger-sketch.jpg";
+    }
+
+    const fallbackCycle = [
+      "/comedor/beef-sketch.jpg",
+      "/comedor/hamburger-sketch.jpg",
+      "/comedor/salad-sketch.jpg",
+    ];
+    return fallbackCycle[fallbackIndex % fallbackCycle.length];
+  }
+
   async function loadMenu() {
     loading = true;
 
     error = null;
     try {
       const response = await fetchAPI(`/comedor/menu`);
-      menuData = response;
+
+      const normalizedItems = Array.isArray(response?.items)
+        ? response.items.map((item, i) => ({
+            ...item,
+            image_url: resolveSketchImage(item, i),
+          }))
+        : [];
+
+      const normalizedPopularItems = Array.isArray(response?.popularItems)
+        ? response.popularItems.map((item, i) => ({
+            ...item,
+            image_url: resolveSketchImage(item, i),
+          }))
+        : [];
+
+      const normalizedPlatoDia = response?.platoDia
+        ? {
+            ...response.platoDia,
+            image_url: resolveSketchImage(response.platoDia),
+          }
+        : null;
+
+      menuData = {
+        ...response,
+        items: normalizedItems,
+        popularItems: normalizedPopularItems,
+        platoDia: normalizedPlatoDia,
+      };
     } catch (err) {
       error = err.message || "Error al cargar menú";
     } finally {
@@ -170,6 +204,9 @@
   }
 
   async function loadRealtimeWidgets() {
+    if (isRealtimeSyncing) return;
+    isRealtimeSyncing = true;
+
     try {
       const userRaw = localStorage.getItem("capypay_user");
       const user = userRaw ? JSON.parse(userRaw) : null;
@@ -225,6 +262,30 @@
       waitRange = "-- min";
       nextTicket = "---";
       turnsAhead = null;
+    } finally {
+      isRealtimeSyncing = false;
+    }
+  }
+
+  function getRealtimePollMs() {
+    if (typeof document !== "undefined" && document.hidden) {
+      return REALTIME_POLL_HIDDEN_MS;
+    }
+    return REALTIME_POLL_ACTIVE_MS;
+  }
+
+  function startRealtimePolling() {
+    if (realtimeInterval) clearInterval(realtimeInterval);
+    realtimeInterval = setInterval(() => {
+      if (debugStateOverride) return;
+      loadRealtimeWidgets();
+    }, getRealtimePollMs());
+  }
+
+  function handleVisibilityChange() {
+    startRealtimePolling();
+    if (!document.hidden && !debugStateOverride) {
+      loadRealtimeWidgets();
     }
   }
 
@@ -261,15 +322,19 @@
     queueMicrotask(() => {
       loadMenu();
       loadRealtimeWidgets();
+      startRealtimePolling();
 
-      realtimeInterval = setInterval(() => {
-        loadRealtimeWidgets();
-      }, 15000);
+      if (typeof document !== "undefined") {
+        document.addEventListener("visibilitychange", handleVisibilityChange);
+      }
     });
   });
 
   onDestroy(() => {
     if (realtimeInterval) clearInterval(realtimeInterval);
+    if (typeof document !== "undefined") {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    }
   });
 
   function handleCategoryChange(e) {
@@ -406,7 +471,7 @@
     <!-- Comedor Top Widgets -->
     <CapyTip />
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 comedor-perf-block">
       <LiveQueue
         {diningState}
         capacity={queueCapacity}
@@ -425,21 +490,27 @@
       />
     </div>
 
-    <MainPushDeck
-      items={promotedItems}
-      on:pickCategory={handleMainPushCategory}
-    />
-
-    {#if menuData?.popularItems?.length > 0}
-      <ProductCarousel
-        title="Lo Más Popular"
-        items={menuData.popularItems}
-        variant="popular"
+    <div class="comedor-perf-block">
+      <MainPushDeck
+        items={promotedItems}
+        on:pickCategory={handleMainPushCategory}
       />
+    </div>
+
+    {#if popularItemsForCarousel.length > 0}
+      <div class="comedor-perf-block">
+        <ProductCarousel
+          title="Lo Más Popular"
+          items={popularItemsForCarousel}
+          variant="popular"
+        />
+      </div>
     {/if}
 
     {#if menuData?.platoDia}
-      <PlatoDelDiaHero item={menuData.platoDia} />
+      <div class="comedor-perf-block">
+        <PlatoDelDiaHero item={menuData.platoDia} />
+      </div>
     {/if}
 
     <CategoriaTabs
@@ -448,7 +519,9 @@
       on:change={handleCategoryChange}
     />
 
-    <MenuGrid title="Todo el Menú" items={filteredMenuItems} />
+    <div class="comedor-perf-block">
+      <MenuGrid title="Todo el Menú" items={filteredMenuItems} />
+    </div>
   {/if}
 </div>
 
@@ -488,3 +561,17 @@
 {/if}
 
 <CarritoSidebar on:checkout_success={handleCheckoutSuccess} />
+
+<style>
+  .comedor-perf-block {
+    content-visibility: auto;
+    contain: layout paint style;
+    contain-intrinsic-size: 720px;
+  }
+
+  @media (max-width: 640px) {
+    .comedor-perf-block {
+      contain-intrinsic-size: 920px;
+    }
+  }
+</style>
